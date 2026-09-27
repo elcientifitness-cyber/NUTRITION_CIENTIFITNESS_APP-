@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="cf-theme.css">
 <script src="data/alimentos.js"></script>
 <script src="config.js"></script>
+<script src="cf-select.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -275,7 +276,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:12px;color:var(--color-neutral-700)">Presets de dieta</span>
           <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ presetChips }}" as="pc" hint-placeholder-count="6"><button onClick="{{ pc.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid {{ pc.bd }};background:{{ pc.bg }};color:{{ pc.fg }};cursor:pointer">{{ pc.label }}</button></sc-for></div>
-          <sc-if value="{{ showPresetOffer }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px"><span style="flex:1 1 260px">{{ presetOfferText }}</span><button class="btn btn-primary" onClick="{{ applyPresetMeals }}" style="font-size:12px;padding:7px 12px">Aplicar estructura</button><button class="btn btn-ghost" onClick="{{ dismissPreset }}" style="font-size:12px">Ahora no</button></div></sc-if>
+          <sc-if value="{{ showPresetOffer }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px"><span style="flex:1 1 260px">{{ presetOfferText }}</span><button class="btn btn-primary" onClick="{{ applyPresetMeals }}" style="font-size:12px;padding:7px 12px">Volcar dieta</button><button class="btn btn-ghost" onClick="{{ dismissPreset }}" style="font-size:12px">Ahora no</button></div></sc-if>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end">
           <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Kcal del plan
@@ -810,17 +811,18 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <main class="cf-fade" style="padding:36px 28px 80px;max-width:1440px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
   <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px">
     <div style="margin-right:auto">
-      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ calSub }}</div>
-      <h1 style="margin:4px 0 0">Agenda</h1>
+      <h1 style="margin:0;line-height:1.2">Agenda</h1>
+      <div style="font-size:14px;color:var(--color-neutral-700);margin-top:4px">{{ calSub }}</div>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:#fff;border-radius:999px;box-shadow:var(--shadow-sm)"><sc-for list="{{ calViews }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
     <button class="btn btn-primary" onClick="{{ newAppt }}" style="min-height:40px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Nueva cita</button>
   </div>
-  <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
-    <section style="flex:999 1 620px;min-width:0;background:#fff;border-radius:24px;box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+  <div style="container-type:inline-size;container-name:calp"><div class="cf-cal-layout" style="display:grid;grid-template-columns:{{ calCols }};gap:18px;align-items:start">
+    <section class="cf-cal-main" style="min-width:0;background:#fff;border-radius:24px;box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:8px;padding:16px 18px;flex-wrap:wrap">
-        <h2 style="margin:0 auto 0 0;font-size:22px">{{ calTitle }}</h2>
-        <sc-if value="{{ showDragHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-600)">Arrastra una cita para moverla</span></sc-if>
+        <h2 style="margin:0 auto 0 0;font-size:22px;line-height:1.25;padding-bottom:1px;min-width:0;text-wrap:balance">{{ calTitle }}</h2>
+        <sc-if value="{{ showDragHint }}" hint-placeholder-val="{{ false }}"><span class="cf-cal-hint" style="font-size:12px;color:var(--color-neutral-600)">Arrastra una cita para moverla</span></sc-if>
+        <sc-if value="{{ showWideBtn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleWide }}" title="{{ wideTip }}" style="font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:999px;border:1.5px solid {{ wideBd }};background:{{ wideBg }};color:{{ wideFg }};cursor:pointer;transition:background .15s,border-color .15s" style-hover="border-color:var(--color-accent-300)"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ wideIcBg }};color:{{ wideIcFg }}"><sc-if value="{{ calNarrow }}" hint-placeholder-val="{{ true }}"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg></sc-if><sc-if value="{{ calWide }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M4 14h6v6"></path><path d="M20 10h-6V4"></path><path d="M14 10l7-7"></path><path d="M3 21l7-7"></path></svg></sc-if></span>{{ wideLabel }}</button></sc-if>
         <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:4px;align-items:center">
           <button class="btn btn-secondary" onClick="{{ calToday }}">Hoy</button>
           <button class="btn btn-secondary btn-icon" onClick="{{ calPrev }}" aria-label="Anterior"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m15 18-6-6 6-6"></path></svg></button>
@@ -833,9 +835,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--color-divider);border-top:1px solid var(--color-divider)">
         <sc-for list="{{ dowHead }}" as="d" hint-placeholder-count="7"><div style="background:#fff;padding:8px 10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);font-weight:700">{{ d }}</div></sc-for>
         <sc-for list="{{ monthCells }}" as="c" hint-placeholder-count="35">
-          <div class="cf-cal-cell" onClick="{{ c.add }}" onDragOver="{{ c.over }}" onDrop="{{ c.drop }}" title="Crear cita este día" style="min-height:116px;padding:6px;background:{{ c.bg }};display:flex;flex-direction:column;gap:3px;cursor:pointer;min-width:0">
+          <div class="cf-cal-cell" onClick="{{ c.add }}" onDragOver="{{ c.over }}" onDrop="{{ c.drop }}" title="Ver el día" style="min-height:{{ cellH }};padding:6px;background:{{ c.bg }};display:flex;flex-direction:column;gap:3px;cursor:pointer;min-width:0">
             <span style="align-self:flex-start;min-width:26px;height:26px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;background:{{ c.numBg }};color:{{ c.numFg }}">{{ c.num }}</span>
-            <sc-for list="{{ c.evs }}" as="e" hint-placeholder-count="0"><button class="cf-cal-pill" onClick="{{ e.open }}" draggable="{{ e.dragOk }}" onDragStart="{{ e.drag }}" title="{{ e.label }}" style="font:inherit;font-size:11.5px;display:flex;align-items:center;gap:5px;padding:3px 6px;border:0;border-radius:7px;background:{{ e.bg }};color:{{ e.fg }};cursor:pointer;text-align:left;min-width:0;opacity:{{ e.op }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ e.dot }};flex:none"></span><span class="cf-cal-lbl" style="font-weight:800;font-variant-numeric:tabular-nums;flex:none">{{ e.time }}</span><span class="cf-cal-lbl" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;text-decoration:{{ e.deco }}">{{ e.label }}</span></button></sc-for>
+            <sc-for list="{{ c.evs }}" as="e" hint-placeholder-count="0"><sc-if value="{{ e.wide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ e.open }}" draggable="{{ e.dragOk }}" onDragStart="{{ e.drag }}" title="{{ e.label }}" style="font:inherit;text-align:left;display:flex;flex-direction:column;gap:1px;padding:5px 7px;border:0;border-left:3px solid {{ e.dot }};border-radius:7px;background:{{ e.bg }};color:{{ e.fg }};cursor:pointer;min-width:0;opacity:{{ e.op }}"><span style="display:flex;gap:6px;align-items:baseline;min-width:0"><span style="font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums;flex:none">{{ e.timeR }}</span><span style="font-size:11px;font-weight:600;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.sub2 }}</span></span><span style="font-size:12px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;text-decoration:{{ e.deco }}">{{ e.label }}</span></button></sc-if><sc-if value="{{ e.narrow }}" hint-placeholder-val="{{ true }}"><button class="cf-cal-pill" onClick="{{ e.open }}" draggable="{{ e.dragOk }}" onDragStart="{{ e.drag }}" title="{{ e.label }}" style="font:inherit;font-size:11.5px;display:flex;align-items:center;gap:5px;padding:3px 6px;border:0;border-radius:7px;background:{{ e.bg }};color:{{ e.fg }};cursor:pointer;text-align:left;min-width:0;opacity:{{ e.op }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ e.dot }};flex:none"></span><span class="cf-cal-lbl" style="font-weight:800;font-variant-numeric:tabular-nums;flex:none">{{ e.time }}</span><span class="cf-cal-lbl" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;text-decoration:{{ e.deco }}">{{ e.label }}</span></button></sc-if></sc-for>
             <sc-if value="{{ c.hasMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.more }}" style="font:inherit;font-size:11px;font-weight:700;align-self:flex-start;padding:2px 6px;border:0;border-radius:6px;background:transparent;color:var(--color-accent-700);cursor:pointer">{{ c.moreLabel }}</button></sc-if>
           </div>
         </sc-for>
@@ -844,21 +846,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
       <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ false }}">
       <div style="overflow-x:auto;border-top:1px solid var(--color-divider)">
-        <div style="min-width:760px">
-          <div style="display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--color-divider)">
+        <div style="min-width:{{ wkMin }}">
+          <div style="display:grid;grid-template-columns:{{ wkGrid }};border-bottom:1px solid var(--color-divider)">
             <span></span>
-            <sc-for list="{{ weekCols }}" as="c" hint-placeholder-count="7"><button onClick="{{ c.addDay }}" title="Crear cita este día" style="font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border:0;border-left:1px solid var(--color-neutral-200);background:transparent;cursor:pointer"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);font-weight:700">{{ c.head }}</span><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:{{ c.headBg }};color:{{ c.headFg }}">{{ c.num }}</span></button></sc-for>
+            <sc-for list="{{ weekCols }}" as="c" hint-placeholder-count="7"><button onClick="{{ c.addDay }}" title="Ver este día" style="font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border:0;border-left:1px solid var(--color-neutral-200);background:transparent;cursor:pointer"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);font-weight:700">{{ c.head }}</span><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:{{ c.headBg }};color:{{ c.headFg }}">{{ c.num }}</span></button></sc-for>
           </div>
           <sc-if value="{{ hasAllDay }}" hint-placeholder-val="{{ false }}">
-          <div style="display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--color-divider)">
+          <div style="display:grid;grid-template-columns:{{ wkGrid }};border-bottom:1px solid var(--color-divider)">
             <span style="font-size:10px;line-height:1.2;color:var(--color-neutral-600);padding:6px 8px 6px 0;text-align:right">Todo el día</span>
             <sc-for list="{{ weekCols }}" as="c" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;gap:3px;padding:4px;border-left:1px solid var(--color-neutral-200);min-width:0"><sc-for list="{{ c.allDay }}" as="e" hint-placeholder-count="0"><button onClick="{{ e.open }}" title="{{ e.label }}" style="font:inherit;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px;padding:3px 6px;border:0;border-radius:7px;background:{{ e.bg }};color:{{ e.fg }};cursor:pointer;text-align:left;min-width:0;opacity:{{ e.op }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ e.dot }};flex:none"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:{{ e.deco }}">{{ e.label }}</span></button></sc-for></div></sc-for>
           </div>
           </sc-if>
-          <div style="display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));padding-top:8px">
-            <div style="display:flex;flex-direction:column"><sc-for list="{{ hours }}" as="h" hint-placeholder-count="15"><div style="height:48px;font-size:11px;color:var(--color-neutral-500);text-align:right;padding-right:8px;transform:translateY(-8px);font-variant-numeric:tabular-nums">{{ h }}</div></sc-for></div>
+          <div style="display:grid;grid-template-columns:{{ wkGrid }};padding-top:14px">
+            <div style="display:flex;flex-direction:column"><sc-for list="{{ hours }}" as="h" hint-placeholder-count="15"><div style="height:{{ rowH }};font-size:11px;color:var(--color-neutral-500);text-align:right;padding-right:8px;transform:translateY(-8px);font-variant-numeric:tabular-nums">{{ h }}</div></sc-for></div>
             <sc-for list="{{ weekCols }}" as="c" hint-placeholder-count="7"><div style="position:relative;border-left:1px solid var(--color-neutral-200);background:{{ c.colBg }}">
-              <sc-for list="{{ c.slots }}" as="sl" hint-placeholder-count="15"><div onClick="{{ sl.add }}" onDragOver="{{ sl.over }}" onDrop="{{ sl.drop }}" title="{{ sl.tip }}" style="height:48px;border-top:1px solid var(--color-neutral-200);cursor:pointer;box-sizing:border-box" style-hover="background:var(--color-accent-100)"></div></sc-for>
+              <sc-for list="{{ c.slots }}" as="sl" hint-placeholder-count="15"><div onClick="{{ sl.add }}" onDragOver="{{ sl.over }}" onDrop="{{ sl.drop }}" title="{{ sl.tip }}" style="height:{{ rowH }};border-top:1px solid var(--color-neutral-200);cursor:pointer;box-sizing:border-box" style-hover="background:var(--color-accent-100)"></div></sc-for>
               <sc-for list="{{ c.evs }}" as="e" hint-placeholder-count="0"><button onClick="{{ e.open }}" draggable="{{ e.dragOk }}" onDragStart="{{ e.drag }}" title="{{ e.label }}" style="position:absolute;top:{{ e.top }};height:{{ e.h }};left:{{ e.left }};width:{{ e.w }};font:inherit;text-align:left;border:0;border-left:3px solid {{ e.bd }};border-radius:8px;background:{{ e.bg }};color:{{ e.fg }};padding:3px 6px;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;gap:0;box-shadow:0 1px 3px rgba(20,50,80,.10);opacity:{{ e.op }};box-sizing:border-box"><span style="font-size:11px;font-weight:700;font-variant-numeric:tabular-nums">{{ e.range }}</span><span style="font-size:12px;font-weight:700;line-height:1.25;text-decoration:{{ e.deco }}">{{ e.label }}</span><span style="font-size:11px;opacity:.85">{{ e.sub }}</span></button></sc-for>
               <sc-if value="{{ c.hasNow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:{{ c.nowTop }};height:2px;background:var(--prot-ink);pointer-events:none"><span style="position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--prot-ink)"></span></div></sc-if>
             </div></sc-for>
@@ -887,7 +889,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </sc-if>
     </section>
 
-    <aside style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">
+    <sc-if value="{{ calNarrow }}" hint-placeholder-val="{{ true }}"><aside style="min-width:0;display:flex;flex-direction:column;gap:14px">
       <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
         <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Hoy</div>
         <div style="font-family:var(--font-heading);font-weight:700;font-size:18px;margin-top:-6px">{{ todayLabel }}</div>
@@ -906,7 +908,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
       <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:18px 12px 12px;display:flex;flex-direction:column;gap:4px">
         <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);padding:0 8px 4px;display:flex;justify-content:space-between"><span>Tipos de cita</span><span style="color:var(--color-neutral-500)">Próximas</span></div>
-        <sc-for list="{{ typeFilters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.toggle }}" title="Mostrar u ocultar" style="font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:7px 8px;border:0;border-radius:10px;background:transparent;cursor:pointer;text-align:left;opacity:{{ f.op }}" style-hover="background:var(--color-neutral-100)"><span style="width:14px;height:14px;border-radius:4px;border:2px solid {{ f.dot }};background:{{ f.fill }};box-sizing:border-box;flex:none"></span><span style="font-size:13px;font-weight:600;flex:1;text-decoration:{{ f.deco }}">{{ f.label }}</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">{{ f.count }}</span></button></sc-for>
+        <span style="font-size:12px;color:var(--color-neutral-600);padding:0 8px 6px;text-wrap:pretty">Arrastra un tipo a un día u hora para crear la cita. Pulsa para mostrarlo u ocultarlo.</span>
+        <sc-for list="{{ typeFilters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.toggle }}" draggable="{{ f.dragOk }}" onDragStart="{{ f.drag }}" onDragEnd="{{ f.dragEnd }}" title="{{ f.tip }}" style="font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:7px 8px;border:0;border-radius:10px;background:transparent;cursor:pointer;text-align:left;opacity:{{ f.op }}" style-hover="background:var(--color-neutral-100)"><span style="width:14px;height:14px;border-radius:4px;border:2px solid {{ f.dot }};background:{{ f.fill }};box-sizing:border-box;flex:none"></span><span style="font-size:13px;font-weight:600;flex:1;text-decoration:{{ f.deco }}">{{ f.label }}</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">{{ f.count }}</span></button></sc-for>
       </div>
 
       <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
@@ -921,8 +924,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </sc-if>
         <button class="btn btn-secondary" onClick="{{ icsAll }}" style="font-size:13px">Exportar todas (.ics)</button>
       </div>
-    </aside>
-  </div>
+    </aside></sc-if>
+  </div></div>
 </main>
 </sc-if>
 
@@ -1013,15 +1016,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     </div>
   </sc-if>
   <sc-if value="{{ isPresets }}" hint-placeholder-val="{{ false }}">
-    <p style="margin:0;font-size:14px;color:var(--color-neutral-700);max-width:680px">Objetivos predefinidos con ajuste calórico y reparto de macros. Aplícalas desde aquí o desde la pestaña Necesidades del cliente. Las que incluyen estructura fijan también las comidas y su composición.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Cada preset fija el ajuste calórico, el reparto de macros y una dieta de ejemplo. Al volcarlo en un cliente, las cantidades se recalculan solas para sus kcal y macros.</p>
+      <sc-if value="{{ presetsCustom }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ presetsReset }}" style="font-size:13px">{{ presetsResetLabel }}</button></sc-if>
+      <button class="btn btn-primary" onClick="{{ presetNew }}">+ Nuevo preset</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px">
       <sc-for list="{{ presetCards }}" as="p" hint-placeholder-count="6">
         <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:10px">
-          <span style="font-family:var(--font-heading);font-weight:700;font-size:18px">{{ p.name }}</span>
+          <div style="display:flex;align-items:flex-start;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:18px;flex:1;min-width:0">{{ p.name }}</span><button class="btn btn-ghost" onClick="{{ p.dup }}" style="font-size:12px;padding:4px 8px">Duplicar</button><button class="btn btn-secondary" onClick="{{ p.edit }}" style="font-size:12px;padding:6px 12px">Editar</button></div>
           <span style="font-size:12px;font-weight:700;color:var(--color-accent-700);font-variant-numeric:tabular-nums">{{ p.tags }}</span>
-          <span style="font-size:13px;color:var(--color-neutral-700);flex:1">{{ p.desc }}</span>
-          <sc-if value="{{ p.hasMeals }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;padding:8px 10px;border-radius:12px;background:var(--color-neutral-100)">{{ p.mealsTxt }}</span></sc-if>
-          <select class="input" value="" onChange="{{ p.applyTo }}"><option value="">Aplicar a cliente…</option><sc-for list="{{ p.clients }}" as="co" hint-placeholder-count="3"><option value="{{ co.id }}">{{ co.name }}</option></sc-for></select>
+          <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ p.desc }}</span>
+          <sc-if value="{{ p.hasMeals }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:var(--color-neutral-100);flex:1">
+            <sc-for list="{{ p.meals }}" as="m" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 8px;font-size:12px"><span style="font-weight:700">{{ m.name }}</span><span style="color:var(--color-neutral-600);font-variant-numeric:tabular-nums">{{ m.pct }}</span><span style="grid-column:1 / -1;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.foods }}</span></div></sc-for>
+          </div></sc-if>
+          <select class="input" value="" onChange="{{ p.applyTo }}"><option value="">Volcar en cliente…</option><sc-for list="{{ p.clients }}" as="co" hint-placeholder-count="3"><option value="{{ co.id }}">{{ co.name }}</option></sc-for></select>
         </div>
       </sc-for>
     </div>
@@ -1030,6 +1039,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
       <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:640px">Las recetas guardan qué alimentos lleva una comida. Al importarlas en un plan, los gramos se recalculan solos para las kcal de esa comida.</p>
       <input class="input cf-search" placeholder="Buscar receta o alimento…" value="{{ libRecQ }}" onChange="{{ onLibRecQ }}" style="width:280px;max-width:100%">
+      <button class="btn btn-primary" onClick="{{ reNew }}">+ Nueva receta</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
       <sc-for list="{{ recGroupsLib }}" as="rg2" hint-placeholder-count="3">
@@ -1040,8 +1050,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
               <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2">
                 <div style="background:var(--color-neutral-100);padding:14px;display:flex;flex-direction:column;gap:8px;border-radius:16px">
                   <input value="{{ t.name }}" onChange="{{ t.onName }}" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:16px;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0" style-focus="border-bottom-color:var(--color-accent)">
-                  <span style="font-size:13px;color:var(--color-neutral-700)">{{ t.foods }}</span>
-                  <div style="display:flex;align-items:center;gap:8px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="width:auto;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><span style="font-size:12px;color:var(--color-neutral-600);margin-right:auto">{{ t.meta }}</span><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">Eliminar</button></div>
+                  <button onClick="{{ t.edit }}" title="Editar alimentos y cantidades" style="font:inherit;font-size:13px;color:var(--color-neutral-700);text-align:left;border:0;background:transparent;padding:0;cursor:pointer;text-wrap:pretty" style-hover="color:var(--color-accent-700)">{{ t.foods }}</button>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="width:auto;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><span style="font-size:12px;color:var(--color-neutral-600);margin-right:auto">{{ t.meta }}</span><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:12px;padding:6px 12px">Editar</button><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">{{ t.delLabel }}</button></div>
                 </div>
               </sc-for>
             </div>
@@ -1148,6 +1158,151 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" class="cf-toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:160;background:{{ toastBg }};color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px)"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastMsg }}</div>
 </sc-if>
+<sc-if value="{{ peOpen }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ peClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(820px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:20px 22px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--color-divider)">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ peCtx }}</span>
+      <input value="{{ peName }}" onChange="{{ onPeName }}" placeholder="Nombre del preset" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:22px;letter-spacing:-0.02em;border:0;border-bottom:2px solid var(--color-divider);padding:2px 0;background:transparent;color:var(--color-text);width:100%;outline:none" style-focus="border-bottom-color:var(--color-accent)">
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:16px 22px 18px;display:flex;flex-direction:column;gap:18px">
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Descripción<textarea class="input" value="{{ peDesc }}" onChange="{{ onPeDesc }}" placeholder="Para quién es y cuánto tiempo aplicarlo" style="min-height:60px"></textarea></label>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;align-items:start">
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Ajuste calórico (%)<input class="input" type="number" min="-50" max="50" step="1" value="{{ peAdj }}" onChange="{{ onPeAdj }}"><span style="font-weight:700;color:var(--color-accent-700)">{{ peAdjTxt }}</span></label>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--color-neutral-700)"><span>Macros en</span><div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ peModes }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+      </div>
+      <sc-if value="{{ peIsGkg }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--prot-ink);font-weight:600">Proteína (g/kg)<input class="input" type="number" step="0.1" min="0" value="{{ pePg.val }}" onChange="{{ pePg.on }}"></label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fat-ink);font-weight:600">Grasa (g/kg)<input class="input" type="number" step="0.1" min="0" value="{{ peFg.val }}" onChange="{{ peFg.on }}"></label>
+        <span style="font-size:12px;color:var(--color-neutral-600);align-self:center;text-wrap:pretty">Los hidratos completan las kcal restantes.</span>
+      </div></sc-if>
+      <sc-if value="{{ peIsPct }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;align-items:end">
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--prot-ink);font-weight:600">Proteína (%)<input class="input" type="number" min="0" max="100" value="{{ pePp.val }}" onChange="{{ pePp.on }}"></label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--carb-ink);font-weight:600">Hidratos (%)<input class="input" type="number" min="0" max="100" value="{{ pePc.val }}" onChange="{{ pePc.on }}"></label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fat-ink);font-weight:600">Grasa (%)<input class="input" type="number" min="0" max="100" value="{{ pePf.val }}" onChange="{{ pePf.on }}"></label>
+        <span style="font-size:12px;font-weight:700;color:{{ pePctFg }};padding-bottom:10px">{{ pePctSum }}</span>
+      </div></sc-if>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto">Dieta de ejemplo</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ peMealSum }}</span></div>
+        <sc-for list="{{ peMeals }}" as="m" hint-placeholder-count="4">
+          <div style="background:var(--color-neutral-100);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+              <input class="input" value="{{ m.name }}" onChange="{{ m.onName }}" aria-label="Nombre de la comida" style="flex:1 1 180px;width:auto;background:#fff;font-weight:700">
+              <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-neutral-700)"><input class="input" type="number" min="0" max="100" value="{{ m.pct }}" onChange="{{ m.onPct }}" aria-label="Porcentaje de kcal" style="width:70px;background:#fff">% kcal</span>
+              <select class="input" value="{{ m.compSel }}" onChange="{{ m.onComp }}" aria-label="Composición" style="width:auto;background:#fff"><option value="auto">Macros proporcionales</option><option value="custom">Macros personalizados</option></select>
+              <sc-if value="{{ m.canUp }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost btn-icon" onClick="{{ m.up }}" title="Subir" aria-label="Subir" style="width:32px;height:32px"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m18 15-6-6-6 6"></path></svg></button></sc-if>
+              <button class="btn btn-ghost btn-icon" onClick="{{ m.del }}" title="Quitar comida" aria-label="Quitar comida" style="width:32px;height:32px;color:var(--danger)">×</button>
+            </div>
+            <sc-if value="{{ m.isCustom }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:10px;font-size:12px;font-weight:600">
+              <label style="display:flex;align-items:center;gap:4px;color:var(--prot-ink)">P<input class="input" type="number" min="0" max="100" value="{{ m.cp }}" onChange="{{ m.onCp }}" style="width:64px;background:#fff">%</label>
+              <label style="display:flex;align-items:center;gap:4px;color:var(--carb-ink)">C<input class="input" type="number" min="0" max="100" value="{{ m.cc }}" onChange="{{ m.onCc }}" style="width:64px;background:#fff">%</label>
+              <label style="display:flex;align-items:center;gap:4px;color:var(--fat-ink)">G<input class="input" type="number" min="0" max="100" value="{{ m.cf }}" onChange="{{ m.onCf }}" style="width:64px;background:#fff">%</label>
+            </div></sc-if>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-size:13px;color:var(--color-neutral-700);flex:1 1 240px;min-width:0;text-wrap:pretty">{{ m.foods }}</span><button class="btn btn-secondary" onClick="{{ m.editFoods }}" style="font-size:12px;padding:6px 12px;background:#fff">Editar alimentos</button></div>
+          </div>
+        </sc-for>
+        <button class="btn btn-secondary" onClick="{{ peAddMeal }}" style="align-self:flex-start">+ Añadir comida</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 22px;border-top:1px solid var(--color-divider)">
+      <sc-if value="{{ peCanDel }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ peDelete }}" style="color:var(--danger)">{{ peDelLabel }}</button></sc-if>
+      <sc-if value="{{ peCanRestore }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ peRestore }}">Restaurar original</button></sc-if>
+      <span style="flex:1"></span>
+      <button class="btn btn-secondary" onClick="{{ peClose }}">Cancelar</button>
+      <button class="btn btn-primary" onClick="{{ peSave }}">Guardar preset</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ reOpen }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ reClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(780px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:20px 22px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;border-bottom:1px solid var(--color-divider)">
+      <div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ reCtx }}</span>
+        <input value="{{ reName }}" onChange="{{ onReName }}" placeholder="Nombre de la receta" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:22px;letter-spacing:-0.02em;border:0;border-bottom:2px solid var(--color-divider);padding:2px 0;background:transparent;color:var(--color-text);width:100%;outline:none" style-focus="border-bottom-color:var(--color-accent)">
+      </div>
+      <sc-if value="{{ reShowCat }}" hint-placeholder-val="{{ true }}"><select class="input" value="{{ reCat }}" onChange="{{ onReCat }}" style="width:auto"><sc-for list="{{ recCatsAll }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select></sc-if>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:16px 22px 18px;display:flex;flex-direction:column;gap:14px">
+      <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En proteína, hidratos y grasas el número es el peso de cada alimento en el reparto de ese macro (si hay uno solo, da igual el valor). Al importar la receta en un plan, los gramos se calculan solos. En verdura / fruta son gramos fijos.</span>
+      <sc-for list="{{ reOpts }}" as="o" hint-placeholder-count="1">
+        <div style="background:var(--color-neutral-100);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px;margin-right:auto">{{ o.label }}</span><sc-if value="{{ o.canDup }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ o.dup }}" style="font-size:12px">Duplicar</button></sc-if><sc-if value="{{ o.canDel }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ o.del }}" style="font-size:12px;color:var(--danger)">Quitar opción</button></sc-if></div>
+          <sc-for list="{{ o.slots }}" as="sl" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr);gap:8px 12px;align-items:start">
+              <span style="font-size:12px;font-weight:700;color:{{ sl.fg }};padding-top:9px;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ sl.dot }};flex:none"></span>{{ sl.label }}</span>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ sl.items }}" as="x" hint-placeholder-count="1"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 4px 4px 12px;border-radius:999px;background:#fff;box-shadow:0 0 0 1.5px {{ sl.bd }} inset;font-size:13px;font-weight:600;max-width:100%"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ x.name }}</span><input type="number" min="0" value="{{ x.val }}" onChange="{{ x.onVal }}" aria-label="Cantidad" style="font:inherit;font-size:13px;width:52px;border:0;border-radius:8px;background:var(--color-neutral-100);padding:4px 6px;text-align:right;font-variant-numeric:tabular-nums"><span style="font-size:12px;color:var(--color-neutral-600)">{{ sl.unit }}</span><button onClick="{{ x.del }}" aria-label="Quitar" title="Quitar" style="width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:var(--color-neutral-600);cursor:pointer;font-size:15px;line-height:1" style-hover="background:var(--danger-bg);color:var(--danger)">×</button></span></sc-for>
+                </div>
+                <div style="position:relative;max-width:360px">
+                  <input class="input" value="{{ sl.q }}" onChange="{{ sl.onQ }}" onFocus="{{ sl.focus }}" placeholder="{{ sl.ph }}" style="min-height:34px;font-size:13px;padding:6px 12px;background:#fff">
+                  <sc-if value="{{ sl.hasRes }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:3;background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:flex;flex-direction:column;max-height:260px;overflow-y:auto"><sc-for list="{{ sl.res }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.add }}" style="font:inherit;color:inherit;text-align:left;display:flex;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:10px;background:transparent;cursor:pointer" style-hover="background:var(--color-accent-100)"><span style="width:8px;height:8px;border-radius:50%;background:{{ r.dot }};flex:none"></span><span style="font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><span style="font-size:11px;color:var(--color-neutral-600);white-space:nowrap">{{ r.meta }}</span></button></sc-for></div></sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+      <button class="btn btn-secondary" onClick="{{ reAddOpt }}" style="align-self:flex-start">+ Añadir opción</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 22px;border-top:1px solid var(--color-divider)">
+      <span style="font-size:12px;color:var(--color-neutral-600);flex:1">{{ reSummary }}</span>
+      <button class="btn btn-secondary" onClick="{{ reClose }}">Cancelar</button>
+      <button class="btn btn-primary" onClick="{{ reSave }}">{{ reSaveLabel }}</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ pkOpen }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ pkClose }}" style="position:fixed;inset:0;z-index:65;background:rgba(20,40,60,.22);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:22px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <sc-if value="{{ pkIsEv }}" hint-placeholder-val="{{ false }}">
+      <div style="height:8px;background:{{ pk.dot }}"></div>
+      <div style="padding:18px 20px 6px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:{{ pk.fg }}">{{ pk.type }}</span>
+            <span style="font-family:var(--font-heading);font-weight:700;font-size:20px;line-height:1.25;text-wrap:pretty;text-decoration:{{ pk.deco }}">{{ pk.title }}</span>
+          </div>
+          <sc-if value="{{ pk.hasSt }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;background:{{ pk.stBg }};color:{{ pk.stFg }};white-space:nowrap">{{ pk.stLabel }}</span></sc-if>
+        </div>
+        <div style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px 10px;font-size:14px;align-items:start">
+          <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span style="display:flex;flex-direction:column"><span style="font-weight:700">{{ pk.day }}</span><span style="color:var(--color-neutral-700)">{{ pk.time }}</span></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;margin-top:2px"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span style="overflow-wrap:anywhere">{{ pk.where }}</span>
+          <sc-if value="{{ pk.hasClient }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;margin-top:2px"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg><button onClick="{{ pk.openClient }}" style="font:inherit;font-weight:700;color:var(--color-accent-700);text-align:left;border:0;background:transparent;padding:0;cursor:pointer">{{ pk.client }}</button></sc-if>
+          <sc-if value="{{ pk.hasNotes }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;margin-top:2px"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg><span style="white-space:pre-wrap;color:var(--color-neutral-800);text-wrap:pretty">{{ pk.notes }}</span></sc-if>
+        </div>
+        <sc-if value="{{ pk.hasQuick }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ pk.quick }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:0;border-radius:999px;background:{{ q.bg }};color:{{ q.fg }};cursor:pointer">{{ q.label }}</button></sc-for>
+          <sc-if value="{{ pk.hasWa }}" hint-placeholder-val="{{ false }}"><a href="{{ pk.wa }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--veg-bg);color:var(--veg-ink);text-decoration:none">WhatsApp</a></sc-if>
+          <sc-if value="{{ pk.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ pk.link }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);text-decoration:none">Abrir videollamada</a></sc-if>
+        </div></sc-if>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 20px 16px">
+        <sc-if value="{{ pk.hasNav }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ pk.toDay }}" style="font-size:13px">Ver el día</button></sc-if>
+        <span style="flex:1"></span>
+        <button class="btn btn-secondary" onClick="{{ pkClose }}">Cerrar</button>
+        <button class="btn btn-primary" onClick="{{ pk.edit }}">{{ pk.editLabel }}</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ pkIsDay }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:18px 20px 8px;display:flex;align-items:baseline;gap:10px"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;margin-right:auto">{{ pd.label }}</span><span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">{{ pd.rel }}</span></div>
+      <div style="padding:4px 20px 8px;display:flex;flex-direction:column;gap:6px;overflow-y:auto">
+        <sc-for list="{{ pd.items }}" as="e" hint-placeholder-count="2"><button onClick="{{ e.open }}" style="font:inherit;color:inherit;text-align:left;display:grid;grid-template-columns:48px 4px minmax(0,1fr);gap:10px;align-items:center;padding:10px 12px;border:0;border-radius:14px;background:var(--color-neutral-100);cursor:pointer;opacity:{{ e.op }}" style-hover="background:var(--color-accent-100)"><span style="font-weight:800;font-size:13px;font-variant-numeric:tabular-nums">{{ e.t }}</span><span style="align-self:stretch;border-radius:4px;background:{{ e.dot }}"></span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:{{ e.deco }}">{{ e.label }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ e.sub }}</span></span></button></sc-for>
+        <sc-if value="{{ pd.empty }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700);padding:6px 0">Día libre, sin citas.</span></sc-if>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 20px 16px">
+        <button class="btn btn-ghost" onClick="{{ pd.toDay }}" style="font-size:13px">Ver día completo</button>
+        <button class="btn btn-ghost" onClick="{{ pd.toWeek }}" style="font-size:13px">Ver semana</button>
+        <span style="flex:1"></span>
+        <button class="btn btn-primary" onClick="{{ pd.add }}">+ Nueva cita</button>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ evOpen }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" onClick="{{ evClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(660px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
@@ -1185,6 +1340,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <sc-if value="{{ evIsNew }}" hint-placeholder-val="{{ false }}">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Repetir<select class="input" value="{{ evRep }}" onChange="{{ onEvRep }}"><sc-for list="{{ evReps }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+          <sc-if value="{{ evRepCustom }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Cada<span style="display:flex;gap:6px"><input class="input" type="number" min="1" max="365" value="{{ evRepEvery }}" onChange="{{ onEvRepEvery }}" style="width:80px"><select class="input" value="{{ evRepUnit }}" onChange="{{ onEvRepUnit }}" style="flex:1"><option value="d">días</option><option value="w">semanas</option><option value="m">meses</option></select></span></label></sc-if>
           <sc-if value="{{ evRepOn }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Número de citas<input class="input" type="number" min="2" max="26" value="{{ evRepN }}" onChange="{{ onEvRepN }}"></label></sc-if>
         </div>
       </sc-if>
@@ -1201,7 +1357,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 22px;border-top:1px solid var(--color-divider)">
       <sc-if value="{{ evCanDel }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ evDelete }}" style="color:var(--danger)">{{ evDelLabel }}</button></sc-if>
-      <sc-if value="{{ evShowNext }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ evNext }}">Programar siguiente (+2 sem.)</button></sc-if>
+      <sc-if value="{{ evShowNext }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><button class="btn btn-ghost" onClick="{{ evNext }}">Programar siguiente</button><select class="input" value="{{ evNextInt }}" onChange="{{ onEvNextInt }}" aria-label="Intervalo" style="width:auto;min-height:34px;font-size:13px;padding:4px 10px"><sc-for list="{{ evNextOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select><sc-if value="{{ evNextCustom }}" hint-placeholder-val="{{ false }}"><input class="input" type="number" min="1" max="365" value="{{ evNextDays }}" onChange="{{ onEvNextDays }}" aria-label="Días" style="width:70px;min-height:34px;font-size:13px;padding:4px 8px"><span style="font-size:13px;color:var(--color-neutral-700)">días</span></sc-if></div></sc-if>
       <span style="flex:1"></span>
       <button class="btn btn-secondary" onClick="{{ evClose }}">Cancelar</button>
       <button class="btn btn-primary" onClick="{{ evSave }}">Guardar</button>
@@ -1402,9 +1558,25 @@ const PRESETS=[
  {id:'resist',name:'Resistencia · alta en hidratos',desc:'Deportes de fondo o doble sesión: prioriza el glucógeno.',adj:0,mode:'pct',pp:20,pc:60,pf:20},
  {id:'ayuno',name:'Ayuno 16:8',desc:'Déficit del 20% en una ventana de 8 horas repartido en 3 comidas.',adj:-20,mode:'gkg',pg:2.2,fg:0.8,meals:[['Comida',45],['Merienda',20],['Cena',35]]},
  {id:'tarde',name:'Entreno de tarde',desc:'Mantenimiento con pre-entreno 100% hidratos y cena post-entreno.',adj:0,mode:'gkg',pg:2,fg:0.9,meals:[['Desayuno',25],['Comida',30],['Pre-entreno',15,0,100,0],['Cena post-entreno',30]]}];
-function applyPreset(n,P,withMeals){n.calc.adj=P.adj===0?'mant':P.adj<0?'deficit':'superavit';if(P.adj)n.calc.adjPct=Math.abs(P.adj);n.tg.kcalMode='calc';n.tg.macroMode=P.mode;
-  if(P.mode==='gkg'){n.tg.pg=P.pg;n.tg.fg=P.fg;}else{n.tg.pp=P.pp;n.tg.pc=P.pc;n.tg.pf=P.pf;}n.preset=P.id;
-  if(withMeals&&P.meals){const a=mealsOf(n);P.meals.forEach((pm,i)=>{let m=a[i];if(!m){m=meal(pm[0],pm[1]);a.push(m);}m.name=pm[0];m.pct=pm[1];m.cheat=false;if(pm.length>2){m.comp='custom';m.cp=pm[2];m.cc=pm[3];m.cf=pm[4];}else m.comp='auto';});a.splice(P.meals.length);}}
+const pmN=pm=>Array.isArray(pm)?{name:pm[0],pct:pm[1],comp:pm.length>2?[pm[2],pm[3],pm[4]]:null,opts:[]}:pm;
+const cloneOpts=os=>JSON.parse(JSON.stringify(os||[])).map(o=>{o.id=uid();SLOTS.forEach(([sl])=>{o[sl]=(o[sl]||[]);o[sl].forEach(x=>{x.id=uid();});});return o;});
+function applyPreset(n,P,withMeals){n.calc.adj=num(P.adj)===0?'mant':num(P.adj)<0?'deficit':'superavit';if(num(P.adj))n.calc.adjPct=Math.abs(num(P.adj));n.tg.kcalMode='calc';n.tg.macroMode=P.mode;
+  if(P.mode==='gkg'){n.tg.pg=num(P.pg);n.tg.fg=num(P.fg);}else{n.tg.pp=num(P.pp);n.tg.pc=num(P.pc);n.tg.pf=num(P.pf);}n.preset=P.id;
+  if(withMeals&&P.meals&&P.meals.length){const a=mealsOf(n);P.meals.map(pmN).forEach((pm,i)=>{let m=a[i];if(!m){m=meal(pm.name,pm.pct);a.push(m);}m.name=pm.name;m.pct=num(pm.pct);m.split=false;m.cheat=false;if(pm.comp){m.comp='custom';m.cp=pm.comp[0];m.cc=pm.comp[1];m.cf=pm.comp[2];}else m.comp='auto';if(pm.opts&&pm.opts.length)m.options=cloneOpts(pm.opts);});a.splice(P.meals.length);}}
+const PO_=(p,c,f,v)=>{const sh=a=>(a||[]).map(x=>it(x,Math.round(100/a.length)));return opt(sh(p),sh(c),sh(f),(v||[]).map(([id,g])=>vg(id,g)));};
+const PM=(name,pct,opts,comp)=>({name,pct,comp:comp||null,opts:opts||[]});
+const DIETS={
+ std:()=>[PM('Desayuno',25,[PO_(['db184'],['db74'],['db138'],[['db114',100]]),PO_(['db149','db145'],['db90'],['db10'],[['db132',80]])]),PM('Comida',35,[PO_(['db54'],['db69'],['db10'],[['db251',150]]),PO_(['db229'],['db294'],['db10'],[['db263',150]])]),PM('Merienda',15,[PO_(['db176'],['db97'],['db134'],[['db120',150]])]),PM('Cena',25,[PO_(['db240'],['db297'],['db10'],[['db252',150]]),PO_(['db149'],['db90'],['db109'],[['db264',100],['db132',100]])])],
+ vol:()=>[PM('Desayuno',20,[PO_(['db149','db145'],['db74','db128'],['db106'],[])]),PM('Media mañana',15,[PO_(['db184'],['db90'],['db134'],[['db110',100]])]),PM('Comida',30,[PO_(['db65'],['db91'],['db10'],[['db269',150]]),PO_(['db54'],['db69'],['db10'],[['db251',150]])]),PM('Merienda',15,[PO_(['db291'],['db97','db128'],['db101'],[])]),PM('Cena',20,[PO_(['db240'],['db294'],['db10'],[['db263',150]])])],
+ low:()=>[PM('Desayuno',25,[PO_(['db149'],['db90'],['db109'],[['db260',80],['db132',80]]),PO_(['db184'],['db110'],['db138'],[])]),PM('Comida',40,[PO_(['db65'],['db276'],['db10'],[['db251',200]]),PO_(['db54'],['db297'],['db10'],[['db252',200]])]),PM('Cena',35,[PO_(['db240'],[],['db10'],[['db264',100],['db269',100]]),PO_(['db229'],[],['db109'],[['db263',200]])])],
+ keto:()=>[PM('Desayuno',25,[PO_(['db149'],[],['db109'],[['db260',80]])]),PM('Comida',35,[PO_(['db240'],[],['db10'],[['db251',150]]),PO_(['db34'],[],['db10'],[['db252',150]])]),PM('Merienda',15,[PO_(['db183'],[],['db138'],[])]),PM('Cena',25,[PO_(['db65'],[],['db10'],[['db264',100],['db269',80]])])],
+ med:()=>[PM('Desayuno',25,[PO_(['db176'],['db90'],['db10'],[['db132',100]])]),PM('Comida',35,[PO_(['db229'],['db276'],['db10'],[['db260',100]]),PO_(['db54'],['db92'],['db10'],[['db269',120]])]),PM('Merienda',15,[PO_(['db184'],['db120'],['db134'],[])]),PM('Cena',25,[PO_(['db241'],['db297'],['db10'],[['db252',150]])])],
+ resist:()=>[PM('Desayuno',25,[PO_(['db184'],['db74','db128'],['db138'],[])]),PM('Comida',30,[PO_(['db54'],['db91'],['db10'],[['db251',120]]),PO_(['db65'],['db69'],['db10'],[['db269',120]])]),PM('Merienda',15,[PO_(['db305'],['db97','db190'],[],[])]),PM('Cena',30,[PO_(['db229'],['db69'],['db10'],[['db263',150]])])],
+ ayuno:()=>[PM('Comida',45,[PO_(['db54'],['db69'],['db10'],[['db251',150]]),PO_(['db65'],['db294'],['db10'],[['db269',150]])]),PM('Merienda',20,[PO_(['db184'],['db128'],['db134'],[])]),PM('Cena',35,[PO_(['db240'],['db297'],['db10'],[['db252',150]])])],
+ tarde:()=>[PM('Desayuno',25,[PO_(['db149','db145'],['db90'],['db109'],[['db132',80]])]),PM('Comida',30,[PO_(['db54'],['db69'],['db10'],[['db251',150]])]),PM('Pre-entreno',15,[PO_([],['db97','db128'],[],[])],[0,100,0]),PM('Cena post-entreno',30,[PO_(['db65'],['db294'],['db10'],[['db263',150]])])]};
+const DMAP={def30:'std',def20:'std',recomp:'std',mant:'std',vol10:'vol',vol20:'vol',lowcarb:'low',keto:'keto',med:'med',resist:'resist',ayuno:'ayuno',tarde:'tarde'};
+const defPreset=id=>{const P=PRESETS.find(x=>x.id===id);if(!P)return null;const d=DIETS[DMAP[id]];return {...P,builtin:true,meals:d?d():[]};};
+const defPresets=()=>PRESETS.map(P=>defPreset(P.id));
 const presetTags=P=>(P.adj===0?'Mantenimiento':(P.adj>0?'+':'−')+Math.abs(P.adj)+'% kcal')+' · '+(P.mode==='gkg'?'P '+P.pg+' g/kg · G '+P.fg+' g/kg':'P '+P.pp+'% · C '+P.pc+'% · G '+P.pf+'%')+(P.meals?' · '+P.meals.length+' comidas':'');
 function mealTarget(ml,T){const e=_MT.get(ml);if(e&&e.sg===tsig(T)&&e.v)return e.v;
   const sp=ml.split?num(ml.pp):num(ml.pct),sc=ml.split?num(ml.pc):num(ml.pct),sf=ml.split?num(ml.pf):num(ml.pct);
@@ -1475,9 +1647,10 @@ const dlFile=(name,text,type)=>{const b=new Blob([text],{type});const a=document
 const waNum=p=>{const d=String(p||'').replace(/[^\d]/g,'');return d.length===9?'34'+d:d;};
 const TZ=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Europe/Madrid';}catch(e){return 'Europe/Madrid';}})();
 const localDT=d=>isoD(d)+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes())+':00';
+const evMsg=(d,cl)=>{const first=cl&&cl.name?cl.name.trim().split(/\s+/)[0]:'';return 'Hola'+(first?' '+first:'')+', te recuerdo tu cita de '+evTypeLabel(d).toLowerCase()+' el '+fmtDayLong(d.date).toLowerCase()+(d.allDay?'':' a las '+d.start)+' ('+evModeLabel(d).toLowerCase()+(d.mode==='online'&&d.link?': '+d.link:d.mode==='presencial'&&d.place?', '+d.place:'')+'). Si necesitas cambiarla, avísame. Un saludo, CientiFitness.';};
 
 class Component extends DCLogic {
-  state={view:'clients',events:[],calView:'month',calDate:todayISO(),calHide:{},ev:null,evDel:false,calPast:false,gOn:false,gBusy:false,gEvents:[],gLast:null,tab:'calc',libTab:'foods',clients:seed(),foods:[],tpls:seedTpls(),eqGroups:seedGroups(),eqGroupSel:null,collapsed:{},recClosed:{},tdQ:'',tdCat:'Otros',libRecQ:'',activeId:null,clientQuery:'',confirmDel:null,savedAt:null,
+  state={calWide:(()=>{try{return localStorage.getItem('cf-calwide')==='1';}catch(e){return false;}})(),view:'clients',events:[],presets:null,pe:null,peDel:false,pk:null,re:null,reQ:null,calView:'month',calDate:todayISO(),calHide:{},ev:null,evDel:false,calPast:false,gOn:false,gBusy:false,gEvents:[],gLast:null,tab:'calc',libTab:'foods',clients:seed(),foods:[],tpls:seedTpls(),eqGroups:seedGroups(),eqGroupSel:null,collapsed:{},recClosed:{},tdQ:'',tdCat:'Otros',libRecQ:'',activeId:null,clientQuery:'',confirmDel:null,savedAt:null,
     sr:null,srQuery:'',srFilter:'all',srSel:[],srCreate:false,
     nf:{name:'',cat:'Carnes',k:'',p:'',c:'',f:'',al:''},showNewFood:false,foodQuery:'',foodCat:'',
     td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:'elcientifitness@gmail.com',loginPass:'',loginErr:null,syncErr:false};
@@ -1487,10 +1660,10 @@ class Component extends DCLogic {
     const onVis=()=>{if(document.visibilityState==='visible')this.pullCloud(false);else if(this.state.dirty)this.pushCloud(false,false);};
     document.addEventListener('visibilitychange',onVis);window.addEventListener('focus',()=>this.pullCloud(false));
     window.addEventListener('beforeunload',e=>{if(this.state.dirty||this.state.saving){e.preventDefault();e.returnValue='';}});
-    window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'&&this.state.ev)this.setState({ev:null,evDel:false});});
+    window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -1503,14 +1676,14 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       this.remoteAt=data?Date.parse(data.updated_at)||0:0;
       this._cloud=true;this.setState({auth:'in'});
       if(!data)this.pushCloud(true);
     });
   }
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -1521,9 +1694,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -1536,7 +1709,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -1547,7 +1720,7 @@ class Component extends DCLogic {
   componentDidUpdate(pp,ps){
     const s=this.state;
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -1556,12 +1729,15 @@ class Component extends DCLogic {
   }
   componentWillUnmount(){clearInterval(this._poll);}
   nextMap(){const ev=this.state.events,t=todayISO();if(this._nmE===ev&&this._nmD===t)return this._nm;const m={};ev.forEach(e=>{if(e.deleted||!e.clientId||e.date<t||e.status==='cancelada'||e.status==='realizada')return;const k=e.date+(e.allDay?'00:00':(e.start||''));if(!m[e.clientId]||k<m[e.clientId].k)m[e.clientId]={e,k};});this._nmE=ev;this._nmD=t;this._nm=m;return m;}
+  presetsList(){return this.state.presets||this._defP||(this._defP=defPresets());}
+  setPresets(f){this.setState(st=>({presets:f(JSON.parse(JSON.stringify(st.presets||this.presetsList())))}));}
   evOpen(e){this.setState({ev:JSON.parse(JSON.stringify(e)),evDel:false});}
   evNew(date,start,clientId,type){const e=newEvent(date,start,clientId);if(type){e.type=type;const t=EVT.find(x=>x[0]===type);if(t){if(t[2]===0)e.allDay=true;else e.dur=t[2];}}this.setState({ev:{...e,_new:true,_rep:'no',_repN:4},evDel:false});}
   evPatch(id,p){this.setState(st=>({events:st.events.map(x=>x.id===id?{...x,...p,updated:Date.now()}:x)}));}
   evSaveDraft(){const d=this.state.ev;if(!d)return false;if(!d.date){this.toast('Indica una fecha',true);return false;}
-    const e={...d,updated:Date.now()};delete e._new;delete e._rep;delete e._repN;const add=[];
-    if(d._new&&d._rep&&d._rep!=='no'){const w=num(d._rep),n=Math.max(1,Math.min(26,Math.round(num(d._repN))||1));for(let i=1;i<n;i++)add.push({...e,id:uid(),date:addDays(e.date,7*w*i)});}
+    const e={...d,updated:Date.now()};delete e._new;delete e._rep;delete e._repN;delete e._repEvery;delete e._repUnit;delete e._nextInt;delete e._nextDays;const add=[];
+    if(d._new&&d._rep&&d._rep!=='no'){const n=Math.max(1,Math.min(52,Math.round(num(d._repN))||1)),ev=Math.max(1,Math.round(num(d._repEvery))||1),u=d._rep==='c'?(d._repUnit||'w'):'w',k=d._rep==='c'?ev:num(d._rep);
+      for(let i=1;i<n;i++){let dt;if(u==='m'){const b=parseD(e.date);dt=isoD(new Date(b.getFullYear(),b.getMonth()+k*i,b.getDate()));}else dt=addDays(e.date,(u==='d'?1:7)*k*i);add.push({...e,id:uid(),date:dt});}}
     this.setState(st=>{const ex=st.events.some(x=>x.id===e.id);return {events:(ex?st.events.map(x=>x.id===e.id?e:x):st.events.concat([e])).concat(add),ev:null,evDel:false};});
     this.toast(add.length?(add.length+1)+' citas agendadas':d._new?'Cita agendada':'Cita actualizada');return true;}
   evRemove(id){this.setState(st=>({events:st.events.map(x=>x.id!==id?x:x.gid?{...x,deleted:true,updated:Date.now()}:null).filter(Boolean),ev:null,evDel:false}));this.toast('Cita eliminada');}
@@ -1759,9 +1935,9 @@ class Component extends DCLogic {
       v.macroCells=[['Proteína',T.p,pP,'prot'],['Hidratos',T.c,pC,'carb'],['Grasas',T.f,pF,'fat']].map(([l,g,pc,mk])=>({sw:SW[mk],bg:MBG[mk],fg:MINK[mk],label:l,g:g+' g',sub:(T.w?(g/T.w).toFixed(1):'0')+' g/kg · '+R(pc*100)+'%'}));
 
       if(s.tab==='calc'){
-        v.presetChips=PRESETS.map(P=>({label:P.name,bg:cl.preset===P.id?'var(--color-accent)':'#fff',fg:cl.preset===P.id?'#fff':'var(--color-text)',bd:cl.preset===P.id?'var(--color-accent)':'var(--color-divider)',pick:()=>{this.updC(n=>applyPreset(n,P,false));this.setState({presetOffer:P.meals?P.id:null});this.toast('Preset aplicado: '+P.name);}}));
-        {const PO=PRESETS.find(P=>P.id===s.presetOffer);v.showPresetOffer=!!PO&&cl.preset===s.presetOffer;v.presetOfferText=PO&&PO.meals?'«'+PO.name+'» incluye estructura de comidas: '+PO.meals.map(m=>m[0]+' '+m[1]+'%').join(' · ')+'.':'';
-        v.applyPresetMeals=()=>{if(!PO)return;this.updC(n=>applyPreset(n,PO,true));this.setState({presetOffer:null});this.toast('Estructura de comidas aplicada');};
+        v.presetChips=this.presetsList().map(P=>({label:P.name,bg:cl.preset===P.id?'var(--color-accent)':'#fff',fg:cl.preset===P.id?'#fff':'var(--color-text)',bd:cl.preset===P.id?'var(--color-accent)':'var(--color-divider)',pick:()=>{this.updC(n=>applyPreset(n,P,false));this.setState({presetOffer:P.meals&&P.meals.length?P.id:null});this.toast('Preset aplicado: '+P.name);}}));
+        {const PO=this.presetsList().find(P=>P.id===s.presetOffer);v.showPresetOffer=!!PO&&cl.preset===s.presetOffer;v.presetOfferText=PO&&PO.meals?'«'+PO.name+'» incluye una dieta de ejemplo ('+PO.meals.map(m=>pmN(m).name+' '+pmN(m).pct+'%').join(' · ')+'). Al volcarla, sustituye las comidas actuales y las cantidades se ajustan solas a las kcal y macros del cliente.':'';
+        v.applyPresetMeals=()=>{if(!PO)return;this.updC(n=>applyPreset(n,PO,true));this.setState({presetOffer:null});this.toast('Dieta volcada · cantidades ajustadas');};
         v.dismissPreset=()=>this.setState({presetOffer:null});}
         const d=cl.calc;
         Object.assign(v,{edad:d.edad,peso:d.peso,altura:d.altura,grasa:d.grasa,onEdad:ev(setCalc('edad')),onPeso:ev(setCalc('peso')),onAltura:ev(setCalc('altura')),onGrasa:ev(setCalc('grasa')),
@@ -1987,8 +2163,14 @@ class Component extends DCLogic {
           items:G.items.map(id=>FM[id]).filter(Boolean).map(f=>{const m2=mainMacro(f);return {name:f.name,bg:MBG[m2],fg:MINK[m2],ref:()=>this.setState({eqRef:f.id,eqGroupSel:G.id}),remove:()=>setG(a=>a.map(q=>q.id===G.id?{...q,items:q.items.filter(x=>x!==f.id)}:q))};})};});
         v.noGroups=GR.length===0;}
       if(v.isPresets){const co=s.clients.map(c=>({id:c.id,name:c.name||'Sin nombre'}));
-        v.presetCards=PRESETS.map(P=>({name:P.name,desc:P.desc,tags:presetTags(P),hasMeals:!!P.meals,clients:co,mealsTxt:P.meals?P.meals.map(m=>m[0]+' '+m[1]+'%'+(m.length>2?' (P '+m[2]+' · C '+m[3]+' · G '+m[4]+')':'')).join(' · '):'',
-          applyTo:e=>{const id=e.target.value;if(!id)return;const c0=s.clients.find(c=>c.id===id);this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==id)return c;const n=JSON.parse(JSON.stringify(c));applyPreset(n,P,true);n.updated=Date.now();return n;})}));this.toast(P.name+' aplicado a '+((c0&&c0.name)||'cliente'));}}));}
+        const fnm=o=>SLOTS.reduce((acc,[sl])=>acc.concat((o[sl]||[]).map(x=>(FM[x.fid]||{}).name).filter(Boolean)),[]).join(' · ');
+        v.presetCards=this.presetsList().map(P=>({name:P.name,desc:P.desc,tags:presetTags(P),clients:co,
+          hasMeals:!!(P.meals&&P.meals.length),meals:(P.meals||[]).map(pmN).map(m=>({name:m.name,pct:num(m.pct)+'%',foods:(m.opts||[]).length?fnm(m.opts[0])+((m.opts||[]).length>1?' · +'+(m.opts.length-1)+(m.opts.length===2?' opción':' opciones'):''):'Sin alimentos'})),
+          edit:()=>this.setState({pe:JSON.parse(JSON.stringify({...P,meals:(P.meals||[]).map(pmN)})),peDel:false}),
+          dup:()=>{const id=uid();this.setPresets(L=>{const i=L.findIndex(x=>x.id===P.id),c={...JSON.parse(JSON.stringify(P)),id,name:P.name+' (copia)',builtin:false};L.splice(i+1,0,c);return L;});this.toast('Preset duplicado');},
+          applyTo:e=>{const id=e.target.value;if(!id)return;const c0=s.clients.find(c=>c.id===id);this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==id)return c;const n=JSON.parse(JSON.stringify(c));applyPreset(n,P,true);n.updated=Date.now();return n;})}));this.toast(P.name+' volcado en '+((c0&&c0.name)||'cliente')+' · cantidades ajustadas');}}));
+        v.presetNew=()=>this.setState({pe:{id:uid(),name:'',desc:'',adj:-20,mode:'gkg',pg:2,fg:0.9,pp:30,pc:45,pf:25,meals:[PM('Desayuno',25,[opt()]),PM('Comida',35,[opt()]),PM('Merienda',15,[opt()]),PM('Cena',25,[opt()])],_new:true},peDel:false});
+        v.presetsCustom=!!s.presets;v.presetsReset=()=>{if(!s.presetsResetAsk){this.setState({presetsResetAsk:true});return;}this.setState({presets:null,presetsResetAsk:false});this._defP=null;this.toast('Presets restaurados');};v.presetsResetLabel=s.presetsResetAsk?'¿Seguro? Se pierden tus cambios':'Restaurar originales';}
       const q=norm(s.foodQuery);
       const rows=allFoods.filter(f=>(!q||norm(f.name).includes(q))&&(!s.foodCat||f.cat===s.foodCat)&&(!s.onlyBadK||f.kBad));
       v.foodQuery=s.foodQuery;v.onFoodQuery=e=>this.setState({foodQuery:e.target.value});
@@ -2001,9 +2183,56 @@ class Component extends DCLogic {
         return {name:tp.name,foods:names.join(' · '),meta:(tp.opts||[]).length+((tp.opts||[]).length===1?' opción':' opciones'),cat:tp.cat||guessCat(tp.name),cats:RCATS,
           onCat:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,cat:x}:q)}));},
           onName:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,name:x}:q)}));},
-          del:()=>this.setState(st=>({tpls:st.tpls.filter(x=>x.id!==tp.id)}))};});
+          del:()=>{if(s.recDel!==tp.id){this.setState({recDel:tp.id});return;}this.setState(st=>({tpls:st.tpls.filter(x=>x.id!==tp.id),recDel:null}));this.toast('Receta eliminada');},delLabel:s.recDel===tp.id?'¿Seguro?':'Eliminar',
+          edit:()=>this.setState({re:JSON.parse(JSON.stringify({...tp,cat:tp.cat||guessCat(tp.name),opts:(tp.opts&&tp.opts.length?tp.opts:[opt()])})),reQ:null})};});
+      v.reNew=()=>this.setState({re:{id:uid(),name:'',cat:'Comidas',opts:[opt()],_new:true},reQ:null});
       v.noRecMatch=s.tpls.length>0&&v.recGroupsLib.length===0;
       v.noTpls=s.tpls.length===0;
+    }
+    v.peOpen=!!s.pe;
+    if(s.pe){const D=s.pe,setP=f=>this.setState(st=>{const r=JSON.parse(JSON.stringify(st.pe));f(r);return {pe:r};}),tv=e=>e.target.value;
+      v.peCtx=D._new?'Nuevo preset':'Editar preset';v.peName=D.name||'';v.onPeName=e=>{const x=tv(e);setP(r=>{r.name=x;});};v.peDesc=D.desc||'';v.onPeDesc=e=>{const x=tv(e);setP(r=>{r.desc=x;});};
+      v.peAdj=String(num(D.adj));v.onPeAdj=e=>{const x=tv(e);setP(r=>{r.adj=num(x);});};v.peAdjTxt=num(D.adj)===0?'Mantenimiento':num(D.adj)<0?'Déficit del '+Math.abs(num(D.adj))+' %':'Superávit del '+num(D.adj)+' %';
+      v.peModes=this.seg([['gkg','g por kg de peso'],['pct','% de las kcal']],D.mode,x=>setP(r=>{r.mode=x;}));v.peIsGkg=D.mode==='gkg';v.peIsPct=D.mode!=='gkg';
+      const fld=k=>({val:String(D[k]==null?'':D[k]),on:e=>{const x=tv(e);setP(r=>{r[k]=x;});}});
+      v.pePg=fld('pg');v.peFg=fld('fg');v.pePp=fld('pp');v.pePc=fld('pc');v.pePf=fld('pf');
+      {const t=num(D.pp)+num(D.pc)+num(D.pf);v.pePctSum='Suma '+t+' %'+(t!==100?' · debería ser 100':'');v.pePctFg=t!==100?'var(--prot-ink)':'var(--color-neutral-600)';}
+      const ms=D.meals||[],tot=ms.reduce((a,m)=>a+num(m.pct),0);v.peMealSum='Reparto '+tot+' %'+(tot!==100?' · se ajusta a 100 al volcar':'');
+      const fnm=o=>SLOTS.reduce((acc,[sl])=>acc.concat((o[sl]||[]).map(x=>(FM[x.fid]||{}).name).filter(Boolean)),[]).join(' · ');
+      v.peMeals=ms.map((m,i)=>({name:m.name,onName:e=>{const x=tv(e);setP(r=>{r.meals[i].name=x;});},pct:String(num(m.pct)),onPct:e=>{const x=tv(e);setP(r=>{r.meals[i].pct=num(x);});},
+        compSel:m.comp?'custom':'auto',onComp:e=>{const x=tv(e);setP(r=>{r.meals[i].comp=x==='custom'?[40,40,20]:null;});},isCustom:!!m.comp,
+        cp:String(m.comp?m.comp[0]:''),cc:String(m.comp?m.comp[1]:''),cf:String(m.comp?m.comp[2]:''),
+        onCp:e=>{const x=num(tv(e));setP(r=>{r.meals[i].comp[0]=x;});},onCc:e=>{const x=num(tv(e));setP(r=>{r.meals[i].comp[1]=x;});},onCf:e=>{const x=num(tv(e));setP(r=>{r.meals[i].comp[2]=x;});},
+        foods:(m.opts||[]).map((o,oi)=>((m.opts.length>1?String.fromCharCode(65+oi)+': ':'')+(fnm(o)||'vacía'))).join('   ')||'Sin alimentos',
+        editFoods:()=>this.setState({re:{id:'pm',name:m.name,cat:'Otros',opts:JSON.parse(JSON.stringify((m.opts&&m.opts.length)?m.opts:[opt()])),_pm:i},reQ:null}),
+        canUp:i>0,up:()=>setP(r=>{const x=r.meals.splice(i,1)[0];r.meals.splice(i-1,0,x);}),del:()=>setP(r=>{r.meals.splice(i,1);})}));
+      v.peAddMeal=()=>setP(r=>{r.meals=(r.meals||[]).concat([PM('Comida '+((r.meals||[]).length+1),20,[opt()])]);});
+      v.peClose=()=>this.setState({pe:null,peDel:false});
+      v.peCanDel=!D._new;v.peDelLabel=s.peDel?'¿Seguro? Eliminar':'Eliminar preset';v.peDelete=()=>{if(!s.peDel){this.setState({peDel:true});return;}this.setPresets(L=>L.filter(x=>x.id!==D.id));this.setState({pe:null,peDel:false});this.toast('Preset eliminado');};
+      v.peCanRestore=!!D.builtin&&!D._new;v.peRestore=()=>{const d=defPreset(D.id);if(d)this.setState({pe:JSON.parse(JSON.stringify(d))});this.toast('Valores originales cargados · pulsa Guardar para confirmar');};
+      v.peSave=()=>{const r=JSON.parse(JSON.stringify(s.pe)),isNew=!!r._new;delete r._new;if(!(r.name||'').trim()){this.toast('Ponle un nombre al preset',true);return;}r.adj=num(r.adj);
+        this.setPresets(L=>L.some(x=>x.id===r.id)?L.map(x=>x.id===r.id?r:x):L.concat([r]));this.setState({pe:null,peDel:false});this.toast(isNew?'Preset creado':'Preset guardado');};
+    }
+    v.reOpen=!!s.re;
+    if(s.re){const R=s.re,L=i=>String.fromCharCode(65+i),setR=f=>this.setState(st=>{const r=JSON.parse(JSON.stringify(st.re));f(r);return {re:r};});
+      v.reCtx=R._pm!=null?'Alimentos de la comida · '+((s.pe&&s.pe.name)||'preset'):R._new?'Nueva receta':'Editar receta';v.reShowCat=R._pm==null;v.reName=R.name||'';v.onReName=e=>{const x=e.target.value;setR(r=>{r.name=x;});};
+      v.reCat=R.cat||'Otros';v.onReCat=e=>{const x=e.target.value;setR(r=>{r.cat=x;});};v.recCatsAll=RCATS;
+      const SC={prot:['var(--prot)','var(--prot-ink)'],carb:['var(--carb)','var(--carb-ink)'],fat:['var(--fat)','var(--fat-ink)'],veg:['var(--veg)','var(--veg-ink)']};
+      v.reOpts=R.opts.map((o,oi)=>({label:R.opts.length>1?'Opción '+L(oi):'Alimentos',canDel:R.opts.length>1,canDup:true,
+        del:()=>setR(r=>{r.opts.splice(oi,1);}),dup:()=>setR(r=>{const c=JSON.parse(JSON.stringify(r.opts[oi]));c.id=uid();SLOTS.forEach(([sl])=>(c[sl]||[]).forEach(x=>{x.id=uid();}));r.opts.splice(oi+1,0,c);}),
+        slots:SLOTS.map(([sl,lab])=>{const key=oi+'|'+sl,q=s.reQ&&s.reQ.key===key?s.reQ.q:'',qq=norm(q),isV=sl==='veg',items=o[sl]||[];
+          const res=qq?allFoods.filter(f=>norm(f.name).includes(qq)).sort((a,b)=>(mainMacro(b)===sl?1:0)-(mainMacro(a)===sl?1:0)||a.name.length-b.name.length).slice(0,10):[];
+          return {label:lab,dot:SC[sl][0],fg:SC[sl][1],bd:SC[sl][0],unit:isV?'g':'%',ph:'+ Añadir '+lab.toLowerCase()+'…',q,
+            onQ:e=>this.setState({reQ:{key,q:e.target.value}}),focus:()=>{if(!s.reQ||s.reQ.key!==key)this.setState({reQ:{key,q:''}});},
+            hasRes:res.length>0,res:res.map(f=>({name:f.name,dot:SW[mainMacro(f)],meta:f.k+' kcal · P '+f.p+' C '+f.c+' G '+f.f,add:()=>{setR(r=>{const arr=r.opts[oi][sl]=r.opts[oi][sl]||[];if(isV)arr.push(vg(f.id,100));else{arr.push(it(f.id,0));const n=arr.length,base=Math.floor(100/n);arr.forEach((x,i)=>{x.pct=i===n-1?100-base*(n-1):base;});}});this.setState({reQ:null});}})),
+            items:items.map((x,xi)=>({name:(FM[x.fid]||{name:'Alimento eliminado'}).name,val:String(isV?(x.g==null?100:x.g):(x.pct==null?50:x.pct)),
+              onVal:e=>{const val=num(e.target.value);setR(r=>{const y=r.opts[oi][sl][xi];if(isV)y.g=val;else y.pct=val;});},del:()=>setR(r=>{r.opts[oi][sl].splice(xi,1);})}))};})}));
+      v.reAddOpt=()=>setR(r=>{r.opts.push(opt());});
+      {const nF=R.opts.reduce((a,o)=>a+SLOTS.reduce((b,[sl])=>b+(o[sl]||[]).length,0),0),bad=R.opts.some(o=>['prot','carb','fat'].some(sl=>(o[sl]||[]).length&&Math.round((o[sl]||[]).reduce((a,x)=>a+num(x.pct),0))!==100));
+        v.reSummary=nF+(nF===1?' alimento':' alimentos')+' · '+R.opts.length+(R.opts.length===1?' opción':' opciones');}
+      v.reClose=()=>this.setState({re:null,reQ:null});v.reSaveLabel=R._pm!=null?'Aplicar a la comida':'Guardar receta';
+      v.reSave=()=>{const r=JSON.parse(JSON.stringify(s.re)),isNew=!!r._new;delete r._new;if(r._pm!=null){const i=r._pm;this.setState(st=>{const p=JSON.parse(JSON.stringify(st.pe));if(p.meals[i]){p.meals[i].opts=r.opts;if((r.name||'').trim())p.meals[i].name=r.name;}return {pe:p,re:null,reQ:null};});return;}if(!(r.name||'').trim()){this.toast('Ponle un nombre a la receta',true);return;}
+        this.setState(st=>({tpls:st.tpls.some(x=>x.id===r.id)?st.tpls.map(x=>x.id===r.id?r:x):st.tpls.concat([r]),re:null,reQ:null}));this.toast(isNew?'Receta creada':'Receta guardada');};
     }
 
     v.srOpen=!!s.sr;
@@ -2075,10 +2304,10 @@ class Component extends DCLogic {
       const vis=EVA.concat(s.gEvents||[]).filter(e=>!hide[e.g?'google':e.type]);
       const byDay={};vis.forEach(e=>{(byDay[e.date]=byDay[e.date]||[]).push(e);});
       Object.values(byDay).forEach(a=>a.sort((x,y)=>(y.allDay?1:0)-(x.allDay?1:0)||toMin(x.start)-toMin(y.start)));
-      const openE=e=>{if(e.g){if(e.url)window.open(e.url,'_blank');return;}this.evOpen(e);};
-      const pill=e=>{const t=evT(e),cl=CM[e.clientId],off=e.status==='cancelada'||e.status==='noshow';return {label:evTitle(e,cl),time:e.allDay?'':e.start,dot:t[3],bg:t[4],fg:t[5],deco:off?'line-through':'none',op:off?'.55':e.status==='realizada'?'.7':'1',open:ev=>{if(ev&&ev.stopPropagation)ev.stopPropagation();openE(e);},dragOk:e.g?'false':'true',drag:ev=>{if(e.g)return;this._drag=e.id;try{ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',e.id);}catch(_){}}};};
-      const over=ev=>{if(this._drag)ev.preventDefault();};
-      const dropTo=(p,msg)=>ev=>{ev.preventDefault();ev.stopPropagation();const id=this._drag;this._drag=null;if(!id)return;this.evPatch(id,p);this.toast(msg);};
+      const openE=e=>this.setState({pk:{kind:'ev',id:e.id,g:e.g?e:null}});
+      const WIDE=!!s.calWide&&s.view==='calendar';const pill=e=>{const t=evT(e),cl=CM[e.clientId],off=e.status==='cancelada'||e.status==='noshow';return {wide:WIDE,narrow:!WIDE,timeR:e.allDay?'Todo el día':e.start+'–'+fromMin(toMin(e.start)+(num(e.dur)||30)),sub2:e.g?'Google Calendar':[evModeLabel(e)].concat(e.status!=='pendiente'?[(EVS.find(x=>x[0]===e.status)||EVS[0])[1]]:[]).join(' · '),label:evTitle(e,cl),time:e.allDay?'':e.start,dot:t[3],bg:t[4],fg:t[5],deco:off?'line-through':'none',op:off?'.55':e.status==='realizada'?'.7':'1',open:ev=>{if(ev&&ev.stopPropagation)ev.stopPropagation();openE(e);},dragOk:e.g?'false':'true',drag:ev=>{if(e.g)return;this._drag=e.id;this._dragType=null;try{ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',e.id);}catch(_){}}};};
+      const over=ev=>{if(this._drag||this._dragType)ev.preventDefault();};
+      const dropTo=(p,msg)=>ev=>{ev.preventDefault();ev.stopPropagation();const ty=this._dragType;this._dragType=null;if(ty){this.evNew(p.date,p.start||'10:00','',ty);return;}const id=this._drag;this._drag=null;if(!id)return;this.evPatch(id,p);this.toast(msg);};
       const todayCount=EVA.filter(e=>e.date===today&&e.status!=='cancelada').length;
       v.nav3={on:s.view==='calendar'?'1':'0',count:String(todayCount),showCount:todayCount>0,go:()=>this.setState({view:'calendar',confirmDel:null})};
       v.isCal=s.view==='calendar';
@@ -2100,31 +2329,36 @@ class Component extends DCLogic {
         const cur=parseD(s.calDate),cv=s.calView||'month';
         const wk=EVA.filter(e=>e.date>=today&&e.date<=addDays(today,6)&&e.status!=='cancelada').length;
         v.calSub=wk===0?'Sin citas en los próximos 7 días':wk===1?'1 cita en los próximos 7 días':wk+' citas en los próximos 7 días';
-        v.calViews=this.seg([['month','Mes'],['week','Semana'],['list','Lista']],cv,x=>this.setState({calView:x}));
-        v.isMonth=cv==='month';v.isWeek=cv==='week';v.isList=cv==='list';v.showNav=cv!=='list';v.showDragHint=cv!=='list'&&EVA.length>0;
-        v.calPrev=()=>this.setState({calDate:cv==='week'?addDays(s.calDate,-7):isoD(new Date(cur.getFullYear(),cur.getMonth()-1,1))});
-        v.calNext=()=>this.setState({calDate:cv==='week'?addDays(s.calDate,7):isoD(new Date(cur.getFullYear(),cur.getMonth()+1,1))});
+        v.calViews=this.seg([['month','Mes'],['week','Semana'],['day','Día'],['list','Lista']],cv,x=>this.setState({calView:x}));
+        v.isMonth=cv==='month';v.isWeek=cv==='week'||cv==='day';
+        v.calWide=WIDE;v.calNarrow=!WIDE;v.calCols=WIDE?'minmax(0,1fr)':'minmax(0,1fr) 280px';v.cellH=WIDE?'150px':'116px';v.showWideBtn=cv!=='list';
+        v.wideLabel=WIDE?'Vista compacta':'Vista ampliada';v.wideTip=WIDE?'Volver a mostrar el panel lateral':'Ver el calendario a todo el ancho con los detalles de cada cita';
+        v.wideBg=WIDE?'var(--color-accent-100)':'#fff';v.wideBd=WIDE?'var(--color-accent-300)':'var(--color-divider)';v.wideFg=WIDE?'var(--color-accent-800)':'var(--color-text)';v.wideIcBg=WIDE?'var(--color-accent)':'var(--color-accent-100)';v.wideIcFg=WIDE?'#fff':'var(--color-accent-700)';
+        v.toggleWide=()=>{const n=!s.calWide;try{localStorage.setItem('cf-calwide',n?'1':'0');}catch(e){}this.setState({calWide:n});};v.isList=cv==='list';v.showNav=cv!=='list';v.showDragHint=cv!=='list'&&EVA.length>0;
+        v.calPrev=()=>this.setState({calDate:cv==='day'?addDays(s.calDate,-1):cv==='week'?addDays(s.calDate,-7):isoD(new Date(cur.getFullYear(),cur.getMonth()-1,1))});
+        v.calNext=()=>this.setState({calDate:cv==='day'?addDays(s.calDate,1):cv==='week'?addDays(s.calDate,7):isoD(new Date(cur.getFullYear(),cur.getMonth()+1,1))});
         v.calToday=()=>this.setState({calDate:today});
         v.newAppt=()=>this.evNew(cv!=='list'&&s.calDate>today?s.calDate:today,'10:00');
-        if(cv==='month'){const first=new Date(cur.getFullYear(),cur.getMonth(),1),start=addDays(isoD(first),-dowMon(first)),dim=new Date(cur.getFullYear(),cur.getMonth()+1,0).getDate(),weeks=Math.ceil((dowMon(first)+dim)/7),MAX=3;
+        if(cv==='month'){const first=new Date(cur.getFullYear(),cur.getMonth(),1),start=addDays(isoD(first),-dowMon(first)),dim=new Date(cur.getFullYear(),cur.getMonth()+1,0).getDate(),weeks=Math.ceil((dowMon(first)+dim)/7),MAX=WIDE?6:3;
           const mt=MESES[cur.getMonth()];v.calTitle=mt[0].toUpperCase()+mt.slice(1)+' '+cur.getFullYear();
           v.dowHead=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];v.monthCells=[];
           for(let i=0;i<weeks*7;i++){const ds=addDays(start,i),d=parseD(ds),inM=d.getMonth()===cur.getMonth(),isT=ds===today,list=byDay[ds]||[];
-            v.monthCells.push({num:String(d.getDate()),bg:isT?'#f5fafd':inM?'#fff':'var(--color-neutral-100)',numBg:isT?'var(--color-accent)':'transparent',numFg:isT?'#fff':inM?'var(--color-text)':'var(--color-neutral-500)',evs:list.slice(0,MAX).map(pill),hasMore:list.length>MAX,moreLabel:'+'+(list.length-MAX)+' más',more:ev=>{ev.stopPropagation();this.setState({calView:'week',calDate:ds});},add:()=>this.evNew(ds,'10:00'),over,drop:dropTo({date:ds},'Cita movida al '+fmtDayShort(ds))});}}
-        if(cv==='week'){const mon=addDays(s.calDate,-dowMon(cur)),HH=48;let h0=7,h1=22;
-          for(let i=0;i<7;i++)(byDay[addDays(mon,i)]||[]).forEach(e=>{if(e.allDay)return;const a=toMin(e.start),b=a+Math.max(15,num(e.dur)||30);h0=Math.min(h0,Math.floor(a/60));h1=Math.max(h1,Math.ceil(b/60));});
+            v.monthCells.push({num:String(d.getDate()),bg:isT?'#f5fafd':inM?'#fff':'var(--color-neutral-100)',numBg:isT?'var(--color-accent)':'transparent',numFg:isT?'#fff':inM?'var(--color-text)':'var(--color-neutral-500)',evs:list.slice(0,MAX).map(pill),hasMore:list.length>MAX,moreLabel:'+'+(list.length-MAX)+' más',more:ev=>{ev.stopPropagation();this.setState({pk:{kind:'day',date:ds}});},add:()=>this.setState({pk:{kind:'day',date:ds}}),over,drop:dropTo({date:ds},'Cita movida al '+fmtDayShort(ds))});}}
+        if(cv==='week'||cv==='day'){const isDay=cv==='day',nD=isDay?1:7,mon=isDay?s.calDate:addDays(s.calDate,-dowMon(cur)),HH=WIDE?72:48;let h0=7,h1=22;
+          v.wkGrid=isDay?'56px minmax(0,1fr)':'56px repeat(7,minmax(0,1fr))';v.wkMin=isDay?'0':'520px';
+          for(let i=0;i<nD;i++)(byDay[addDays(mon,i)]||[]).forEach(e=>{if(e.allDay)return;const a=toMin(e.start),b=a+Math.max(15,num(e.dur)||30);h0=Math.min(h0,Math.floor(a/60));h1=Math.max(h1,Math.ceil(b/60));});
           h1=Math.min(24,h1);const sun=addDays(mon,6),dm=parseD(mon),dsn=parseD(sun);
-          v.calTitle=dm.getDate()+(dm.getMonth()!==dsn.getMonth()?' '+MESES[dm.getMonth()].slice(0,3):'')+' – '+dsn.getDate()+' '+MESES[dsn.getMonth()].slice(0,3)+' '+dsn.getFullYear();
-          v.hours=[];for(let h=h0;h<h1;h++)v.hours.push(pad2(h)+':00');
+          v.calTitle=isDay?fmtDayLong(mon)+' '+dm.getFullYear():dm.getDate()+(dm.getMonth()!==dsn.getMonth()?' '+MESES[dm.getMonth()].slice(0,3):'')+' – '+dsn.getDate()+' '+MESES[dsn.getMonth()].slice(0,3)+' '+dsn.getFullYear();
+          v.rowH=HH+'px';v.hours=[];for(let h=h0;h<h1;h++)v.hours.push(pad2(h)+':00');
           const now=new Date(),nm=now.getHours()*60+now.getMinutes();v.weekCols=[];
-          for(let i=0;i<7;i++){const ds=addDays(mon,i),d=parseD(ds),list=byDay[ds]||[],isT=ds===today;
+          for(let i=0;i<nD;i++){const ds=addDays(mon,i),d=parseD(ds),list=byDay[ds]||[],isT=ds===today;
             const items=list.filter(e=>!e.allDay).map(e=>({e,a:toMin(e.start),b:toMin(e.start)+Math.max(15,num(e.dur)||30)})).sort((x,y)=>x.a-y.a||y.b-x.b);
             const clusters=[];let cl=[],end=-1;items.forEach(it=>{if(it.a>=end&&cl.length){clusters.push(cl);cl=[];}cl.push(it);end=Math.max(end,it.b);});if(cl.length)clusters.push(cl);
             clusters.forEach(c=>{const lanes=[];c.forEach(it=>{let k=lanes.findIndex(le=>le<=it.a);if(k<0){k=lanes.length;lanes.push(0);}lanes[k]=it.b;it.k=k;});c.forEach(it=>{it.n=lanes.length;});});
-            v.weekCols.push({head:DOWL[i].slice(0,3),num:String(d.getDate()),headBg:isT?'var(--color-accent)':'transparent',headFg:isT?'#fff':'var(--color-text)',colBg:isT?'rgba(227,241,250,.4)':'transparent',
-              addDay:()=>this.evNew(ds,'10:00'),allDay:list.filter(e=>e.allDay).map(pill),
+            v.weekCols.push({head:isDay?DOWL[dowMon(d)]:DOWL[dowMon(d)].slice(0,3),num:String(d.getDate()),headBg:isT?'var(--color-accent)':'transparent',headFg:isT?'#fff':'var(--color-text)',colBg:isT?'rgba(227,241,250,.4)':'transparent',
+              addDay:()=>isDay?this.evNew(ds,'10:00'):this.setState({calView:'day',calDate:ds}),allDay:list.filter(e=>e.allDay).map(pill),
               slots:v.hours.map((h,j)=>({tip:'Nueva cita · '+fmtDayShort(ds)+' '+h,add:()=>this.evNew(ds,pad2(h0+j)+':00'),over,drop:dropTo({date:ds,start:pad2(h0+j)+':00',allDay:false},'Cita movida al '+fmtDayShort(ds)+' '+h)})),
-              evs:items.map(it=>({...pill(it.e),top:((it.a-h0*60)*HH/60+1)+'px',h:Math.max(22,(it.b-it.a)*HH/60-2)+'px',left:'calc('+(it.k*100/it.n)+'% + 2px)',w:'calc('+(100/it.n)+'% - 4px)',range:it.e.start+'–'+fromMin(it.b),sub:it.e.g?'Google':evModeLabel(it.e),bd:evT(it.e)[3]})),
+              evs:items.map(it=>({...pill(it.e),top:((it.a-h0*60)*HH/60+1)+'px',h:Math.max(22,(it.b-it.a)*HH/60-2)+'px',sub:it.e.g?'Google':evModeLabel(it.e)+((isDay||WIDE)&&CM[it.e.clientId]&&(it.e.title||'').trim()?' · '+CM[it.e.clientId].name:'')+((isDay||WIDE)&&it.e.notes?' · '+it.e.notes.split('\n')[0]:''),left:'calc('+(it.k*100/it.n)+'% + 2px)',w:'calc('+(100/it.n)+'% - 4px)',range:it.e.start+'–'+fromMin(it.b),bd:evT(it.e)[3]})),
               hasNow:isT&&nm>=h0*60&&nm<h1*60,nowTop:((nm-h0*60)*HH/60)+'px'});}
           v.hasAllDay=v.weekCols.some(c=>c.allDay.length>0);}
         if(cv==='list'){v.calTitle=s.calPast?'Todas las citas':'Próximas citas';const from=s.calPast?addDays(today,-120):today,to=addDays(today,180);
@@ -2138,7 +2372,8 @@ class Component extends DCLogic {
         v.pendItems=pend.map(e=>{const late=e.date<today;return {label:evTitle(e,CM[e.clientId]),when:late?'Vencido · '+fmtDayShort(e.date):e.date===today?'Hoy':fmtDayShort(e.date),whenFg:late?'var(--prot-ink)':'var(--color-neutral-600)',dot:evT(e)[3],done:()=>{this.evPatch(e.id,{status:'realizada'});this.toast('Marcado como realizado');},open:()=>this.evOpen(e)};});
         v.pendEmpty=pend.length===0;
         const up=EVA.filter(e=>e.date>=today&&e.status!=='cancelada');
-        v.typeFilters=EVT.concat((s.gEvents||[]).length?[EVG]:[]).map(t=>{const off=!!hide[t[0]];return {label:t[1],dot:t[3],fill:off?'transparent':t[3],op:off?'.5':'1',deco:off?'line-through':'none',count:t[0]==='google'?String((s.gEvents||[]).filter(e=>e.date>=today).length):String(up.filter(e=>e.type===t[0]).length),toggle:()=>this.setState(st=>({calHide:{...st.calHide,[t[0]]:!(st.calHide||{})[t[0]]}}))};});
+        v.typeFilters=EVT.concat((s.gEvents||[]).length?[EVG]:[]).map(t=>{const off=!!hide[t[0]];return {label:t[1],dot:t[3],fill:off?'transparent':t[3],op:off?'.5':'1',deco:off?'line-through':'none',count:t[0]==='google'?String((s.gEvents||[]).filter(e=>e.date>=today).length):String(up.filter(e=>e.type===t[0]).length),toggle:()=>this.setState(st=>({calHide:{...st.calHide,[t[0]]:!(st.calHide||{})[t[0]]}})),dragOk:t[0]==='google'?'false':'true',tip:t[0]==='google'?'Mostrar u ocultar':'Arrastra a un día u hora para crear la cita · pulsa para mostrar u ocultar',
+          drag:ev=>{if(t[0]==='google')return;this._dragType=t[0];this._drag=null;try{ev.dataTransfer.effectAllowed='copy';ev.dataTransfer.setData('text/plain',t[0]);}catch(_){}},dragEnd:()=>{setTimeout(()=>{this._dragType=null;},50);}};});
         const gcid=(window.CF_CONFIG||{}).googleClientId;
         v.gConfigured=!!gcid;v.gNotConfigured=!gcid;v.gShowDisc=!!s.gOn;
         v.gDot=s.gOn?'#4fb487':'var(--color-neutral-400)';
@@ -2147,6 +2382,26 @@ class Component extends DCLogic {
         v.gAction=()=>{if(this._gtok&&Date.now()<this._gexp)this.gSync();else this.gConnect();};
         v.gDisconnect=()=>{try{if(this._gtok&&window.google)window.google.accounts.oauth2.revoke(this._gtok,()=>{});localStorage.removeItem('cf-gcal');}catch(e){}this._gtok=null;this.setState({gOn:false,gEvents:[]});this.toast('Google Calendar desconectado');};
         v.icsAll=()=>{if(!EVA.length){this.toast('No hay citas que exportar',true);return;}dlFile('cientifitness-agenda.ics',icsFor(EVA,CM),'text/calendar');this.toast('Archivo .ics descargado');};
+      }
+      v.pkOpen=false;v.pkIsEv=false;v.pkIsDay=false;
+      if(s.pk&&!s.ev){const P=s.pk,close=()=>this.setState({pk:null});v.pkClose=close;
+        if(P.kind==='ev'){const e=P.g||EVA.find(x=>x.id===P.id);
+          if(e){v.pkOpen=true;v.pkIsEv=true;const t=evT(e),cl=CM[e.clientId],st=EVS.find(x=>x[0]===e.status)||EVS[0],off=e.status==='cancelada'||e.status==='noshow';
+            const endM=toMin(e.start)+(num(e.dur)||30),rel=e.date===today?'Hoy · ':e.date===addDays(today,1)?'Mañana · ':'';
+            const ph=cl?waNum(cl.phone):'';
+            const quick=e.g?[]:[['confirmada','Confirmar','var(--color-accent-100)','var(--color-accent-800)'],['realizada','Marcar realizada','var(--veg-bg)','var(--veg-ink)'],['noshow','No asistió','var(--carb-bg)','var(--carb-ink)'],['pendiente','Reabrir','var(--color-neutral-200)','var(--color-neutral-800)']].filter(q=>q[0]!==e.status&&(q[0]!=='pendiente'||e.status!=='confirmada')&&(q[0]!=='noshow'||e.date<=today)&&(q[0]!=='confirmada'||e.status==='pendiente'));
+            v.pk={dot:t[3],fg:t[5],type:evTypeLabel(e)+(e.g?'':' · '+evModeLabel(e)),title:evTitle(e,cl),deco:off?'line-through':'none',hasSt:!e.g,stLabel:st[1],stBg:st[2],stFg:st[3],
+              day:rel+fmtDayLong(e.date)+' '+parseD(e.date).getFullYear(),time:e.allDay?'Todo el día':e.start+' – '+fromMin(endM)+' · '+(num(e.dur)||30)+' min',
+              where:e.g?'Evento de tu Google Calendar':e.mode==='presencial'?(e.place||'Presencial'):e.mode==='online'?(e.link?'Online · '+e.link:'Online (sin enlace todavía)'):e.mode==='telefono'?('Teléfono'+(cl&&cl.phone?' · '+cl.phone:'')):evModeLabel(e),
+              hasClient:!!cl,client:cl?cl.name:'',openClient:()=>this.setState({pk:null,view:'client',activeId:cl.id,tab:'calc',confirmDel:null}),
+              hasNotes:!!(e.notes||'').trim(),notes:e.notes||'',
+              quick:quick.map(q=>({label:q[1],bg:q[2],fg:q[3],go:()=>{this.evPatch(e.id,{status:q[0]});this.toast('Estado: '+EVS.find(x=>x[0]===q[0])[1]);}})),hasQuick:!e.g,
+              hasWa:!e.g&&!!ph,wa:'https://wa.me/'+ph+'?text='+encodeURIComponent(evMsg(e,cl)),hasLink:!e.g&&e.mode==='online'&&!!(e.link||'').trim(),link:e.link||'',
+              hasNav:!(s.view==='calendar'&&s.calView==='day'&&s.calDate===e.date),toDay:()=>this.setState({pk:null,view:'calendar',calView:'day',calDate:e.date}),
+              editLabel:e.g?'Abrir en Google':'Editar',edit:()=>{if(e.g){if(e.url)window.open(e.url,'_blank');return;}this.setState({pk:null});this.evOpen(e);}};}}
+        if(P.kind==='day'){v.pkOpen=true;v.pkIsDay=true;const ds=P.date;
+          v.pd={label:fmtDayLong(ds)+' '+parseD(ds).getFullYear(),rel:ds===today?'Hoy':ds===addDays(today,1)?'Mañana':'',items:(byDay[ds]||[]).map(e=>({...pill(e),t:e.allDay?'Día':e.start,sub:e.g?'Google Calendar':evModeLabel(e)+(e.status!=='pendiente'?' · '+(EVS.find(x=>x[0]===e.status)||EVS[0])[1]:'')})),
+            add:()=>{this.setState({pk:null});this.evNew(ds,'10:00');},toDay:()=>this.setState({pk:null,view:'calendar',calView:'day',calDate:ds}),toWeek:()=>this.setState({pk:null,view:'calendar',calView:'week',calDate:ds})};v.pd.empty=v.pd.items.length===0;}
       }
       v.evOpen=!!s.ev;
       if(s.ev){const d=s.ev,cl=CM[d.clientId],set=p=>this.setState(st=>({ev:{...st.ev,...p}})),tv=e=>e.target.value;
@@ -2168,7 +2423,10 @@ class Component extends DCLogic {
         v.evModeText=d.modeText||'';v.onEvModeText=e=>set({modeText:tv(e)});
         v.evPhoneInfo=cl&&cl.phone?'Llamar a '+(cl.name||'cliente')+' · '+cl.phone:cl?'Añade el WhatsApp/teléfono en la ficha del cliente para verlo aquí.':'Elige un cliente para ver su teléfono.';
         v.evNotes=d.notes||'';v.onEvNotes=e=>set({notes:tv(e)});
-        v.evIsNew=!!d._new;v.evReps=[['no','No se repite'],['1','Cada semana'],['2','Cada 2 semanas'],['4','Cada 4 semanas']].map(x=>({id:x[0],name:x[1]}));
+        v.evIsNew=!!d._new;v.evReps=[['no','No se repite'],['1','Cada semana'],['2','Cada 2 semanas'],['4','Cada 4 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));
+        v.evRepCustom=d._rep==='c';v.evRepEvery=String(d._repEvery||3);v.onEvRepEvery=e=>set({_repEvery:tv(e)});v.evRepUnit=d._repUnit||'w';v.onEvRepUnit=e=>set({_repUnit:tv(e)});
+        v.evNextOpts=[['7','+1 semana'],['14','+2 semanas'],['21','+3 semanas'],['28','+4 semanas'],['42','+6 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));
+        v.evNextInt=d._nextInt||'14';v.onEvNextInt=e=>set({_nextInt:tv(e)});v.evNextCustom=d._nextInt==='c';v.evNextDays=String(d._nextDays||10);v.onEvNextDays=e=>set({_nextDays:tv(e)});
         v.evRep=d._rep||'no';v.onEvRep=e=>set({_rep:tv(e)});v.evRepOn=!!d._rep&&d._rep!=='no';v.evRepN=String(d._repN||4);v.onEvRepN=e=>set({_repN:tv(e)});
         v.evGcal=gcalLink(d,cl);v.evIcs=()=>dlFile('cita-'+d.date+'.ics',icsFor([d],CM),'text/calendar');
         const first=cl&&cl.name?cl.name.trim().split(/\s+/)[0]:'';
@@ -2178,7 +2436,7 @@ class Component extends DCLogic {
         v.evClose=()=>this.setState({ev:null,evDel:false});v.evSave=()=>this.evSaveDraft();
         v.evCanDel=!d._new;v.evDelLabel=s.evDel?'¿Seguro? Eliminar':'Eliminar';v.evDelete=()=>{if(!s.evDel){this.setState({evDel:true});return;}this.evRemove(d.id);};
         v.evShowNext=!d._new&&!!d.clientId;
-        v.evNext=()=>{if(!this.evSaveDraft())return;const n=newEvent(addDays(d.date,14),d.start,d.clientId);n.type=d.type==='inicial'?'revision':d.type;n.typeText=d.typeText||'';n.mode=d.mode;n.modeText=d.modeText||'';n.place=d.place||'';n.allDay=!!d.allDay;n.dur=n.type==='revision'?30:(num(d.dur)||30);this.setState({ev:{...n,_new:true,_rep:'no',_repN:4},evDel:false});};
+        v.evNext=()=>{const gap=d._nextInt==='c'?Math.max(1,Math.round(num(d._nextDays))||1):num(d._nextInt||14);if(!this.evSaveDraft())return;const n=newEvent(addDays(d.date,gap),d.start,d.clientId);n.type=d.type==='inicial'?'revision':d.type;n.typeText=d.typeText||'';n.mode=d.mode;n.modeText=d.modeText||'';n.place=d.place||'';n.allDay=!!d.allDay;n.dur=n.type==='revision'?30:(num(d.dur)||30);this.setState({ev:{...n,_new:true,_rep:'no',_repN:4},evDel:false});};
       }
     }
     return v;

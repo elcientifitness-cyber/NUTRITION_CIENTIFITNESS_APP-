@@ -104,5 +104,9 @@ button:focus-visible,.cf-nav-btn:focus-visible{outline:2px solid var(--color-acc
 
 /* Agenda: en móvil las citas del mes se ven como puntos */
 .cf-cal-cell:hover{background:var(--color-neutral-100)!important}
-@media (max-width:640px){.cf-cal-lbl{display:none!important}.cf-cal-pill{justify-content:center;padding:4px 0!important}.cf-cal-cell{min-height:70px!important;padding:3px!important}}
 .cf-sticky-head th{position:sticky;top:0;background:#fff;z-index:1}
+.cf-cal-main{container-type:inline-size;container-name:calm}
+@container calm (max-width:560px){.cf-cal-lbl{display:none!important}.cf-cal-pill{justify-content:center;padding:4px 0!important}.cf-cal-cell{min-height:70px!important;padding:3px!important}}
+@container calp (max-width:760px){.cf-cal-layout{grid-template-columns:minmax(0,1fr)!important}}
+@container calm (max-width:640px){.cf-cal-hint{display:none}}
+select.input[data-open="1"]{border-color:var(--color-accent-300);box-shadow:0 0 0 3px var(--color-accent-100)}
