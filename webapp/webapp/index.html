@@ -2234,7 +2234,7 @@ class Component extends DCLogic {
         v.shop=order.filter(k=>shop[k]).map(k=>({cat:k,bg:SHC[k]?MBG[SHC[k]]:'var(--color-neutral-100)',ink:SHC[k]?MINK[SHC[k]]:'var(--color-neutral-700)',items:Object.entries(shop[k]).map(([n,g])=>{const t=g*dayMul;return {name:n,g:t>=1000?(t/1000).toFixed(1).replace('.',',')+' kg':R(t)+' g'};})}));
         v.shopNote=byMenu?(s.shopDays===7?'Semana completa según los días de cada menú':'1 día del menú activo'):(s.shopDays===7?'Cantidades para 7 días':'Cantidades para 1 día')+(open?' · incluye todas las alternativas':'');
         {const pub=cl.pub,em=(cl.email||'').trim().toLowerCase(),cloudOn=s.auth==='in'&&!!this.sb;
-          const pubDirty=!pub||pub.hash!==hash;
+          const mSig=(cl.logs||[]).map(l=>l.id+':'+l.date+':'+l.peso).join('|');const pubDirty=!pub||pub.hash!==hash||(pub.msig||'')!==mSig;
           v.pubStatus=!em?'Falta email':!pub?'Sin publicar':pubDirty?'Cambios sin publicar':'Publicado · v'+pub.v;
           v.pubBg=!pub||pubDirty?'#fff4dc':'#e3f4ea';v.pubFg=!pub||pubDirty?'#8a5a00':'#1d6b43';
           v.publishLabel=pub&&!pubDirty?'Volver a publicar':'Publicar en la app';
@@ -2243,10 +2243,11 @@ class Component extends DCLogic {
             const nV=dirty?saveV():lastV.n;
             const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
-              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:TRAINER_PHONE};
+              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:TRAINER_PHONE,
+              perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});return {d:l.date,w:c.w,bf:c.bf!=null?Math.round(c.bf*10)/10:null,lbm:c.lbm!=null?Math.round(c.lbm*10)/10:null,per};})};
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
-              this.updC(n=>{n.pub={v:nV,at:Date.now(),hash};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};
+              this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};
           const callAcc=(mode,done)=>{if(!cloudOn){this.toast('Inicia sesión en la nube',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             if(!pub){this.toast('Primero pulsa «Publicar en la app»',true);return;}if(s.accBusy)return;this.setState({accBusy:true});
             this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({email:em,mode})}))
