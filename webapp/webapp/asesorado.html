@@ -248,46 +248,7 @@ button{-webkit-user-select:none;user-select:none}
       <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ cbFg }}">Cumplimiento · 7 días</span><span style="font-weight:800;font-size:17px">{{ cbLabel }}</span><span style="font-size:12px;color:var(--color-neutral-800,#3b4a5a)">{{ cb30 }}</span></div>
     </section>
 
-    <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none">
-        <sc-for list="{{ metricChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.pick }}" style="font:inherit;font-size:13px;font-weight:800;white-space:nowrap;padding:8px 14px;min-height:38px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;flex:none">{{ c.label }}</button></sc-for>
-      </div>
-      <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
-        <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto">
-          <span style="font-size:12px;color:var(--color-neutral-700);font-weight:700">{{ chTitle }}</span>
-          <span style="font-weight:800;font-size:30px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.1">{{ chVal }}<span style="font-size:15px;font-weight:700;color:var(--color-neutral-700);margin-left:4px">{{ chUnit }}</span></span>
-        </div>
-        <sc-if value="{{ chHasDelta }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span style="font-size:14px;font-weight:800;padding:3px 10px;border-radius:999px;background:#fde8e3;color:#963a2b;font-variant-numeric:tabular-nums">{{ chDelta }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ chDeltaSub }}</span></div></sc-if>
-      </div>
-      <sc-if value="{{ isLine }}" hint-placeholder-val="{{ true }}">
-        <sc-if value="{{ chEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:22px 12px;border-radius:16px;background:var(--color-neutral-100);font-size:13px;color:var(--color-neutral-700);text-align:center;text-wrap:pretty">{{ chEmptyText }}</p></sc-if>
-        <sc-if value="{{ chHas }}" hint-placeholder-val="{{ false }}">
-          <div style="position:relative">
-            <svg viewBox="0 0 320 150" style="width:100%;height:auto;display:block;overflow:visible">
-              <path d="M10 12H310M10 71H310M10 130H310" stroke="#e8eef4" stroke-width="1" fill="none"></path>
-              <path d="{{ chArea }}" fill="#fde8e3"></path>
-              <path d="{{ chLine }}" fill="none" stroke="#e0806e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
-              <path d="{{ chDots }}" fill="none" stroke="#963a2b" stroke-width="7" stroke-linecap="round"></path>
-              <path d="{{ chLast }}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"></path>
-            </svg>
-            <span style="position:absolute;right:0;top:0;font-size:10px;color:var(--color-neutral-600);background:rgba(255,255,255,.85);padding:0 3px;transform:translateY(-40%)">{{ chHi }}</span>
-            <span style="position:absolute;right:0;bottom:13%;font-size:10px;color:var(--color-neutral-600);background:rgba(255,255,255,.85);padding:0 3px">{{ chLo }}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-neutral-700);margin-top:-6px"><span>{{ chX0 }}</span><span>{{ chN }}</span><span>{{ chX1 }}</span></div>
-        </sc-if>
-        <div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;align-self:center">
-          <sc-for list="{{ rangeChips }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.pick }}" style="font:inherit;font-size:12px;font-weight:800;padding:6px 14px;min-height:32px;border:0;border-radius:999px;background:{{ r.bg }};color:{{ r.fg }};cursor:pointer">{{ r.label }}</button></sc-for>
-        </div>
-      </sc-if>
-      <sc-if value="{{ isBars }}" hint-placeholder-val="{{ false }}">
-        <div style="position:relative;height:150px;display:flex;align-items:flex-end;gap:4px;padding-top:8px;border-bottom:1px solid var(--color-divider)">
-          <sc-if value="{{ hasTarget }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;bottom:{{ barTarget }};border-top:2px dashed #1180c2;pointer-events:none"><span style="position:absolute;right:0;top:-18px;font-size:10px;font-weight:800;color:#0e6fa9;background:#fff;padding:0 4px">{{ barTargetLabel }}</span></div></sc-if>
-          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0"><div title="{{ b.val }}" style="width:100%;max-width:22px;height:{{ b.h }};min-height:{{ b.minH }};background:{{ b.bg }};border-radius:6px 6px 2px 2px"></div></div></sc-for>
-        </div>
-        <div style="display:flex;gap:4px;margin-top:-8px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><span style="flex:1;text-align:center;font-size:10px;color:var(--color-neutral-700);font-weight:{{ b.fw }};min-width:0">{{ b.lbl }}</span></sc-for></div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--color-neutral-700)"><sc-for list="{{ legend }}" as="g" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:{{ g.c }}"></span>{{ g.l }}</span></sc-for></div>
-      </sc-if>
-    </section>
+    <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" tk="{{ sgTk }}" tone="coral" store-key="cf-as-seg" hint-size="100%,380px"></dc-import>
 
     <dc-import name="FotosProgreso" sb="{{ sbc }}" coach="{{ coachId }}" ckey="{{ clientKey }}" by="client" hint-size="100%,120px"></dc-import>
     <p style="margin:0 4px;font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Tus fotos solo las vemos tú y tu nutricionista. Hazlas en ayunas, con la misma luz y postura: de frente, de perfil y de espalda.</p>
@@ -551,38 +512,7 @@ class Component extends DCLogic {
         return {body:m.body,showDay:sd,day:dk===today?'Hoy':d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}),time:(mine?'':'Nutricionista · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
       v.draft=s.draft;v.onDraft=e=>this.setState({draft:e.target.value});v.send=()=>this.send();}
 
-    if(v.isProg){const ms=(P.metrics||[]).slice().sort((a,b)=>a.d<b.d?-1:1),PN=P.perNames||[],lg=s.logs;
-      const wMap={};Object.keys(lg).forEach(d=>{const w=lg[d]&&lg[d].survey&&num(lg[d].survey.peso);if(w)wMap[d]=w;});ms.forEach(m=>{if(m.w)wMap[m.d]=num(m.w);});
-      const defs=[['cump','Cumplimiento','bars'],['kcal','Kcal','bars'],['peso','Peso','line']];
-      if(ms.some(m=>m.bf!=null))defs.push(['bf','% Grasa','line']);if(ms.some(m=>m.lbm!=null))defs.push(['lbm','Masa magra','line']);
-      PN.forEach(([k,l])=>{if(ms.filter(m=>m.per&&m.per[k]).length)defs.push(['per:'+k,l,'line']);});
-      const cur=defs.find(d=>d[0]===s.metric)||defs[0];
-      const pickM=k=>{try{localStorage.setItem('cf-as-metric',k);}catch(e){}this.setState({metric:k});};
-      v.metricChips=defs.map(([k,l])=>({label:l,pick:()=>pickM(k),bg:k===cur[0]?'#963a2b':'#fff',fg:k===cur[0]?'#fff':'#963a2b',bd:k===cur[0]?'#963a2b':'#f4c9bf'}));
-      v.isLine=cur[2]==='line';v.isBars=cur[2]==='bars';v.chHasDelta=false;
-      if(v.isBars){const days=[];for(let i=13;i>=0;i--)days.push(addDays(today,-i));
-        if(cur[0]==='cump'){const vals=days.map(d=>dayScore(lg[d],Tk)),got2=vals.filter(x=>x!=null);
-          v.chTitle='Cumplimiento medio · 14 días';v.chVal=got2.length?String(R(got2.reduce((a,b)=>a+b,0)/got2.length)):'—';v.chUnit='%';
-          v.bars=days.map((d,i)=>{const p=vals[i],b=BAND(p);return {h:(p==null?0:Math.max(4,p))+'%',minH:p==null?'4px':'0',bg:p==null?'#e8eef4':b.sw,val:dShort(d)+': '+(p==null?'sin datos':R(p)+'%'),lbl:String(parseD(d).getDate()),fw:d===today?'800':'500'};});
-          v.hasTarget=false;v.legend=[{c:'#2f9e62',l:'80 % o más'},{c:'#efc95e',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'#e8eef4',l:'Sin registro'}];}
-        else{const ks=days.map(d=>{const F=(lg[d]&&lg[d].foods)||[];return F.length?F.reduce((a,x)=>a+num(x.k),0):null;}),mx=Math.max(Tk*1.35,...ks.filter(x=>x!=null)),got2=ks.filter(x=>x!=null);
-          v.chTitle='Media diaria registrada · 14 días';v.chVal=got2.length?R(got2.reduce((a,b)=>a+b,0)/got2.length).toLocaleString('es-ES'):'—';v.chUnit='kcal';
-          v.bars=days.map((d,i)=>{const k=ks[i],dev=k==null?0:Math.abs(k/Tk-1);return {h:(k==null?0:Math.max(3,k/mx*100))+'%',minH:k==null?'4px':'0',bg:k==null?'#e8eef4':dev<=0.1?'#2f9e62':dev<=0.2?'#efc95e':'#e5604a',val:dShort(d)+': '+(k==null?'sin datos':R(k)+' kcal'),lbl:String(parseD(d).getDate()),fw:d===today?'800':'500'};});
-          v.hasTarget=Tk>0;v.barTarget=(Tk/mx*100)+'%';v.barTargetLabel='Objetivo '+R(Tk).toLocaleString('es-ES');v.legend=[{c:'#2f9e62',l:'±10 % del objetivo'},{c:'#efc95e',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}];}}
-      else{const k=cur[0],unit=k==='bf'?'%':k==='peso'||k==='lbm'?'kg':'cm';
-        let pts=k==='peso'?Object.keys(wMap).sort().map(d=>({d,y:wMap[d]})):ms.map(m=>({d:m.d,y:k==='bf'?m.bf:k==='lbm'?m.lbm:(m.per||{})[k.slice(4)]})).filter(p=>p.y!=null&&p.y>0);
-        const rd={'1m':30,'3m':91,'all':100000}[s.range];const from=addDays(today,-rd);pts=pts.filter(p=>p.d>=from);
-        v.rangeChips=[['1m','1 mes'],['3m','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:s.range===r?'#fff':'transparent',fg:s.range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>this.setState({range:r})}));
-        v.chTitle=cur[1]+(k==='peso'?' · tus registros y mediciones':' · mediciones de tu nutricionista');v.chUnit=unit;
-        v.chVal=pts.length?fx(pts[pts.length-1].y,1):'—';v.chHas=pts.length>=2;v.chEmpty=!v.chHas;
-        v.chEmptyText=pts.length===1?'Solo hay un registro en este periodo. Con dos o más verás la evolución.':k==='peso'?'Apunta tu peso en el cuestionario diario y aquí verás cómo evoluciona.':'Aún no hay mediciones en este periodo.';
-        if(pts.length>=2){const t0=parseD(pts[0].d).getTime(),t1=parseD(pts[pts.length-1].d).getTime(),ys=pts.map(p=>p.y);let lo=Math.min(...ys),hi=Math.max(...ys);const padY=Math.max((hi-lo)*0.15,unit==='kg'?0.5:0.5);lo-=padY;hi+=padY;
-          const X=p=>10+(t1===t0?150:(parseD(p.d).getTime()-t0)/(t1-t0)*300),Y=y=>12+(1-(y-lo)/(hi-lo))*118;
-          const xy=pts.map(p=>[X(p).toFixed(1),Y(p.y).toFixed(1)]);
-          v.chLine='M'+xy.map(q=>q.join(' ')).join(' L');v.chArea=v.chLine+' L'+xy[xy.length-1][0]+' 130 L'+xy[0][0]+' 130 Z';
-          v.chDots=pts.length<=40?xy.map(q=>'M'+q[0]+' '+q[1]+'h0').join(''):'';const lq=xy[xy.length-1];v.chLast='M'+lq[0]+' '+lq[1]+'h0';
-          v.chHi=fx(hi-padY,1);v.chLo=fx(lo+padY,1);v.chX0=dShort(pts[0].d);v.chX1=dShort(pts[pts.length-1].d);v.chN=pts.length+' registros';
-          const dl=pts[pts.length-1].y-pts[0].y;v.chHasDelta=true;v.chDelta=(dl>0?'+':dl<0?'−':'')+fx(Math.abs(dl),1)+' '+unit;v.chDeltaSub='desde el '+dShort(pts[0].d);}}}
+    if(v.isProg){v.sgLogs=s.logs;v.sgMetrics=P.metrics||[];v.sgPer=P.perNames||[];v.sgTk=Tk;}
 
     const A=s.add;v.hasAdd=!!A;
     if(A){const FD=window.CF_FOODS||[],q=norm(A.q);v.addTitle=A.meal;v.addMeal=A.meal;v.addQ=A.q;v.onAddQ=e=>this.setState({add:{...A,q:e.target.value}});v.addClose=()=>this.setState({add:null});

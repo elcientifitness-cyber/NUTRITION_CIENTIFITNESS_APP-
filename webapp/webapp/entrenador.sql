@@ -2,9 +2,11 @@
 -- Pega todo esto en Supabase → SQL Editor → New query → Run. Se puede ejecutar más de una vez.
 
 create or replace function public.cf_is_coach() returns boolean
-language sql stable as $$
-  select lower(coalesce(auth.jwt()->>'email','')) in ('elcientifitness@gmail.com');
+language sql stable security definer set search_path = public, auth as $$
+  select exists(select 1 from auth.users u where u.id = auth.uid() and lower(u.email) in ('elcientifitness@gmail.com'))
+    or lower(coalesce(auth.jwt()->>'email','')) in ('elcientifitness@gmail.com');
 $$;
+grant execute on function public.cf_is_coach() to authenticated, anon;
 
 drop policy if exists "leer lo propio" on public.cf_state;
 drop policy if exists "crear lo propio" on public.cf_state;

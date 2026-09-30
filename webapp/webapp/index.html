@@ -710,6 +710,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
     <dc-import name="FotosProgreso" sb="{{ phSb }}" coach="{{ phCoach }}" ckey="{{ phKey }}" by="coach" local-photos="{{ phLocal }}" on-local="{{ phOnLocal }}" hint-size="100%,84px"></dc-import>
 
+    <sc-if value="{{ sgShow }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" tk="{{ sgTk }}" tone="blue" head="Seguimiento diario desde la app" head-sub="{{ sgSub }}" store-key="cf-coach-seg" hint-size="100%,420px"></dc-import>
+    </sc-if>
+
     <sc-if value="{{ showLogForm }}" hint-placeholder-val="{{ false }}">
       <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:18px">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:420px">
@@ -731,6 +735,15 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
               <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">{{ f.label }}<input class="input" type="number" step="0.5" value="{{ f.val }}" onChange="{{ f.on }}"></label>
             </sc-for>
           </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--color-divider);padding-top:10px"><span style="font-weight:800">Diámetros óseos (cm)</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Opcional</span><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">{{ diaHelp }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">
+            <sc-for list="{{ lfDia }}" as="f" hint-placeholder-count="3">
+              <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">{{ f.label }}<input class="input" type="number" step="0.1" value="{{ f.val }}" placeholder="{{ f.ph }}" onChange="{{ f.on }}"></label>
+            </sc-for>
+          </div>
+          <span style="font-size:12px;color:var(--color-neutral-700)">Permiten calcular masa ósea y muscular (modelo de 4 componentes) y, con tríceps, subescapular, supraespinal, pantorrilla y perímetros de brazo contraído y pantorrilla, el somatotipo.</span>
         </div>
         <sc-if value="{{ lfPreview }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ lfPreviewText }}</div></sc-if>
         <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ saveLog }}">Guardar medición</button><button class="btn btn-secondary" onClick="{{ toggleLogForm }}">Cancelar</button></div>
@@ -1484,11 +1497,12 @@ const SWFG=MINK;
 const LS='ecf-manager-v4';
 const PL=[['tri','Tríceps'],['bic','Bíceps'],['sub','Subescapular'],['pec','Pectoral'],['axi','Axilar medio'],['sup','Cresta ilíaca / suprailíaco'],['spn','Supraespinal'],['abd','Abdominal'],['mus','Muslo anterior'],['pan','Pantorrilla medial']];
 const PER=[['cuello','Cuello'],['hombros','Hombros'],['pecho','Pecho / tórax'],['brazo','Brazo relajado'],['brazoc','Brazo contraído'],['antebrazo','Antebrazo'],['muneca','Muñeca'],['cintura','Cintura (mínima)'],['abdomen','Abdomen (ombligo)'],['cadera','Cadera (máxima)'],['muslos','Muslo superior'],['muslo','Muslo medio'],['pantorrilla','Pantorrilla']];
+const DIA=[['hum','Húmero (biepicondíleo)'],['fem','Fémur (bicondíleo)'],['mun','Muñeca (biestiloideo)']];
 const PROTO={jp3:m=>m?['pec','abd','mus']:['tri','sup','mus'],jp7:()=>['pec','axi','tri','sub','abd','sup','mus'],dw:()=>['bic','tri','sub','sup'],fk:()=>['tri','sub','sup','abd']};
 const PNAME={jp3:'Jackson-Pollock 3',jp7:'Jackson-Pollock 7',dw:'Durnin-Womersley',fk:'Faulkner',navy:'US Navy'};
 const S6=['tri','sub','spn','abd','mus','pan'],S8=['tri','bic','sub','sup','spn','abd','mus','pan'];
 const PAL=['#1180c2','#e8826e','#4fb487','#9580dc','#d9a92c','#df79a3','#3d4f63','#5ec0e6'];
-const MET=[['w','Peso','kg',1,'c'],['bf','% grasa','%',1,'c'],['lbm','Masa magra','kg',1,'c'],['fm','Masa grasa','kg',1,'c'],['ffmi','FFMI','',1,'c'],['s6','Σ6 pliegues','mm',0,'c'],['s8','Σ8 pliegues','mm',0,'c'],
+const MET=[['w','Peso','kg',1,'c'],['bf','% grasa','%',1,'c'],['lbm','Masa magra','kg',1,'c'],['mm','Masa muscular','kg',1,'c'],['mo','Masa ósea','kg',1,'c'],['fm','Masa grasa','kg',1,'c'],['ffmi','FFMI','',1,'c'],['s6','Σ6 pliegues','mm',0,'c'],['s8','Σ8 pliegues','mm',0,'c'],
  ['cintura','Cintura','cm',1,'p'],['abdomen','Abdomen','cm',1,'p'],['cadera','Cadera','cm',1,'p'],['pecho','Pecho','cm',1,'p'],['hombros','Hombros','cm',1,'p'],['brazo','Brazo relajado','cm',1,'p'],['brazoc','Brazo contraído','cm',1,'p'],['muslo','Muslo medio','cm',1,'p'],['pantorrilla','Pantorrilla','cm',1,'p'],['bcorr','Brazo corregido','cm',1,'p'],['mcorr','Muslo corregido','cm',1,'p']];
 const METM={};MET.forEach(m=>{METM[m[0]]=m;});
 const DAYS=['L','M','X','J','V','S','D'],DAYSS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],DAYSF=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -1527,6 +1541,16 @@ function computeComp(l,cl){
   const o={w:w||null,bf,method,est,fm,lbm,ffmi:lbm!=null&&h?lbm/Math.pow(h/100,2):null,s6:has(S6)?sm(S6):null,s8:has(S8)?sm(S8):null,
     whtr:cin&&h?cin/h:null,icc:cin&&cad?cin/cad:null,bcorr:corr('brazo','tri'),mcorr:corr('muslo','mus'),pcorr:corr('pantorrilla','pan'),pl,per};
   PER.forEach(([k])=>{o[k]=num(per[k])||null;});
+  let dia=l.dia&&Object.keys(l.dia).some(k=>num(l.dia[k])>0)?l.dia:null,diaInh=false;
+  if(!dia){const cand=(cl.logs||[]).filter(x=>x.dia&&Object.keys(x.dia).some(k=>num(x.dia[k])>0)).sort((a,b)=>a.date<b.date?-1:1),pv=cand.filter(x=>x.date<=l.date);const src=pv[pv.length-1]||cand[0];if(src){dia=src.dia;diaInh=true;}}
+  dia=dia||{};const hum=num(dia.hum),fem=num(dia.fem),mun=num(dia.mun);
+  o.dia=dia;o.diaInh=diaInh;
+  o.mo=h&&mun&&fem?3.02*Math.pow(Math.pow(h/100,2)*(mun/100)*(fem/100)*400,0.712):null;
+  o.res=w?w*(m?0.241:0.209):null;
+  o.mm=fm!=null&&o.mo!=null&&o.res!=null?w-fm-o.mo-o.res:null;
+  if(h&&w&&['tri','sub','spn'].every(k=>num(pl[k])>0)){const X=(num(pl.tri)+num(pl.sub)+num(pl.spn))*170.18/h;o.endo=-0.7182+0.1451*X-0.00068*X*X+0.0000014*X*X*X;}
+  if(h&&hum&&fem&&num(per.brazoc)&&num(per.pantorrilla)&&num(pl.tri)&&num(pl.pan))o.meso=0.858*hum+0.601*fem+0.188*(num(per.brazoc)-num(pl.tri)/10)+0.161*(num(per.pantorrilla)-num(pl.pan)/10)-0.131*h+4.5;
+  if(h&&w){const hwr=h/Math.cbrt(w);o.ecto=hwr>=40.75?0.732*hwr-28.58:hwr>38.25?0.463*hwr-17.63:0.1;}
   return o;
 }
 const niceStep=r=>{const p=Math.pow(10,Math.floor(Math.log10(r)));const n=r/p;return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p;};
@@ -1774,6 +1798,8 @@ class Component extends DCLogic {
   sendMsg(key){const body=(this.state.chatDraft||'').trim();if(!body||!this.sb)return;this.setState({chatDraft:''});
     const tmp={id:'t'+Date.now(),client_key:key,sender:'coach',body,created_at:new Date().toISOString(),read_at:null};this.setState(st=>({msgs:(st.msgs||[]).concat([tmp])}));
     this.sb.from('cf_messages').insert({coach_id:this.uid,client_key:key,sender:'coach',body}).then(({error})=>{if(error){this.toast('No se pudo enviar: '+error.message,true);this.setState(st=>({msgs:st.msgs.filter(m=>m!==tmp),chatDraft:body}));return;}this.loadChats();});}
+  loadDaylogsAll(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-400);
+    this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).then(({data,error})=>{const m={};(error?[]:data||[]).forEach(r=>{m[r.day]={foods:r.foods||[],survey:r.survey||{}};});this.setState(st=>({daylAll:{...(st.daylAll||{}),[key]:m}}));});}
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
@@ -1812,6 +1838,7 @@ class Component extends DCLogic {
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({auth:'out',loginErr:'Email o contraseña incorrectos.'});return;}this.afterLogin(data.session);});
   }
   componentDidUpdate(pp,ps){
+    {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
     const s=this.state;
@@ -1947,19 +1974,23 @@ class Component extends DCLogic {
         const cloudOn=s.auth==='in'&&!!this.sb&&!!this.uid;v.phSb=cloudOn?this.sb:null;v.phCoach=cloudOn?this.uid:'';v.phKey=cl.id;v.phLocal=cl.photos||[];v.phOnLocal=arr=>this.updC(n=>{n.photos=arr;});
         const proto=cl.proto||'jp3',m=cl.calc.sexo==='hombre';
         const comps=(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>({l,c:computeComp(l,{...cl,proto}),t:Date.parse(l.date)}));
+        {const linked=(s.links||[]).some(q=>q.client_key===cl.id);v.sgShow=cloudOn&&linked;
+          if(v.sgShow){const DL=(s.daylAll||{})[cl.id];v.sgLogs=DL||{};v.sgTk=computeTargets(cl,computeCalc(cl)).k;v.sgPer=PER;
+            v.sgMetrics=comps.map(x=>{const per={};PER.forEach(([k])=>{if(x.c[k])per[k]=x.c[k];});return {d:x.l.date,w:x.c.w,bf:x.c.bf,lbm:x.c.lbm,mm:x.c.mm,per};});
+            v.sgSub=!DL?'Cargando registros…':'Peso, comidas y cuestionario que registra en su app, junto a tus mediciones';}}
         const last=comps[comps.length-1],prev=comps[comps.length-2],first=comps[0];
         v.hasLogs=comps.length>0;v.noLogs=!v.hasLogs;
         v.lastLabel=last?'Última medición · '+fd(last.l.date)+' · '+comps.length+' registros':'Sin registros';
         v.protoSeg=this.seg([['jp3','JP 3'],['jp7','JP 7'],['dw','Durnin-W.'],['fk','Faulkner']],proto,x=>this.updC(n=>{n.proto=x;}));
         v.applyLabel='Usar en Necesidades';
         v.applyToCalc=()=>{if(!last)return;this.updC(n=>{if(last.c.w)n.calc.peso=last.c.w;if(last.c.bf!=null)n.calc.grasa=+last.c.bf.toFixed(1);});this.setState({tab:'calc'});};
-        const CELLS=[['Peso','w','kg',1],['% grasa','bf','%',1],['Masa grasa','fm','kg',1],['Masa magra','lbm','kg',1],['Σ6 pliegues','s6','mm',0],['Σ8 pliegues','s8','mm',0],['FFMI','ffmi','',1],['Cintura','cintura','cm',1],['Cintura / cadera','icc','',2],['Cintura / altura','whtr','',2]];
-        v.compCells=last?CELLS.map(([l,k,u,d])=>{const a=last.c[k],b=prev?prev.c[k]:null;
+        const CELLS=[['Peso','w','kg',1],['% grasa','bf','%',1],['Masa grasa','fm','kg',1],['Masa magra','lbm','kg',1],['Masa muscular','mm','kg',1],['Masa ósea','mo','kg',1],['Σ6 pliegues','s6','mm',0],['Σ8 pliegues','s8','mm',0],['FFMI','ffmi','',1],['Cintura','cintura','cm',1],['Cintura / cadera','icc','',2],['Cintura / altura','whtr','',2]];
+        v.compCells=last?CELLS.filter(([l,k])=>!['mm','mo'].includes(k)||last.c[k]!=null).map(([l,k,u,d])=>{const a=last.c[k],b=prev?prev.c[k]:null;
           let delta=prev?'—':'Primera medición';if(a!=null&&b!=null)delta=sgn(a-b,d)+(u?' '+u:'')+' vs '+fd(prev.l.date);
           const hi=k==='bf';return {label:l,val:fx(a,d),unit:u,delta,bg:hi?'var(--color-accent)':'var(--color-bg)',fg:hi?'#fff':'var(--color-text)'};}):[];
         if(last){const c=last.c;
           v.estPills=['jp3','jp7','dw','fk','navy'].filter(k=>c.est[k]!=null).map(k=>({label:PNAME[k],val:fx(c.est[k],1)+' %',bg:k===c.method?'var(--color-accent)':'var(--color-bg)',fg:k===c.method?'#fff':'var(--color-text)'}));
-          v.methodNote=c.bf==null?'Faltan pliegues para estimar el % de grasa.':('Se usa '+PNAME[c.method]+(c.method==='navy'||c.method==='fk'?'':' + Siri')+'.'+(c.method!==proto?' Faltan pliegues para '+PNAME[proto]+'.':'')+' FFMI = masa magra / altura². Perímetro corregido = perímetro − π × pliegue.');}
+          v.methodNote=c.bf==null?'Faltan pliegues para estimar el % de grasa.':('Se usa '+PNAME[c.method]+(c.method==='navy'||c.method==='fk'?'':' + Siri')+'.'+(c.method!==proto?' Faltan pliegues para '+PNAME[proto]+'.':'')+' FFMI = masa magra / altura². Perímetro corregido = perímetro − π × pliegue.'+(c.mo!=null?' Masa ósea: Rocha (talla, muñeca y fémur)'+(c.diaInh?', con los diámetros de una medición anterior':'')+'; masa residual: Würch ('+(m?'24,1':'20,9')+' % del peso); masa muscular = peso − grasa − ósea − residual.':' Añade los diámetros óseos (una vez basta) para calcular masa ósea y muscular.')+(c.endo!=null&&c.meso!=null&&c.ecto!=null?' Somatotipo (Heath-Carter): '+fx(c.endo,1)+' – '+fx(c.meso,1)+' – '+fx(c.ecto,1)+' (endo – meso – ecto).':''));}
         // overlay chart
         const rng=s.chartRange||'all',cutoff=rng==='all'||!last?-Infinity:last.t-num(rng)*86400000;
         const rc=comps.filter(x=>x.t>=cutoff);
@@ -2002,7 +2033,7 @@ class Component extends DCLogic {
         v.logRows=comps.slice().reverse().map(x=>({date:fd(x.l.date)+' '+x.l.date.slice(0,4),peso:fx(x.c.w,1)+' kg',bf:x.c.bf!=null?fx(x.c.bf,1)+' %':'—',meth:x.c.method?PNAME[x.c.method]:'',lbm:x.c.lbm!=null?fx(x.c.lbm,1)+' kg':'—',s6:x.c.s6!=null?fx(x.c.s6,0)+' mm':'—',s8:x.c.s8!=null?fx(x.c.s8,0)+' mm':'—',cin:x.c.cintura?fx(x.c.cintura,1)+' cm':'—',cad:x.c.cadera?fx(x.c.cadera,1)+' cm':'—',
           delLabel:s.confirmLog===x.l.id?'¿Eliminar?':'Eliminar',del:()=>{if(s.confirmLog===x.l.id){this.updC(n=>{n.logs=(n.logs||[]).filter(q=>q.id!==x.l.id);});this.setState({confirmLog:null});}else this.setState({confirmLog:x.l.id});}}));
         const lf=s.logForm;v.showLogForm=!!lf;v.logFormLabel=lf?'Cerrar formulario':'Nueva medición';
-        v.toggleLogForm=()=>this.setState({logForm:lf?null:{date:iso(Date.now()),peso:last&&last.c.w?String(last.c.w):String(cl.calc.peso||''),pl:{},per:{}}});
+        v.toggleLogForm=()=>this.setState({logForm:lf?null:{date:iso(Date.now()),peso:last&&last.c.w?String(last.c.w):String(cl.calc.peso||''),pl:{},per:{},dia:{}}});
         if(lf){
           const req=PROTO[proto](m);
           const setLF=(g,k)=>e=>{const val=e.target.value;this.setState(st=>({logForm:g?{...st.logForm,[g]:{...st.logForm[g],[k]:val}}:{...st.logForm,[k]:val}}));};
@@ -2010,11 +2041,13 @@ class Component extends DCLogic {
           v.plHelp='* obligatorios para '+PNAME[proto]+'. Completa los 10 para Σ6, Σ8 y comparar fórmulas. Lado derecho, media de 2–3 tomas.';
           v.lfPl=PL.map(([k,l])=>{const r=req.includes(k);return {label:l+(r?' *':''),fg:r?'var(--color-accent-700)':'var(--color-neutral-700)',w:r?700:400,val:lf.pl[k]||'',on:setLF('pl',k)};});
           v.lfPer=PER.map(([k,l])=>({label:l,val:lf.per[k]||'',on:setLF('per',k)}));
+          {const pc0=computeComp({...lf,dia:{}},{...cl,proto});v.lfDia=DIA.map(([k,l])=>({label:l,val:(lf.dia||{})[k]||'',ph:pc0.dia&&num(pc0.dia[k])?String(pc0.dia[k]).replace('.',',')+' (anterior)':'—',on:setLF('dia',k)}));
+            v.diaHelp=pc0.diaInh?'Ya hay diámetros de una medición anterior y se reutilizan: deja en blanco salvo que quieras actualizarlos.':'Con calibre de diámetros (paquímetro), en cm. Basta con tomarlos en la consulta inicial: se reutilizan en las siguientes.';}
           const pc=computeComp(lf,{...cl,proto}),ests=['jp3','jp7','dw','fk','navy'].filter(k=>pc.est[k]!=null);
           v.lfPreview=ests.length>0;
-          v.lfPreviewText='Estimación en vivo: '+ests.map(k=>PNAME[k]+' '+fx(pc.est[k],1)+' %').join(' · ')+(pc.lbm!=null?' — masa magra '+fx(pc.lbm,1)+' kg':'');
+          v.lfPreviewText='Estimación en vivo: '+ests.map(k=>PNAME[k]+' '+fx(pc.est[k],1)+' %').join(' · ')+(pc.lbm!=null?' — masa magra '+fx(pc.lbm,1)+' kg':'')+(pc.mm!=null?' · muscular '+fx(pc.mm,1)+' kg · ósea '+fx(pc.mo,1)+' kg':'');
           v.saveLog=()=>{if(!num(lf.peso)||!lf.date)return;const clean=o=>{const r={};Object.keys(o).forEach(k=>{if(num(o[k])>0)r[k]=num(o[k]);});return r;};
-            const e={id:uid(),date:lf.date,peso:num(lf.peso),pl:clean(lf.pl),per:clean(lf.per)};
+            const e={id:uid(),date:lf.date,peso:num(lf.peso),pl:clean(lf.pl),per:clean(lf.per),dia:clean(lf.dia||{})};
             this.updC(n=>{n.logs=(n.logs||[]).concat([e]);});this.setState({logForm:null});};
         }
       }
@@ -2244,7 +2277,7 @@ class Component extends DCLogic {
             const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:TRAINER_PHONE,
-              perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});return {d:l.date,w:c.w,bf:c.bf!=null?Math.round(c.bf*10)/10:null,lbm:c.lbm!=null?Math.round(c.lbm*10)/10:null,per};})};
+              perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});return {d:l.date,w:c.w,bf:c.bf!=null?Math.round(c.bf*10)/10:null,lbm:c.lbm!=null?Math.round(c.lbm*10)/10:null,mm:c.mm!=null?Math.round(c.mm*10)/10:null,per};})};
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
               this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};

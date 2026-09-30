@@ -89,7 +89,7 @@ input[type=range]:not([style*="color"]){color:var(--color-accent)}
   const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const p2=n=>String(n).padStart(2,'0'),iso=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
   const close=()=>{if(pop){pop.remove();pop=null;}cur=null;};
-  const setVal=(inp,val)=>{const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;set.call(inp,val);inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));};
+  const setVal=(inp,val)=>{if(inp._cb){inp._cb(val);return;}const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;set.call(inp,val);inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));};
   const place=inp=>{document.body.appendChild(pop);const r=inp.getBoundingClientRect(),vh=window.innerHeight,vw=window.innerWidth,w=pop.offsetWidth,h=pop.offsetHeight;
     pop.style.left=Math.max(8,Math.min(r.left,vw-w-8))+'px';const up=vh-r.bottom<h+16&&r.top>vh-r.bottom;pop.style.top=Math.max(8,up?r.top-h-6:r.bottom+6)+'px';};
   const btn=(cls,txt,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=txt;b.addEventListener('mousedown',e=>e.preventDefault());b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();fn();});return b;};
@@ -117,7 +117,12 @@ input[type=range]:not([style*="color"]){color:var(--color-accent)}
     pop.appendChild(l);place(inp);
     const tgt=selB||[...l.children].find(b=>b.textContent>='09:00');if(tgt)l.scrollTop=tgt.offsetTop-l.clientHeight/2+17;
   };
-  const isOurs=t=>t&&t.tagName==='INPUT'&&(t.type==='date'||t.type==='time')&&!t.disabled&&!t.readOnly;
+  const isOurs=t=>t&&t.tagName==='INPUT'&&(t.type==='date'||t.type==='time')&&!t.disabled&&(!t.readOnly||t.dataset.cfpk==='1');
+  const lock=root=>{(root.querySelectorAll?root.querySelectorAll('input[type=date],input[type=time]'):[]).forEach(i=>{if(i.dataset.cfpk)return;if(i.readOnly){i.dataset.cfpk='0';return;}i.dataset.cfpk='1';i.readOnly=true;i.setAttribute('inputmode','none');});};
+  const mo=new MutationObserver(ms=>{ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType!==1)return;if(n.tagName==='INPUT')lock(n.parentNode||n);else lock(n);}));});
+  const startMo=()=>{lock(document);mo.observe(document.documentElement,{childList:true,subtree:true});};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startMo);else startMo();
+  window.CFDate={open(el,value,cb,opts){const o=opts||{};const px={tagName:'X',value:value||'',min:o.min||'',max:o.max||'',required:o.required!==false,_cb:cb,getBoundingClientRect:()=>el.getBoundingClientRect()};if(cur&&cur._el===el){close();return;}px._el=el;openDate(px);}};
   const trigger=(e)=>{const t=e.target;if(isOurs(t)){e.preventDefault();if(cur===t){close();return;}if(t.type==='date')openDate(t);else openTime(t);return;}if(pop&&!pop.contains(t))close();};
   document.addEventListener('mousedown',trigger,true);
   document.addEventListener('touchstart',e=>{if(isOurs(e.target))trigger(e);else if(pop&&!pop.contains(e.target))close();},{capture:true,passive:false});
