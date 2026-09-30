@@ -9,6 +9,8 @@
     img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('Formato de imagen no válido'));};img.src=url;});
   const toDataUrl=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b);});
   const rid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  // Pinta su contenido directamente en <body> (para ventanas a pantalla completa que no queden recortadas).
+  window.CFPortal=function(p){const RD=window.ReactDOM;return RD&&RD.createPortal?RD.createPortal(p.children,document.body):p.children;};
   window.CFL={
     compress,toDataUrl,rid,
     async listPhotos(sb,coach,key){

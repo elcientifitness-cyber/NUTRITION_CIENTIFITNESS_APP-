@@ -34,7 +34,8 @@
 </section>
 
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;z-index:300;background:rgba(18,32,46,.6);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
+<x-import component-from-global-scope="CFPortal" from="./cf-lib.js" hint-size="0px,0px">
+<div style="position:fixed;inset:0;z-index:1300;background:rgba(18,32,46,.6);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
   <div style="width:min(1240px,100%);background:#fff;border-radius:clamp(0px,2vw,24px);box-shadow:var(--shadow-md);display:flex;flex-direction:column;overflow:hidden">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px">Fotos de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ sumText }}</span></div>
@@ -59,13 +60,14 @@
         <div style="display:flex;flex-direction:column;gap:26px">
           <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
             <div style="display:flex;flex-direction:column;gap:10px">
-              <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">{{ g.label }}</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ g.sub }}</span></div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">{{ g.label }}</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ g.sub }}</span><sc-if value="{{ g.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ g.del }}" style="font:inherit;font-size:12px;font-weight:800;margin-left:auto;border:0;border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer;background:{{ g.delBg }};color:{{ g.delFg }}">{{ g.delLabel }}</button></sc-if></div>
               <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,220px),1fr));gap:12px">
                 <sc-for list="{{ g.items }}" as="p" hint-placeholder-count="3">
-                  <button onClick="{{ p.view }}" style="font:inherit;border:0;padding:0;background:var(--color-neutral-100);border-radius:16px;overflow:hidden;cursor:zoom-in;position:relative;aspect-ratio:3/4">
-                    <img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;height:100%;object-fit:cover;display:block">
-                    <sc-if value="{{ p.byClient }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--color-accent-800)">Subida por el asesorado</span></sc-if>
-                  </button>
+                  <div style="position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:var(--color-neutral-100)">
+                    <button onClick="{{ p.view }}" aria-label="Ampliar" style="font:inherit;border:0;padding:0;background:transparent;cursor:zoom-in;position:absolute;inset:0;width:100%;height:100%"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;height:100%;object-fit:cover;display:block"></button>
+                    <sc-if value="{{ p.byClient }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--color-accent-800);pointer-events:none">Subida por el asesorado</span></sc-if>
+                    <sc-if value="{{ p.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.del }}" aria-label="Borrar foto" style="font:inherit;position:absolute;right:8px;top:8px;border:0;border-radius:999px;min-width:36px;height:36px;padding:0 {{ p.delPad }};background:{{ p.delBg }};color:{{ p.delFg }};font-size:{{ p.delFs }};font-weight:800;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.25)">{{ p.delLabel }}</button></sc-if>
+                  </div>
                 </sc-for>
               </div>
             </div>
@@ -89,7 +91,7 @@
                 <div style="position:absolute;top:0;bottom:0;left:{{ slPos }};width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none"></div>
                 <div style="position:absolute;top:50%;left:{{ slPos }};width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--color-text);pointer-events:none">‹ ›</div>
                 <span style="position:absolute;left:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#1180c2;color:#fff">Antes · {{ aLabel }}</span>
-                <span style="position:absolute;right:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#963a2b;color:#fff">Después · {{ bLabel }}</span>
+                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#963a2b;color:#fff">Después · {{ bLabel }}</span>
               </div>
               <span style="font-size:12px;color:var(--color-neutral-700);text-align:center">Arrastra la barra blanca a izquierda y derecha.</span>
             </sc-if>
@@ -127,10 +129,12 @@
     </div>
   </div>
 </div>
+</x-import>
 </sc-if>
 
 <sc-if value="{{ hasView }}" hint-placeholder-val="{{ false }}">
-<div onClick="{{ closeView }}" style="position:fixed;inset:0;z-index:320;background:rgba(10,18,26,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));font-family:var(--font-body)">
+<x-import component-from-global-scope="CFPortal" from="./cf-lib.js" hint-size="0px,0px">
+<div onClick="{{ closeView }}" style="position:fixed;inset:0;z-index:1320;background:rgba(10,18,26,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));font-family:var(--font-body)">
   <img src="{{ vUrl }}" alt="{{ vLabel }}" onClick="{{ stop }}" style="max-width:100%;max-height:calc(100% - 76px);object-fit:contain;border-radius:12px;display:block">
   <div onClick="{{ stop }}" style="display:flex;align-items:center;gap:8px;color:#fff;flex-wrap:wrap;justify-content:center">
     <button onClick="{{ vPrev }}" aria-label="Anterior" style="font:inherit;font-size:22px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">‹</button>
@@ -140,6 +144,7 @@
     <button onClick="{{ closeView }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:10px 16px;cursor:pointer">Cerrar</button>
   </div>
 </div>
+</x-import>
 </sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;900px&quot;,&quot;height&quot;:&quot;260px&quot;},&quot;sb&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;coach&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ckey&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;demo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;by&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;coach&quot;,&quot;client&quot;],&quot;default&quot;:&quot;coach&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;localPhotos&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;array&quot;},&quot;onLocal&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;},&quot;onUploaded&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;}}">
@@ -149,7 +154,7 @@ const dLong=s=>new Date(s+'T12:00').toLocaleDateString('es-ES',{day:'numeric',mo
 const dShort=s=>new Date(s+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'2-digit'});
 const days=(a,b)=>Math.round((new Date(b+'T12:00')-new Date(a+'T12:00'))/86400000);
 class Component extends DCLogic {
-  state={photos:[],open:false,mode:'gallery',upDay:todayIso(),busy:false,err:null,view:null,a:null,b:null,slot:'a',cmp:'slider',sl:50,delAsk:false};
+  state={delId:null,delDay:null,photos:[],open:false,mode:'gallery',upDay:todayIso(),busy:false,err:null,view:null,a:null,b:null,slot:'a',cmp:'slider',sl:50,delAsk:false};
   fileRef=React.createRef();slRef=React.createRef();dateRef=React.createRef();
   componentDidMount(){this.load();}
   componentDidUpdate(pp,ps){if(pp.ckey!==this.props.ckey||pp.coach!==this.props.coach||pp.sb!==this.props.sb||(this.isLocal()&&pp.localPhotos!==this.props.localPhotos))this.load();
@@ -173,6 +178,11 @@ class Component extends DCLogic {
     }catch(e){this.setState({err:'No se pudo subir: '+(e.message||e)});}
     this.setState({busy:false});if(this.fileRef.current)this.fileRef.current.value='';
   }
+  async removeMany(list){this.setState({busy:true});
+    try{if(this.isLocal()){const ids=list.map(x=>x.id),next=(this.props.localPhotos||[]).filter(x=>!ids.includes(x.id));if(this.props.onLocal)this.props.onLocal(next);else this.setState({photos:next});}
+      else{for(const p of list)await window.CFL.deletePhoto(this.props.sb,p);await this.load();}}
+    catch(e){this.setState({err:'No se pudo borrar: '+(e.message||e)});}
+    this.setState({busy:false,delId:null,delDay:null});}
   async remove(p){
     try{if(this.isLocal()){const next=(this.props.localPhotos||[]).filter(x=>x.id!==p.id);if(this.props.onLocal)this.props.onLocal(next);else this.setState({photos:next});}
       else{await window.CFL.deletePhoto(this.props.sb,p);await this.load();}this.setState({view:null,delAsk:false});}
@@ -192,12 +202,16 @@ class Component extends DCLogic {
       pickFiles:()=>{if(!s.busy&&this.fileRef.current)this.fileRef.current.click();},
       pickFilesToday:()=>{if(s.busy)return;this.setState({upDay:todayIso()});if(this.fileRef.current)this.fileRef.current.click();},
       onFiles:e=>this.upload([...e.target.files]),errText:s.err||'',
-      isOpen:s.open,close:()=>this.setState({open:false}),openGallery:()=>this.setState({open:true,mode:'gallery'}),openCompare:()=>this.setState({open:true,mode:'compare'}),
+      isOpen:s.open,close:()=>this.setState({open:false,delId:null,delDay:null}),openGallery:()=>this.setState({open:true,mode:'gallery'}),openCompare:()=>this.setState({open:true,mode:'compare'}),
       modeSeg:seg([['gallery','Galería'],['compare','Comparar']],s.mode,k=>this.setState({mode:k})),
       isGallery:s.mode==='gallery',isCompare:s.mode==='compare'&&n>0,
       upDayLabel:dLong(s.upDay),
       pickDate:()=>{const el=this.dateRef.current;if(el&&window.CFDate)window.CFDate.open(el,s.upDay,val=>this.setState({upDay:val||todayIso()}),{max:todayIso()});},
-      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),items:it.map(p=>({url:p.url,dayLabel:dLong(p.day),byClient:p.by==='client'&&by==='coach',view:()=>this.setState({view:p.id,delAsk:false})}))};}),
+      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'#c0392b':'var(--danger-bg,#fff1ee)',delFg:s.delDay===d?'#fff':'var(--danger,#8f2a14)',
+        del:()=>{if(s.delDay!==d){this.setState({delDay:d,delId:null});return;}this.removeMany(it.filter(p=>by==='coach'||p.by===by));},
+        items:it.map(p=>{const ask=s.delId===p.id;return {url:p.url,dayLabel:dLong(p.day),byClient:p.by==='client'&&by==='coach',view:()=>this.setState({view:p.id,delAsk:false,delId:null}),
+          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'#c0392b':'rgba(255,255,255,.92)',delFg:ask?'#fff':'#8f2a14',
+          del:e=>{e.stopPropagation();if(!ask){this.setState({delId:p.id,delDay:null});return;}this.removeMany([p]);}};})};}),
       cmpSeg:seg([['slider','Deslizar'],['side','Lado a lado']],s.cmp,k=>this.setState({cmp:k})),isSlider:s.cmp==='slider',isSide:s.cmp==='side',
       aUrl:A?A.url:'',bUrl:B?B.url:'',aLabel:A?dShort(A.day):'',bLabel:B?dShort(B.day):'',
       cmpTitle:A&&B?(()=>{const d=Math.abs(days(A.day,B.day));return d===0?'Misma fecha':d+' días entre fotos'+(d>=14?' ('+R(d/7)+' semanas)':'');})():'',

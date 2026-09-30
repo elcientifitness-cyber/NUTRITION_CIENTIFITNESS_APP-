@@ -86,8 +86,8 @@ textarea.input{line-height:1.55;padding:11px 13px;resize:vertical}
 button{-webkit-tap-highlight-color:transparent}
 button:focus-visible,.cf-nav-btn:focus-visible{outline:2px solid var(--color-accent-300);outline-offset:2px}
 /* ---------- Motion ---------- */
-.cf-fade{animation:cfIn .32s cubic-bezier(.2,.7,.2,1) both}
-.cf-pop{animation:cfPop .24s cubic-bezier(.2,.7,.2,1) both}
+.cf-fade{animation:cfIn .32s cubic-bezier(.2,.7,.2,1) backwards}
+.cf-pop{animation:cfPop .24s cubic-bezier(.2,.7,.2,1) backwards}
 .cf-toast{animation:cfToast .3s cubic-bezier(.2,.7,.2,1) both}
 .cf-lift{transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s}
 .cf-lift:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}

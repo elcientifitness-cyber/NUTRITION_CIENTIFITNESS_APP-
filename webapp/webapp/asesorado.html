@@ -384,7 +384,9 @@ class Component extends DCLogic {
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
     this.sb.auth.getSession().then(({data})=>{const ht=window.CF_HASH_TYPE;if(ht)history.replaceState(null,'',location.pathname);
       if(data&&data.session){if(ht==='invite'||ht==='recovery'){this.setState({auth:'setpass',authMsg:''});return;}this.afterLogin(data.session);}else this.setState({auth:'out'});});}
-  afterLogin(sess){this.user=sess.user;this.setState({auth:'loading'});
+  afterLogin(sess){const coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
+    if(coaches.includes(String(sess.user.email||'').toLowerCase())){location.replace('./');return;}
+    this.user=sess.user;this.setState({auth:'loading'});
     this.sb.from('cf_links').select('coach_id,client_key,name,plan,plan_at').ilike('email',(sess.user.email||'').toLowerCase()).limit(1).then(({data,error})=>{
       if(error||!data||!data.length){this.setState({auth:'nolink',authMsg:error?'Error: '+error.message:'Tu cuenta ('+sess.user.email+') aún no tiene un plan publicado. Avisa a tu nutricionista.'});return;}
       this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>this.loadMsgs(),20000);});}

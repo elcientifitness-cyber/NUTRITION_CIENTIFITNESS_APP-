@@ -44,7 +44,11 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Contraseña<input class="input" type="password" value="{{ loginPass }}" onChange="{{ onLoginPass }}" onKeyDown="{{ onLoginKey }}"></label>
       <button class="btn btn-primary" onClick="{{ doLogin }}" style="min-height:42px">Entrar</button>
     </sc-if>
-    <span style="font-size:13px;text-align:center;color:{{ loginMsgFg }}">{{ loginMsg }}</span>
+    <span style="font-size:13px;text-align:center;color:{{ loginMsgFg }};text-wrap:pretty">{{ loginMsg }}</span>
+    <sc-if value="{{ loginWrong }}" hint-placeholder-val="{{ false }}">
+      <button class="btn btn-primary" onClick="{{ wrongSwitch }}" style="min-height:44px;justify-content:center">Cerrar sesión y entrar como entrenador</button>
+      <a class="btn btn-secondary" href="asesorado.html" style="min-height:44px;justify-content:center;text-decoration:none;color:var(--color-text)">Ir a la app de asesorados</a>
+    </sc-if>
   </div>
 </div>
 </sc-if>
@@ -1774,7 +1778,7 @@ class Component extends DCLogic {
   }
   afterLogin(sess){
     const coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
-    if(!coaches.includes(String(sess.user.email||'').toLowerCase())){location.replace('asesorado.html');return;}
+    if(!coaches.includes(String(sess.user.email||'').toLowerCase())){this._cloud=false;this.setState({auth:'wrong',wrongEmail:sess.user.email||''});return;}
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
@@ -1916,8 +1920,9 @@ class Component extends DCLogic {
       nfName:s.nf.name,nfCat:s.nf.cat,nfK:s.nf.k,nfP:s.nf.p,nfC:s.nf.c,nfF:s.nf.f,nfAl:s.nf.al,
       saveNewFood:()=>this.saveNewFood()
     };
-    {const au=s.auth;v.showLogin=au==='checking'||au==='out'||au==='loading';v.loginReady=au==='out';
-      v.loginMsg=s.loginErr||(au==='out'?'Acceso solo para el entrenador.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'#b3361b':'var(--color-neutral-700)';
+    {const au=s.auth;v.showLogin=au==='checking'||au==='out'||au==='loading'||au==='wrong';v.loginReady=au==='out';v.loginWrong=au==='wrong';
+      v.wrongSwitch=()=>{if(this.sb)this.sb.auth.signOut().then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
+      v.loginMsg=au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso solo para el entrenador.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'#b3361b':'var(--color-neutral-700)';
       v.loginEmail=s.loginEmail;v.loginPass=s.loginPass;v.onLoginEmail=e=>this.setState({loginEmail:e.target.value});v.onLoginPass=e=>this.setState({loginPass:e.target.value});
       v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();
       v.showLogout=au==='in';v.doLogout=()=>{if(this.sb)this.sb.auth.signOut().then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
