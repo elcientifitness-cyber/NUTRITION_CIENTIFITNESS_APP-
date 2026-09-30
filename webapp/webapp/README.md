@@ -20,3 +20,20 @@ Para que las citas se copien solas en tu Google Calendar (se hace una vez, ~10 m
    En «Orígenes de JavaScript autorizados» añade: https://prueba-de-app-movil.vercel.app
 5. Copia el «ID de cliente» y pégalo en config.js, entre las comillas de googleClientId. Sube config.js a GitHub.
 6. En la app: Agenda → «Conectar Google Calendar». El permiso dura 1 hora; después pulsa «Sincronizar ahora» otra vez.
+
+
+## App de asesorados (chat, registro diario, fotos)
+
+Se hace una sola vez:
+
+1. Supabase → SQL Editor → New query → pega el contenido de **portal.sql** → Run.
+2. Supabase → Authentication → URL Configuration → en **Redirect URLs** añade `https://prueba-de-app-movil.vercel.app/asesorado.html`.
+
+Para cada asesorado:
+
+1. En su ficha, escribe su **email**.
+2. Vista cliente → «App del asesorado» → **Publicar en la app**. Cada vez que cambies el plan, vuelve a publicar.
+3. Pulsa **Invitar**: se copia el email y se abre Supabase → Add user → **Send invitation** → pega el email.
+4. El asesorado abre el email, crea su contraseña y entra en `/asesorado.html` (puede añadirla a la pantalla de inicio del móvil).
+
+Los mensajes aparecen en **Mensajes** (menú lateral), junto con su registro de comidas y el cuestionario diario.
