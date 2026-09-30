@@ -78,6 +78,8 @@ do $$ begin
   alter publication supabase_realtime add table public.cf_messages;
 exception when others then null; end $$;
 
+notify pgrst, 'reload schema';
+
 -- 5) Almacén privado de fotos (ruta: coach_id/client_key/archivo.jpg)
 insert into storage.buckets (id, name, public) values ('cf-fotos','cf-fotos', false) on conflict (id) do nothing;
 drop policy if exists "cf fotos coach" on storage.objects;

@@ -604,9 +604,20 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:16px">App del asesorado</span><span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:{{ pubBg }};color:{{ pubFg }}">{{ pubStatus }}</span></div>
         <button class="btn btn-primary" onClick="{{ publish }}" style="justify-content:center;border-radius:12px">{{ publishLabel }}</button>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <button class="btn btn-secondary" onClick="{{ invite }}" style="justify-content:center;border-radius:12px">Invitar</button>
-          <button class="btn btn-secondary" onClick="{{ openChat }}" style="justify-content:center;border-radius:12px">Abrir chat</button>
+          <button class="btn btn-secondary" onClick="{{ makeAccess }}" style="justify-content:center;border-radius:12px">{{ accLabel }}</button>
+          <button class="btn btn-secondary" onClick="{{ invite }}" style="justify-content:center;border-radius:12px">Invitar por email</button>
         </div>
+        <sc-if value="{{ accShow }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-900,#0b3a57)">
+            <span style="font-size:12px;font-weight:700">{{ accTitle }}</span>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px"><span>Web</span><strong style="overflow-wrap:anywhere">{{ accUrl }}</strong><span>Email</span><strong style="overflow-wrap:anywhere">{{ accEmail }}</strong><span>Contraseña</span><strong style="font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em">{{ accPass }}</strong></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="btn btn-primary" onClick="{{ accWa }}" style="justify-content:center;border-radius:12px">Enviar por WhatsApp</button>
+              <button class="btn btn-secondary" onClick="{{ accCopy }}" style="justify-content:center;border-radius:12px;background:#fff">Copiar</button>
+            </div>
+          </div>
+        </sc-if>
+        <button class="btn btn-ghost" onClick="{{ openChat }}" style="justify-content:center;border-radius:12px">Abrir chat</button>
         <span style="font-size:12px;color:var(--color-neutral-700)">{{ pubNote }}</span>
       </div>
     </div>
@@ -1738,6 +1749,8 @@ class Component extends DCLogic {
     this.sb.auth.getSession().then(({data})=>{if(data&&data.session)this.afterLogin(data.session);else this.setState({auth:'out'});});
   }
   afterLogin(sess){
+    const coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
+    if(!coaches.includes(String(sess.user.email||'').toLowerCase())){location.replace('asesorado.html');return;}
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
@@ -2225,7 +2238,7 @@ class Component extends DCLogic {
           v.pubStatus=!em?'Falta email':!pub?'Sin publicar':pubDirty?'Cambios sin publicar':'Publicado · v'+pub.v;
           v.pubBg=!pub||pubDirty?'#fff4dc':'#e3f4ea';v.pubFg=!pub||pubDirty?'#8a5a00':'#1d6b43';
           v.publishLabel=pub&&!pubDirty?'Volver a publicar':'Publicar en la app';
-          v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'Entra con '+em+' en '+location.origin+'/asesorado.html. «Invitar» copia el email y abre Supabase: Add user → Send invitation.';
+          v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
             const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
@@ -2234,8 +2247,22 @@ class Component extends DCLogic {
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
               this.updC(n=>{n.pub={v:nV,at:Date.now(),hash};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};
-          v.invite=()=>{if(!em){this.toast('Añade antes el email del cliente',true);return;}try{navigator.clipboard.writeText(em);}catch(e){}
-            window.open('https://supabase.com/dashboard/project/soxtkdakmpjxtvvtrvjs/auth/users','_blank');this.toast('Email copiado. En Supabase: Add user → Send invitation');};
+          const callAcc=(mode,done)=>{if(!cloudOn){this.toast('Inicia sesión en la nube',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
+            if(!pub){this.toast('Primero pulsa «Publicar en la app»',true);return;}if(s.accBusy)return;this.setState({accBusy:true});
+            this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({email:em,mode})}))
+              .then(r=>r.json().catch(()=>({error:'Respuesta no válida del servidor (¿está subida la carpeta api?)'})))
+              .then(j=>{this.setState({accBusy:false});if(!j||j.error){this.toast(j&&j.error||'No se pudo',true);return;}done(j);})
+              .catch(()=>{this.setState({accBusy:false});this.toast('No se pudo conectar con el servidor',true);});};
+          const appUrl=location.origin+'/asesorado.html',A=s.acc&&s.acc.cid===cl.id?s.acc:null,first=(cl.name||'').trim().split(/\s+/)[0]||'';
+          v.accLabel=s.accBusy?'Creando…':'Crear acceso';
+          v.makeAccess=()=>callAcc('create',j=>{this.setState({acc:{cid:cl.id,email:j.email,pass:j.password,reset:j.mode==='reset'}});this.toast(j.mode==='reset'?'Contraseña nueva generada':'Acceso creado');});
+          v.invite=()=>callAcc('invite',()=>this.toast('Invitación enviada a '+em));
+          v.accShow=!!A;
+          if(A){v.accTitle=A.reset?'Contraseña nueva (la anterior ya no sirve)':'Acceso creado · envíaselo';v.accUrl=appUrl;v.accEmail=A.email;v.accPass=A.pass;
+            const txt='Hola'+(first?' '+first:'')+', ya tienes tu plan en la app de CientiFitness.\n\nEntra aquí: '+appUrl+'\nEmail: '+A.email+'\nContraseña: '+A.pass+'\n\nTe recomiendo añadirla a la pantalla de inicio del móvil.';
+            const wph=String(cl.phone||'').replace(/\D/g,''),wn=wph.length===9?'34'+wph:wph;
+            v.accWa=()=>window.open('https://wa.me/'+(wn.length>=10?wn:'')+'?text='+encodeURIComponent(txt),'_blank');
+            v.accCopy=()=>{try{navigator.clipboard.writeText(txt);this.toast('Copiado');}catch(e){this.toast('No se pudo copiar',true);}};}
           v.openChat=()=>{this.setState({view:'msgs',chatSel:cl.id});this.loadChats();};}
       }
     }
