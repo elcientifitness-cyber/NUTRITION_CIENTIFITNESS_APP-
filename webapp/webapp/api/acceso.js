@@ -8,7 +8,7 @@ const APP = 'https://prueba-de-app-movil.vercel.app/asesorado.html';
 module.exports = async (req, res) => {
   const out = (code, obj) => { res.statusCode = code; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(obj)); };
   if (req.method !== 'POST') return out(405, { error: 'Método no permitido' });
-  const SK = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const SK = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
   if (!SK) return out(500, { error: 'Falta configurar la clave secreta en Vercel (SUPABASE_SERVICE_ROLE_KEY).' });
   try {
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
@@ -50,5 +50,5 @@ module.exports = async (req, res) => {
     r = await fetch(URL_SB + '/auth/v1/admin/users/' + id, { method: 'PUT', headers: H, body: JSON.stringify({ password: pass, email_confirm: true }) });
     if (!r.ok) return out(400, { error: 'No se pudo renovar la contraseña.' });
     return out(200, { ok: true, mode: 'reset', email, password: pass });
-  } catch (e) { return out(500, { error: 'Error del servidor: ' + (e.message || e) }); }
+  } catch (e) { return out(500, { error: 'Error del servidor. Revisa la clave secreta en Vercel.' }); }
 };
