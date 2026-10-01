@@ -12,8 +12,8 @@
 </helmet>
 <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px;font-family:var(--font-body);color:var(--color-text)">
   <sc-if value="{{ hasHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:18px">{{ head }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ headSub }}</span></div></sc-if>
-  <div style="display:flex;gap:6px;overflow-x:auto;margin:0 -18px;padding:2px 18px 4px;scrollbar-width:none">
-    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="font:inherit;font-size:13px;font-weight:800;white-space:nowrap;padding:8px 14px;min-height:38px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;flex:none">{{ c.label }}</button></sc-for>
+  <div style="display:flex;flex-wrap:wrap;gap:6px">
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;padding:6px 12px;min-height:34px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;flex:none">{{ c.label }}</button></sc-for>
   </div>
   <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
     <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0">

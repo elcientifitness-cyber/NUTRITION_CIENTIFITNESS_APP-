@@ -1,3 +1,4 @@
+-- ⚠ OBSOLETO: ya no lo ejecutes. Usa equipo.sql (permite invitar entrenadores).
 -- CientiFitness · Arreglo del permiso del entrenador
 -- Pega todo esto en Supabase → SQL Editor → New query → Run.
 

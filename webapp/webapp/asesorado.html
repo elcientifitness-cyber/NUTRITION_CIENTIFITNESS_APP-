@@ -73,7 +73,7 @@ button{-webkit-user-select:none;user-select:none}
   <sc-if value="{{ isHoy }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;box-shadow:var(--shadow-sm);padding:4px">
       <button onClick="{{ dayPrev }}" aria-label="Día anterior" style="font:inherit;border:0;background:var(--color-neutral-100);border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;color:var(--color-text);flex:none">‹</button>
-      <div style="flex:1;text-align:center;display:flex;flex-direction:column;min-width:0"><span style="font-weight:800;font-size:16px;text-transform:capitalize">{{ dayTitle }}</span><span style="font-size:12px;color:var(--color-neutral-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ daySub }}</span></div>
+      <div style="flex:1;text-align:center;display:flex;flex-direction:column;min-width:0"><span style="font-weight:800;font-size:16px">{{ dayTitle }}</span><span style="font-size:12px;color:var(--color-neutral-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ daySub }}</span></div>
       <button onClick="{{ dayNext }}" aria-label="Día siguiente" style="font:inherit;border:0;background:var(--color-neutral-100);border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;color:var(--color-text);flex:none;opacity:{{ nextOp }}">›</button>
     </div>
 
@@ -183,14 +183,14 @@ button{-webkit-user-select:none;user-select:none}
         <div style="min-width:0"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#21633d;font-weight:700">{{ planKicker }}</div><div style="font-family:var(--font-heading);font-weight:700;font-size:20px">{{ planName }}</div></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-        <div style="background:var(--color-accent);color:#fff;padding:12px 14px;border-radius:16px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700">Energía</div><div style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ pK }}</div><div style="font-size:12px">kcal al día</div></div>
+        <div style="background:var(--color-accent);color:#fff;padding:12px 14px;border-radius:16px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700">Energía</div><div style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ pK }}</div><div style="font-size:12px">{{ pKSub }}</div></div>
         <sc-for list="{{ pMacros }}" as="m" hint-placeholder-count="3"><div style="background:{{ m.bg }};color:{{ m.fg }};padding:12px 14px;border-radius:16px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700">{{ m.label }}</div><div style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ m.g }} g</div><div style="font-size:12px">al día</div></div></sc-for>
       </div>
       <sc-if value="{{ pHasNotes }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 16px;border-radius:16px;background:#e0f4e8;font-size:14px;white-space:pre-wrap;line-height:1.45"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#21633d;font-weight:800;margin-bottom:4px">Notas de tu nutricionista</div>{{ pNotes }}</div></sc-if>
       <sc-if value="{{ pOpen }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada comida elige una opción y, dentro de ella, un alimento de cada grupo: las cantidades ya están ajustadas para que cualquiera cuadre.</p></sc-if>
       <sc-for list="{{ pGroups }}" as="g" hint-placeholder-count="1">
         <div style="display:flex;flex-direction:column;gap:18px">
-          <sc-if value="{{ g.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:#e0f4e8;color:#21633d"><span style="font-weight:800;font-size:16px">{{ g.title }}</span><span style="font-size:12px">{{ g.days }}</span><sc-if value="{{ g.isToday }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:#21633d;color:#fff">Hoy</span></sc-if></div></sc-if>
+          <sc-if value="{{ g.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:#e0f4e8;color:#21633d"><span style="font-weight:800;font-size:16px">{{ g.title }}</span><span style="font-size:12px">{{ g.days }}</span><sc-if value="{{ g.isToday }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:#21633d;color:#fff">Hoy</span></sc-if><sc-if value="{{ g.hasK }}" hint-placeholder-val="{{ false }}"><span style="flex-basis:100%;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums">{{ g.kLine }}</span></sc-if></div></sc-if>
           <sc-for list="{{ g.meals }}" as="vm" hint-placeholder-count="3">
             <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
               <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:4px"><span style="font-weight:800;font-size:17px">{{ vm.name }}</span><span style="font-size:13px;font-variant-numeric:tabular-nums">{{ vm.kcal }}</span></div>
@@ -225,10 +225,17 @@ button{-webkit-user-select:none;user-select:none}
 
   <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
     <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden;height:calc(100dvh - 196px - env(safe-area-inset-bottom) - env(safe-area-inset-top));min-height:360px">
+      <sc-if value="{{ apHas }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ apOpen }}" style="font:inherit;color:inherit;display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-bottom:1px solid #e4ddf8;background:#eee9fc;cursor:pointer;text-align:left;flex:none">
+          <span style="width:46px;height:52px;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;flex:none;box-shadow:var(--shadow-sm);overflow:hidden"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:#51408d;width:100%;text-align:center;padding:3px 0">{{ apMon }}</span><span style="font-weight:800;font-size:21px;line-height:1;margin:auto 0;color:#51408d;font-variant-numeric:tabular-nums">{{ apNum }}</span></span>
+          <span style="display:flex;flex-direction:column;gap:2px;min-width:0;margin-right:auto"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#51408d">Próxima cita · {{ apRel }}</span><span style="font-weight:800;font-size:15px">{{ apWhen }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ apSub }}</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" style="stroke:#51408d;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="m9 18 6-6-6-6"></path></svg>
+        </button>
+      </sc-if>
       <div ref="{{ thrRef }}" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:6px;background:#f7f5fd">
         <sc-if value="{{ noMsgs }}" hint-placeholder-val="{{ false }}"><div style="margin:auto;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:20px"><span style="font-weight:800;font-size:16px;color:#51408d">Escríbeme cuando quieras</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Dudas del plan, cambios, cómo te encuentras… Te respondo en cuanto pueda.</span></div></sc-if>
         <sc-for list="{{ bubbles }}" as="b" hint-placeholder-count="3">
-          <sc-if value="{{ b.showDay }}" hint-placeholder-val="{{ false }}"><span style="align-self:center;font-size:11px;font-weight:800;color:#51408d;background:#eee9fc;border-radius:999px;padding:3px 10px;margin:8px 0 2px;text-transform:capitalize">{{ b.day }}</span></sc-if>
+          <sc-if value="{{ b.showDay }}" hint-placeholder-val="{{ false }}"><span style="align-self:center;font-size:11px;font-weight:800;color:#51408d;background:#eee9fc;border-radius:999px;padding:3px 10px;margin:8px 0 2px">{{ b.day }}</span></sc-if>
           <div style="align-self:{{ b.align }};max-width:82%;display:flex;flex-direction:column;align-items:{{ b.align }};gap:2px"><div style="padding:10px 14px;border-radius:{{ b.rad }};background:{{ b.bg }};color:{{ b.fg }};font-size:15px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:var(--shadow-sm)">{{ b.body }}</div><span style="font-size:10px;color:var(--color-neutral-600);padding:0 4px">{{ b.time }}</span></div>
         </sc-for>
       </div>
@@ -273,7 +280,7 @@ button{-webkit-user-select:none;user-select:none}
 <div onClick="{{ survClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(18,32,46,.5);display:flex;align-items:flex-end;justify-content:center;font-family:var(--font-body);color:var(--color-text)">
   <section onClick="{{ stop }}" style="width:min(560px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:26px 26px 0 0;box-sizing:border-box;display:flex;flex-direction:column">
     <div style="position:sticky;top:0;z-index:1;background:#fdf3d4;padding:16px 18px 14px;display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;align-items:flex-start;gap:8px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto"><span style="font-weight:800;font-size:19px;color:#5a4108">¿Qué tal el día?</span><span style="font-size:12px;color:#77560a;text-transform:capitalize">{{ survDayLabel }}</span></div><button onClick="{{ survClose }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:rgba(255,255,255,.8);color:#77560a;border-radius:999px;padding:8px 12px;cursor:pointer">Cerrar</button></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto"><span style="font-weight:800;font-size:19px;color:#5a4108">¿Qué tal el día?</span><span style="font-size:12px;color:#77560a">{{ survDayLabel }}</span></div><button onClick="{{ survClose }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:rgba(255,255,255,.8);color:#77560a;border-radius:999px;padding:8px 12px;cursor:pointer">Cerrar</button></div>
       <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.8);overflow:hidden"><div style="height:100%;width:{{ survPct }};background:#77560a;border-radius:999px;transition:width .25s"></div></div><span style="font-size:12px;font-weight:800;color:#77560a">{{ survProg }}</span></div>
     </div>
     <div style="padding:16px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px">
@@ -295,6 +302,45 @@ button{-webkit-user-select:none;user-select:none}
       </sc-for>
       <label style="display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:800">¿Algo que quieras contarme?<textarea class="input" rows="3" value="{{ survNote }}" onChange="{{ onSurvNote }}" placeholder="Opcional: cómo te has sentido, qué te ha costado…" style="font-weight:400;font-size:16px"></textarea></label>
       <button onClick="{{ survClose }}" style="font:inherit;font-size:16px;font-weight:800;min-height:50px;border-radius:16px;border:0;background:#77560a;color:#fff;cursor:pointer">Listo</button>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{ apSheet }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ apClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(18,32,46,.5);display:flex;align-items:flex-end;justify-content:center;font-family:var(--font-body);color:var(--color-text)">
+  <section onClick="{{ stop }}" style="width:min(560px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:26px 26px 0 0;box-sizing:border-box;display:flex;flex-direction:column">
+    <div style="background:#eee9fc;padding:16px 18px 14px;display:flex;align-items:flex-start;gap:8px">
+      <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#51408d">Tu próxima cita · {{ apRel }}</span><span style="font-weight:800;font-size:21px;color:#2f2457">{{ apType }}</span><sc-if value="{{ apHasCoach }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#51408d">{{ apCoach }}</span></sc-if></div>
+      <sc-if value="{{ apConf }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;background:#fff;color:#1d6b43;margin-top:4px">✓ Confirmada</span></sc-if>
+      <button onClick="{{ apClose }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:rgba(255,255,255,.85);color:#51408d;border-radius:999px;padding:8px 12px;cursor:pointer">Cerrar</button>
+    </div>
+    <div style="padding:16px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <span style="width:38px;height:38px;border-radius:12px;background:#eee9fc;color:#51408d;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:16px">{{ apDay }}</span><span style="font-size:14px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ apTime }}</span></span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <span style="width:38px;height:38px;border-radius:12px;background:#eee9fc;color:#51408d;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+        <span style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+          <span style="font-weight:800;font-size:16px">{{ apMode }}</span>
+          <sc-if value="{{ apHasPlace }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-800,#3b4a5a);overflow-wrap:anywhere">{{ apPlace }}</span><a href="{{ apMap }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:14px;font-weight:800;color:#51408d;text-decoration:none;padding:8px 14px;border-radius:12px;background:#eee9fc">Abrir en Mapas</a></sc-if>
+          <sc-if value="{{ apPresNoPlace }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700)">En la consulta de siempre.</span></sc-if>
+          <sc-if value="{{ apHasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ apLink }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:14px;font-weight:800;color:#fff;text-decoration:none;padding:10px 16px;border-radius:12px;background:#51408d">Entrar a la videollamada</a><span style="font-size:12px;color:var(--color-neutral-700);overflow-wrap:anywhere">{{ apLink }}</span></sc-if>
+          <sc-if value="{{ apNoLink }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700)">El enlace de la videollamada aparecerá aquí antes de la cita.</span></sc-if>
+          <sc-if value="{{ apIsPhone }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700)">Te llamaremos al teléfono de tu ficha.</span></sc-if>
+        </span>
+      </div>
+      <sc-if value="{{ apHasPrep }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 16px;border-radius:16px;background:#fdf3d4;color:#5a4108;font-size:14px;line-height:1.45;white-space:pre-wrap"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#77560a;margin-bottom:4px">Cómo prepararte</div>{{ apPrep }}</div></sc-if>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;font-weight:800;color:var(--color-neutral-700)">Añadir a mi calendario</span>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+          <a href="{{ apGcal }}" target="_blank" rel="noopener" style="font-size:14px;font-weight:800;min-height:46px;border-radius:14px;background:#eee9fc;color:#51408d;text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 10px">Google Calendar</a>
+          <button onClick="{{ apIcs }}" style="font:inherit;font-size:14px;font-weight:800;min-height:46px;border-radius:14px;border:0;background:#eee9fc;color:#51408d;cursor:pointer">iPhone / Outlook</button>
+        </div>
+      </div>
+      <button onClick="{{ apChange }}" style="font:inherit;font-size:15px;font-weight:800;min-height:50px;border-radius:16px;border:1.5px solid #b3a2ea;background:#fff;color:#51408d;cursor:pointer">Pedir cambio de cita</button>
+      <sc-if value="{{ apHasWa }}" hint-placeholder-val="{{ false }}"><a href="{{ apWa }}" target="_blank" rel="noopener" style="font-size:14px;font-weight:700;text-align:center;color:#21633d;text-decoration:none;padding:6px">Prefiero escribir por WhatsApp</a></sc-if>
     </div>
   </section>
 </div>
@@ -341,6 +387,7 @@ const dowMon=d=>(d.getDay()+6)%7;
 const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?0:n;};
 const R=Math.round,r1=x=>Math.round(x*10)/10,fx=(x,d)=>Number(x).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
 const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const cap=t=>t?t.charAt(0).toUpperCase()+t.slice(1):t;
 const dShort=s=>parseD(s).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
 const MAC=[['p','Proteína','#963a2b','#f2a497','#fde8e3'],['c','Hidratos','#77560a','#efc95e','#fdf3d4'],['f','Grasas','#51408d','#b3a2ea','#eee9fc']];
 const QS=[['cump','¿Cuánto has seguido el plan?','Nada','Al 100 %',['Nada','Poco','A medias','Casi todo','Al 100 %'],false],
@@ -363,10 +410,11 @@ class Component extends DCLogic {
     metric:(()=>{try{return localStorage.getItem('cf-as-metric')||'cump';}catch(e){return 'cump';}})(),range:'3m'};
   thrRef=React.createRef();
   componentDidMount(){this.init(0);if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadLogs();}});}
-  componentDidUpdate(pp,ps){const el=this.thrRef.current,n=this.state.msgs.length;
-    if(this.state.tab==='chat'){if(el&&(this._n!==n||ps.tab!=='chat')){this._n=n;el.scrollTop=el.scrollHeight;}this.markRead();}
-    if(ps.tab!==this.state.tab)window.scrollTo(0,0);}
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadLogs();this.loadLink(false);}});}
+  componentDidUpdate(){const el=this.thrRef.current,n=this.state.msgs.length,tab=this.state.tab,prev=this._pTab;this._pTab=tab;
+    if(tab==='chat'&&prev!==undefined&&prev!=='chat'&&this.sb&&this.user)this.loadLink(false);
+    if(tab==='chat'){if(el&&(this._n!==n||prev!=='chat')){this._n=n;el.scrollTop=el.scrollHeight;}this.markRead();}
+    if(prev!==undefined&&prev!==tab)window.scrollTo(0,0);}
   toastMsg(m,bad){clearTimeout(this._tt);this.setState({toast:m,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
   demo(){const ln=(name,gr,k,p,c,f)=>({name,g:gr+' g',gr,k,p,c,f});
     const blk=(label,sw,ink,lines)=>({label,sw,ink,lines});
@@ -378,18 +426,22 @@ class Component extends DCLogic {
       groups:[{title:'',days:'',dayIdx:[0,1,2,3,4,5,6],meals}],shop:[{cat:'Proteínas',items:[{name:'Pechuga de pollo',g:'1,1 kg'},{name:'Huevos',g:'12 u.'}]},{cat:'Verduras y frutas',items:[{name:'Brócoli',g:'1,4 kg'},{name:'Arándanos',g:'700 g'}]}],shopNote:'Cantidades para 7 días',
       perNames:[['cintura','Cintura'],['cadera','Cadera']],metrics:[{d:addDays(isoD(new Date()),-84),w:72.4,bf:29.1,lbm:51.3,per:{cintura:82,cadera:101}},{d:addDays(isoD(new Date()),-56),w:71.2,bf:28.2,lbm:51.1,per:{cintura:80.5,cadera:100}},{d:addDays(isoD(new Date()),-28),w:70.1,bf:27.0,lbm:51.2,per:{cintura:78.8,cadera:99}},{d:addDays(isoD(new Date()),-2),w:69.3,bf:26.1,lbm:51.2,per:{cintura:77.5,cadera:98.2}}]};
     const logs={},td=isoD(new Date());for(let i=1;i<14;i++){const d=addDays(td,-i);if(i%5===3)continue;const k=1850*(0.8+((i*37)%40)/100);logs[d]={foods:[{key:'x'+i,mi:0,name:'Demo',src:'plan',gr:100,k,p:0,c:0,f:0}],survey:{cump:1+(i*3)%5,sat:4,hambre:2,energia:3,peso:r1(69.3+i*0.08)},opts:{}};}
-    this.setState({auth:'in',link:{coach_id:'demo',client_key:'demo',name:'Ana López',plan,plan_at:new Date().toISOString()},logs,
+    this.setState({auth:'in',link:{coach_id:'demo',client_key:'demo',name:'Ana López',plan,plan_at:new Date().toISOString(),agenda:{coach:{name:'CientiFitness',phone:'+34 627 547 983'},appts:[{id:'demo1',date:addDays(isoD(new Date()),3),start:'10:30',dur:30,allDay:false,type:'Revisión',mode:'online',modeLabel:'Online',place:'',link:'https://meet.jit.si/CientiFitness-demo',prep:'Pésate en ayunas esa mañana y ten a mano cómo te ha ido la semana.',status:'confirmada'}]}},logs,
       msgs:[{id:1,sender:'coach',body:'¡Hola Ana! Ya tienes tu plan nuevo. Cualquier duda me dices.',created_at:new Date(Date.now()-86400000).toISOString(),read_at:null},{id:2,sender:'client',body:'¡Gracias! ¿Puedo cambiar la merluza por salmón?',created_at:new Date(Date.now()-80000000).toISOString(),read_at:null}]});}
   init(t){if(/[?&]demo/.test(location.search)){this.demo();return;}const cfg=window.CF_CONFIG;if(!window.supabase||!cfg){if(t>80){this.setState({auth:'out',authMsg:'No se pudo conectar. Revisa tu conexión.'});return;}setTimeout(()=>this.init(t+1),100);return;}
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
     this.sb.auth.getSession().then(({data})=>{const ht=window.CF_HASH_TYPE;if(ht)history.replaceState(null,'',location.pathname);
       if(data&&data.session){if(ht==='invite'||ht==='recovery'){this.setState({auth:'setpass',authMsg:''});return;}this.afterLogin(data.session);}else this.setState({auth:'out'});});}
-  afterLogin(sess){const coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
-    if(coaches.includes(String(sess.user.email||'').toLowerCase())){location.replace('./');return;}
+  afterLogin(sess){const em=String(sess.user.email||'').toLowerCase(),coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
+    if(coaches.includes(em)){location.replace('./');return;}
     this.user=sess.user;this.setState({auth:'loading'});
-    this.sb.from('cf_links').select('coach_id,client_key,name,plan,plan_at').ilike('email',(sess.user.email||'').toLowerCase()).limit(1).then(({data,error})=>{
+    this.sb.from('cf_coaches').select('active').eq('email',em).maybeSingle().then(({data:co})=>{if(co&&co.active){location.replace('./');return;}this.loadLink(true);},()=>this.loadLink(true));}
+  loadLink(first){if(!this.sb||!this.user)return;const em=String(this.user.email||'').toLowerCase(),cols='coach_id,client_key,name,plan,plan_at';
+    const q=ag=>this.sb.from('cf_links').select(cols+(ag?',agenda':'')).ilike('email',em).limit(1).then(r=>(r.error&&ag&&/agenda/i.test(r.error.message||''))?q(false):r);
+    q(true).then(({data,error})=>{
+      if(!first){if(data&&data.length)this.setState({link:data[0]});return;}
       if(error||!data||!data.length){this.setState({auth:'nolink',authMsg:error?'Error: '+error.message:'Tu cuenta ('+sess.user.email+') aún no tiene un plan publicado. Avisa a tu nutricionista.'});return;}
-      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>this.loadMsgs(),20000);});}
+      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>{this.loadMsgs();this._plN=(this._plN||0)+1;if(this._plN%3===0)this.loadLink(false);},20000);});}
   doLogin(){const s=this.state;if(!this.sb)return;this.setState({authMsg:'Entrando…'});
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({authMsg:'Email o contraseña incorrectos.'});return;}this.setState({authMsg:''});this.afterLogin(data.session);});}
   doForgot(){const em=this.state.loginEmail.trim();if(!em){this.setState({authMsg:'Escribe tu email y vuelve a pulsar.'});return;}
@@ -431,7 +483,7 @@ class Component extends DCLogic {
     v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();v.doForgot=()=>this.doForgot();
     v.newPass=s.newPass;v.onNewPass=e=>this.setState({newPass:e.target.value});v.onNewPassKey=e=>{if(e.key==='Enter')this.doSetPass();};v.doSetPass=()=>this.doSetPass();v.doLogout=()=>this.doLogout();
     if(au!=='in'||!s.link)return v;
-    const L0=s.link,P=L0.plan||{groups:[],T:{k:0,p:0,c:0,f:0}},T=P.T||{k:0,p:0,c:0,f:0},today=isoD(new Date()),Tk=num(T.k);
+    const L0=s.link,P=L0.plan||{groups:[],T:{k:0,p:0,c:0,f:0}},T=P.T||{k:0,p:0,c:0,f:0},today=isoD(new Date()),Tk=num(T.k);const tkOf=d=>num((this.group(P,d).T||T).k);
     const th=TH[s.tab]||TH.hoy;v.thTitle=th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
     v.hello='Hola, '+((P.name||L0.name||'').split(' ')[0]||'bienvenido/a');
     const unread=s.msgs.filter(m=>m.sender==='coach'&&!m.read_at).length;
@@ -439,24 +491,25 @@ class Component extends DCLogic {
     v.tabs=['hoy','plan','chat','prog'].map(k=>{const t=TH[k],on=s.tab===k;return {label:t[0],icon:ICONS[k],go:()=>go(k),fg:on?t[4]:'var(--color-neutral-600)',bg:on?t[1]:'transparent',fw:on?'800':'600',hasBadge:k==='chat'&&unread>0,badge:String(unread)};});
     v.isHoy=s.tab==='hoy';v.isPlan=s.tab==='plan';v.isChat=s.tab==='chat';v.isProg=s.tab==='prog';
     v.sbc=this.sb;v.coachId=L0.coach_id;v.clientKey=L0.client_key;
+    const AG=L0.agenda||{},CO=AG.coach||{},coFirst=(CO.name||'').trim().split(/\s+/)[0]||'';
 
     // Cumplimiento
-    const sc7=[];for(let i=6;i>=0;i--){const d=addDays(today,-i);sc7.push({d,p:dayScore(s.logs[d],Tk)});}
+    const sc7=[];for(let i=6;i>=0;i--){const d=addDays(today,-i);sc7.push({d,p:dayScore(s.logs[d],tkOf(d))});}
     const got=sc7.filter(x=>x.p!=null),avg=got.length?got.reduce((a,x)=>a+x.p,0)/got.length:null,B=BAND(avg);
     v.cbPct=avg==null?'—':R(avg)+'%';v.cbLabel=avg==null?'Empieza a registrar':B.l;v.cbBg=B.bg;v.cbFg=B.fg;
     const circ=2*Math.PI*27;v.cbDash=((avg||0)/100*circ).toFixed(1)+' '+circ.toFixed(1);
     v.cbSub=got.length?got.length+' de 7 días registrados · según lo que comes y tu cuestionario':'Marca lo que comes y rellena el cuestionario';
     v.cbDays=sc7.map(x=>{const b=BAND(x.p);return {l:'LMXJVSD'[dowMon(parseD(x.d))],bg:x.p==null?'rgba(255,255,255,.75)':b.sw,ring:x.d===s.day&&v.isHoy?'0 0 0 2px #1b2b3c':'none',fw:x.d===today?'800':'600'};});
-    {let n30=0,t30=0;for(let i=0;i<30;i++){const p=dayScore(s.logs[addDays(today,-i)],Tk);if(p!=null){n30++;t30+=p;}}v.cb30=n30?'Últimos 30 días: '+R(t30/n30)+'% · '+n30+' días registrados':'Aún no hay registros';}
+    {let n30=0,t30=0;for(let i=0;i<30;i++){const dq=addDays(today,-i),p=dayScore(s.logs[dq],tkOf(dq));if(p!=null){n30++;t30+=p;}}v.cb30=n30?'Últimos 30 días: '+R(t30/n30)+'% · '+n30+' días registrados':'Aún no hay registros';}
 
-    if(v.isHoy||s.survOpen){const day=s.day,L=this.log(day),G=this.group(P,day),dd=parseD(day);
-      v.dayTitle=day===today?'Hoy':day===addDays(today,-1)?'Ayer':dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric'});
-      v.daySub=(G.title?G.title+' · ':'')+dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+    if(v.isHoy||s.survOpen){const day=s.day,L=this.log(day),G=this.group(P,day),dd=parseD(day),TD=G.T||T,TkD=num(TD.k);
+      v.dayTitle=day===today?'Hoy':day===addDays(today,-1)?'Ayer':cap(dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric'}));
+      v.daySub=(G.title?G.title+' · ':'')+cap(dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}));
       v.dayPrev=()=>this.setState({day:addDays(day,-1)});v.dayNext=()=>{if(day<today)this.setState({day:addDays(day,1)});};v.nextOp=day<today?'1':'.3';
       const F=L.foods||[],tot={k:0,p:0,c:0,f:0};F.forEach(x=>{tot.k+=num(x.k);tot.p+=num(x.p);tot.c+=num(x.c);tot.f+=num(x.f);});
       const pc=(a,b)=>Math.min(100,b?a/b*100:0)+'%';
-      v.totK=R(tot.k).toLocaleString('es-ES');v.totKOf='de '+R(Tk).toLocaleString('es-ES')+' kcal';v.totKPct=pc(tot.k,Tk);v.totKBar=Tk&&tot.k>Tk*1.1?'#e5604a':'var(--color-accent)';
-      v.macroBars=MAC.map(([k,l,ink,sw,bg])=>({label:l,ink,sw,bg,val:String(R(tot[k])),tgt:String(R(T[k]||0)),pct:pc(tot[k],T[k])}));
+      v.totK=R(tot.k).toLocaleString('es-ES');v.totKOf='de '+R(TkD).toLocaleString('es-ES')+' kcal';v.totKPct=pc(tot.k,TkD);v.totKBar=TkD&&tot.k>TkD*1.1?'#e5604a':'var(--color-accent)';
+      v.macroBars=MAC.map(([k,l,ink,sw,bg])=>({label:l,ink,sw,bg,val:String(R(tot[k])),tgt:String(R(TD[k]||0)),pct:pc(tot[k],TD[k])}));
       const Ld=s.logs[day];v.saveLabel=s.saving?'Guardando…':Ld&&Ld._dirty?'Guardando…':Ld?'✓ Guardado':'Sin registrar';
       v.saveBg=Ld&&!Ld._dirty&&!s.saving?'#dcf0e4':'var(--color-neutral-100)';v.saveFg=Ld&&!Ld._dirty&&!s.saving?'#1d6b43':'var(--color-neutral-700)';
       v.showHint=F.length===0&&day===today;v.noMeals=!(G.meals||[]).length;
@@ -505,13 +558,37 @@ class Component extends DCLogic {
     if(v.isPlan){v.planKicker='Plan nutricional · v'+(P.v||1)+(L0.plan_at?' · '+new Date(L0.plan_at).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}):'');v.planName=P.name||L0.name||'';
       v.pK=R(Tk).toLocaleString('es-ES');v.pMacros=MAC.map(([k,l,ink,sw,bg])=>({label:l,g:String(R(T[k]||0)),bg,fg:ink}));
       v.pNotes=P.notes||'';v.pHasNotes=!!(P.notes||'').trim();v.pOpen=!!P.open;const td=dowMon(new Date());
-      v.pGroups=(P.groups||[]).map(g=>({...g,hasTitle:!!g.title,isToday:(g.dayIdx||[]).includes(td)&&(P.groups||[]).length>1}));
+      v.pKSub=(P.groups||[]).some(g=>g.T)?'kcal de media al día':'kcal al día';
+      v.pGroups=(P.groups||[]).map(g=>({...g,hasTitle:!!g.title,hasK:!!g.kLine,kLine:g.kLine||'',isToday:(g.dayIdx||[]).includes(td)&&(P.groups||[]).length>1}));
       v.shop=P.shop||[];v.shopNote=P.shopNote||'';v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
       v.printPlan=()=>{if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>window.print(),150));else window.print();};}
 
+    v.apHas=false;v.apSheet=false;
+    if(v.isChat){const stD=a=>new Date(a.date+'T'+(a.allDay||!a.start?'00:00':a.start)+':00'),enD=a=>a.allDay||!a.start?parseD(addDays(a.date,1)):new Date(stD(a).getTime()+(num(a.dur)||30)*60000),now=Date.now();
+      const nx=(AG.appts||[]).filter(a=>a&&a.date&&enD(a).getTime()>now).sort((a,b)=>stD(a)-stD(b))[0];v.apHas=!!nx;v.apSheet=!!nx&&!!s.apOpen;
+      if(nx){const d0=stD(nx),endT=enD(nx),days=Math.round((parseD(nx.date)-parseD(today))/864e5),MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],noT=nx.allDay||!nx.start;
+        const hh=x=>String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0'),dayLong=cap(d0.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}));
+        v.apNum=String(d0.getDate());v.apMon=MES[d0.getMonth()];v.apRel=days<=0?'Hoy':days===1?'Mañana':'En '+days+' días';
+        v.apWhen=dayLong+(noT?'':' · '+nx.start);v.apSub=[nx.type||'Cita',nx.modeLabel||''].filter(Boolean).join(' · ');
+        v.apOpen=()=>this.setState({apOpen:true});v.apClose=()=>this.setState({apOpen:false});
+        v.apType=nx.type||'Cita';v.apDay=dayLong+' de '+d0.getFullYear();v.apTime=noT?'Todo el día':nx.start+' – '+hh(endT)+' · '+(num(nx.dur)||30)+' min';
+        v.apConf=nx.status==='confirmada';v.apMode=nx.modeLabel||'Cita';
+        v.apHasPlace=nx.mode==='presencial'&&!!nx.place;v.apPlace=nx.place||'';v.apMap='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(nx.place||'');
+        v.apHasLink=nx.mode==='online'&&!!nx.link;v.apLink=nx.link||'';v.apNoLink=nx.mode==='online'&&!nx.link;v.apIsPhone=nx.mode==='telefono';v.apPresNoPlace=nx.mode==='presencial'&&!nx.place;
+        v.apPrep=nx.prep||'';v.apHasPrep=!!v.apPrep;v.apHasCoach=!!CO.name;v.apCoach='Con '+(CO.name||'');
+        const ph=String(CO.phone||'').replace(/\D/g,''),wn=ph.length===9?'34'+ph:ph;v.apHasWa=wn.length>=10;v.apWa='https://wa.me/'+wn;
+        const title=(nx.type||'Cita')+' · CientiFitness',desc=[nx.modeLabel,nx.link?'Enlace: '+nx.link:'',nx.prep].filter(Boolean).join('\n'),loc=nx.mode==='presencial'?(nx.place||''):(nx.link||'');
+        const z=x=>x.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),dates=noT?nx.date.replace(/-/g,'')+'/'+addDays(nx.date,1).replace(/-/g,''):z(d0)+'/'+z(endT);
+        v.apGcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+dates+'&details='+encodeURIComponent(desc)+'&location='+encodeURIComponent(loc);
+        v.apIcs=()=>{const esc=t=>String(t||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+          const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CientiFitness//Mi plan//ES','BEGIN:VEVENT','UID:'+(nx.id||Date.now())+'@cientifitness','DTSTAMP:'+z(new Date())];
+          if(noT)L.push('DTSTART;VALUE=DATE:'+nx.date.replace(/-/g,''),'DTEND;VALUE=DATE:'+addDays(nx.date,1).replace(/-/g,''));else L.push('DTSTART:'+z(d0),'DTEND:'+z(endT));
+          L.push('SUMMARY:'+esc(title),'DESCRIPTION:'+esc(desc));if(loc)L.push('LOCATION:'+esc(loc));L.push('BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:'+esc(title),'END:VALARM','END:VEVENT','END:VCALENDAR');
+          const b=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cita-cientifitness.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
+        v.apChange=()=>{const msg='Hola'+(coFirst?' '+coFirst:'')+', necesitaría cambiar la cita del '+d0.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+(noT?'':' a las '+nx.start)+'. ¿Qué otros huecos tienes?';this.setState({apOpen:false,draft:msg});this.toastMsg('Revisa el mensaje y pulsa Enviar');};}}
     if(v.isChat){v.thrRef=this.thrRef;v.noMsgs=s.msgs.length===0;let pd='';
       v.bubbles=s.msgs.map(m=>{const mine=m.sender==='client',d=new Date(m.created_at),dk=isoD(d),sd=dk!==pd;pd=dk;
-        return {body:m.body,showDay:sd,day:dk===today?'Hoy':d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}),time:(mine?'':'Nutricionista · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
+        return {body:m.body,showDay:sd,day:dk===today?'Hoy':cap(d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})),time:(mine?'':(coFirst||'Nutricionista')+' · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
       v.draft=s.draft;v.onDraft=e=>this.setState({draft:e.target.value});v.send=()=>this.send();}
 
     if(v.isProg){v.sgLogs=s.logs;v.sgMetrics=P.metrics||[];v.sgPer=P.perNames||[];v.sgTk=Tk;}

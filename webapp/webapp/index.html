@@ -67,8 +67,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <button class="cf-nav-btn" data-on="{{ nav3.on }}" onClick="{{ nav3.go }}"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg><span>Agenda</span><sc-if value="{{ nav3.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Citas de hoy">{{ nav3.count }}</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav4.on }}" onClick="{{ nav4.go }}"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>Mensajes</span><sc-if value="{{ nav4.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Sin leer">{{ nav4.count }}</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav2.on }}" onClick="{{ nav2.go }}"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h8"></path><path d="M8 11h6"></path></svg><span>Biblioteca</span></button>
+    <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ nav5.on }}" onClick="{{ nav5.go }}"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Equipo</span></button></sc-if>
   </nav>
   <div class="cf-side-foot">
+    <sc-if value="{{ hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ meLabel }}</span></sc-if>
     <span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:{{ saveFg }};font-variant-numeric:tabular-nums;padding:0 4px"><span style="width:8px;height:8px;border-radius:50%;background:{{ saveDot }};box-shadow:0 0 0 3px rgba(79,180,135,.15)"></span>{{ saveLabel }}</span>
     <sc-if value="{{ showSaveBtn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ saveNow }}" title="Guardar (Ctrl/Cmd + S)" style="font:inherit;font-size:13px;font-weight:700;padding:9px 16px;border:0;border-radius:12px;background:{{ saveBtnBg }};color:{{ saveBtnFg }};cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg>{{ saveBtnLabel }}</button></sc-if>
     <sc-if value="{{ showLogout }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" onClick="{{ doLogout }}" style="font-size:13px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path></svg><span>Cerrar sesión</span></button></sc-if>
@@ -400,15 +402,28 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <span style="font-size:11px;color:var(--color-neutral-600)">{{ panelNote }}</span>
     </aside>
     <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:22px">
-    <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
-        <sc-for list="{{ planModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:9px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px 24px;padding:16px 18px;border-radius:20px;background:#fff;box-shadow:var(--shadow-sm)">
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+        <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Tipo de plan</span>
+        <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
+          <sc-for list="{{ planModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+        </div>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ modeHelp }}</span>
       </div>
-      <span style="font-size:13px;color:var(--color-neutral-700);flex:1 1 260px">{{ modeHelp }}</span>
-      <span style="font-size:13px;font-variant-numeric:tabular-nums;padding:5px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }}">{{ distLabel }}</span>
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+        <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Redondeo de gramos</span>
+        <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
+          <sc-for list="{{ roundSeg }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 13px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+        </div>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ roundNote }}</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }}">{{ distLabel }}</span>
+      <span style="flex:1 1 0"></span>
       <button class="btn btn-ghost" onClick="{{ collapseAll }}" style="font-size:13px">Plegar todas</button>
-      <button class="btn btn-ghost" onClick="{{ expandAll }}" style="font-size:13px">Desplegar</button>
-      <button class="btn btn-primary" onClick="{{ addMeal }}" style="min-height:36px">
+      <button class="btn btn-ghost" onClick="{{ expandAll }}" style="font-size:13px">Desplegar todas</button>
+      <button class="btn btn-primary" onClick="{{ addMeal }}" style="min-height:38px">
         <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Comida
       </button>
     </div>
@@ -426,10 +441,50 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <sc-for list="{{ dayChips }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.toggle }}" title="{{ d.full }}" style="font:inherit;width:40px;height:40px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};font-weight:700;font-size:13px;cursor:pointer">{{ d.l }}</button></sc-for>
           </div>
           <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 200px">Pulsa un día para asignarlo a este menú; los días en gris están en otro menú.</span>
+          <sc-if value="{{ hasMenuDays }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700)">Tipo de día<select class="input" value="{{ menuType }}" onChange="{{ onMenuType }}" style="width:auto;min-height:34px;font-size:13px;padding:4px 10px"><sc-for list="{{ menuTypeOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label></sc-if>
           <button class="btn btn-ghost" onClick="{{ dupMenu }}" style="font-size:13px">Duplicar menú</button>
           <sc-if value="{{ canDelMenu }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ delMenu }}" style="font-size:13px">Eliminar menú</button></sc-if>
         </div>
         <sc-if value="{{ unassigned }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 14px;border-radius:12px;background:#fff4dc;color:#8a5a00;font-size:13px">{{ unassignedText }}</div></sc-if>
+        <sc-if value="{{ showDayView }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 100%">{{ dayViewNote }}</span><sc-for list="{{ dayViewChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.pick }}" style="font:inherit;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:7px 14px;border-radius:12px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px">{{ c.label }}</span><span style="font-size:11px;opacity:.85;font-variant-numeric:tabular-nums">{{ c.sub }}</span></button></sc-for></div></sc-if>
+        <div style="border-top:1px solid var(--color-divider);padding-top:14px;display:flex;flex-direction:column;gap:14px">
+          <button onClick="{{ dayAdjToggle }}" style="font:inherit;color:inherit;display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:0;cursor:pointer;text-align:left">
+            <span style="width:36px;height:36px;border-radius:12px;background:var(--color-accent-100);color:var(--color-accent-800);display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M3 21h18"></path><path d="M6 17v-5"></path><path d="M10 17V8"></path><path d="M14 17v-7"></path><path d="M18 17V5"></path></svg></span>
+            <span style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-weight:700;font-size:15px">Ajustar kcal y macros del día</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ dayAdjSub }}</span></span>
+            <sc-if value="{{ dayAdjOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--color-accent);color:#fff;flex:none">Activo</span></sc-if>
+            <svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;transition:transform .2s;transform:{{ dayAdjChev }}"><path d="m9 18 6-6-6-6"></path></svg>
+          </button>
+          <sc-if value="{{ dayAdjOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px">
+              <div style="padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Promedio diario · Necesidades</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daWeekK }} kcal</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ daWeekMac }}</span></div>
+              <div style="padding:12px 14px;border-radius:14px;background:var(--color-neutral-100);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Total de la semana</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daWeekTot }}</span><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ daWeekTotMac }}</span></div>
+              <div style="padding:12px 14px;border-radius:14px;background:{{ daAvgBg }};color:{{ daAvgFg }};display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Media con los ajustes</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daAvgK }} kcal</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ daAvgMac }} · {{ daAvgTag }}</span></div>
+            </div>
+            <sc-if value="{{ daHasWarn }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 14px;border-radius:12px;background:#fff1ee;color:#8f2a14;font-size:13px;font-weight:600">{{ daWarn }}</div></sc-if>
+            <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ daBars }}" as="b" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0"><div style="position:relative;height:84px;display:flex;align-items:flex-end"><div style="width:100%;height:{{ b.h }};background:{{ b.bg }};opacity:{{ b.op }};border-radius:8px 8px 4px 4px;min-height:4px;transition:height .25s"></div><div style="position:absolute;left:0;right:0;bottom:{{ daAvgPct }};border-top:1.5px dashed var(--color-neutral-600)"></div></div><span style="font-size:12px;font-weight:700;text-align:center">{{ b.l }}</span><span style="font-size:11px;text-align:center;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ b.k }}</span><span style="font-size:10px;text-align:center;color:var(--color-neutral-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.ty }}</span></div></sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--carb)"></span>Por encima de la media</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-accent)"></span>Por debajo</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-neutral-400)"></span>Igual</span><span>Más claro = día en «Auto»</span><span style="display:flex;align-items:center;gap:6px"><span style="width:16px;border-top:1.5px dashed var(--color-neutral-600)"></span>Media de Necesidades</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:2px">Rápido</span><sc-for list="{{ daPresets }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer" style-hover="background:var(--color-accent-100)">{{ p.label }}</button></sc-for><span style="flex:1"></span><button class="btn btn-ghost" onClick="{{ daReset }}" style="font-size:12px">Restablecer semana</button></div>
+            <div style="overflow-x:auto;margin:0 -4px;padding:0 4px 4px"><div style="min-width:724px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:grid;grid-template-columns:minmax(110px,1.2fr) minmax(140px,1.3fr) 84px 64px 70px 70px 70px 30px;gap:8px;padding:0 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-600)"><span>Día</span><span>Tipo</span><span>% vs media</span><span style="text-align:right">Kcal</span><span>Proteína</span><span>Hidratos</span><span>Grasas</span><span></span></div>
+              <sc-for list="{{ daRows }}" as="r" hint-placeholder-count="7">
+                <div style="display:grid;grid-template-columns:minmax(110px,1.2fr) minmax(140px,1.3fr) 84px 64px 70px 70px 70px 30px;gap:8px;align-items:center;padding:7px 9px;border-radius:12px;background:{{ r.bg }};border:1.5px solid {{ r.bd }}">
+                  <span style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:700;font-size:14px">{{ r.day }}</span><span style="font-size:11px;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.menu }}</span></span>
+                  <select class="input" value="{{ r.type }}" onChange="{{ r.onType }}" aria-label="Tipo de día" style="min-height:34px;font-size:13px;padding:4px 10px;background-color:#fff"><sc-for list="{{ r.types }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select>
+                  <sc-if value="{{ r.isAuto }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;font-weight:700;color:{{ r.ink }};font-variant-numeric:tabular-nums">{{ r.pctLbl }}</span></sc-if>
+                  <sc-if value="{{ r.notAuto }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:4px"><input class="input" type="number" step="1" value="{{ r.pct }}" onChange="{{ r.onPct }}" aria-label="% sobre la media" style="width:62px;min-height:34px;padding:4px 8px;font-size:13px;background:#fff"><span style="font-size:12px">%</span></span></sc-if>
+                  <span style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">{{ r.k }}</span>
+                  <input class="input" type="number" min="0" value="{{ r.p }}" onChange="{{ r.onP }}" aria-label="Proteína (g)" style="min-height:34px;padding:4px 8px;font-size:13px;background:#fff;color:var(--prot-ink);font-weight:700">
+                  <input class="input" type="number" min="0" value="{{ r.c }}" onChange="{{ r.onC }}" aria-label="Hidratos (g)" style="min-height:34px;padding:4px 8px;font-size:13px;background:#fff;color:var(--carb-ink);font-weight:700">
+                  <input class="input" type="number" min="0" value="{{ r.f }}" onChange="{{ r.onF }}" aria-label="Grasas (g)" style="min-height:34px;padding:4px 8px;font-size:13px;background:#fff;color:var(--fat-ink);font-weight:700">
+                  <sc-if value="{{ r.isManual }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.reset }}" title="Volver al cálculo automático del tipo de día" aria-label="Volver al cálculo automático" style="font:inherit;width:30px;height:30px;border-radius:50%;border:0;background:#fff;color:var(--color-neutral-700);cursor:pointer;font-size:15px;font-weight:700">↺</button></sc-if>
+                </div>
+              </sc-for>
+            </div></div>
+            <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Elige el tipo de cada día y ajusta su %: la proteína se mantiene; en refeed y descanso cambian los hidratos, y en normal y recorte, hidratos y grasas en proporción. También puedes escribir los gramos de P/C/G a mano. Los días en «Auto» se reparten lo que falta para que la media semanal coincida con Necesidades. Cada menú recalcula sus gramos para el objetivo de cada día.</span>
+          </sc-if>
+        </div>
       </section>
     </sc-if>
 
@@ -465,8 +520,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <sc-if value="{{ m.collapsed }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--color-neutral-700);padding-left:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.summary }}</div></sc-if>
         <sc-if value="{{ m.expanded }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:10px 14px;border-radius:16px;background:var(--color-neutral-100)">
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--color-neutral-700);flex:1 1 260px"><span style="white-space:nowrap">% del día</span><input type="range" min="0" max="60" step="1" value="{{ m.pct }}" onChange="{{ m.onPct }}" style="flex:1;min-width:90px;color:var(--color-accent)"><input class="input" type="number" value="{{ m.pct }}" onChange="{{ m.onPct }}" style="width:58px;min-height:30px;padding:3px 6px;text-align:right"><span style="white-space:nowrap;font-weight:700;color:var(--color-text);font-variant-numeric:tabular-nums">{{ m.kShare }}</span></div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700)"><span>Composición</span><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content"><sc-for list="{{ m.compSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font-size:12px;color:var(--color-neutral-700);flex:1 1 220px;min-width:0"><span style="white-space:nowrap">% del día</span><input type="range" min="0" max="60" step="1" value="{{ m.pct }}" onChange="{{ m.onPct }}" style="flex:1 1 80px;min-width:70px;color:var(--color-accent)"><input class="input" type="number" value="{{ m.pct }}" onChange="{{ m.onPct }}" style="width:58px;min-height:30px;padding:3px 6px;text-align:right"><span style="white-space:nowrap;font-weight:700;color:var(--color-text);font-variant-numeric:tabular-nums">{{ m.kShare }}</span></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700);min-width:0"><span>Composición</span><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content"><sc-for list="{{ m.compSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
         </div>
         <sc-if value="{{ m.isCustom }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;border:1px solid var(--color-divider)">
@@ -545,12 +600,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                   <div onDragOver="{{ row.cDragOver }}" onDrop="{{ row.cDrop }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 4px 2px;border-top:1px solid var(--color-neutral-200);outline:{{ row.cOut }};outline-offset:2px;border-radius:10px">
                     <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:{{ row.sw }};color:{{ row.swFg }}">{{ row.tag }}</span>
                     <sc-for list="{{ row.items }}" as="it" hint-placeholder-count="1">
-                      <div onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;align-items:center;gap:6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:999px;font-size:13px;box-shadow:{{ it.dropSh }}">
+                      <div onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:16px;font-size:13px;box-shadow:{{ it.dropSh }};max-width:100%;min-width:0;box-sizing:border-box">
                         <span draggable="true" onDragStart="{{ it.dragStart }}" onDragEnd="{{ it.dragEnd }}" title="Arrastra para mover" style="cursor:grab;display:flex;padding:4px 2px;color:var(--color-neutral-400);flex:none"><svg width="10" height="16" viewBox="0 0 10 16" style="fill:currentColor"><circle cx="3" cy="3" r="1.4"></circle><circle cx="7" cy="3" r="1.4"></circle><circle cx="3" cy="8" r="1.4"></circle><circle cx="7" cy="8" r="1.4"></circle><circle cx="3" cy="13" r="1.4"></circle><circle cx="7" cy="13" r="1.4"></circle></svg></span>
-                        <span style="font-weight:600">{{ it.name }}</span>
+                        <span style="font-weight:600;min-width:0;overflow-wrap:anywhere">{{ it.name }}</span>
                         <sc-if value="{{ it.flag }}" hint-placeholder-val="{{ false }}"><span class="tag tag-danger" style="padding:1px 7px;font-size:10px">Alergia</span></sc-if>
                         <sc-if value="{{ it.showShare }}" hint-placeholder-val="{{ false }}">
-                          <input type="range" min="5" max="100" step="5" value="{{ it.share }}" onChange="{{ it.onShare }}" title="Reparto dentro del macro" style="width:84px;color:{{ it.sw }}"><span style="font-size:11px;font-weight:800;min-width:32px;font-variant-numeric:tabular-nums">{{ it.shareLbl }}</span>
+                          <input type="range" min="5" max="100" step="5" value="{{ it.share }}" onChange="{{ it.onShare }}" title="Reparto dentro del macro" style="flex:0 1 84px;width:84px;min-width:52px;color:{{ it.sw }}"><span style="font-size:11px;font-weight:800;min-width:32px;font-variant-numeric:tabular-nums">{{ it.shareLbl }}</span>
                         </sc-if>
                         <sc-if value="{{ it.isVeg }}" hint-placeholder-val="{{ false }}">
                           <input class="input" type="number" value="{{ it.g }}" onChange="{{ it.onG }}" style="width:52px;min-height:24px;padding:1px 4px;font-size:13px;text-align:right;font-weight:700">
@@ -637,7 +692,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
         <div style="text-align:right;font-size:13px;color:var(--color-neutral-700)">{{ vDate }}</div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
         <div style="background:var(--color-accent);color:#fff;padding:14px;border-radius:14px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">Energía</div><div style="font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">{{ tK }}</div><div style="font-size:12px">kcal/día</div></div>
         <sc-for list="{{ macroCells }}" as="m" hint-placeholder-count="3">
           <div style="background:{{ m.bg }};color:{{ m.fg }};padding:14px;border-radius:14px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">{{ m.label }}</div><div style="font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">{{ m.g }}</div><div style="font-size:12px;color:var(--color-neutral-700)">gramos/día</div></div>
@@ -649,7 +704,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <sc-if value="{{ vOpenHint }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700)">En cada comida elige una opción y, dentro de ella, un alimento de cada grupo; las cantidades ya están ajustadas para que cualquiera cuadre.</p></sc-if>
       <sc-for list="{{ vGroups }}" as="vg" hint-placeholder-count="1">
       <div style="display:flex;flex-direction:column;gap:22px">
-      <sc-if value="{{ vg.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:10px 16px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);break-after:avoid"><span style="font-weight:800;font-size:17px">{{ vg.title }}</span><span style="font-size:13px">{{ vg.days }}</span></div></sc-if>
+      <sc-if value="{{ vg.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:10px 16px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);break-after:avoid"><span style="font-weight:800;font-size:17px">{{ vg.title }}</span><span style="font-size:13px">{{ vg.days }}</span><span style="margin-left:auto;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums">{{ vg.kLine }}</span></div></sc-if>
       <sc-for list="{{ vg.meals }}" as="vm" hint-placeholder-count="3">
         <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
           <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--color-text);padding-bottom:4px"><span style="font-weight:800;font-size:18px">{{ vm.name }}</span><span style="font-size:13px;font-variant-numeric:tabular-nums">{{ vm.kcal }}</span></div>
@@ -1022,10 +1077,60 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </main>
 </sc-if>
 
+<sc-if value="{{ isTeam }}" hint-placeholder-val="{{ false }}">
+<main class="cf-fade" style="padding:36px 28px 80px;max-width:1080px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:6px;padding:26px 28px;border-radius:24px;background:var(--color-accent-100)">
+    <div style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Solo visible para ti · CEO</div>
+    <h1 style="margin:0">Equipo</h1>
+    <p style="margin:0;font-size:14px;color:var(--color-accent-800);max-width:700px;text-wrap:pretty">Invita a entrenadores a usar la app. Cada uno gestiona sus propios clientes, agenda y mensajes, y empieza con una copia de tu biblioteca (alimentos, recetas, presets y equivalencias). Sus asesorados ven la marca CientiFitness con el nombre y el WhatsApp de su entrenador.</p>
+  </div>
+  <sc-if value="{{ teamNoSql }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:14px">Falta preparar la base de datos: ejecuta el archivo <strong>equipo.sql</strong> en Supabase (SQL Editor → New query → Run) y vuelve a abrir esta sección.</div></sc-if>
+  <section style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:17px">Invitar entrenador</span><span style="font-size:13px;color:var(--color-neutral-700)">El WhatsApp que pongas aquí es el que verán sus asesorados.</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px">
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Nombre<input class="input" value="{{ tiName }}" onChange="{{ onTiName }}" placeholder="Ej: Ana Romero"></label>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Email<input class="input" type="email" value="{{ tiEmail }}" onChange="{{ onTiEmail }}" placeholder="ana@email.com"></label>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">WhatsApp<input class="input" type="tel" value="{{ tiPhone }}" onChange="{{ onTiPhone }}" placeholder="+34 600 000 000"></label>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <button class="btn btn-primary" onClick="{{ tiCreate }}" style="min-height:40px">{{ tiCreateLabel }}</button>
+      <button class="btn btn-secondary" onClick="{{ tiInvite }}" style="min-height:40px">Invitar por email</button>
+      <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace para que la cree (Supabase solo deja unos pocos por hora).</span>
+    </div>
+    <sc-if value="{{ taShow }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px;border-radius:16px;background:#e3f4ea;color:#1d4d33;display:flex;flex-direction:column;gap:10px">
+        <span style="font-weight:800">{{ taTitle }}</span>
+        <div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:14px"><span>App</span><strong style="overflow-wrap:anywhere">{{ taUrl }}</strong><span>Email</span><strong style="overflow-wrap:anywhere">{{ taEmail }}</strong><span>Contraseña</span><strong style="font-variant-numeric:tabular-nums;letter-spacing:.04em">{{ taPass }}</strong></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-primary" onClick="{{ taWa }}">Enviar por WhatsApp</button><button class="btn btn-secondary" onClick="{{ taCopy }}">Copiar</button><button class="btn btn-ghost" onClick="{{ taClose }}">Cerrar</button></div>
+      </div>
+    </sc-if>
+  </section>
+  <section style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:8px 20px 12px;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:baseline;gap:10px;padding:12px 0"><span style="font-weight:800;font-size:17px;margin-right:auto">Entrenadores</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ teamCount }}</span></div>
+    <sc-if value="{{ teamLoading }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding:8px 0 12px">Cargando…</span></sc-if>
+    <sc-for list="{{ teamRows }}" as="r" hint-placeholder-count="2">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:14px 0;border-top:1px solid var(--color-divider);opacity:{{ r.op }}">
+        <span style="width:40px;height:40px;border-radius:50%;background:{{ r.avBg }};color:{{ r.avFg }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none">{{ r.ini }}</span>
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 200px;min-width:0">
+          <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-weight:700;font-size:15px">{{ r.title }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ r.roleBg }};color:{{ r.roleFg }}">{{ r.role }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ r.stBg }};color:{{ r.stFg }}">{{ r.stLabel }}</span></span>
+          <span style="font-size:12px;color:var(--color-neutral-700);overflow-wrap:anywhere">{{ r.email }}</span>
+        </div>
+        <input class="input" value="{{ r.name }}" onChange="{{ r.onName }}" placeholder="Nombre" aria-label="Nombre" style="width:170px;min-height:36px;font-size:13px">
+        <input class="input" type="tel" value="{{ r.phone }}" onChange="{{ r.onPhone }}" placeholder="WhatsApp" aria-label="WhatsApp" style="width:150px;min-height:36px;font-size:13px">
+        <sc-if value="{{ r.dirty }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ r.save }}" style="min-height:36px;font-size:13px">Guardar</button></sc-if>
+        <sc-if value="{{ r.notOwner }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ r.resetPass }}" style="font-size:13px">Nueva contraseña</button><button class="btn btn-secondary" onClick="{{ r.toggle }}" style="font-size:13px;color:{{ r.toggleFg }}">{{ r.toggleLabel }}</button></sc-if>
+      </div>
+    </sc-for>
+    <sc-if value="{{ teamNoSql }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding:4px 0 12px">La lista aparecerá cuando ejecutes equipo.sql.</span></sc-if>
+    <sc-if value="{{ teamEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding:4px 0 12px">Aún no has invitado a ningún entrenador.</span></sc-if>
+  </section>
+</main>
+</sc-if>
+
 <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 80px;max-width:1280px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
-  <h1 style="margin:0">Biblioteca</h1>
-  <div style="display:flex;gap:6px">
+  <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><h1 style="margin:0;margin-right:auto">Biblioteca</h1><sc-if value="{{ libSync }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ libPull }}" style="min-height:38px">Traer novedades de CientiFitness</button></sc-if></div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px">
     <sc-for list="{{ libTabs }}" as="t" hint-placeholder-count="2">
       <button onClick="{{ t.go }}" style="font:inherit;font-weight:700;font-size:15px;padding:9px 16px;background:{{ t.bd }};border:0;border-radius:999px;color:{{ t.fg }};cursor:pointer">{{ t.label }}</button>
     </sc-for>
@@ -1437,7 +1542,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <sc-if value="{{ evRepOn }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Número de citas<input class="input" type="number" min="2" max="26" value="{{ evRepN }}" onChange="{{ onEvRepN }}"></label></sc-if>
         </div>
       </sc-if>
-      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Contexto y notas<textarea class="input" placeholder="Objetivo de la sesión, qué revisar, material a preparar…" value="{{ evNotes }}" onChange="{{ onEvNotes }}"></textarea></label>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Contexto y notas · solo para ti<textarea class="input" placeholder="Objetivo de la sesión, qué revisar, material a preparar…" value="{{ evNotes }}" onChange="{{ onEvNotes }}"></textarea></label>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Indicaciones para el asesorado · se ven en su app<textarea class="input" placeholder="Ven en ayunas, trae ropa cómoda, ten a mano tu registro de la semana…" value="{{ evPrep }}" onChange="{{ onEvPrep }}"></textarea></label>
       <div style="display:flex;flex-direction:column;gap:8px">
         <span style="font-size:12px;color:var(--color-neutral-700)">Enviar y compartir</span>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
@@ -1686,8 +1792,20 @@ function mealTarget(ml,T){const e=_MT.get(ml);if(e&&e.sg===tsig(T)&&e.v)return e
   const sp=ml.split?num(ml.pp):num(ml.pct),sc=ml.split?num(ml.pc):num(ml.pct),sf=ml.split?num(ml.pf):num(ml.pct);
   const p=T.p*sp/100,c=T.c*sc/100,f=T.f*sf/100;return {p,c,f,k:p*4+c*4+f*9};
 }
-const rg=(g,f)=>g<=0?0:f.k>=300?Math.max(1,Math.round(g)):Math.max(5,Math.round(g/5)*5);
-function solve(o,t,mode,FM){
+const rg=(g,f,rd)=>{if(g<=0)return 0;if(rd==='exact'||g<10)return Math.max(1,Math.round(g));const q=g/5;return 5*(rd==='up'?Math.ceil(q-1e-9):rd==='down'?Math.max(2,Math.floor(q+1e-9)):Math.round(q));};
+const DTY=[['auto','Auto · compensa',0],['normal','Normal',0],['refeed','Refeed',20],['recorte','Recorte',-15],['descanso','Descanso',-10]];
+const DTYC={auto:['var(--color-neutral-100)','var(--color-neutral-700)','var(--color-accent-300)'],normal:['var(--color-accent-100)','var(--color-accent-800)','var(--color-accent)'],refeed:['var(--carb-bg)','var(--carb-ink)','var(--carb)'],recorte:['var(--prot-bg)','var(--prot-ink)','var(--prot)'],descanso:['var(--fat-bg)','var(--fat-ink)','var(--fat)']};
+function dayRule(ty,k,T){const p=T.p;if(ty==='refeed'||ty==='descanso'){const f=T.f;return {p,c:Math.max(0,(k-p*4-f*9)/4),f};}const rest=Math.max(0,k-p*4),b=(T.c*4+T.f*9)||1;return {p,c:rest*(T.c*4/b)/4,f:rest*(T.f*9/b)/9};}
+function dayPlan(cl,T){const D=(cl.dayT&&cl.dayT.days)||[],fx=[];let any=false;
+  for(let i=0;i<7;i++){const d=D[i];if(!d||!d.type||d.type==='auto'){fx.push(null);continue;}any=true;
+    const m=d.manual?{p:num(d.p),c:num(d.c),f:num(d.f)}:dayRule(d.type,T.k*(1+num(d.pct)/100),T);fx.push({p:R(m.p),c:R(m.c),f:R(m.f),type:d.type});}
+  if(!any||cl.planMode!=='closed')return {adj:false,days:[0,1,2,3,4,5,6].map(()=>({k:T.k,p:T.p,c:T.c,f:T.f,type:'auto'})),avg:T.k,neg:false,na:7};
+  const na=fx.filter(x=>!x).length,rem={p:T.p*7,c:T.c*7,f:T.f*7};fx.forEach(x=>{if(x){rem.p-=x.p;rem.c-=x.c;rem.f-=x.f;}});
+  const neg=na>0&&(rem.p<-1||rem.c<-1||rem.f<-1),au=na?{p:R(Math.max(0,rem.p/na)),c:R(Math.max(0,rem.c/na)),f:R(Math.max(0,rem.f/na)),type:'auto'}:null;
+  const days=fx.map(x=>{const y=x||au;return {...y,k:y.p*4+y.c*4+y.f*9};});
+  return {adj:true,days,avg:days.reduce((a,d)=>a+d.k,0)/7,neg,na};}
+const stab=o=>Array.isArray(o)?'['+o.map(stab).join(',')+']':o&&typeof o==='object'?'{'+Object.keys(o).sort().filter(k=>o[k]!==undefined).map(k=>JSON.stringify(k)+':'+stab(o[k])).join(',')+'}':JSON.stringify(o===undefined?null:o);
+function solve(o,t,mode,FM,rd){
   const S={};
   SLOTS.forEach(([k])=>{S[k]=(o[k]||[]).map(x=>({...x,food:FM[x.fid]})).filter(x=>x.food);});
   S.veg.forEach(x=>{x.g=num(x.g);});
@@ -1701,19 +1819,19 @@ function solve(o,t,mode,FM){
     const size=(s,target)=>{const m=key[s];S[s].forEach(x=>{const v=x.food[m];x.low=v<2;x.g=x.low?0:Math.max(0,target)/v*100;});};
     ['prot','carb','fat'].forEach(s=>S[s].forEach(x=>{x.g=0;}));
     for(let i=0;i<8;i++){size('prot',t.p-vP-avg('carb','p')-avg('fat','p'));size('carb',t.c-vC-avg('prot','c')-avg('fat','c'));size('fat',t.f-vF-avg('prot','f')-avg('carb','f'));}
-    ['prot','carb','fat'].forEach(s=>{S[s].forEach(x=>{x.g=rg(x.g,x.food);});S[s].forEach(x=>addTot(x,1/S[s].length));});
+    ['prot','carb','fat'].forEach(s=>{S[s].forEach(x=>{x.g=rg(x.g,x.food,rd);});S[s].forEach(x=>addTot(x,1/S[s].length));});
   }else{
     ['prot','carb','fat'].forEach(s=>{const ps=S[s].reduce((a,x)=>a+num(x.pct),0);S[s].forEach(x=>{x.sh=ps>0?num(x.pct)/ps:1/S[s].length;x.g=0;});});
     const share=(s,target)=>{const m=key[s];S[s].forEach(x=>{const v=x.food[m];x.low=v<2;x.g=x.low?0:Math.max(0,target*x.sh)/v*100;});};
     for(let i=0;i<8;i++){share('prot',t.p-vP-sum(S.carb,'p')-sum(S.fat,'p'));share('carb',t.c-vC-sum(S.prot,'c')-sum(S.fat,'c'));share('fat',t.f-vF-sum(S.prot,'f')-sum(S.carb,'f'));}
-    ['prot','carb','fat'].forEach(s=>S[s].forEach(x=>{x.g=rg(x.g,x.food);addTot(x);}));
+    ['prot','carb','fat'].forEach(s=>S[s].forEach(x=>{x.g=rg(x.g,x.food,rd);addTot(x);}));
   }
   S.veg.forEach(x=>addTot(x));
   return {S,tot};
 }
 function clientTotals(cl,T,FM){
   const tot={k:0,p:0,c:0,f:0};
-  mealsOf(cl).forEach(ml=>{const r=ml.cheat?mealTarget(ml,T):solve(ml.options[0]||opt(),mealTarget(ml,T),cl.planMode,FM).tot;['k','p','c','f'].forEach(m=>tot[m]+=r[m]);});
+  mealsOf(cl).forEach(ml=>{const r=ml.cheat?mealTarget(ml,T):solve(ml.options[0]||opt(),mealTarget(ml,T),cl.planMode,FM,cl.round).tot;['k','p','c','f'].forEach(m=>tot[m]+=r[m]);});
   return tot;
 }
 
@@ -1757,7 +1875,7 @@ class Component extends DCLogic {
   state={calWide:(()=>{try{return localStorage.getItem('cf-calwide')==='1';}catch(e){return false;}})(),view:'clients',events:[],presets:null,pe:null,peDel:false,pk:null,re:null,reQ:null,calView:'month',calDate:todayISO(),calHide:{},ev:null,evDel:false,calPast:false,gOn:false,gBusy:false,gEvents:[],gLast:null,tab:'calc',libTab:'foods',clients:seed(),foods:[],tpls:seedTpls(),eqGroups:seedGroups(),eqGroupSel:null,collapsed:{},recClosed:{},tdQ:'',tdCat:'Otros',libRecQ:'',activeId:null,clientQuery:'',confirmDel:null,savedAt:null,
     sr:null,srQuery:'',srFilter:'all',srSel:[],srCreate:false,
     nf:{name:'',cat:'Carnes',k:'',p:'',c:'',f:'',al:''},showNewFood:false,foodQuery:'',foodCat:'',
-    td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:'elcientifitness@gmail.com',loginPass:'',loginErr:null,syncErr:false};
+    td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:(()=>{try{return localStorage.getItem('cf-last-email')||'elcientifitness@gmail.com';}catch(e){return 'elcientifitness@gmail.com';}})(),loginPass:'',loginErr:null,syncErr:false};
   componentDidMount(){
     setTimeout(()=>this.initCloud(0),0);
     this._poll=setInterval(()=>this.pullCloud(false),20000);
@@ -1778,23 +1896,52 @@ class Component extends DCLogic {
   }
   afterLogin(sess){
     const coaches=((window.CF_CONFIG||{}).coachEmails||['elcientifitness@gmail.com']).map(x=>x.toLowerCase());
-    if(!coaches.includes(String(sess.user.email||'').toLowerCase())){this._cloud=false;this.setState({auth:'wrong',wrongEmail:sess.user.email||''});return;}
+    const em=String(sess.user.email||'').toLowerCase();this.setState({auth:'loading',loginErr:null});
+    this.sb.from('cf_coaches').select('email,name,phone,role,active').eq('email',em).maybeSingle().then(({data:me,error})=>{let role=null;
+      if(error||!me){if(coaches.includes(em))role='owner';}else if(me.active)role=me.role||'coach';
+      if(!role){this._cloud=false;this.setState({auth:'wrong',wrongEmail:sess.user.email||'',wrongOff:!!(me&&!me.active)});return;}
+      try{localStorage.setItem('cf-last-email',em);}catch(e){}
+      this.setState({me:{email:em,name:(me&&me.name)||'',phone:(me&&me.phone)||'',role}});this.startSession(sess,role);});
+  }
+  startSession(sess,role){
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
       if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});
-        if(!data)this.pushCloud(true);
+        if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
         this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>this.loadChats(),30000);};
       if(data){go();return;}
       this.sb.from('cf_links').select('client_key').ilike('email',(sess.user.email||'').toLowerCase()).limit(1).then(({data:lk})=>{if(lk&&lk.length){location.replace('asesorado.html');return;}go();});
     });
   }
   loadChats(){if(!this._cloud||!this.sb)return;
-    Promise.all([this.sb.from('cf_links').select('client_key,email,name,plan_at').eq('coach_id',this.uid),
+    const lq=()=>this.sb.from('cf_links').select('client_key,email,name,plan_at'+(this._noAg?'':',agenda')).eq('coach_id',this.uid).then(r=>{if(r.error&&!this._noAg&&/agenda/i.test(r.error.message||'')){this._noAg=true;return lq();}return r;});
+    Promise.all([lq(),
       this.sb.from('cf_messages').select('id,client_key,sender,body,created_at,read_at').eq('coach_id',this.uid).order('created_at',{ascending:false}).limit(800)])
-    .then(([l,m])=>{if(l.error||m.error){this.setState({chatErr:true});return;}this.setState({links:l.data||[],msgs:(m.data||[]).reverse(),chatErr:false},()=>{if(this.state.view==='msgs'&&this._selKey)this.markRead(this._selKey);});});}
+    .then(([l,m])=>{if(l.error||m.error){this.setState({chatErr:true});return;}this.setState({links:l.data||[],msgs:(m.data||[]).reverse(),chatErr:false},()=>{if(this.state.view==='msgs'&&this._selKey)this.markRead(this._selKey);this.agendaSoon();});});}
+  agendaSoon(){clearTimeout(this._agT);this._agT=setTimeout(()=>this.syncAgenda(),1500);}
+  syncAgenda(){if(!this._cloud||!this.sb||this._noAg)return;const LK=this.state.links||[],t=todayISO(),coach={name:this.myName(),phone:this.myPhone()};this._ag=this._ag||{};
+    const key=e=>e.date+(e.allDay?'00:00':(e.start||''));
+    LK.forEach(l=>{const k=l.client_key,list=this.state.events.filter(e=>!e.deleted&&!e.g&&e.clientId===k&&e.date>=t&&e.status!=='cancelada'&&e.status!=='realizada'&&e.status!=='noshow'&&e.type!=='tarea').sort((a,b)=>key(a)<key(b)?-1:1).slice(0,4)
+      .map(e=>({id:e.id,date:e.date,start:e.allDay?'':(e.start||''),dur:num(e.dur)||30,allDay:!!e.allDay,type:evTypeLabel(e),mode:e.mode||'presencial',modeLabel:evModeLabel(e),place:e.mode==='presencial'?(e.place||''):'',link:e.mode==='online'?(e.link||''):'',prep:(e.prep||'').trim(),status:e.status||'pendiente'}));
+      const ag={appts:list,coach},sg=stab(ag),prev=this._ag[k]!=null?this._ag[k]:stab(l.agenda||null);if(sg===prev)return;this._ag[k]=sg;
+      this.sb.from('cf_links').update({agenda:ag}).eq('coach_id',this.uid).eq('client_key',k).then(({error})=>{if(error){delete this._ag[k];if(/agenda/i.test(error.message||''))this._noAg=true;}});});}
+  myName(){const m=this.state.me;return (m&&m.name)||'';}
+  myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
+  seedCoach(){const fin=L=>{L=L||{};this._skip=true;this.setState({clients:[],events:[],foods:L.foods||[],tpls:L.tpls||[],eqGroups:L.eqGroups||[],presets:L.presets||null,activeId:null,view:'clients'},()=>this.pushCloud(true));};
+    this.sb.rpc('cf_library').then(({data})=>fin(data),()=>fin(null));}
+  pullLibrary(){if(!this.sb)return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L){this.toast('No se pudo leer la biblioteca de CientiFitness',true);return;}let n=0;
+    const add=(cur,inc)=>{const ids=new Set((cur||[]).map(x=>x.id)),nw=(inc||[]).filter(x=>x&&x.id&&!ids.has(x.id));n+=nw.length;return (cur||[]).concat(nw);};
+    const st=this.state,o={foods:add(st.foods,L.foods),tpls:add(st.tpls,L.tpls),eqGroups:add(st.eqGroups,L.eqGroups)};if(L.presets)o.presets=add(this.presetsList(),L.presets);
+    if(!n){this.toast('Ya tienes todo lo de la biblioteca de CientiFitness');return;}this.setState(o);this.toast(n+(n===1?' elemento nuevo añadido':' elementos nuevos añadidos'));});}
+  loadTeam(){if(!this.sb)return;this.sb.from('cf_coaches').select('email,name,phone,role,active,created_at').order('created_at',{ascending:true}).then(({data,error})=>this.setState({team:error?null:(data||[]),teamErr:error?(error.message||'error'):null}));}
+  callAcc(body,done){if(!this.sb||this.state.accBusy)return;this.setState({accBusy:true});
+    this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify(body)}))
+      .then(r=>r.json().catch(()=>({error:'Respuesta no válida del servidor (¿está subida la carpeta api?)'})))
+      .then(j=>{this.setState({accBusy:false});if(!j||j.error){this.toast(j&&j.error||'No se pudo',true);return;}done(j);})
+      .catch(()=>{this.setState({accBusy:false});this.toast('No se pudo conectar con el servidor',true);});}
   chatSub(){if(this._rt||!this.sb)return;try{this._rt=this.sb.channel('cf-msg-'+this.uid).on('postgres_changes',{event:'*',schema:'public',table:'cf_messages',filter:'coach_id=eq.'+this.uid},()=>this.loadChats()).subscribe();}catch(e){}}
   markRead(key){const un=(this.state.msgs||[]).some(m=>m.client_key===key&&m.sender==='client'&&!m.read_at);if(!un||!this.sb)return;const at=new Date().toISOString();
     this.setState(st=>({msgs:st.msgs.map(m=>m.client_key===key&&m.sender==='client'&&!m.read_at?{...m,read_at:at}:m)}));
@@ -1845,7 +1992,8 @@ class Component extends DCLogic {
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets};ps=ps||snap||this._snap;
+    if(ps.events!==s.events&&this._cloud)this.agendaSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
     if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets){
       if(this._skip){this._skip=false;this.saveLocal();return;}
@@ -1922,7 +2070,7 @@ class Component extends DCLogic {
     };
     {const au=s.auth;v.showLogin=au==='checking'||au==='out'||au==='loading'||au==='wrong';v.loginReady=au==='out';v.loginWrong=au==='wrong';
       v.wrongSwitch=()=>{if(this.sb)this.sb.auth.signOut().then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
-      v.loginMsg=au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso solo para el entrenador.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'#b3361b':'var(--color-neutral-700)';
+      v.loginMsg=au==='wrong'&&s.wrongOff?'La cuenta '+(s.wrongEmail||'')+' tiene el acceso de entrenador desactivado. Habla con CientiFitness para reactivarlo.':au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso para entrenadores de CientiFitness.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'#b3361b':'var(--color-neutral-700)';
       v.loginEmail=s.loginEmail;v.loginPass=s.loginPass;v.onLoginEmail=e=>this.setState({loginEmail:e.target.value});v.onLoginPass=e=>this.setState({loginPass:e.target.value});
       v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();
       v.showLogout=au==='in';v.doLogout=()=>{if(this.sb)this.sb.auth.signOut().then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
@@ -1953,11 +2101,42 @@ class Component extends DCLogic {
           del:()=>{if(s.confirmDel===c.id)this.setState(st=>({clients:st.clients.filter(x=>x.id!==c.id),confirmDel:null}));else this.setState({confirmDel:c.id});}};});
     }
 
+    {const me=s.me||null,own=!!me&&me.role==='owner';v.isOwner=own;v.meLabel=me?(me.name||me.email)+(own?' · CEO':''):'';v.hasMe=!!me;
+      v.nav5={on:s.view==='team'?'1':'0',go:()=>{this.setState({view:'team',confirmDel:null});this.loadTeam();}};
+      v.isTeam=s.view==='team'&&own;v.libSync=!!me&&!own&&s.auth==='in';v.libPull=()=>this.pullLibrary();
+      if(v.isTeam){const TM=s.team,TE=s.teamEdit||{},inv=s.teamInv||{name:'',email:'',phone:''},okE=x=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x),blank={name:'',email:'',phone:''};
+        v.teamNoSql=!!s.teamErr;v.teamLoading=!TM&&!s.teamErr;const nCo=TM?TM.filter(c=>c.role!=='owner').length:0;v.teamCount=TM?nCo+(nCo===1?' entrenador invitado':' entrenadores invitados'):'';v.teamEmpty=!!TM&&nCo===0;
+        const setInv=k=>e=>{const x=e.target.value;this.setState(st=>({teamInv:{...(st.teamInv||blank),[k]:x}}));};
+        v.tiName=inv.name;v.tiEmail=inv.email;v.tiPhone=inv.phone;v.onTiName=setInv('name');v.onTiEmail=setInv('email');v.onTiPhone=setInv('phone');
+        v.tiCreateLabel=s.accBusy?'Creando…':'Crear acceso';
+        const em0=inv.email.trim().toLowerCase(),body0=mode=>({kind:'coach',mode,email:em0,name:inv.name.trim(),phone:inv.phone.trim()});
+        v.tiCreate=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('create'),j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:inv.name.trim(),phone:inv.phone.trim(),reset:j.mode==='reset'},teamInv:blank});this.loadTeam();this.toast(j.mode==='reset'?'Contraseña nueva generada':'Entrenador añadido');});};
+        v.tiInvite=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('invite'),()=>{this.setState({teamInv:blank});this.loadTeam();this.toast('Invitación enviada a '+em0);});};
+        const A=s.teamAcc;v.taShow=!!A;
+        if(A){const url=location.origin+location.pathname.replace(/[^/]*$/,''),first=(A.name||'').trim().split(/\s+/)[0]||'';
+          v.taTitle=A.reset?'Contraseña nueva (la anterior ya no sirve)':'Acceso creado · envíaselo';v.taUrl=url;v.taEmail=A.email;v.taPass=A.pass;
+          const txt='Hola'+(first?' '+first:'')+', ya puedes usar CientiFitness Manager para gestionar a tus clientes.\n\nEntra aquí: '+url+'\nEmail: '+A.email+'\nContraseña: '+A.pass+'\n\nEmpiezas con la biblioteca de alimentos, recetas y presets de CientiFitness.';
+          v.taWa=()=>window.open('https://wa.me/'+waNum(A.phone)+'?text='+encodeURIComponent(txt),'_blank');
+          v.taCopy=()=>{try{navigator.clipboard.writeText(txt);this.toast('Copiado');}catch(e){this.toast('No se pudo copiar',true);}};
+          v.taClose=()=>this.setState({teamAcc:null});}
+        const AV=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']];
+        v.teamRows=(TM||[]).map(c=>{const ed=TE[c.email]||{},nm=ed.name!=null?ed.name:(c.name||''),ph=ed.phone!=null?ed.phone:(c.phone||''),ow=c.role==='owner',av=AV[Math.abs(h32(c.email))%AV.length];
+          const setE=k=>e=>{const x=e.target.value;this.setState(st=>({teamEdit:{...(st.teamEdit||{}),[c.email]:{...((st.teamEdit||{})[c.email]||{}),[k]:x}}}));};
+          return {ini:initials(c.name||c.email),avBg:av[0],avFg:av[1],title:c.name||'Sin nombre',email:c.email,name:nm,phone:ph,onName:setE('name'),onPhone:setE('phone'),
+            role:ow?'CEO':'Entrenador',roleBg:ow?'var(--color-accent)':'var(--color-accent-100)',roleFg:ow?'#fff':'var(--color-accent-800)',
+            stLabel:c.active?'Activo':'Desactivado',stBg:c.active?'#e3f4ea':'var(--color-neutral-200)',stFg:c.active?'#1d6b43':'var(--color-neutral-700)',op:c.active?'1':'.65',
+            dirty:ed.name!=null||ed.phone!=null,notOwner:!ow,
+            save:()=>{this.sb.from('cf_coaches').update({name:nm.trim(),phone:ph.trim()}).eq('email',c.email).then(({error})=>{if(error){this.toast('No se pudo guardar: '+error.message,true);return;}
+              this.setState(st=>{const te={...(st.teamEdit||{})};delete te[c.email];const o={teamEdit:te};if(st.me&&st.me.email===c.email)o.me={...st.me,name:nm.trim(),phone:ph.trim()};return o;},()=>this.agendaSoon());this.loadTeam();this.toast('Datos guardados');});},
+            toggleLabel:c.active?(s.teamOff===c.email?'¿Seguro? Desactivar':'Desactivar'):'Reactivar',toggleFg:c.active?'var(--danger)':'var(--veg-ink)',
+            toggle:()=>{if(c.active&&s.teamOff!==c.email){this.setState({teamOff:c.email});return;}this.sb.from('cf_coaches').update({active:!c.active}).eq('email',c.email).then(({error})=>{this.setState({teamOff:null});if(error){this.toast('No se pudo cambiar: '+error.message,true);return;}this.loadTeam();this.toast(c.active?'Acceso desactivado':'Acceso reactivado');});},
+            resetPass:()=>this.callAcc({kind:'coach',mode:'create',email:c.email},j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:c.name||'',phone:c.phone||'',reset:j.mode==='reset'}});this.toast('Contraseña nueva generada');})};});}}
     const cl=s.clients.find(c=>c.id===s.activeId);
     if(s.view==='client'&&cl){
-      const cc=computeCalc(cl),T=computeTargets(cl,cc),vt=this.vetos(cl);
-      [cl.meals].concat((cl.menus||[]).map(q=>q.meals)).forEach(ms=>{if(ms)regMeals(ms,T);});
-      const tot=clientTotals(cl,T,FM),inPlan=s.tab==='plan';
+      const cc=computeCalc(cl),T=computeTargets(cl,cc),vt=this.vetos(cl),TW=T,DP=dayPlan(cl,T);let TP=T,dvSel=null;
+      if(DP.adj&&cl.menus&&cl.menus.length){const am=cl.menus.find(x=>x.id===cl.activeMenu)||cl.menus[0],ds=am.days.slice().sort();if(ds.length){dvSel=ds.includes(s.dayView)?s.dayView:ds[0];TP=DP.days[dvSel];}}
+      [cl.meals].concat((cl.menus||[]).map(q=>q.meals)).forEach(ms=>{if(ms)regMeals(ms,T);});if(TP!==T)regMeals(mealsOf(cl),TP);
+      const tot=clientTotals(cl,TP,FM),inPlan=s.tab==='plan';
       v.goClients=()=>this.setState({view:'clients'});
       {const AV=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']],av=AV[Math.abs(h32(cl.id))%AV.length];v.cIni=initials(cl.name);v.cAvBg=av[0];v.cAvFg=av[1];}
       v.cName=cl.name;v.onName=e=>{const x=e.target.value;this.updC(n=>{n.name=x;});};
@@ -2059,9 +2238,9 @@ class Component extends DCLogic {
       v.tK=T.k.toLocaleString('es-ES');
       v.stripDisp='block';v.stripCls=inPlan?'cf-hud':'';
       const stC=(r,d,u)=>{const x=R(Math.abs(d)).toLocaleString('es-ES')+' '+u;if(r>1.05)return {fg:'#a8321a',bar:'#e0664f',bg:'#fff1ee',bd:'#f6d3ca',tag:'Te pasas · +'+x};if(r>=0.95)return {fg:'#1d6b43',bar:'#4fb487',bg:'#eaf7f0',bd:'#cdebdb',tag:'Completo ✓'};if(r>=0.85)return {fg:'#8a5a00',bar:'#e2b33c',bg:'#fff8e6',bd:'#f3e2b0',tag:'Queda poco · faltan '+x};return {fg:'#a8321a',bar:'#e0664f',bg:'#fff1ee',bd:'#f6d3ca',tag:'Falta mucho · faltan '+x};};
-      v.strip=[['Proteína','p','prot'],['Hidratos','c','carb'],['Grasas','f','fat']].map(([l,m,mk])=>{const tg=T[m],a=R(tot[m]),r=tg?a/tg:0,S=stC(r,a-tg,'g');
+      v.strip=[['Proteína','p','prot'],['Hidratos','c','carb'],['Grasas','f','fat']].map(([l,m,mk])=>{const tg=(inPlan?TP:T)[m],a=R(tot[m]),r=tg?a/tg:0,S=stC(r,a-tg,'g');
         return inPlan?{label:l,val:a+' / '+tg+' g',tag:S.tag,w:Math.min(100,r*100)+'%',bar:S.bar,fg:S.fg,bg:S.bg,bd:S.bd,dot:SW[mk]}:{label:l,val:tg+' g',tag:'Objetivo diario',w:'100%',bar:SW[mk],fg:'var(--color-neutral-600)',bg:'#fff',bd:'var(--color-divider)',dot:SW[mk]};});
-      if(inPlan){const r=T.k?tot.k/T.k:0,S=stC(r,tot.k-T.k,'kcal');v.strip.unshift({label:'Kcal',val:R(tot.k).toLocaleString('es-ES')+' / '+T.k.toLocaleString('es-ES'),tag:S.tag,w:Math.min(100,r*100)+'%',bar:S.bar,fg:S.fg,bg:S.bg,bd:S.bd,dot:'var(--color-accent)'});}
+      if(inPlan){const r=TP.k?tot.k/TP.k:0,S=stC(r,tot.k-TP.k,'kcal');v.strip.unshift({label:'Kcal',val:R(tot.k).toLocaleString('es-ES')+' / '+TP.k.toLocaleString('es-ES'),tag:S.tag,w:Math.min(100,r*100)+'%',bar:S.bar,fg:S.fg,bg:S.bg,bd:S.bd,dot:'var(--color-accent)'});}
       const setCalc=k=>val=>this.updC(n=>{n.calc[k]=val;});
       const setTg=k=>val=>this.updC(n=>{n.tg[k]=val;});
       const ev=fn=>e=>fn(e.target.value);
@@ -2100,14 +2279,40 @@ class Component extends DCLogic {
         v.macroWarnText=cl.tg.macroMode==='pct'?'Los porcentajes suman '+pcs+'%. Deben sumar 100%.':'Proteína y grasa superan las kcal objetivo; no quedan kcal para hidratos.';
       }
 
-      if(s.tab==='plan'){
+      if(s.tab==='plan'){const T=TP;
         const open=cl.planMode==='open';
+        {const rd=cl.round||'near';v.roundSeg=this.seg([['exact','Exacto'],['near','Más cercano'],['up','Al alza'],['down','A la baja']],rd,x=>this.updC(n=>{n.round=x;}));
+          v.roundNote=rd==='exact'?'Cantidades al gramo, sin redondear.':(rd==='up'?'Saltos de 5 g hacia arriba':rd==='down'?'Saltos de 5 g hacia abajo':'Saltos de 5 g al valor más cercano')+'. Por debajo de 10 g se quedan al gramo.';}
         v.planModeSeg=this.seg([['open','Intercambios'],['closed','Menú cerrado']],cl.planMode,x=>this.updC(n=>{n.planMode=x;if(x==='closed')ensureMenus(n);}));
         v.modeHelp=open?'Cada alimento de una columna es una alternativa: su cantidad cubre sola el macro de la comida.':'Los alimentos se combinan entre sí; el % reparte el macro y los gramos se ajustan teniendo en cuenta los macros cruzados.';
         const psum=mealsOf(cl).reduce((a,m)=>a+num(m.pct),0);
         v.distLabel='Reparto '+R(psum)+'%'+(psum!==100?' · se ajusta a 100':'');
         v.distBg=psum===100?'var(--color-neutral-200)':'#fff4dc';v.distFg=psum===100?'var(--color-text)':'#8a5a00';
         v.isClosedPlan=!open;
+        {const D0=(cl.dayT&&cl.dayT.days)||[],kf=x=>R(x).toLocaleString('es-ES');
+          const setDay=(i,fn)=>this.updC(n=>{n.dayT=n.dayT||{};const D=n.dayT.days=n.dayT.days||[];for(let j=0;j<7;j++)D[j]=D[j]||{type:'auto'};fn(D[i]);});
+          const nAdj=D0.filter(d=>d&&d.type&&d.type!=='auto').length;
+          v.dayAdjOpen=!!s.dayAdjOpen&&!open;v.dayAdjChev=v.dayAdjOpen?'rotate(90deg)':'rotate(0deg)';v.dayAdjToggle=()=>this.setState({dayAdjOpen:!s.dayAdjOpen});v.dayAdjOn=DP.adj;
+          v.dayAdjSub=DP.adj?nAdj+(nAdj===1?' día ajustado':' días ajustados')+' · media '+kf(DP.avg)+' kcal/día':'Refeeds, recortes u ondulación de kcal manteniendo el promedio semanal de Necesidades';
+          if(v.dayAdjOpen){const days=DP.days,sm=k=>days.reduce((a,d)=>a+d[k],0),avg=sm('k')/7,diff=avg-TW.k,ok=Math.abs(diff)<15&&!DP.neg;
+            v.daWeekK=kf(TW.k);v.daWeekMac='P '+TW.p+' · C '+TW.c+' · G '+TW.f+' g';v.daWeekTot=kf(TW.k*7)+' kcal';v.daWeekTotMac='P '+kf(TW.p*7)+' · C '+kf(TW.c*7)+' · G '+kf(TW.f*7)+' g';
+            v.daAvgK=kf(avg);v.daAvgMac='P '+R(sm('p')/7)+' · C '+R(sm('c')/7)+' · G '+R(sm('f')/7)+' g';
+            v.daAvgBg=ok?'#e3f4ea':'#fff4dc';v.daAvgFg=ok?'#1d6b43':'#8a5a00';v.daAvgTag=ok?'Cuadra con el promedio semanal':diff>0?'+'+kf(diff)+' kcal/día por encima':'−'+kf(-diff)+' kcal/día por debajo';
+            v.daWarn=DP.neg?'Los días fijados superan el total semanal de algún macro, así que los días en «Auto» se quedan sin margen. Baja algún refeed o añade un recorte.':(DP.na===0&&!ok?'Todos los días están fijados y la media no cuadra. Deja algún día en «Auto» para que compense.':'');v.daHasWarn=!!v.daWarn;
+            const mx=Math.max(TW.k,...days.map(d=>d.k))*1.1||1;v.daAvgPct=(TW.k/mx*100)+'%';
+            const dirC=k=>k>TW.k+10?'var(--carb)':k<TW.k-10?'var(--color-accent)':'var(--color-neutral-400)';
+            v.daBars=days.map((d,i)=>({l:DAYSS[i],k:kf(d.k),h:(d.k/mx*100)+'%',bg:dirC(d.k),op:d.type==='auto'?'.45':'1',ty:d.type==='auto'?'Auto':(DTY.find(q=>q[0]===d.type)||[0,''])[1]}));
+            v.daRows=days.map((d,i)=>{const raw=D0[i]||{type:'auto'},ty=raw.type||'auto',C=DTYC[ty]||DTYC.auto,mn=(cl.menus||[]).find(q=>q.days.includes(i)),isA=ty==='auto',man=!!raw.manual&&!isA,pn=TW.k?R((d.k/TW.k-1)*100):0;
+              const setMac=k=>e=>{const val=e.target.value;setDay(i,x=>{if(!x.manual||!x.type||x.type==='auto'){x.p=String(d.p);x.c=String(d.c);x.f=String(d.f);}if(!x.type||x.type==='auto')x.type='normal';x.manual=true;x[k]=val;});};
+              const clr=x=>{x.manual=false;delete x.p;delete x.c;delete x.f;},rv=k=>String(man&&raw[k]!=null?raw[k]:d[k]);
+              return {day:DAYSF[i],menu:mn?mn.name:'Sin menú',type:ty,types:DTY.map(t=>({id:t[0],name:t[1]})),bg:isA?'var(--color-neutral-100)':'#fff',bd:isA?'transparent':'var(--color-accent-200)',ink:pn>0?'var(--carb-ink)':pn<0?'var(--color-accent-800)':'var(--color-neutral-700)',isAuto:isA,notAuto:!isA,
+                pct:String(man?pn:(raw.pct==null?0:raw.pct)),pctLbl:(pn>0?'+':pn<0?'−':'±')+Math.abs(pn)+' %',k:kf(d.k),
+                p:rv('p'),c:rv('c'),f:rv('f'),onP:setMac('p'),onC:setMac('c'),onF:setMac('f'),isManual:man,
+                onType:e=>{const t=e.target.value,df=DTY.find(q=>q[0]===t);setDay(i,x=>{x.type=t;x.pct=df?df[2]:0;clr(x);});},
+                onPct:e=>{const val=e.target.value;setDay(i,x=>{x.pct=val;clr(x);});},reset:()=>setDay(i,clr)};});
+            const PS=[['Refeed sábado',{5:['refeed',20]}],['Refeed fin de semana',{5:['refeed',20],6:['refeed',20]}],['Ondular ±10 %',{0:['refeed',10],1:['recorte',-10],2:['refeed',10],3:['recorte',-10],4:['refeed',10],5:['recorte',-10]}]];
+            v.daPresets=PS.map(([l,m])=>({label:l,pick:()=>this.updC(n=>{n.dayT={days:[0,1,2,3,4,5,6].map(i=>m[i]?{type:m[i][0],pct:m[i][1],manual:false}:{type:'auto'})};})}));
+            v.daReset=()=>this.updC(n=>{delete n.dayT;});}}
         {const um2=fn=>this.updC(n=>{ensureMenus(n);fn(n);});
         v.addMenu=()=>um2(n=>{const mm={id:uid(),name:'Menú '+String.fromCharCode(65+n.menus.length),days:[],meals:JSON.parse(JSON.stringify(mealsOf(n)))};mm.meals.forEach(q=>{q.id=uid();q.cheat=false;});n.menus.push(mm);n.activeMenu=mm.id;});
         if(!open&&cl.menus&&cl.menus.length){const act=cl.menus.find(x=>x.id===cl.activeMenu)||cl.menus[0];
@@ -2121,7 +2326,14 @@ class Component extends DCLogic {
           v.canDelMenu=cl.menus.length>1;
           v.delMenu=()=>um2(n=>{n.menus=n.menus.filter(q=>q.id!==act.id);n.activeMenu=n.menus[0].id;});
           v.dupMenu=()=>um2(n=>{const a=n.menus.find(q=>q.id===act.id),cp=JSON.parse(JSON.stringify(a));cp.id=uid();cp.name=a.name+' (copia)';cp.days=[];cp.meals.forEach(q=>{q.id=uid();});n.menus.push(cp);n.activeMenu=cp.id;});
-        }else{v.menuTabs=[];v.dayChips=[];v.unassigned=false;v.canDelMenu=false;v.menuName='';}}
+        {const DD=(cl.dayT&&cl.dayT.days)||[],tset=[...new Set(act.days.map(d=>(DD[d]&&DD[d].type)||'auto'))];v.hasMenuDays=act.days.length>0;
+            v.menuType=tset.length===1?tset[0]:'mixed';v.menuTypeOpts=(tset.length>1?[{id:'mixed',name:'Varios'}]:[]).concat(DTY.map(t=>({id:t[0],name:t[1]})));
+            v.onMenuType=e=>{const t=e.target.value,df=DTY.find(q=>q[0]===t);if(!df)return;um2(n=>{n.dayT=n.dayT||{};const D=n.dayT.days=n.dayT.days||[];for(let j=0;j<7;j++)D[j]=D[j]||{type:'auto'};n.menus.find(q=>q.id===act.id).days.forEach(d=>{D[d]={type:t,pct:df[2],manual:false};});});};
+            v.showDayView=false;
+            if(DP.adj&&act.days.length){const parts=[];act.days.slice().sort().forEach(d=>{const t=DP.days[d],sg=tsig(t);let p=parts.find(q=>q.sg===sg);if(!p){p={sg,t,days:[]};parts.push(p);}p.days.push(d);});
+              v.showDayView=true;v.dayViewNote=parts.length>1?'Este menú tiene días con objetivos distintos y los gramos se recalculan para cada uno. Elige qué día ver:':'Objetivo de este menú con el ajuste por día:';
+              v.dayViewChips=parts.map(p=>{const on=p.days.includes(dvSel);return {label:p.days.map(d=>DAYSS[d]).join(', ')+' · '+p.t.k.toLocaleString('es-ES')+' kcal',sub:'P '+p.t.p+' · C '+p.t.c+' · G '+p.t.f+' g',bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)',pick:()=>this.setState({dayView:p.days[0]})};});}}
+        }else{v.menuTabs=[];v.dayChips=[];v.unassigned=false;v.canDelMenu=false;v.menuName='';v.hasMenuDays=false;v.showDayView=false;}}
         v.addMeal=()=>this.updC(n=>{mealsOf(n).push(meal('Comida '+(mealsOf(n).length+1),0));});
         v.noMeals=mealsOf(cl).length===0;
         const MLS=mealsOf(cl),MT=regMeals(MLS,T),dropT=s.dropT,FL=this.allFoodsN();
@@ -2150,7 +2362,7 @@ class Component extends DCLogic {
           const um=fn=>this.updC(n=>{fn(mealsOf(n).find(x=>x.id===ml.id));});
           const setM=k=>e=>{const x=e.target.value;um(m=>{m[k]=x;});};
           const o0=ml.options[0]||opt();
-          const r0=solve(o0,mt,cl.planMode,FM);
+          const r0=solve(o0,mt,cl.planMode,FM,cl.round);
           const mk=(o,sl,x)=>{const f=x.food,fl=this.flag(f,vt),ik='i:'+x.id;
             return {name:f.name,g:x.g,isVeg:sl==='veg',notVeg:sl!=='veg',flag:fl,bg:MBG[sl],ink:MINK[sl],sw:SW[sl],
               meta:fl?'Contiene alérgeno vetado':x.low?'No aporta '+MLBL[sl].toLowerCase():R(x.g*f.k/100)+' kcal · P '+R(x.g*f.p/100)+' · C '+R(x.g*f.c/100)+' · G '+R(x.g*f.f/100),metaFg:fl?'#b3361b':x.low?'var(--color-accent-700)':'var(--color-neutral-700)',
@@ -2186,7 +2398,7 @@ class Component extends DCLogic {
             cheatLabel:ml.cheat?'Quitar comida libre':'Comida libre',toggleCheat:()=>um(m=>{m.cheat=!m.cheat;}),
             cheatText:'~'+R(mt.k)+' kcal orientativas. El cliente come libremente; se contabiliza como el objetivo de la comida.',
             addOption:()=>um(m=>{m.options.push(opt());})};
-          res.options=ml.options.map((o,oi)=>{const r=oi===0?r0:solve(o,mt,cl.planMode,FM);const al=ml.cheat?[]:alertsFor(r)(mt);if(oi===0)nAl+=al.length;
+          res.options=ml.options.map((o,oi)=>{const r=oi===0?r0:solve(o,mt,cl.planMode,FM,cl.round);const al=ml.cheat?[]:alertsFor(r)(mt);if(oi===0)nAl+=al.length;
             const colX=sl=>{const k='c:'+o.id+':'+sl;return {cDragOver:e=>{if(isD('item')){e.preventDefault();setDrop(k);}},cDrop:e=>{if(isD('item')){e.preventDefault();const d=this._drag;this._drag=null;this.setState({dropT:null});moveItem(d,{mealId:ml.id,optId:o.id,slot:sl,beforeId:null});}},cOut:dropT===k?'2px dashed var(--color-accent)':'2px solid transparent'};};
             const op={title:'Opción '+String.fromCharCode(65+oi),kcalLine:R(r.tot.k)+' / '+R(mt.k)+' kcal · P '+R(r.tot.p)+' · C '+R(r.tot.c)+' · G '+R(r.tot.f),alerts:al,
               canRemove:ml.options.length>1,remove:()=>um(m=>{m.options=m.options.filter(q=>q.id!==o.id);}),
@@ -2210,7 +2422,7 @@ class Component extends DCLogic {
         v.ringMain=[RG[0]];v.ringMacros=RG.slice(1);
         v.panelAlerts=RG.filter(g=>g.k!=='ok').map(g=>({txt:g.label+': '+g.stLabel.charAt(0).toLowerCase()+g.stLabel.slice(1),bg:g.stBg,fg:g.stFg}));
         v.panelOk=v.panelAlerts.length===0;
-        v.panelNote=(open?'Totales con la opción A de cada comida.':'Totales del menú activo.')+(nAl?' Hay '+nAl+(nAl===1?' aviso':' avisos')+' en las comidas.':'');
+        v.panelNote=(open?'Totales con la opción A de cada comida.':'Totales del menú activo'+(DP.adj&&dvSel!=null?' · '+DAYSF[dvSel]:'')+'.')+(nAl?' Hay '+nAl+(nAl===1?' aviso':' avisos')+' en las comidas.':'');
       }
 
       if(s.tab==='view'){
@@ -2225,9 +2437,9 @@ class Component extends DCLogic {
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
         const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
         const LN=x=>{const q=x.g/100,F=x.food;return {name:F.name,g:x.g+' g',id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};};
-        const buildMeal=(ml,mul)=>{const mt=mealTarget(ml,T);
+        const buildMeal=(ml,mul,TT)=>{const mt=mealTarget(ml,TT||T);
           if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
-          const rs=ml.options.map(o=>solve(o,mt,cl.planMode,FM));
+          const rs=ml.options.map(o=>solve(o,mt,cl.planMode,FM,cl.round));
           if(mul)rs.forEach(r=>SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{if(x.g)addShop(x,mul);})));
           const multi=rs.length>1,txt=['*'+ml.name.toUpperCase()+'* (~'+R(mt.k)+' kcal)'];
           rs.forEach((r,i)=>{if(multi)txt.push('Opción '+Lt(i)+':');
@@ -2237,11 +2449,17 @@ class Component extends DCLogic {
             blocks:open?SLOTS.filter(([sl])=>r.S[sl].length).map(([sl,l])=>({sw:SW[sl],ink:MINK[sl],label:sl==='veg'||r.S[sl].length<2?l:l+' · elige 1',lines:r.S[sl].map(LN)}))
               :[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Menú',lines:[].concat(...SLOTS.map(([sl])=>r.S[sl].map(LN)))}]}))};};
         const byMenu=!open&&cl.menus&&cl.menus.length;
-        const groups=byMenu?cl.menus.map(mn=>{const mul=s.shopDays===7?mn.days.length:(mn.id===cl.activeMenu?1:0);return {hasTitle:true,title:mn.name,days:daysLabel(mn.days),dayIdx:mn.days,meals:mn.meals.map(ml=>buildMeal(ml,mul))};})
-          :[{hasTitle:false,title:'',days:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
+        const kLineOf=t=>t.k.toLocaleString('es-ES')+' kcal · P '+t.p+' · C '+t.c+' · G '+t.f+' g';
+        const groups=byMenu?[].concat(...cl.menus.map(mn=>{const ds=mn.days.slice().sort(),parts=[];
+            if(DP.adj)ds.forEach(d=>{const t=DP.days[d],sg=tsig(t);let p=parts.find(q=>q.sg===sg);if(!p){p={sg,t,days:[]};parts.push(p);}p.days.push(d);});
+            if(!parts.length)parts.push({t:T,days:ds});
+            return parts.map((p,pi)=>{const mul=s.shopDays===7?p.days.length:(mn.id===cl.activeMenu&&pi===0?1:0);regMeals(mn.meals,p.t);
+              const tys=DP.adj?[...new Set(p.days.map(d=>DP.days[d].type))].filter(x=>x!=='auto').map(x=>(DTY.find(q=>q[0]===x)||[0,''])[1]):[];
+              return {hasTitle:true,title:mn.name+(tys.length?' · '+tys.join(' / '):''),days:daysLabel(p.days),dayIdx:p.days,T:DP.adj?{k:p.t.k,p:p.t.p,c:p.t.c,f:p.t.f}:undefined,kLine:DP.adj?kLineOf(p.t):'',meals:mn.meals.map(ml=>buildMeal(ml,mul,p.t))};});}))
+          :[{hasTitle:false,title:'',days:'',kLine:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
         v.vGroups=groups;
         // versions & sending
-        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes]));
+        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[])));
         const vers=cl.versions||[],lastV=vers[vers.length-1],dirty=!lastV||lastV.hash!==hash;
         v.verStatus=!lastV?'Sin guardar':dirty?'Cambios sin guardar':'v'+lastV.n+' guardada';
         v.verBg=dirty?'#fff4dc':'#e3f4ea';v.verFg=dirty?'#8a5a00':'#1d6b43';
@@ -2251,9 +2469,9 @@ class Component extends DCLogic {
         const buildText=(nV,wa)=>{const tl=[],fn=(cl.name||'').split(' ')[0];
           tl.push('Hola '+fn+', te envío tu plan nutricional de CientiFitness (v'+nV+', '+new Date().toLocaleDateString('es-ES')+').');
           tl.push('Objetivo diario: '+T.k.toLocaleString('es-ES')+' kcal · P '+T.p+' g · C '+T.c+' g · G '+T.f+' g');
-          groups.forEach(g=>{if(g.hasTitle)tl.push('','━━ '+g.title.toUpperCase()+' · '+g.days+' ━━');g.meals.forEach(mm=>{tl.push('');tl.push(...mm.txt);});});
+          groups.forEach(g=>{if(g.hasTitle)tl.push('','━━ '+g.title.toUpperCase()+' · '+g.days+' ━━');if(g.kLine)tl.push(g.kLine);g.meals.forEach(mm=>{tl.push('');tl.push(...mm.txt);});});
           if((cl.notes||'').trim())tl.push('','Notas:',cl.notes.trim());
-          tl.push('','Cualquier duda, escríbeme por WhatsApp al '+TRAINER_PHONE+'.','— CientiFitness');
+          {const ph0=this.myPhone(),nm0=this.myName();tl.push('',ph0?'Cualquier duda, escríbeme por WhatsApp al '+ph0+'.':'Cualquier duda, escríbeme por el chat de la app.','— '+(nm0?nm0+' · CientiFitness':'CientiFitness'));}
           const out=tl.join('\n');return wa?out:out.replace(/\*/g,'');};
         const email=(cl.email||'').trim();let ph=(cl.phone||'').replace(/\D/g,'');if(ph.length===9)ph='34'+ph;
         const logSend=(ch,nV)=>this.updC(n=>{n.sends=(n.sends||[]).concat([{at:Date.now(),ch,v:nV}]);});
@@ -2262,7 +2480,7 @@ class Component extends DCLogic {
         v.sendWa=()=>{if(ph.length<10){this.setState({sendMsg:'Añade el WhatsApp del cliente en su ficha (arriba).'});return;}const nV=dirty?saveV():lastV.n;
           window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(buildText(nV,true)),'_blank');logSend('whatsapp',nV);this.setState({sendMsg:null});};
         v.sendTo=(email||'Sin email')+' · '+(cl.phone||'Sin WhatsApp');
-        v.sendNote=s.sendMsg||'Si hay cambios, enviar guarda antes una versión nueva. WhatsApp se abre en tu cuenta ('+TRAINER_PHONE+') con el mensaje listo; el email, en tu gestor de correo.';
+        v.sendNote=s.sendMsg||'Si hay cambios, enviar guarda antes una versión nueva. WhatsApp se abre en tu cuenta ('+(this.myPhone()||'tu número')+') con el mensaje listo; el email, en tu gestor de correo.';
         v.sendWarn=!!s.sendMsg;
         const fdt=x=>new Date(x).toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' '+new Date(x).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
         v.history=vers.map(q=>({at:q.at,label:'v'+q.n+' guardada · '+q.kcal.toLocaleString('es-ES')+' kcal'})).concat((cl.sends||[]).map(q=>({at:q.at,label:'v'+q.v+' enviada por '+(q.ch==='email'?'email':'WhatsApp')}))).sort((a,b)=>b.at-a.at).slice(0,6).map(q=>({label:q.label,at:fdt(q.at)}));
@@ -2280,8 +2498,8 @@ class Component extends DCLogic {
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
             const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
-              groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
-              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:TRAINER_PHONE,
+              groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
+              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});return {d:l.date,w:c.w,bf:c.bf!=null?Math.round(c.bf*10)/10:null,lbm:c.lbm!=null?Math.round(c.lbm*10)/10:null,mm:c.mm!=null?Math.round(c.mm*10)/10:null,per};})};
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
@@ -2453,7 +2671,7 @@ class Component extends DCLogic {
         v.eqSrcs=srcs.map(q=>({key:q.key,label:q.label}));v.eqSrc=cur?cur.key:'';
         v.onEqSrc=e=>{const k=e.target.value;this.setState(st=>({eqd:{...st.eqd,src:k,picks:{}}}));};
         v.eqClose=()=>this.setState({eqd:null});
-        const FL=this.allFoodsN(),r=cur?solve(cur.o,mealTarget(cur.ml,T2),cl.planMode,FM):null,rows=[];
+        const FL=this.allFoodsN(),r=cur?solve(cur.o,mealTarget(cur.ml,T2),cl.planMode,FM,cl.round):null,rows=[];
         if(r)SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{const E=equivsFor(x.food,x.g||100,FL,6,s.eqGroups);rows.push({sl,x,eqs:E.list,man:E.manual});}));
         const picks=s.eqd.picks||{},pick=(id,fid)=>this.setState(st=>({eqd:{...st.eqd,picks:{...(st.eqd.picks||{}),[id]:fid}}}));
         v.eqRows=rows.map(({sl,x,eqs,man})=>{const cp=picks[x.id]||null;return {name:x.food.name,g:x.g?x.g+' g':'',sw:SW[sl],bg:MBG[sl],src:man?'Tus equivalencias':eqs.length?'Automáticas · misma categoría':'Sin equivalencias · créalas en Biblioteca',srcFg:man?'#1d6b43':'var(--color-neutral-600)',
@@ -2614,7 +2832,7 @@ class Component extends DCLogic {
         v.evJitsi=()=>set({link:'https://meet.jit.si/CientiFitness-'+uid()+uid()});
         v.evModeText=d.modeText||'';v.onEvModeText=e=>set({modeText:tv(e)});
         v.evPhoneInfo=cl&&cl.phone?'Llamar a '+(cl.name||'cliente')+' · '+cl.phone:cl?'Añade el WhatsApp/teléfono en la ficha del cliente para verlo aquí.':'Elige un cliente para ver su teléfono.';
-        v.evNotes=d.notes||'';v.onEvNotes=e=>set({notes:tv(e)});
+        v.evNotes=d.notes||'';v.onEvNotes=e=>set({notes:tv(e)});v.evPrep=d.prep||'';v.onEvPrep=e=>set({prep:tv(e)});
         v.evIsNew=!!d._new;v.evReps=[['no','No se repite'],['1','Cada semana'],['2','Cada 2 semanas'],['4','Cada 4 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));
         v.evRepCustom=d._rep==='c';v.evRepEvery=String(d._repEvery||3);v.onEvRepEvery=e=>set({_repEvery:tv(e)});v.evRepUnit=d._repUnit||'w';v.onEvRepUnit=e=>set({_repUnit:tv(e)});
         v.evNextOpts=[['7','+1 semana'],['14','+2 semanas'],['21','+3 semanas'],['28','+4 semanas'],['42','+6 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));

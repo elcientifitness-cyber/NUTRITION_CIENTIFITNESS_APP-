@@ -1,3 +1,4 @@
+-- ⚠ OBSOLETO: ya no lo ejecutes. Usa equipo.sql (permite invitar entrenadores).
 -- CientiFitness · Solo el entrenador puede usar el panel de gestión.
 -- Pega todo esto en Supabase → SQL Editor → New query → Run. Se puede ejecutar más de una vez.
 
