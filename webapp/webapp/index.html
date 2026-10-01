@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800;1,900&display=swap">
 <link rel="stylesheet" href="cf-theme.css">
 <script src="data/alimentos.js"></script>
+<script src="data/recetas.js"></script>
 <script src="config.js"></script>
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
@@ -1247,9 +1248,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;padding:0 16px 16px">
               <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2">
                 <div style="background:var(--color-neutral-100);padding:14px;display:flex;flex-direction:column;gap:8px;border-radius:16px">
-                  <input value="{{ t.name }}" onChange="{{ t.onName }}" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:16px;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0" style-focus="border-bottom-color:var(--color-accent)">
+                  <textarea value="{{ t.name }}" onChange="{{ t.onName }}" title="{{ t.name }}" rows="{{ t.nameRows }}" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:15px;line-height:1.3;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0;width:100%;resize:none;field-sizing:content;min-height:1.3em;overflow:hidden;text-wrap:pretty" style-focus="border-bottom-color:var(--color-accent);outline:none"></textarea>
                   <button onClick="{{ t.edit }}" title="Editar alimentos y cantidades" style="font:inherit;font-size:13px;color:var(--color-neutral-700);text-align:left;border:0;background:transparent;padding:0;cursor:pointer;text-wrap:pretty" style-hover="color:var(--color-accent-700)">{{ t.foods }}</button>
-                  <div style="display:flex;align-items:center;gap:8px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="width:auto;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><span style="font-size:12px;color:var(--color-neutral-600);margin-right:auto">{{ t.meta }}</span><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:12px;padding:6px 12px">Editar</button><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">{{ t.delLabel }}</button></div>
+                  <span style="font-size:12px;color:var(--color-neutral-600)">{{ t.meta }}</span><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="flex:1 1 120px;width:auto;min-width:0;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:12px;padding:6px 12px">Editar</button><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">{{ t.delLabel }}</button></div>
                 </div>
               </sc-for>
             </div>
@@ -1885,12 +1886,12 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
-    if(!cfg||!cfg.url||!cfg.key||cfg.url.indexOf('PEGA')>=0){this.setState({auth:'local'});return;}
-    if(!window.supabase){if((tries||0)>60){this.setState({auth:'local'});return;}setTimeout(()=>this.initCloud((tries||0)+1),100);return;}
+    if(!cfg||!cfg.url||!cfg.key||cfg.url.indexOf('PEGA')>=0){this.setState({auth:'local'},()=>this.seedRecipes());return;}
+    if(!window.supabase){if((tries||0)>60){this.setState({auth:'local'},()=>this.seedRecipes());return;}setTimeout(()=>this.initCloud((tries||0)+1),100);return;}
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
     this.sb.auth.getSession().then(({data})=>{if(data&&data.session)this.afterLogin(data.session);else this.setState({auth:'out'});});
   }
@@ -1907,9 +1908,9 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
-        this._cloud=true;this.setState({auth:'in'});
+        this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
         this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>this.loadChats(),30000);};
       if(data){go();return;}
@@ -1928,9 +1929,12 @@ class Component extends DCLogic {
       .map(e=>({id:e.id,date:e.date,start:e.allDay?'':(e.start||''),dur:num(e.dur)||30,allDay:!!e.allDay,type:evTypeLabel(e),mode:e.mode||'presencial',modeLabel:evModeLabel(e),place:e.mode==='presencial'?(e.place||''):'',link:e.mode==='online'?(e.link||''):'',prep:(e.prep||'').trim(),status:e.status||'pendiente'}));
       const ag={appts:list,coach},sg=stab(ag),prev=this._ag[k]!=null?this._ag[k]:stab(l.agenda||null);if(sg===prev)return;this._ag[k]=sg;
       this.sb.from('cf_links').update({agenda:ag}).eq('coach_id',this.uid).eq('client_key',k).then(({error})=>{if(error){delete this._ag[k];if(/agenda/i.test(error.message||''))this._noAg=true;}});});}
+  seedRecipes(n){const L=window.CF_RECIPES;if(!L||!L.list){if((n||0)<20)setTimeout(()=>this.seedRecipes((n||0)+1),500);return;}if(this.state.recSeed===L.v)return;
+    const T=this.state.tpls||[],ids=new Set(T.map(t=>t.id)),nm=new Set(T.map(t=>norm(t.name))),add=L.list.filter(r=>!ids.has(r.id)&&!nm.has(norm(r.name))).map(r=>JSON.parse(JSON.stringify(r)));
+    this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){const fin=L=>{L=L||{};this._skip=true;this.setState({clients:[],events:[],foods:L.foods||[],tpls:L.tpls||[],eqGroups:L.eqGroups||[],presets:L.presets||null,activeId:null,view:'clients'},()=>this.pushCloud(true));};
+  seedCoach(){const fin=L=>{L=L||{};this._skip=true;this.setState({clients:[],events:[],foods:L.foods||[],tpls:L.tpls||[],eqGroups:L.eqGroups||[],presets:L.presets||null,activeId:null,view:'clients',recSeed:null},()=>{this.pushCloud(true);this.seedRecipes();});};
     this.sb.rpc('cf_library').then(({data})=>fin(data),()=>fin(null));}
   pullLibrary(){if(!this.sb)return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L){this.toast('No se pudo leer la biblioteca de CientiFitness',true);return;}let n=0;
     const add=(cur,inc)=>{const ids=new Set((cur||[]).map(x=>x.id)),nw=(inc||[]).filter(x=>x&&x.id&&!ids.has(x.id));n+=nw.length;return (cur||[]).concat(nw);};
@@ -1954,7 +1958,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -1965,7 +1969,7 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
         this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
@@ -1980,7 +1984,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2566,7 +2570,7 @@ class Component extends DCLogic {
       v.foodRows=rows.map(f=>({name:f.name,al:f.al,cat:f.cat,macro:MLBL[mainMacro(f)],mbg:MBG[mainMacro(f)],mink:MINK[mainMacro(f)],kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f}));
       v.libRecQ=s.libRecQ;v.onLibRecQ=e=>this.setState({libRecQ:e.target.value});
       v.recGroupsLib=this.recGroups(s.libRecQ,FM,tp=>{const names=[];(tp.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FM[x.fid])names.push(FM[x.fid].name);})));
-        return {name:tp.name,foods:names.join(' · '),meta:(tp.opts||[]).length+((tp.opts||[]).length===1?' opción':' opciones'),cat:tp.cat||guessCat(tp.name),cats:RCATS,
+        return {name:tp.name,nameRows:String(Math.max(1,Math.min(5,Math.ceil((tp.name||'').length/26)))),foods:names.join(' · '),meta:(tp.opts||[]).length+((tp.opts||[]).length===1?' opción':' opciones'),cat:tp.cat||guessCat(tp.name),cats:RCATS,
           onCat:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,cat:x}:q)}));},
           onName:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,name:x}:q)}));},
           del:()=>{if(s.recDel!==tp.id){this.setState({recDel:tp.id});return;}this.setState(st=>({tpls:st.tpls.filter(x=>x.id!==tp.id),recDel:null}));this.toast('Receta eliminada');},delLabel:s.recDel===tp.id?'¿Seguro?':'Eliminar',
