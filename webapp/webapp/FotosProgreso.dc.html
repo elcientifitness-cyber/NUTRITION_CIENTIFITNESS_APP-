@@ -34,7 +34,7 @@
 </section>
 
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
-<x-import component-from-global-scope="CFPortal" from="./cf-lib.js" hint-size="0px,0px">
+<x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
 <div style="position:fixed;inset:0;z-index:1300;background:rgba(18,32,46,.6);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
   <div style="width:min(1240px,100%);background:#fff;border-radius:clamp(0px,2vw,24px);box-shadow:var(--shadow-md);display:flex;flex-direction:column;overflow:hidden">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:1px solid var(--color-divider)">
@@ -133,7 +133,7 @@
 </sc-if>
 
 <sc-if value="{{ hasView }}" hint-placeholder-val="{{ false }}">
-<x-import component-from-global-scope="CFPortal" from="./cf-lib.js" hint-size="0px,0px">
+<x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
 <div onClick="{{ closeView }}" style="position:fixed;inset:0;z-index:1320;background:rgba(10,18,26,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));font-family:var(--font-body)">
   <img src="{{ vUrl }}" alt="{{ vLabel }}" onClick="{{ stop }}" style="max-width:100%;max-height:calc(100% - 76px);object-fit:contain;border-radius:12px;display:block">
   <div onClick="{{ stop }}" style="display:flex;align-items:center;gap:8px;color:#fff;flex-wrap:wrap;justify-content:center">

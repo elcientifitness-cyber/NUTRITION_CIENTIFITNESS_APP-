@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="manifest" href="manifest.json">
+<script>if(/^https?:$/.test(location.protocol)){var l=document.createElement("link");l.rel="manifest";l.href="manifest.json";document.head.appendChild(l);}</script>
 <meta name="theme-color" content="#1180c2">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="icon" href="assets/icon-192.png">
@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CientiFitness">
 <script>if(/type=(invite|recovery)/.test(location.hash))location.replace('asesorado.html'+location.hash);</script>
 <script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#1180c2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1180c2"/><text x="50" y="62" text-anchor="middle" font-family="sans-serif" font-style="italic" font-weight="900" font-size="34" fill="#fff">CF</text></svg></template>
 </head>
 <body>
 <x-dc>
@@ -25,7 +26,6 @@
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://accounts.google.com/gsi/client" async></script>
 <style>
 body{margin:0}
 a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-600)}
@@ -526,13 +526,16 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
         <sc-if value="{{ m.isCustom }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;border:1px solid var(--color-divider)">
-            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:4px">Atajos</span><sc-for list="{{ m.compPresets }}" as="cq" hint-placeholder-count="4"><button onClick="{{ cq.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;border:1.5px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer" style-hover="border-color:var(--color-accent-300)">{{ cq.label }}</button></sc-for></div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 20px">
+            <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between">
+              <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:4px">Atajos</span><sc-for list="{{ m.compPresets }}" as="cq" hint-placeholder-count="4"><button onClick="{{ cq.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;border:1.5px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer" style-hover="border-color:var(--color-accent-300)">{{ cq.label }}</button></sc-for></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700)"><span>Pautar en</span><div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ m.cmodeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:5px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px 20px">
               <sc-for list="{{ m.compSliders }}" as="cs" hint-placeholder-count="3">
-                <div style="display:flex;flex-direction:column;gap:6px;font-size:12px"><div style="display:flex;justify-content:space-between;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-weight:700;color:{{ cs.ink }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ cs.sw }}"></span>{{ cs.label }}</span><span style="font-variant-numeric:tabular-nums;color:var(--color-neutral-700)"><strong style="color:var(--color-text)">{{ cs.lbl }}</strong> · {{ cs.g }}</span></div><input type="range" min="0" max="100" step="5" value="{{ cs.val }}" onChange="{{ cs.on }}" style="width:100%;color:{{ cs.sw }}"></div>
+                <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-weight:700;color:{{ cs.ink }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ cs.sw }}"></span>{{ cs.label }}</span><span style="display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums;color:var(--color-neutral-700)"><span>{{ cs.sub }}</span><input class="input" type="number" min="0" step="1" value="{{ cs.inVal }}" onChange="{{ cs.onIn }}" aria-label="{{ cs.label }}" style="width:62px;min-height:30px;padding:3px 6px;text-align:right;font-weight:700;background:#fff"><strong style="color:var(--color-text);min-width:12px">{{ cs.unit }}</strong></span></div><input type="range" min="0" max="100" step="1" value="{{ cs.val }}" onChange="{{ cs.on }}" aria-label="{{ cs.label }}" style="width:100%;color:{{ cs.sw }}"></div>
               </sc-for>
             </div>
-            <span style="font-size:11px;color:var(--color-neutral-600)">Los tres suman siempre 100 %. El resto de comidas compensa para que el día cuadre.</span>
+            <span style="font-size:11px;color:var(--color-neutral-600);text-wrap:pretty">{{ m.compNote }}</span>
           </div>
         </sc-if>
 
@@ -1323,7 +1326,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-secondary" onClick="{{ tdClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ tdSave }}">Guardar receta</button></div>
     </sc-if>
     <sc-if value="{{ tdIsImport }}" hint-placeholder-val="{{ false }}">
-      <span style="font-size:13px;color:var(--color-neutral-700)">Reemplaza el contenido de la comida. Los gramos se ajustan a sus kcal.</span>
+      <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Marca una o varias recetas. Se añaden a la comida sin borrar lo que ya tiene y los gramos se ajustan a sus kcal.</span>
       <input class="input cf-search" placeholder="Buscar receta o alimento…" value="{{ tdQ }}" onChange="{{ onTdQ }}">
       <div style="overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:120px">
         <sc-for list="{{ tdGroups }}" as="rg2" hint-placeholder-count="3">
@@ -1331,14 +1334,18 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <button onClick="{{ rg2.toggle }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left"><span style="display:flex;transform:{{ rg2.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-weight:700;margin-right:auto">{{ rg2.name }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rg2.count }}</span></button>
             <sc-if value="{{ rg2.open }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
-                <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="width:100%;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:0;border-radius:12px;background:#fff;font:inherit;color:inherit;text-align:left;cursor:pointer" style-hover="box-shadow:0 0 0 2px var(--color-accent-300)"><span style="font-weight:700">{{ t.name }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.foods }}</span></button></sc-for>
+                <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="width:100%;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid {{ t.bd }};border-radius:12px;background:{{ t.bg }};font:inherit;color:inherit;text-align:left;cursor:pointer" style-hover="box-shadow:0 0 0 2px var(--color-accent-300)"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.ckBd }};background:{{ t.ck }};display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;box-sizing:border-box"><sc-if value="{{ t.ckOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:700">{{ t.name }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.foods }}</span></span></button></sc-for>
               </div>
             </sc-if>
           </div>
         </sc-for>
       </div>
       <sc-if value="{{ tdEmpty }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700);margin:0">No hay recetas que coincidan.</p></sc-if>
-      <div style="display:flex;justify-content:flex-end"><button class="btn btn-secondary" onClick="{{ tdClose }}">Cerrar</button></div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--color-divider)">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:12px;color:var(--color-neutral-700)">Añadir como</span><div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px"><sc-for list="{{ tdHowSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ tdHowNote }}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px"><sc-if value="{{ tdHasSel }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:auto">{{ tdSelLabel }} · <button onClick="{{ tdClear }}" style="font:inherit;font-size:12px;border:0;background:none;color:var(--color-accent-700);text-decoration:underline;cursor:pointer;padding:0">quitar</button></span></sc-if><button class="btn btn-secondary" onClick="{{ tdClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ tdAdd }}" style="opacity:{{ tdAddOp }}">{{ tdAddLabel }}</button></div>
     </sc-if>
   </div>
 </div>
@@ -1744,11 +1751,13 @@ function computeTargets(cl,cc){
 const _MT=new WeakMap();
 const tsig=T=>T.k+'|'+T.p+'|'+T.c+'|'+T.f;
 function mealTargets(meals,T){const out={};let rp=T.p,rc=T.c,rf=T.f;
-  meals.forEach(m=>{if(m.comp==='custom'){const k=T.k*num(m.pct)/100,p=k*num(m.cp)/400,c=k*num(m.cc)/400,f=k*num(m.cf)/900;out[m.id]={p,c,f,k:p*4+c*4+f*9,custom:true};rp-=p;rc-=c;rf-=f;}});
+  meals.forEach(m=>{if(m.comp==='custom'){const G=m.cmode==='g',k=T.k*num(m.pct)/100,p=G?num(m.gp):k*num(m.cp)/400,c=G?num(m.gc):k*num(m.cc)/400,f=G?num(m.gf):k*num(m.cf)/900;out[m.id]={p,c,f,k:p*4+c*4+f*9,custom:true};rp-=p;rc-=c;rf-=f;}});
   const au=meals.filter(m=>m.comp!=='custom'),ws=au.reduce((a,m)=>a+num(m.pct),0);
   au.forEach(m=>{const w=ws>0?num(m.pct)/ws:0,p=Math.max(0,rp)*w,c=Math.max(0,rc)*w,f=Math.max(0,rf)*w;out[m.id]={p,c,f,k:p*4+c*4+f*9};});
   out._over={p:rp<-1,c:rc<-1,f:rf<-1};return out;}
 function regMeals(meals,T){const o=mealTargets(meals,T),sg=tsig(T);meals.forEach(m=>_MT.set(m,{sg,v:o[m.id]}));return o;}
+function setCompExact(m,k,x){const val=x===''?0:Math.max(0,Math.min(100,num(x))),a=k==='cc'?'cf':'cc',b=['cp','cc','cf'].find(q=>q!==k&&q!==a),r1=v=>Math.round(v*10)/10;
+  m[k]=x===''?'':val;let va=100-val-num(m[b]),vb=num(m[b]);if(va<0){vb+=va;va=0;}if(vb<0)vb=0;m[a]=r1(va);m[b]=r1(vb);}
 function setComp(m,k,val){const o=['cp','cc','cf'].filter(q=>q!==k),rest=100-val,s=num(m[o[0]])+num(m[o[1]]);if(s<=0){m[o[0]]=Math.round(rest/2);m[o[1]]=rest-m[o[0]];}else{m[o[0]]=Math.round(num(m[o[0]])/s*rest);m[o[1]]=rest-m[o[0]];}m[k]=val;m.comp='custom';}
 function eqMembers(id,groups){const s=new Set();(groups||[]).forEach(G=>{if(G.items.includes(id))G.items.forEach(x=>{if(x!==id)s.add(x);});});return s;}
 function equivsFor(ref,g,FL,n,groups){const mem=eqMembers(ref.id,groups);if(mem.size)return {manual:true,list:equivs(ref,g,FL,n,false,mem)};return {manual:false,list:equivs(ref,g,FL,n,true)};}
@@ -1884,7 +1893,7 @@ class Component extends DCLogic {
     document.addEventListener('visibilitychange',onVis);window.addEventListener('focus',()=>this.pullCloud(false));
     window.addEventListener('beforeunload',e=>{if(this.state.dirty||this.state.saving){e.preventDefault();e.returnValue='';}});
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
-    if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+    if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
     try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,savedAt:d.savedAt||null});}catch(e){}
   }
@@ -2015,7 +2024,10 @@ class Component extends DCLogic {
   evPatch(id,p){this.setState(st=>({events:st.events.map(x=>x.id===id?{...x,...p,updated:Date.now()}:x)}));}
   evSaveDraft(){const d=this.state.ev;if(!d)return false;if(!d.date){this.toast('Indica una fecha',true);return false;}
     const e={...d,updated:Date.now()};delete e._new;delete e._rep;delete e._repN;delete e._repEvery;delete e._repUnit;delete e._nextInt;delete e._nextDays;const add=[];
-    if(d._new&&d._rep&&d._rep!=='no'){const n=Math.max(1,Math.min(52,Math.round(num(d._repN))||1)),ev=Math.max(1,Math.round(num(d._repEvery))||1),u=d._rep==='c'?(d._repUnit||'w'):'w',k=d._rep==='c'?ev:num(d._rep);
+    const dv=(x,df)=>x==null?df:(String(x).trim()===''?NaN:Math.round(num(x)));
+    if(d._new&&d._rep&&d._rep!=='no'){const n0=dv(d._repN,4),ev0=dv(d._repEvery,3);
+      if(!(n0>=1)){this.toast('Indica el número de citas',true);return false;}if(d._rep==='c'&&!(ev0>=1)){this.toast('Indica cada cuánto se repite',true);return false;}
+      const n=Math.min(52,n0),ev=d._rep==='c'?ev0:1,u=d._rep==='c'?(d._repUnit||'w'):'w',k=d._rep==='c'?ev:num(d._rep);
       for(let i=1;i<n;i++){let dt;if(u==='m'){const b=parseD(e.date);dt=isoD(new Date(b.getFullYear(),b.getMonth()+k*i,b.getDate()));}else dt=addDays(e.date,(u==='d'?1:7)*k*i);add.push({...e,id:uid(),date:dt});}}
     this.setState(st=>{const ex=st.events.some(x=>x.id===e.id);return {events:(ex?st.events.map(x=>x.id===e.id?e:x):st.events.concat([e])).concat(add),ev:null,evDel:false};});
     this.toast(add.length?(add.length+1)+' citas agendadas':d._new?'Cita agendada':'Cita actualizada');return true;}
@@ -2378,12 +2390,19 @@ class Component extends DCLogic {
               dragOver:e=>{if(isD('item')){e.preventDefault();e.stopPropagation();setDrop(ik);}},
               drop:e=>{if(isD('item')){e.preventDefault();e.stopPropagation();const d=this._drag;this._drag=null;this.setState({dropT:null});if(d.id!==x.id)moveItem(d,{mealId:ml.id,optId:o.id,slot:sl,beforeId:x.id});}},
               dropSh:dropT===ik?'inset 0 3px 0 0 var(--color-accent),0 1px 2px rgba(31,38,48,.05)':'0 1px 2px rgba(31,38,48,.06)'};};
-          const res={id:ml.id,num:String(mi+1).padStart(2,'0'),name:ml.name,onName:setM('name'),pct:num(ml.pct),
-            onPct:e=>{const x=e.target.value;um(m=>{m.pct=x===''?'':Math.max(0,Math.min(100,num(x)));});},kShare:R(mt.k)+' kcal',
+          const isG=custom&&ml.cmode==='g';const res={id:ml.id,num:String(mi+1).padStart(2,'0'),name:ml.name,onName:setM('name'),pct:num(ml.pct),
+            onPct:e=>{const x=e.target.value;um(m=>{const np=x===''?'':Math.max(0,Math.min(100,num(x)));
+              if(m.comp==='custom'&&m.cmode==='g'&&np!==''){const k0=num(m.gp)*4+num(m.gc)*4+num(m.gf)*9,k1=T.k*np/100;if(k0>0){const fq=k1/k0;m.gp=R(num(m.gp)*fq);m.gc=R(num(m.gc)*fq);m.gf=R(num(m.gf)*fq);}}m.pct=np;});},kShare:R(mt.k)+' kcal',
             compSeg:this.seg([['auto','Equilibrada'],['custom','Personalizada']],custom?'custom':'auto',x=>um(m=>{m.comp=x;if(x==='custom'&&m.cp==null){const k=mt.k||1;m.cp=R(mt.p*400/k);m.cc=R(mt.c*400/k);m.cf=Math.max(0,100-m.cp-m.cc);}})),
-            isCustom:custom&&!ml.cheat,compTag:custom?'P '+R(num(ml.cp))+' · C '+R(num(ml.cc))+' · G '+R(num(ml.cf))+' %':'',
-            compSliders:[['cp','Proteína','prot','p'],['cc','Hidratos','carb','c'],['cf','Grasa','fat','f']].map(([k,l,sl,mm])=>({label:l,val:num(ml[k]),lbl:R(num(ml[k]))+'%',g:R(mt[mm])+' g',ink:MINK[sl],sw:SW[sl],on:e=>{const val=Math.max(0,Math.min(100,num(e.target.value)));um(m=>setComp(m,k,val));}})),
-            compPresets:[['100% hidratos',0,100,0],['Alta en proteína',50,30,20],['Baja en hidratos',40,10,50],['Proteína + hidratos',40,60,0]].map(([l,a,b,c])=>({label:l,pick:()=>um(m=>{m.comp='custom';m.cp=a;m.cc=b;m.cf=c;})})),
+            isCustom:custom&&!ml.cheat,compTag:custom?(isG?'P '+R(mt.p)+' · C '+R(mt.c)+' · G '+R(mt.f)+' g':'P '+R(num(ml.cp))+' · C '+R(num(ml.cc))+' · G '+R(num(ml.cf))+' %'):'',
+            cmodeSeg:this.seg([['pct','%'],['g','Gramos']],isG?'g':'pct',x=>um(m=>{if(x==='g'&&m.cmode!=='g'){m.gp=R(mt.p);m.gc=R(mt.c);m.gf=R(mt.f);m.cmode='g';}
+              else if(x==='pct'&&m.cmode==='g'){const k=mt.k||1,r1=v=>Math.round(v*10)/10;m.cp=r1(mt.p*400/k);m.cc=r1(mt.c*400/k);m.cf=r1(Math.max(0,100-m.cp-m.cc));if(T.k)m.pct=r1(mt.k/T.k*100);m.cmode='pct';}})),
+            compNote:isG?'Gramos fijos en esta comida: sus kcal y su % del día se calculan solos. La barra reparte las mismas kcal entre los macros. El resto de comidas compensa para que el día cuadre.':'Los tres suman siempre 100 %. Al escribir un valor, los hidratos absorben la diferencia (si cambias los hidratos, las grasas). El resto de comidas compensa para que el día cuadre.',
+            compSliders:[['cp','Proteína','prot','p','gp',4],['cc','Hidratos','carb','c','gc',4],['cf','Grasa','fat','f','gf',9]].map(([k,l,sl,mm,gk,kc])=>{const pv=isG?(mt.k?mt[mm]*kc/mt.k*100:0):num(ml[k]);
+              return {label:l,val:pv,ink:MINK[sl],sw:SW[sl],unit:isG?'g':'%',sub:isG?R(pv)+' % · ':R(mt[mm])+' g · ',inVal:isG?(ml[gk]==null?String(R(mt[mm])):String(ml[gk])):(ml[k]==null?'':String(ml[k])),
+                onIn:e=>{const x=e.target.value;um(m=>{if(isG){m[gk]=x===''?'':Math.max(0,num(x));const kk=num(m.gp)*4+num(m.gc)*4+num(m.gf)*9;if(T.k)m.pct=Math.round(kk/T.k*1000)/10;}else setCompExact(m,k,x);});},
+                on:e=>{const val=Math.max(0,Math.min(100,num(e.target.value)));um(m=>{if(isG){const km=mt.k||0,pc={cp:km?mt.p*400/km:0,cc:km?mt.c*400/km:0,cf:km?mt.f*900/km:0};setComp(pc,k,val);m.gp=R(km*pc.cp/400);m.gc=R(km*pc.cc/400);m.gf=R(km*pc.cf/900);}else setComp(m,k,val);});}};}),
+            compPresets:[['100% hidratos',0,100,0],['Alta en proteína',50,30,20],['Baja en hidratos',40,10,50],['Proteína + hidratos',40,60,0]].map(([l,a,b,c])=>({label:l,pick:()=>um(m=>{m.comp='custom';if(m.cmode==='g'){const km=mt.k||0;m.gp=R(km*a/400);m.gc=R(km*b/400);m.gf=R(km*c/900);}else{m.cp=a;m.cc=b;m.cf=c;}})})),
             tgtLine:'Objetivo '+R(mt.k)+' kcal · P '+R(mt.p)+' · C '+R(mt.c)+' · G '+R(mt.f),
             actLine:ml.cheat?'Comida libre':(ml.options.length>1?'Opción A ':'Plan ')+R(r0.tot.k)+' kcal · P '+R(r0.tot.p)+' · C '+R(r0.tot.c)+' · G '+R(r0.tot.f),
             handleDrag:e=>{this._drag={type:'meal',id:ml.id};try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',ml.id);}catch(_){}},dragEnd,
@@ -2395,7 +2414,7 @@ class Component extends DCLogic {
             toggleCollapse:()=>this.setState(st=>({collapsed:{...st.collapsed,[ml.id]:!st.collapsed[ml.id]}})),
             summary:ml.cheat?'Comida libre':ml.options.map((o,oi)=>(ml.options.length>1?String.fromCharCode(65+oi)+': ':'')+([].concat(...SLOTS.map(([sl])=>(o[sl]||[]).map(x=>FM[x.fid]&&FM[x.fid].name).filter(Boolean))).slice(0,4).join(', ')||'vacía')).join('   ·   '),
             openEq:()=>this.setState({eqd:{mealId:ml.id,src:ml.id+'|'+o0.id,picks:{}}}),
-            openTpl:()=>this.setState({td:{mode:'import',mealId:ml.id},tdQ:''}),
+            openTpl:()=>this.setState({td:{mode:'import',mealId:ml.id},tdQ:'',tdSel:[],tdHow:'opts'}),
             saveTpl:()=>this.setState({td:{mode:'save',mealId:ml.id},tdName:ml.name,tdCat:guessCat(ml.name)}),
             remove:()=>this.updC(n=>{const a=mealsOf(n);const i=a.findIndex(x=>x.id===ml.id);if(i>=0)a.splice(i,1);}),
             isOpen:open&&!ml.cheat,isClosed:!open&&!ml.cheat,isCheat:!!ml.cheat,showCheatBtn:!open,
@@ -2658,7 +2677,20 @@ class Component extends DCLogic {
       v.tdSave=()=>{const ml=cl&&mealsOf(cl).find(m=>m.id===s.td.mealId);if(!ml)return;const opts=JSON.parse(JSON.stringify(ml.options));this.setState(st=>({tpls:st.tpls.concat([{id:uid(),name:st.tdName||ml.name,cat:st.tdCat||guessCat(ml.name),opts}]),td:null}));this.toast('Receta guardada en '+(s.tdCat||'Otros'));};
       v.tdEmpty=s.tpls.length===0;
       const tdItem=t=>{const names=[];(t.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>o[sl].forEach(x=>{if(FM[x.fid])names.push(FM[x.fid].name);})));
-        return {name:t.name,foods:names.join(' · '),pick:()=>{const mid=s.td.mealId;this.updC(n=>{const m=mealsOf(n).find(x=>x.id===mid);if(!m)return;m.options=JSON.parse(JSON.stringify(t.opts)).map(o=>{o.id=uid();SLOTS.forEach(([sl])=>o[sl].forEach(x=>{x.id=uid();}));return o;});});this.setState({td:null});}};};
+        const on=(s.tdSel||[]).includes(t.id);
+        return {name:t.name,foods:names.join(' · '),bd:on?'var(--color-accent)':'transparent',bg:on?'var(--color-accent-100)':'#fff',ck:on?'var(--color-accent)':'#fff',ckBd:on?'var(--color-accent)':'var(--color-neutral-400)',ckOn:on,
+          pick:()=>this.setState(st=>{const a=st.tdSel||[];return {tdSel:a.includes(t.id)?a.filter(x=>x!==t.id):a.concat([t.id])};})};};
+      {const nS=(s.tdSel||[]).length,how=s.tdHow||'opts';v.tdAddLabel=nS?'Añadir '+nS+(nS===1?' receta':' recetas'):'Añadir';v.tdAddOp=nS?'1':'.5';
+        v.tdHowSeg=this.seg([['opts','Una opción por receta'],['merge','Todo en una opción']],how,x=>this.setState({tdHow:x}));
+        v.tdHowNote=how==='merge'?'Se juntan los alimentos de todas en una sola opción nueva (por ejemplo, plato + guarnición).':'Cada receta se añade como una opción nueva (B, C…). Lo que ya tiene la comida se mantiene.';
+        v.tdClear=()=>this.setState({tdSel:[]});v.tdHasSel=nS>0;v.tdSelLabel=nS+(nS===1?' marcada':' marcadas');
+        v.tdAdd=()=>{const ts=(s.tdSel||[]).map(id=>s.tpls.find(t=>t.id===id)).filter(Boolean);if(!ts.length){this.toast('Marca al menos una receta',true);return;}
+          const mid=s.td.mealId,cp=o=>{const c=JSON.parse(JSON.stringify(o));c.id=uid();SLOTS.forEach(([sl])=>{c[sl]=c[sl]||[];c[sl].forEach(x=>{x.id=uid();});});return c;},empty=o=>SLOTS.every(([sl])=>!(o[sl]||[]).length);
+          let add=[].concat(...ts.map(t=>(t.opts||[]).filter(o=>!empty(o)).map(cp)));
+          if(how==='merge'){const fs=ts.map(t=>(t.opts||[]).find(o=>!empty(o))).filter(Boolean).map(cp);if(fs.length){const b=fs[0];fs.slice(1).forEach(o=>SLOTS.forEach(([sl])=>{b[sl]=b[sl].concat(o[sl]);}));add=[b];}}
+          if(!add.length){this.toast('Las recetas marcadas no tienen alimentos',true);return;}
+          this.updC(n=>{const m=mealsOf(n).find(x=>x.id===mid);if(!m)return;m.options=(m.options||[]).filter(o=>!empty(o)).concat(add);});
+          this.setState({td:null,tdSel:[]});this.toast(ts.length===1?'Receta añadida a la comida':ts.length+' recetas añadidas a la comida');};}
       v.tdGroups=this.recGroups(s.tdQ,FM,tdItem);v.tdEmpty=v.tdGroups.length===0;
     }
     v.eqOpen=false;
@@ -2838,10 +2870,10 @@ class Component extends DCLogic {
         v.evPhoneInfo=cl&&cl.phone?'Llamar a '+(cl.name||'cliente')+' · '+cl.phone:cl?'Añade el WhatsApp/teléfono en la ficha del cliente para verlo aquí.':'Elige un cliente para ver su teléfono.';
         v.evNotes=d.notes||'';v.onEvNotes=e=>set({notes:tv(e)});v.evPrep=d.prep||'';v.onEvPrep=e=>set({prep:tv(e)});
         v.evIsNew=!!d._new;v.evReps=[['no','No se repite'],['1','Cada semana'],['2','Cada 2 semanas'],['4','Cada 4 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));
-        v.evRepCustom=d._rep==='c';v.evRepEvery=String(d._repEvery||3);v.onEvRepEvery=e=>set({_repEvery:tv(e)});v.evRepUnit=d._repUnit||'w';v.onEvRepUnit=e=>set({_repUnit:tv(e)});
+        v.evRepCustom=d._rep==='c';v.evRepEvery=d._repEvery==null?'3':String(d._repEvery);v.onEvRepEvery=e=>set({_repEvery:tv(e)});v.evRepUnit=d._repUnit||'w';v.onEvRepUnit=e=>set({_repUnit:tv(e)});
         v.evNextOpts=[['7','+1 semana'],['14','+2 semanas'],['21','+3 semanas'],['28','+4 semanas'],['42','+6 semanas'],['c','Personalizado…']].map(x=>({id:x[0],name:x[1]}));
-        v.evNextInt=d._nextInt||'14';v.onEvNextInt=e=>set({_nextInt:tv(e)});v.evNextCustom=d._nextInt==='c';v.evNextDays=String(d._nextDays||10);v.onEvNextDays=e=>set({_nextDays:tv(e)});
-        v.evRep=d._rep||'no';v.onEvRep=e=>set({_rep:tv(e)});v.evRepOn=!!d._rep&&d._rep!=='no';v.evRepN=String(d._repN||4);v.onEvRepN=e=>set({_repN:tv(e)});
+        v.evNextInt=d._nextInt||'14';v.onEvNextInt=e=>set({_nextInt:tv(e)});v.evNextCustom=d._nextInt==='c';v.evNextDays=d._nextDays==null?'10':String(d._nextDays);v.onEvNextDays=e=>set({_nextDays:tv(e)});
+        v.evRep=d._rep||'no';v.onEvRep=e=>set({_rep:tv(e)});v.evRepOn=!!d._rep&&d._rep!=='no';v.evRepN=d._repN==null?'4':String(d._repN);v.onEvRepN=e=>set({_repN:tv(e)});
         v.evGcal=gcalLink(d,cl);v.evIcs=()=>dlFile('cita-'+d.date+'.ics',icsFor([d],CM),'text/calendar');
         const first=cl&&cl.name?cl.name.trim().split(/\s+/)[0]:'';
         const msg='Hola'+(first?' '+first:'')+', te recuerdo tu cita de '+evTypeLabel(d).toLowerCase()+' el '+fmtDayLong(d.date).toLowerCase()+(d.allDay?'':' a las '+d.start)+' ('+evModeLabel(d).toLowerCase()+(d.mode==='online'&&d.link?': '+d.link:d.mode==='presencial'&&d.place?', '+d.place:'')+'). Si necesitas cambiarla, avísame. Un saludo, CientiFitness.';
@@ -2850,7 +2882,7 @@ class Component extends DCLogic {
         v.evClose=()=>this.setState({ev:null,evDel:false});v.evSave=()=>this.evSaveDraft();
         v.evCanDel=!d._new;v.evDelLabel=s.evDel?'¿Seguro? Eliminar':'Eliminar';v.evDelete=()=>{if(!s.evDel){this.setState({evDel:true});return;}this.evRemove(d.id);};
         v.evShowNext=!d._new&&!!d.clientId;
-        v.evNext=()=>{const gap=d._nextInt==='c'?Math.max(1,Math.round(num(d._nextDays))||1):num(d._nextInt||14);if(!this.evSaveDraft())return;const n=newEvent(addDays(d.date,gap),d.start,d.clientId);n.type=d.type==='inicial'?'revision':d.type;n.typeText=d.typeText||'';n.mode=d.mode;n.modeText=d.modeText||'';n.place=d.place||'';n.allDay=!!d.allDay;n.dur=n.type==='revision'?30:(num(d.dur)||30);this.setState({ev:{...n,_new:true,_rep:'no',_repN:4},evDel:false});};
+        v.evNext=()=>{const gap=d._nextInt==='c'?(d._nextDays==null?10:Math.round(num(d._nextDays))):num(d._nextInt||14);if(!(gap>=1)){this.toast('Indica en cuántos días',true);return;}if(!this.evSaveDraft())return;const n=newEvent(addDays(d.date,gap),d.start,d.clientId);n.type=d.type==='inicial'?'revision':d.type;n.typeText=d.typeText||'';n.mode=d.mode;n.modeText=d.modeText||'';n.place=d.place||'';n.allDay=!!d.allDay;n.dur=n.type==='revision'?30:(num(d.dur)||30);this.setState({ev:{...n,_new:true,_rep:'no',_repN:4},evDel:false});};
       }
     }
     return v;
