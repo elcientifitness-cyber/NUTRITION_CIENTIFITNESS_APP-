@@ -1086,9 +1086,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   <div style="display:flex;flex-direction:column;gap:6px;padding:26px 28px;border-radius:24px;background:var(--color-accent-100)">
     <div style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Solo visible para ti · CEO</div>
     <h1 style="margin:0">Equipo</h1>
-    <p style="margin:0;font-size:14px;color:var(--color-accent-800);max-width:700px;text-wrap:pretty">Invita a entrenadores a usar la app. Cada uno gestiona sus propios clientes, agenda y mensajes, y empieza con una copia de tu biblioteca (alimentos, recetas, presets y equivalencias). Sus asesorados ven la marca CientiFitness con el nombre y el WhatsApp de su entrenador.</p>
+    <p style="margin:0;font-size:14px;color:var(--color-accent-800);max-width:700px;text-wrap:pretty">Invita a entrenadores a usar la app. Cada uno gestiona sus propios clientes, agenda y mensajes, y tiene su biblioteca personal. Con el plan Estándar ve también los alimentos de la biblioteca común; con Premium, además, las recetas, los presets y las equivalencias. Sus asesorados ven la marca CientiFitness con el nombre y el WhatsApp de su entrenador.</p>
   </div>
   <sc-if value="{{ teamNoSql }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:14px">Falta preparar la base de datos: ejecuta el archivo <strong>equipo.sql</strong> en Supabase (SQL Editor → New query → Run) y vuelve a abrir esta sección.</div></sc-if>
+  <sc-if value="{{ teamNoPlan }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:14px">Para asignar planes Estándar / Premium, ejecuta <strong>biblioteca.sql</strong> en Supabase (SQL Editor → New query → Run) y vuelve a abrir esta sección.</div></sc-if>
   <section style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
     <div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:17px">Invitar entrenador</span><span style="font-size:13px;color:var(--color-neutral-700)">El WhatsApp que pongas aquí es el que verán sus asesorados.</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px">
@@ -1096,6 +1097,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Email<input class="input" type="email" value="{{ tiEmail }}" onChange="{{ onTiEmail }}" placeholder="ana@email.com"></label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">WhatsApp<input class="input" type="tel" value="{{ tiPhone }}" onChange="{{ onTiPhone }}" placeholder="+34 600 000 000"></label>
     </div>
+    <sc-if value="{{ tiPlanShow }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font-size:12px;color:var(--color-neutral-700)">Plan</span><div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ tiPlanSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">{{ tiPlanNote }}</span></div></sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
       <button class="btn btn-primary" onClick="{{ tiCreate }}" style="min-height:40px">{{ tiCreateLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ tiInvite }}" style="min-height:40px">Invitar por email</button>
@@ -1121,6 +1123,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
         <input class="input" value="{{ r.name }}" onChange="{{ r.onName }}" placeholder="Nombre" aria-label="Nombre" style="width:170px;min-height:36px;font-size:13px">
         <input class="input" type="tel" value="{{ r.phone }}" onChange="{{ r.onPhone }}" placeholder="WhatsApp" aria-label="WhatsApp" style="width:150px;min-height:36px;font-size:13px">
+        <sc-if value="{{ r.showPlan }}" hint-placeholder-val="{{ false }}"><div title="Plan" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ r.planSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:5px 11px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></sc-if>
         <sc-if value="{{ r.dirty }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ r.save }}" style="min-height:36px;font-size:13px">Guardar</button></sc-if>
         <sc-if value="{{ r.notOwner }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ r.resetPass }}" style="font-size:13px">Nueva contraseña</button><button class="btn btn-secondary" onClick="{{ r.toggle }}" style="font-size:13px;color:{{ r.toggleFg }}">{{ r.toggleLabel }}</button></sc-if>
       </div>
@@ -1133,12 +1136,22 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
 <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 80px;max-width:1280px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
-  <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><h1 style="margin:0;margin-right:auto">Biblioteca</h1><sc-if value="{{ libSync }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ libPull }}" style="min-height:38px">Traer novedades de CientiFitness</button></sc-if></div>
+  <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><h1 style="margin:0;margin-right:auto">Biblioteca</h1></div>
   <div style="display:flex;flex-wrap:wrap;gap:6px">
     <sc-for list="{{ libTabs }}" as="t" hint-placeholder-count="2">
       <button onClick="{{ t.go }}" style="font:inherit;font-weight:700;font-size:15px;padding:9px 16px;background:{{ t.bd }};border:0;border-radius:999px;color:{{ t.fg }};cursor:pointer">{{ t.label }}</button>
     </sc-for>
   </div>
+  <sc-if value="{{ libSrcShow }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center">
+      <div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ libSrcSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+      <sc-if value="{{ libCoachPick }}" hint-placeholder-val="{{ false }}"><select class="input" value="{{ libCoach }}" onChange="{{ onLibCoach }}" style="width:240px;max-width:100%;min-height:36px"><sc-for list="{{ libCoachOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
+      <span style="font-size:13px;color:var(--color-neutral-700);flex:1 1 260px;text-wrap:pretty">{{ libSrcNote }}</span>
+      <sc-if value="{{ libPlanShow }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;background:{{ libPlanBg }};color:{{ libPlanFg }}">{{ libPlanLabel }}</span></sc-if>
+    </div>
+  </sc-if>
+  <sc-if value="{{ libNoSql }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:14px">Para ver propuestas y bibliotecas de entrenadores, ejecuta <strong>biblioteca.sql</strong> en Supabase (SQL Editor → New query → Run).</div></sc-if>
+  <sc-if value="{{ libLocked }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:16px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:14px;text-wrap:pretty">Las recetas, los presets y las equivalencias de CientiFitness están incluidos en el plan Premium. Con tu plan Estándar tienes los alimentos comunes y tu biblioteca personal.</div></sc-if>
   <sc-if value="{{ isFoods }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;flex-direction:column;gap:16px">
       <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
@@ -1148,7 +1161,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <sc-for list="{{ cats }}" as="ct" hint-placeholder-count="6"><option value="{{ ct }}">{{ ct }}</option></sc-for>
         </select>
         <span style="font-size:13px;color:var(--color-neutral-700);margin-right:auto">{{ foodCount }}</span>
-        <button class="btn btn-primary" onClick="{{ toggleNewFood }}" style="min-height:36px">{{ newFoodLabel }}</button>
+        <sc-if value="{{ libCanAdd }}" hint-placeholder-val="{{ true }}"><button class="btn btn-primary" onClick="{{ toggleNewFood }}" style="min-height:36px">{{ newFoodLabel }}</button></sc-if>
       </div>
       <sc-if value="{{ hasBadK }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:16px;background:#fff4dc;color:#7a5200;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span style="flex:1 1 300px">{{ badKText }}</span><button onClick="{{ toggleBadK }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:0;background:#fff;color:#7a5200;cursor:pointer">{{ badKBtn }}</button></div></sc-if>
       <sc-if value="{{ showNewFood }}" hint-placeholder-val="{{ false }}">
@@ -1164,11 +1177,11 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
       </sc-if>
       <div style="overflow-x:auto;background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:8px 16px">
-        <table class="table" style="min-width:640px">
-          <thead><tr><th>Alimento</th><th>Categoría</th><th>Macro principal</th><th style="text-align:right">Kcal</th><th style="text-align:right">P</th><th style="text-align:right">C</th><th style="text-align:right">G</th></tr></thead>
+        <table class="table" style="min-width:860px">
+          <thead><tr><th>Alimento</th><th>Categoría</th><th>Macro principal</th><th style="text-align:right">Kcal</th><th style="text-align:right">P</th><th style="text-align:right">C</th><th style="text-align:right">G</th><th>Origen</th></tr></thead>
           <tbody>
             <sc-for list="{{ foodRows }}" as="f" hint-placeholder-count="8">
-              <tr><td style="font-weight:600">{{ f.name }} <span style="font-weight:400;font-size:12px;color:var(--color-accent-700)">{{ f.al }}</span></td><td>{{ f.cat }}</td><td><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ f.mbg }};color:{{ f.mink }}">{{ f.macro }}</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.k }}<sc-if value="{{ f.kBad }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:700;color:#8a5a00;white-space:nowrap">ficha: {{ f.kd }}</div></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.p }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.c }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.f }}</td></tr>
+              <tr><td style="font-weight:600">{{ f.name }} <span style="font-weight:400;font-size:12px;color:var(--color-accent-700)">{{ f.al }}</span></td><td>{{ f.cat }}</td><td><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ f.mbg }};color:{{ f.mink }}">{{ f.macro }}</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.k }}<sc-if value="{{ f.kBad }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:700;color:#8a5a00;white-space:nowrap">ficha: {{ f.kd }}</div></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.p }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.c }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.f }}</td><td><div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.srcBg }};color:{{ f.srcFg }};white-space:nowrap">{{ f.srcL }}</span><sc-if value="{{ f.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.stBg }};color:{{ f.stFg }};white-space:nowrap">{{ f.stL }}</span></sc-if><sc-if value="{{ f.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ f.actL }}</button></sc-if></div></td></tr>
             </sc-for>
           </tbody>
         </table>
@@ -1203,16 +1216,17 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
       </div>
       <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end"><div style="display:flex;flex-direction:column;gap:2px;flex:1 1 280px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Manuales · tienen prioridad</span><span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Tus grupos de equivalencias</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty;margin-top:4px">«≈ Equivalentes» y el menú de equivalencias proponen primero estos alimentos. Si un alimento no está en ningún grupo, se usan las automáticas de su categoría.</span></div><button class="btn btn-primary" onClick="{{ newGroup }}" style="font-size:13px">+ Nuevo grupo con la referencia</button></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end"><div style="display:flex;flex-direction:column;gap:2px;flex:1 1 280px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Manuales · tienen prioridad</span><span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Tus grupos de equivalencias</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty;margin-top:4px">«≈ Equivalentes» y el menú de equivalencias proponen primero estos alimentos. Si un alimento no está en ningún grupo, se usan las automáticas de su categoría.</span></div><sc-if value="{{ libCanAdd }}" hint-placeholder-val="{{ true }}"><button class="btn btn-primary" onClick="{{ newGroup }}" style="font-size:13px">+ Nuevo grupo con la referencia</button></sc-if></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px">
           <sc-for list="{{ eqGroupsV }}" as="gq" hint-placeholder-count="2">
             <div style="padding:14px;border-radius:16px;border:1.5px solid {{ gq.bd }};background:{{ gq.bg }};display:flex;flex-direction:column;gap:10px">
-              <div style="display:flex;gap:8px;align-items:center"><input value="{{ gq.name }}" onChange="{{ gq.onName }}" style="font:inherit;font-weight:700;font-size:15px;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);flex:1;min-width:0" style-focus="border-bottom-color:var(--color-accent)"><span style="font-size:12px;color:var(--color-neutral-600);white-space:nowrap">{{ gq.count }}</span><button class="btn btn-ghost" onClick="{{ gq.del }}" style="font-size:12px">Eliminar</button></div>
-              <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ gq.items }}" as="gi" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 10px;border-radius:999px;background:{{ gi.bg }};color:{{ gi.fg }};font-size:12px;font-weight:700"><button onClick="{{ gi.ref }}" title="Usar como referencia" style="font:inherit;border:0;background:transparent;color:inherit;cursor:pointer;padding:0">{{ gi.name }}</button><button onClick="{{ gi.remove }}" title="Quitar del grupo" style="border:0;background:rgba(255,255,255,.7);border-radius:50%;width:18px;height:18px;cursor:pointer;color:inherit;display:flex;align-items:center;justify-content:center;padding:0"><svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-for></div>
+              <div style="display:flex;gap:8px;align-items:center"><sc-if value="{{ gq.ed }}" hint-placeholder-val="{{ true }}"><input value="{{ gq.name }}" onChange="{{ gq.onName }}" style="font:inherit;font-weight:700;font-size:15px;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);flex:1;min-width:0" style-focus="border-bottom-color:var(--color-accent)"></sc-if><sc-if value="{{ gq.ro }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;font-size:15px;flex:1;min-width:0">{{ gq.name }}</span></sc-if><span style="font-size:12px;color:var(--color-neutral-600);white-space:nowrap">{{ gq.count }}</span><sc-if value="{{ gq.ed }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ gq.del }}" style="font-size:12px">Eliminar</button></sc-if></div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ gq.srcBg }};color:{{ gq.srcFg }};white-space:nowrap">{{ gq.srcL }}</span><sc-if value="{{ gq.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ gq.stBg }};color:{{ gq.stFg }};white-space:nowrap">{{ gq.stL }}</span></sc-if><sc-if value="{{ gq.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gq.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ gq.actL }}</button></sc-if></div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ gq.items }}" as="gi" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 10px;border-radius:999px;background:{{ gi.bg }};color:{{ gi.fg }};font-size:12px;font-weight:700"><button onClick="{{ gi.ref }}" title="Usar como referencia" style="font:inherit;border:0;background:transparent;color:inherit;cursor:pointer;padding:0">{{ gi.name }}</button><sc-if value="{{ gi.canRm }}" hint-placeholder-val="{{ true }}"><button onClick="{{ gi.remove }}" title="Quitar del grupo" style="border:0;background:rgba(255,255,255,.7);border-radius:50%;width:18px;height:18px;cursor:pointer;color:inherit;display:flex;align-items:center;justify-content:center;padding:0"><svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></sc-if></span></sc-for></div>
             </div>
           </sc-for>
         </div>
-        <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700)">Aún no hay grupos. Elige una referencia y pulsa «+ Añadir» en la lista de sugerencias.</p></sc-if>
+        <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700)">{{ noGroupsText }}</p></sc-if>
       </div>
       </div>
     </div>
@@ -1221,27 +1235,29 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
       <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Cada preset fija el ajuste calórico, el reparto de macros y una dieta de ejemplo. Al volcarlo en un cliente, las cantidades se recalculan solas para sus kcal y macros.</p>
       <sc-if value="{{ presetsCustom }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ presetsReset }}" style="font-size:13px">{{ presetsResetLabel }}</button></sc-if>
-      <button class="btn btn-primary" onClick="{{ presetNew }}">+ Nuevo preset</button>
+      <sc-if value="{{ libCanAdd }}" hint-placeholder-val="{{ true }}"><button class="btn btn-primary" onClick="{{ presetNew }}">+ Nuevo preset</button></sc-if>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px">
       <sc-for list="{{ presetCards }}" as="p" hint-placeholder-count="6">
         <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:flex-start;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:18px;flex:1;min-width:0">{{ p.name }}</span><button class="btn btn-ghost" onClick="{{ p.dup }}" style="font-size:12px;padding:4px 8px">Duplicar</button><button class="btn btn-secondary" onClick="{{ p.edit }}" style="font-size:12px;padding:6px 12px">Editar</button></div>
+          <div style="display:flex;align-items:flex-start;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:18px;flex:1;min-width:0">{{ p.name }}</span><sc-if value="{{ p.ed }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ p.dup }}" style="font-size:12px;padding:4px 8px">Duplicar</button><button class="btn btn-secondary" onClick="{{ p.edit }}" style="font-size:12px;padding:6px 12px">Editar</button></sc-if></div>
           <span style="font-size:12px;font-weight:700;color:var(--color-accent-700);font-variant-numeric:tabular-nums">{{ p.tags }}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ p.srcBg }};color:{{ p.srcFg }};white-space:nowrap">{{ p.srcL }}</span><sc-if value="{{ p.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ p.stBg }};color:{{ p.stFg }};white-space:nowrap">{{ p.stL }}</span></sc-if><sc-if value="{{ p.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ p.actL }}</button></sc-if></div>
           <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ p.desc }}</span>
           <sc-if value="{{ p.hasMeals }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:var(--color-neutral-100);flex:1">
             <sc-for list="{{ p.meals }}" as="m" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 8px;font-size:12px"><span style="font-weight:700">{{ m.name }}</span><span style="color:var(--color-neutral-600);font-variant-numeric:tabular-nums">{{ m.pct }}</span><span style="grid-column:1 / -1;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.foods }}</span></div></sc-for>
           </div></sc-if>
-          <select class="input" value="" onChange="{{ p.applyTo }}"><option value="">Volcar en cliente…</option><sc-for list="{{ p.clients }}" as="co" hint-placeholder-count="3"><option value="{{ co.id }}">{{ co.name }}</option></sc-for></select>
+          <sc-if value="{{ p.canApply }}" hint-placeholder-val="{{ true }}"><select class="input" value="" onChange="{{ p.applyTo }}"><option value="">Volcar en cliente…</option><sc-for list="{{ p.clients }}" as="co" hint-placeholder-count="3"><option value="{{ co.id }}">{{ co.name }}</option></sc-for></select></sc-if>
         </div>
       </sc-for>
     </div>
+    <sc-if value="{{ noPresets }}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:var(--color-neutral-700)">No hay presets en esta vista.</p></sc-if>
   </sc-if>
   <sc-if value="{{ isTpls }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
       <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:640px">Las recetas guardan qué alimentos lleva una comida. Al importarlas en un plan, los gramos se recalculan solos para las kcal de esa comida.</p>
       <input class="input cf-search" placeholder="Buscar receta o alimento…" value="{{ libRecQ }}" onChange="{{ onLibRecQ }}" style="width:280px;max-width:100%">
-      <button class="btn btn-primary" onClick="{{ reNew }}">+ Nueva receta</button>
+      <sc-if value="{{ libCanAdd }}" hint-placeholder-val="{{ true }}"><button class="btn btn-primary" onClick="{{ reNew }}">+ Nueva receta</button></sc-if>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
       <sc-for list="{{ recGroupsLib }}" as="rg2" hint-placeholder-count="3">
@@ -1251,9 +1267,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;padding:0 16px 16px">
               <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2">
                 <div style="background:var(--color-neutral-100);padding:14px;display:flex;flex-direction:column;gap:8px;border-radius:16px">
-                  <textarea value="{{ t.name }}" onChange="{{ t.onName }}" title="{{ t.name }}" rows="{{ t.nameRows }}" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:15px;line-height:1.3;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0;width:100%;resize:none;field-sizing:content;min-height:1.3em;overflow:hidden;text-wrap:pretty" style-focus="border-bottom-color:var(--color-accent);outline:none"></textarea>
-                  <button onClick="{{ t.edit }}" title="Editar alimentos y cantidades" style="font:inherit;font-size:13px;color:var(--color-neutral-700);text-align:left;border:0;background:transparent;padding:0;cursor:pointer;text-wrap:pretty" style-hover="color:var(--color-accent-700)">{{ t.foods }}</button>
-                  <span style="font-size:12px;color:var(--color-neutral-600)">{{ t.meta }}</span><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="flex:1 1 120px;width:auto;min-width:0;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:12px;padding:6px 12px">Editar</button><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">{{ t.delLabel }}</button></div>
+                  <sc-if value="{{ t.ed }}" hint-placeholder-val="{{ true }}"><textarea value="{{ t.name }}" onChange="{{ t.onName }}" title="{{ t.name }}" rows="{{ t.nameRows }}" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:15px;line-height:1.3;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0;width:100%;resize:none;field-sizing:content;min-height:1.3em;overflow:hidden;text-wrap:pretty" style-focus="border-bottom-color:var(--color-accent);outline:none"></textarea></sc-if><sc-if value="{{ t.ro }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-heading);font-weight:700;font-size:15px;line-height:1.3;text-wrap:pretty">{{ t.name }}</span></sc-if>
+                  <sc-if value="{{ t.ed }}" hint-placeholder-val="{{ true }}"><button onClick="{{ t.edit }}" title="Editar alimentos y cantidades" style="font:inherit;font-size:13px;color:var(--color-neutral-700);text-align:left;border:0;background:transparent;padding:0;cursor:pointer;text-wrap:pretty" style-hover="color:var(--color-accent-700)">{{ t.foods }}</button></sc-if><sc-if value="{{ t.ro }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ t.foods }}</span></sc-if>
+                  <span style="font-size:12px;color:var(--color-neutral-600)">{{ t.meta }}</span><div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ t.srcBg }};color:{{ t.srcFg }};white-space:nowrap">{{ t.srcL }}</span><sc-if value="{{ t.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ t.stBg }};color:{{ t.stFg }};white-space:nowrap">{{ t.stL }}</span></sc-if><sc-if value="{{ t.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ t.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ t.actL }}</button></sc-if></div><sc-if value="{{ t.ed }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto"><select class="input" value="{{ t.cat }}" onChange="{{ t.onCat }}" style="flex:1 1 120px;width:auto;min-width:0;min-height:32px;font-size:12px;padding:4px 10px"><sc-for list="{{ t.cats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:12px;padding:6px 12px">Editar</button><button class="btn btn-ghost" onClick="{{ t.del }}" style="font-size:12px">{{ t.delLabel }}</button></div></sc-if>
                 </div>
               </sc-for>
             </div>
@@ -1262,7 +1278,24 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </sc-for>
     </div>
     <sc-if value="{{ noRecMatch }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700);margin:0">Ninguna receta coincide con la búsqueda.</p></sc-if>
-    <sc-if value="{{ noTpls }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700)">Aún no hay recetas. Guárdalas desde cualquier comida del plan con «Guardar receta».</p></sc-if>
+    <sc-if value="{{ noTpls }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700)">{{ noTplsText }}</p></sc-if>
+  </sc-if>
+  <sc-if value="{{ isProps }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:0;font-size:14px;color:var(--color-neutral-700);max-width:720px;text-wrap:pretty">Lo que tus entrenadores proponen para la biblioteca común. Al aprobarlo se añade con el nombre de quien lo creó y lo ven tus entrenadores según su plan.</p>
+    <sc-if value="{{ propsLoading }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Cargando…</span></sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px">
+      <sc-for list="{{ propCards }}" as="pr" hint-placeholder-count="2">
+        <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ pr.kind }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--fat-bg);color:var(--fat-ink)">{{ pr.by }}</span><span style="font-size:12px;color:var(--color-neutral-600);margin-left:auto">{{ pr.date }}</span></div>
+          <span style="font-family:var(--font-heading);font-weight:700;font-size:17px;text-wrap:pretty">{{ pr.name }}</span>
+          <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ pr.sum }}</span>
+          <sc-if value="{{ pr.hasNew }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700)">{{ pr.newTxt }}</span></sc-if>
+          <sc-if value="{{ pr.replaces }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#8a5a00">Ya está en la común: se sustituirá por esta versión.</span></sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px"><button class="btn btn-primary" onClick="{{ pr.approve }}" style="font-size:13px">Aprobar</button><button class="btn btn-ghost" onClick="{{ pr.reject }}" style="font-size:13px;color:var(--danger)">{{ pr.rejectLabel }}</button></div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ noProps }}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:var(--color-neutral-700)">No hay propuestas pendientes.</p></sc-if>
   </sc-if>
 </main>
 </sc-if>
@@ -1334,7 +1367,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <button onClick="{{ rg2.toggle }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left"><span style="display:flex;transform:{{ rg2.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-weight:700;margin-right:auto">{{ rg2.name }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rg2.count }}</span></button>
             <sc-if value="{{ rg2.open }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
-                <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="width:100%;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid {{ t.bd }};border-radius:12px;background:{{ t.bg }};font:inherit;color:inherit;text-align:left;cursor:pointer" style-hover="box-shadow:0 0 0 2px var(--color-accent-300)"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.ckBd }};background:{{ t.ck }};display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;box-sizing:border-box"><sc-if value="{{ t.ckOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:700">{{ t.name }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.foods }}</span></span></button></sc-for>
+                <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="width:100%;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid {{ t.bd }};border-radius:12px;background:{{ t.bg }};font:inherit;color:inherit;text-align:left;cursor:pointer" style-hover="box-shadow:0 0 0 2px var(--color-accent-300)"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.ckBd }};background:{{ t.ck }};display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;box-sizing:border-box"><sc-if value="{{ t.ckOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:700">{{ t.name }}<sc-if value="{{ t.isB }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;color:var(--color-accent-700);margin-left:8px">CientiFitness</span></sc-if></span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.foods }}</span></span></button></sc-for>
               </div>
             </sc-if>
           </div>
@@ -1797,6 +1830,11 @@ const DIETS={
 const DMAP={def30:'std',def20:'std',recomp:'std',mant:'std',vol10:'vol',vol20:'vol',lowcarb:'low',keto:'keto',med:'med',resist:'resist',ayuno:'ayuno',tarde:'tarde'};
 const defPreset=id=>{const P=PRESETS.find(x=>x.id===id);if(!P)return null;const d=DIETS[DMAP[id]];return {...P,builtin:true,meals:d?d():[]};};
 const defPresets=()=>PRESETS.map(P=>defPreset(P.id));
+const NOL=[],LIBK={foods:'Alimento',tpls:'Receta',presets:'Preset',eqGroups:'Equivalencias'};
+const fidsOf=(kind,it)=>{const a=[],scan=o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(x&&x.fid)a.push(x.fid);}));if(kind==='tpls')(it.opts||[]).forEach(scan);else if(kind==='presets')(it.meals||[]).forEach(m=>(pmN(m).opts||[]).forEach(scan));else if(kind==='eqGroups')(it.items||[]).forEach(x=>a.push(x));return [...new Set(a)];};
+const libClean=it=>{const {_L,_base,_s,_foods,kd,kBad,...r}=it||{};return JSON.parse(JSON.stringify(r));};
+const nFood=f=>{const kc=Math.round(num(f.p)*4+num(f.c)*4+num(f.f)*9);return {...f,kd:f.k,k:kc,kBad:num(f.k)>0&&Math.abs(num(f.k)-kc)>Math.max(20,kc*0.2)};};
+const PILL={cf:['var(--color-accent-100)','var(--color-accent-800)'],by:['var(--fat-bg)','var(--fat-ink)'],own:['var(--color-neutral-200)','var(--color-text)'],copy:['var(--color-neutral-100)','var(--color-neutral-700)'],pend:['#fff4dc','#8a5a00'],ok:['#e3f4ea','#1d6b43'],no:['#fff1ee','#8f2a14']};
 const presetTags=P=>(P.adj===0?'Mantenimiento':(P.adj>0?'+':'−')+Math.abs(P.adj)+'% kcal')+' · '+(P.mode==='gkg'?'P '+P.pg+' g/kg · G '+P.fg+' g/kg':'P '+P.pp+'% · C '+P.pc+'% · G '+P.pf+'%')+(P.meals?' · '+P.meals.length+' comidas':'');
 function mealTarget(ml,T){const e=_MT.get(ml);if(e&&e.sg===tsig(T)&&e.v)return e.v;
   const sp=ml.split?num(ml.pp):num(ml.pct),sc=ml.split?num(ml.pc):num(ml.pct),sf=ml.split?num(ml.pf):num(ml.pct);
@@ -1882,7 +1920,7 @@ const localDT=d=>isoD(d)+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes())+':00';
 const evMsg=(d,cl)=>{const first=cl&&cl.name?cl.name.trim().split(/\s+/)[0]:'';return 'Hola'+(first?' '+first:'')+', te recuerdo tu cita de '+evTypeLabel(d).toLowerCase()+' el '+fmtDayLong(d.date).toLowerCase()+(d.allDay?'':' a las '+d.start)+' ('+evModeLabel(d).toLowerCase()+(d.mode==='online'&&d.link?': '+d.link:d.mode==='presencial'&&d.place?', '+d.place:'')+'). Si necesitas cambiarla, avísame. Un saludo, CientiFitness.';};
 
 class Component extends DCLogic {
-  state={calWide:(()=>{try{return localStorage.getItem('cf-calwide')==='1';}catch(e){return false;}})(),view:'clients',events:[],presets:null,pe:null,peDel:false,pk:null,re:null,reQ:null,calView:'month',calDate:todayISO(),calHide:{},ev:null,evDel:false,calPast:false,gOn:false,gBusy:false,gEvents:[],gLast:null,tab:'calc',libTab:'foods',clients:seed(),foods:[],tpls:seedTpls(),eqGroups:seedGroups(),eqGroupSel:null,collapsed:{},recClosed:{},tdQ:'',tdCat:'Otros',libRecQ:'',activeId:null,clientQuery:'',confirmDel:null,savedAt:null,
+  state={calWide:(()=>{try{return localStorage.getItem('cf-calwide')==='1';}catch(e){return false;}})(),view:'clients',events:[],presets:null,pe:null,peDel:false,pk:null,re:null,reQ:null,calView:'month',calDate:todayISO(),calHide:{},ev:null,evDel:false,calPast:false,gOn:false,gBusy:false,gEvents:[],gLast:null,tab:'calc',libTab:'foods',libSrc:null,libCoach:'',base:(()=>{try{return JSON.parse(localStorage.getItem('cf-base')||'null');}catch(e){return null;}})(),props:null,allLibs:null,clients:seed(),foods:[],tpls:seedTpls(),eqGroups:seedGroups(),eqGroupSel:null,collapsed:{},recClosed:{},tdQ:'',tdCat:'Otros',libRecQ:'',activeId:null,clientQuery:'',confirmDel:null,savedAt:null,
     sr:null,srQuery:'',srFilter:'all',srSel:[],srCreate:false,
     nf:{name:'',cat:'Carnes',k:'',p:'',c:'',f:'',al:''},showNewFood:false,foodQuery:'',foodCat:'',
     td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:(()=>{try{return localStorage.getItem('cf-last-email')||'elcientifitness@gmail.com';}catch(e){return 'elcientifitness@gmail.com';}})(),loginPass:'',loginErr:null,syncErr:false};
@@ -1919,7 +1957,7 @@ class Component extends DCLogic {
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
       if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
-        this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);
+        this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
         this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>this.loadChats(),30000);};
       if(data){go();return;}
@@ -1938,18 +1976,41 @@ class Component extends DCLogic {
       .map(e=>({id:e.id,date:e.date,start:e.allDay?'':(e.start||''),dur:num(e.dur)||30,allDay:!!e.allDay,type:evTypeLabel(e),mode:e.mode||'presencial',modeLabel:evModeLabel(e),place:e.mode==='presencial'?(e.place||''):'',link:e.mode==='online'?(e.link||''):'',prep:(e.prep||'').trim(),status:e.status||'pendiente'}));
       const ag={appts:list,coach},sg=stab(ag),prev=this._ag[k]!=null?this._ag[k]:stab(l.agenda||null);if(sg===prev)return;this._ag[k]=sg;
       this.sb.from('cf_links').update({agenda:ag}).eq('coach_id',this.uid).eq('client_key',k).then(({error})=>{if(error){delete this._ag[k];if(/agenda/i.test(error.message||''))this._noAg=true;}});});}
-  seedRecipes(n){const L=window.CF_RECIPES;if(!L||!L.list){if((n||0)<20)setTimeout(()=>this.seedRecipes((n||0)+1),500);return;}if(this.state.recSeed===L.v)return;
+  seedRecipes(n){if(!this.isCEO())return;const L=window.CF_RECIPES;if(!L||!L.list){if((n||0)<20)setTimeout(()=>this.seedRecipes((n||0)+1),500);return;}if(this.state.recSeed===L.v)return;
     const T=this.state.tpls||[],ids=new Set(T.map(t=>t.id)),nm=new Set(T.map(t=>norm(t.name))),add=L.list.filter(r=>!ids.has(r.id)&&!nm.has(norm(r.name))).map(r=>JSON.parse(JSON.stringify(r)));
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){const fin=L=>{L=L||{};this._skip=true;this.setState({clients:[],events:[],foods:L.foods||[],tpls:L.tpls||[],eqGroups:L.eqGroups||[],presets:L.presets||null,activeId:null,view:'clients',recSeed:null},()=>{this.pushCloud(true);this.seedRecipes();});};
-    this.sb.rpc('cf_library').then(({data})=>fin(data),()=>fin(null));}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null},()=>{this.pushCloud(true);this.loadBase();});}
+  isCEO(){const m=this.state.me;return !m||m.role==='owner';}
+  myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
+  baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
+  loadBase(){if(!this.sb||this.isCEO())return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L)return;const std=L.plan==='standard';
+    const b={plan:std?'standard':'premium',foods:L.foods||[],tpls:std?[]:(L.tpls||[]),eqGroups:std?[]:(L.eqGroups||[]),presets:std?[]:(L.presets||defPresets())};
+    if(stab(b)===stab(this.state.base||null))return;this.setState({base:b});try{localStorage.setItem('cf-base',JSON.stringify(b));}catch(e){}});}
+  libAll(k){const own=k==='presets'?this.ownPresets():(this.state[k]||NOL),B=this.baseLib(k);if(!B.length)return own;
+    const c=this._la||(this._la={}),e=c[k];if(e&&e.o===own&&e.b===B)return e.v;const ids=new Set(own.map(x=>x.id));
+    const v=own.concat(B.filter(x=>x&&x.id&&!ids.has(x.id)).map(x=>({...x,_base:true})));c[k]={o:own,b:B,v};return v;}
+  loadProps(){if(!this.sb||!this._cloud)return;this.sb.from('cf_proposals').select('id,coach_id,coach_name,kind,item_id,item,status,created_at,decided_at').order('created_at',{ascending:false}).limit(1000).then(({data,error})=>this.setState({props:error?null:(data||[]),propsErr:!!error}));}
+  loadAllLibs(){if(!this.sb||!this.isCEO())return;this.sb.rpc('cf_all_libraries').then(({data,error})=>this.setState({allLibs:error?null:(data||[]),allLibsErr:!!error}));}
+  propose(kind,it){if(!this.sb||!this._cloud)return;const me=this.state.me||{},c=libClean(it),om={};(this.state.foods||[]).forEach(f=>{om[f.id]=f;});
+    if(kind!=='foods'){const fs=fidsOf(kind,c).map(id=>om[id]).filter(Boolean);if(fs.length)c._foods=JSON.parse(JSON.stringify(fs));}
+    this.sb.from('cf_proposals').upsert({coach_id:this.uid,coach_name:me.name||me.email||'',kind,item_id:String(c.id),item:c,status:'pending',created_at:new Date().toISOString(),decided_at:null},{onConflict:'coach_id,kind,item_id'})
+      .then(({error})=>{if(error){this.toast('No se pudo enviar: '+error.message,true);return;}this.toast('Propuesta enviada a CientiFitness');this.loadProps();});}
+  unpropose(p){this.sb.from('cf_proposals').delete().eq('id',p.id).then(({error})=>{if(error){this.toast('No se pudo retirar: '+error.message,true);return;}this.toast('Propuesta retirada');this.loadProps();});}
+  adopt(kind,item,foods,by,byId){const c=libClean(item);if(by){c.by=by;c.byId=byId;}
+    this.setState(st=>{const o={},FM=this.foodMap(),put=(L,x)=>L.some(y=>y.id===x.id)?L.map(y=>y.id===x.id?x:y):L.concat([x]);let F=st.foods;
+      (foods||[]).forEach(f=>{if(f&&f.id&&!FM[f.id]&&!F.some(y=>y.id===f.id))F=F.concat([{...libClean(f),by,byId}]);});
+      if(kind==='foods')F=put(F,c);if(F!==st.foods)o.foods=F;
+      if(kind==='presets')o.presets=put(JSON.parse(JSON.stringify(st.presets||this.ownPresets())),c);else if(kind!=='foods')o[kind]=put(st[kind]||[],c);return o;});}
+  decide(p,ok){const it=p.item||{};if(ok)this.adopt(p.kind,it,it._foods,p.coach_name||'',p.coach_id);
+    this.sb.from('cf_proposals').update({status:ok?'approved':'rejected',decided_at:new Date().toISOString()}).eq('id',p.id).then(({error})=>{if(error){this.toast('No se pudo guardar: '+error.message,true);return;}this.toast(ok?'Añadido a la biblioteca común':'Propuesta rechazada');this.loadProps();});}
   pullLibrary(){if(!this.sb)return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L){this.toast('No se pudo leer la biblioteca de CientiFitness',true);return;}let n=0;
     const add=(cur,inc)=>{const ids=new Set((cur||[]).map(x=>x.id)),nw=(inc||[]).filter(x=>x&&x.id&&!ids.has(x.id));n+=nw.length;return (cur||[]).concat(nw);};
     const st=this.state,o={foods:add(st.foods,L.foods),tpls:add(st.tpls,L.tpls),eqGroups:add(st.eqGroups,L.eqGroups)};if(L.presets)o.presets=add(this.presetsList(),L.presets);
     if(!n){this.toast('Ya tienes todo lo de la biblioteca de CientiFitness');return;}this.setState(o);this.toast(n+(n===1?' elemento nuevo añadido':' elementos nuevos añadidos'));});}
-  loadTeam(){if(!this.sb)return;this.sb.from('cf_coaches').select('email,name,phone,role,active,created_at').order('created_at',{ascending:true}).then(({data,error})=>this.setState({team:error?null:(data||[]),teamErr:error?(error.message||'error'):null}));}
+  loadTeam(){if(!this.sb)return;const q=c=>this.sb.from('cf_coaches').select(c).order('created_at',{ascending:true});
+    q('email,name,phone,role,active,created_at,plan').then(r=>r.error&&/plan/i.test(r.error.message||'')?q('email,name,phone,role,active,created_at').then(r2=>({data:r2.data,error:r2.error,noPlan:true})):r).then(({data,error,noPlan})=>this.setState({team:error?null:(data||[]),teamErr:error?(error.message||'error'):null,teamNoPlan:!!noPlan}));}
   callAcc(body,done){if(!this.sb||this.state.accBusy)return;this.setState({accBusy:true});
     this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify(body)}))
       .then(r=>r.json().catch(()=>({error:'Respuesta no válida del servidor (¿está subida la carpeta api?)'})))
@@ -2003,6 +2064,7 @@ class Component extends DCLogic {
   }
   componentDidUpdate(pp,ps){
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
+    if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
     const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets};ps=ps||snap||this._snap;
@@ -2017,8 +2079,9 @@ class Component extends DCLogic {
   }
   componentWillUnmount(){clearInterval(this._poll);}
   nextMap(){const ev=this.state.events,t=todayISO();if(this._nmE===ev&&this._nmD===t)return this._nm;const m={};ev.forEach(e=>{if(e.deleted||!e.clientId||e.date<t||e.status==='cancelada'||e.status==='realizada')return;const k=e.date+(e.allDay?'00:00':(e.start||''));if(!m[e.clientId]||k<m[e.clientId].k)m[e.clientId]={e,k};});this._nmE=ev;this._nmD=t;this._nm=m;return m;}
-  presetsList(){return this.state.presets||this._defP||(this._defP=defPresets());}
-  setPresets(f){this.setState(st=>({presets:f(JSON.parse(JSON.stringify(st.presets||this.presetsList())))}));}
+  ownPresets(){return this.state.presets||this._defP||(this._defP=defPresets());}
+  presetsList(){return this.libAll('presets');}
+  setPresets(f){this.setState(st=>({presets:f(JSON.parse(JSON.stringify(st.presets||this.ownPresets())))}));}
   evOpen(e){this.setState({ev:JSON.parse(JSON.stringify(e)),evDel:false});}
   evNew(date,start,clientId,type){const e=newEvent(date,start,clientId);if(type){e.type=type;const t=EVT.find(x=>x[0]===type);if(t){if(t[2]===0)e.allDay=true;else e.dur=t[2];}}this.setState({ev:{...e,_new:true,_rep:'no',_repN:4},evDel:false});}
   evPatch(id,p){this.setState(st=>({events:st.events.map(x=>x.id===id?{...x,...p,updated:Date.now()}:x)}));}
@@ -2060,7 +2123,8 @@ class Component extends DCLogic {
   updC(fn){this.setState(s=>({clients:s.clients.map(c=>{if(c.id!==s.activeId)return c;const n=JSON.parse(JSON.stringify(c));fn(n);n.updated=Date.now();return n;})}));}
   seg(opts,cur,fn){return opts.map(([v,l])=>({label:l,bg:v===cur?'var(--color-accent)':'transparent',fg:v===cur?'var(--color-bg)':'var(--color-text)',pick:()=>fn(v)}));}
   radio(list,cur,fn,metaFn){return list.map(x=>({label:x[2],desc:x[3],meta:metaFn(x),bg:x[0]===cur?'var(--color-accent-100)':'transparent',ring:x[0]===cur?'var(--color-accent)':'var(--color-divider)',dot:x[0]===cur?'var(--color-accent)':'transparent',pick:()=>fn(x[0])}));}
-  allFoodsN(){const b=baseFoods(),u=this.state.foods;if(this._afB!==b||this._afU!==u||!this._af){this._afB=b;this._afU=u;this._af=b.concat(u).map(f=>{const kc=Math.round(num(f.p)*4+num(f.c)*4+num(f.f)*9);return {...f,kd:f.k,k:kc,kBad:num(f.k)>0&&Math.abs(num(f.k)-kc)>Math.max(20,kc*0.2)};});this._fm={};this._af.forEach(f=>{this._fm[f.id]=f;});}return this._af;}
+  allFoodsN(){const b=baseFoods(),u=this.state.foods,B=this.baseLib('foods');if(this._afB!==b||this._afU!==u||this._afX!==B||!this._af){this._afB=b;this._afU=u;this._afX=B;const ids=new Set(u.map(f=>f.id));
+    this._af=b.map(f=>({...nFood(f),_s:'db'})).concat(B.filter(f=>f&&f.id&&!ids.has(f.id)).map(f=>({...nFood(f),_s:'base'})),u.map(f=>({...nFood(f),_s:'own'})));this._fm={};this._af.forEach(f=>{this._fm[f.id]=f;});}return this._af;}
   foodMap(){this.allFoodsN();return this._fm;}
   vetos(cl){return (cl&&cl.allergies||'').split(',').map(x=>norm(x.trim())).filter(Boolean);}
   flag(f,vt){return vt.length>0&&vt.some(v=>norm(f.name).includes(v)||(f.al&&(norm(f.al).includes(v)||v.includes(norm(f.al)))));}
@@ -2070,8 +2134,8 @@ class Component extends DCLogic {
     const f={id:'u'+uid(),cat:n.cat,name:n.name.trim(),k:num(n.k),p:num(n.p),c:num(n.c),f:num(n.f),al:n.al.trim()};
     this.setState({foods:s.foods.concat([f]),nf:{name:'',cat:n.cat,k:'',p:'',c:'',f:'',al:''},showNewFood:false,srCreate:false,srSel:s.sr?s.srSel.concat([f.id]):s.srSel,srQuery:s.sr?f.name:s.srQuery});
   }
-  recGroups(q,FM,mk){const s=this.state,qq=norm(q||''),nm=t=>{const a=[];(t.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FM[x.fid])a.push(FM[x.fid].name);})));return a.join(' ');};
-    return RCATS.map(c=>({c,items:s.tpls.filter(t=>(t.cat||guessCat(t.name))===c&&(!qq||norm(t.name+' '+nm(t)).includes(qq)))})).filter(g=>g.items.length).map(g=>{const open=qq?true:!s.recClosed[g.c];return {name:g.c,count:g.items.length+(g.items.length===1?' receta':' recetas'),open,chev:open?'rotate(90deg)':'rotate(0deg)',toggle:()=>this.setState(st=>({recClosed:{...st.recClosed,[g.c]:!st.recClosed[g.c]}})),items:g.items.map(mk)};});}
+  recGroups(q,FM,mk,list){const s=this.state,qq=norm(q||''),nm=t=>{const a=[];(t.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FM[x.fid])a.push(FM[x.fid].name);})));return a.join(' ');};
+    return RCATS.map(c=>({c,items:(list||s.tpls).filter(t=>(t.cat||guessCat(t.name))===c&&(!qq||norm(t.name+' '+nm(t)).includes(qq)))})).filter(g=>g.items.length).map(g=>{const open=qq?true:!s.recClosed[g.c];return {name:g.c,count:g.items.length+(g.items.length===1?' receta':' recetas'),open,chev:open?'rotate(90deg)':'rotate(0deg)',toggle:()=>this.setState(st=>({recClosed:{...st.recClosed,[g.c]:!st.recClosed[g.c]}})),items:g.items.map(mk)};});}
   renderVals(){
     const s=this.state,FM=this.foodMap(),allFoods=this.allFoodsN();
     const v={
@@ -2120,18 +2184,21 @@ class Component extends DCLogic {
     {const me=s.me||null,own=!!me&&me.role==='owner';v.isOwner=own;v.meLabel=me?(me.name||me.email)+(own?' · CEO':''):'';v.hasMe=!!me;
       v.nav5={on:s.view==='team'?'1':'0',go:()=>{this.setState({view:'team',confirmDel:null});this.loadTeam();}};
       v.isTeam=s.view==='team'&&own;v.libSync=!!me&&!own&&s.auth==='in';v.libPull=()=>this.pullLibrary();
-      if(v.isTeam){const TM=s.team,TE=s.teamEdit||{},inv=s.teamInv||{name:'',email:'',phone:''},okE=x=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x),blank={name:'',email:'',phone:''};
-        v.teamNoSql=!!s.teamErr;v.teamLoading=!TM&&!s.teamErr;const nCo=TM?TM.filter(c=>c.role!=='owner').length:0;v.teamCount=TM?nCo+(nCo===1?' entrenador invitado':' entrenadores invitados'):'';v.teamEmpty=!!TM&&nCo===0;
+      if(v.isTeam){const TM=s.team,TE=s.teamEdit||{},inv=s.teamInv||{name:'',email:'',phone:'',plan:'standard'},okE=x=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x),blank={name:'',email:'',phone:'',plan:'standard'};
+        v.teamNoSql=!!s.teamErr;v.teamNoPlan=!s.teamErr&&!!s.teamNoPlan;v.teamLoading=!TM&&!s.teamErr;const nCo=TM?TM.filter(c=>c.role!=='owner').length:0;v.teamCount=TM?nCo+(nCo===1?' entrenador invitado':' entrenadores invitados'):'';v.teamEmpty=!!TM&&nCo===0;
         const setInv=k=>e=>{const x=e.target.value;this.setState(st=>({teamInv:{...(st.teamInv||blank),[k]:x}}));};
         v.tiName=inv.name;v.tiEmail=inv.email;v.tiPhone=inv.phone;v.onTiName=setInv('name');v.onTiEmail=setInv('email');v.onTiPhone=setInv('phone');
         v.tiCreateLabel=s.accBusy?'Creando…':'Crear acceso';
+        const ip=inv.plan||'standard';v.tiPlanShow=!s.teamNoPlan;v.tiPlanSeg=this.seg([['standard','Estándar'],['premium','Premium']],ip,x=>this.setState(st=>({teamInv:{...(st.teamInv||blank),plan:x}})));
+        v.tiPlanNote=ip==='premium'?'Su biblioteca personal + toda la común: alimentos, recetas, presets y equivalencias.':'Su biblioteca personal + los alimentos de la biblioteca común.';
+        const setPlan=(em,p)=>{if(p!=='premium'||s.teamNoPlan)return;this.sb.from('cf_coaches').update({plan:p}).eq('email',em).then(()=>this.loadTeam());};
         const em0=inv.email.trim().toLowerCase(),body0=mode=>({kind:'coach',mode,email:em0,name:inv.name.trim(),phone:inv.phone.trim()});
-        v.tiCreate=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('create'),j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:inv.name.trim(),phone:inv.phone.trim(),reset:j.mode==='reset'},teamInv:blank});this.loadTeam();this.toast(j.mode==='reset'?'Contraseña nueva generada':'Entrenador añadido');});};
-        v.tiInvite=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('invite'),()=>{this.setState({teamInv:blank});this.loadTeam();this.toast('Invitación enviada a '+em0);});};
+        v.tiCreate=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('create'),j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:inv.name.trim(),phone:inv.phone.trim(),reset:j.mode==='reset'},teamInv:blank});setPlan(em0,ip);this.loadTeam();this.toast(j.mode==='reset'?'Contraseña nueva generada':'Entrenador añadido');});};
+        v.tiInvite=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('invite'),()=>{this.setState({teamInv:blank});setPlan(em0,ip);this.loadTeam();this.toast('Invitación enviada a '+em0);});};
         const A=s.teamAcc;v.taShow=!!A;
         if(A){const url=location.origin+location.pathname.replace(/[^/]*$/,''),first=(A.name||'').trim().split(/\s+/)[0]||'';
           v.taTitle=A.reset?'Contraseña nueva (la anterior ya no sirve)':'Acceso creado · envíaselo';v.taUrl=url;v.taEmail=A.email;v.taPass=A.pass;
-          const txt='Hola'+(first?' '+first:'')+', ya puedes usar CientiFitness Manager para gestionar a tus clientes.\n\nEntra aquí: '+url+'\nEmail: '+A.email+'\nContraseña: '+A.pass+'\n\nEmpiezas con la biblioteca de alimentos, recetas y presets de CientiFitness.';
+          const txt='Hola'+(first?' '+first:'')+', ya puedes usar CientiFitness Manager para gestionar a tus clientes.\n\nEntra aquí: '+url+'\nEmail: '+A.email+'\nContraseña: '+A.pass+'\n\nTienes tu biblioteca personal y acceso a la biblioteca común de CientiFitness.';
           v.taWa=()=>window.open('https://wa.me/'+waNum(A.phone)+'?text='+encodeURIComponent(txt),'_blank');
           v.taCopy=()=>{try{navigator.clipboard.writeText(txt);this.toast('Copiado');}catch(e){this.toast('No se pudo copiar',true);}};
           v.taClose=()=>this.setState({teamAcc:null});}
@@ -2142,6 +2209,7 @@ class Component extends DCLogic {
             role:ow?'CEO':'Entrenador',roleBg:ow?'var(--color-accent)':'var(--color-accent-100)',roleFg:ow?'#fff':'var(--color-accent-800)',
             stLabel:c.active?'Activo':'Desactivado',stBg:c.active?'#e3f4ea':'var(--color-neutral-200)',stFg:c.active?'#1d6b43':'var(--color-neutral-700)',op:c.active?'1':'.65',
             dirty:ed.name!=null||ed.phone!=null,notOwner:!ow,
+            showPlan:!ow&&!s.teamNoPlan,planSeg:this.seg([['standard','Estándar'],['premium','Premium']],c.plan==='premium'?'premium':'standard',x=>{if(x===(c.plan==='premium'?'premium':'standard'))return;this.sb.from('cf_coaches').update({plan:x}).eq('email',c.email).then(({error})=>{if(error){this.toast('No se pudo cambiar el plan: '+error.message,true);return;}this.loadTeam();this.toast((c.name||c.email)+': plan '+(x==='premium'?'Premium':'Estándar'));});}),
             save:()=>{this.sb.from('cf_coaches').update({name:nm.trim(),phone:ph.trim()}).eq('email',c.email).then(({error})=>{if(error){this.toast('No se pudo guardar: '+error.message,true);return;}
               this.setState(st=>{const te={...(st.teamEdit||{})};delete te[c.email];const o={teamEdit:te};if(st.me&&st.me.email===c.email)o.me={...st.me,name:nm.trim(),phone:ph.trim()};return o;},()=>this.agendaSoon());this.loadTeam();this.toast('Datos guardados');});},
             toggleLabel:c.active?(s.teamOff===c.email?'¿Seguro? Desactivar':'Desactivar'):'Reactivar',toggleFg:c.active?'var(--danger)':'var(--veg-ink)',
@@ -2428,7 +2496,7 @@ class Component extends DCLogic {
               dup:()=>um(m=>{const i=m.options.findIndex(q=>q.id===o.id);const cp=JSON.parse(JSON.stringify(o));cp.id=uid();SLOTS.forEach(([sl])=>cp[sl].forEach(x=>{x.id=uid();}));m.options.splice(i+1,0,cp);})};
             if(open)op.cols=SLOTS.map(([sl,l,tag,mk2])=>{const vc=sl==='veg'?r.S.veg.reduce((a,x)=>a+x.g*x.food.c/100,0):0,first=r.S[sl][0];
               return {label:l,sw:SW[sl],bg:MBG[sl],ink:MINK[sl],sub:sl==='veg'?(r.S.veg.length?'+'+R(vc)+' g C · suma a hidratos':'suma a hidratos'):R(mt[mk2])+' g '+tag,items:r.S[sl].map(x=>mk(o,sl,x)),add:()=>this.openSearch(ml.id,o.id,sl),
-                hasEq:!!first,addEq:()=>{if(!first)return;const E=equivsFor(first.food,first.g||100,FL,3,s.eqGroups);if(!E.list.length){this.toast('Sin equivalencias para '+first.food.name.toLowerCase()+'. Créalas en Biblioteca → Equivalencias',true);return;}addAlt(ml.id,o.id,sl,E.list.map(q=>q.f.id));this.toast((E.manual?'Tus equivalencias':'Equivalentes automáticos')+' añadidos para '+first.food.name.toLowerCase());},...colX(sl)};});
+                hasEq:!!first,addEq:()=>{if(!first)return;const E=equivsFor(first.food,first.g||100,FL,3,this.libAll('eqGroups'));if(!E.list.length){this.toast('Sin equivalencias para '+first.food.name.toLowerCase()+'. Créalas en Biblioteca → Equivalencias',true);return;}addAlt(ml.id,o.id,sl,E.list.map(q=>q.f.id));this.toast((E.manual?'Tus equivalencias':'Equivalentes automáticos')+' añadidos para '+first.food.name.toLowerCase());},...colX(sl)};});
             else op.rows=SLOTS.map(([sl,l,tag])=>({tag,label:l,sw:SW[sl],swFg:SWFG[sl],items:r.S[sl].map(x=>mk(o,sl,x)),add:()=>this.openSearch(ml.id,o.id,sl),...colX(sl)}));
             return op;});
           pm.push({name:ml.name||'Comida',val:ml.cheat?'Libre · '+R(mt.k):R(r0.tot.k)+' / '+R(mt.k),w:Math.min(100,mt.k?r0.tot.k/mt.k*100:0)+'%',col:ml.cheat?'var(--color-accent-300)':Math.abs(r0.tot.k/(mt.k||1)-1)>0.1?'#e0664f':'var(--color-accent)'});
@@ -2548,8 +2616,40 @@ class Component extends DCLogic {
     }
 
     if(s.view==='library'){
-      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['tpls','Recetas']].map(([k,l])=>({label:l,bd:s.libTab===k?'var(--color-accent)':'transparent',fg:s.libTab===k?'#fff':'var(--color-neutral-700)',go:()=>this.setState({libTab:k})}));
-      v.isFoods=s.libTab==='foods';v.isTpls=s.libTab==='tpls';v.isEq=s.libTab==='eq';v.isPresets=s.libTab==='presets';
+      const ceo=this.isCEO(),cloud=!!this._cloud,plan=this.myPlan(),std=!ceo&&plan==='standard',P0=s.props||[],AL=s.allLibs||[];
+      const src=ceo?(cloud&&s.libSrc==='coach'?'coach':'base'):(['all','base','own'].includes(s.libSrc)?s.libSrc:'all'),coachV=src==='coach',viewOwn=ceo?!coachV:src!=='base';
+      const tab=s.libTab==='props'&&!(ceo&&cloud)?'foods':s.libTab,pc=ceo?P0.filter(p=>p.status==='pending').length:0;
+      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['tpls','Recetas']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
+      v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';
+      v.libSrcShow=cloud&&!v.isProps;v.libCanAdd=viewOwn;
+      v.libSrcSeg=this.seg(ceo?[['base','Biblioteca común'],['coach','De los entrenadores']]:[['all','Todo'],['base','CientiFitness'],['own','Mía']],src,x=>{this.setState({libSrc:x});if(x==='coach')this.loadAllLibs();});
+      v.libCoachPick=coachV;v.libCoach=s.libCoach||'';v.onLibCoach=e=>this.setState({libCoach:e.target.value});
+      v.libCoachOpts=[{v:'',l:'Todos los entrenadores'}].concat(AL.map(L=>({v:L.uid,l:L.name||L.email})));
+      v.libSrcNote=coachV?(s.allLibs?'Lo que han creado tus entrenadores. «Añadir a la común» lo comparte con su nombre.':'Cargando…'):ceo?'Biblioteca común: la ven tus entrenadores según su plan.':src==='own'?'Tu biblioteca personal. Puedes proponer cualquier elemento para la común.':src==='base'?'Biblioteca común de CientiFitness. Se usa tal cual.':'Tu biblioteca personal y la común de CientiFitness.';
+      v.libPlanShow=!ceo&&!!plan;v.libPlanLabel=std?'Plan Estándar':'Plan Premium';v.libPlanBg=std?'var(--color-neutral-200)':'var(--color-accent)';v.libPlanFg=std?'var(--color-text)':'#fff';
+      v.libLocked=std&&src!=='own'&&!v.isFoods&&!v.isProps;v.libNoSql=ceo&&cloud&&(!!s.propsErr||(coachV&&!!s.allLibsErr));
+      const BID={foods:{},tpls:{},eqGroups:{},presets:{}};if(ceo)Object.keys(BID).forEach(k=>(k==='presets'?this.ownPresets():(s[k]||[])).forEach(x=>{if(x&&x.id)BID[k][x.id]=x;}));
+      const RC=new Set(((window.CF_RECIPES||{}).list||[]).map(r=>r.id)),bl={},bIdx=k=>{if(!bl[k]){bl[k]={};this.baseLib(k).forEach(y=>{if(y&&y.id)bl[k][y.id]=y;});}return bl[k];};
+      const genuine=(k,x,L)=>{if(!x||!x.id||(k==='presets'&&x.builtin)||(k==='tpls'&&RC.has(x.id)))return false;const b=BID[k][x.id];return !b||b.byId===L.uid;};
+      const CL=coachV?AL.filter(L=>!s.libCoach||L.uid===s.libCoach):[],coachItems=k=>[].concat(...CL.map(L=>(L[k]||[]).filter(x=>genuine(k,x,L)).map(x=>({x,L}))));
+      let FMx=FM;if(coachV||v.isProps){FMx={...FM};const ad=f=>{if(f&&f.id&&!FMx[f.id])FMx[f.id]=nFood(f);};AL.forEach(L=>(L.foods||[]).forEach(ad));P0.forEach(p=>((p.item&&p.item._foods)||[]).forEach(ad));}
+      const PX={};P0.forEach(p=>{const kk=(ceo?p.coach_id+'|':'')+p.kind+'|'+p.item_id;if(!PX[kk])PX[kk]=p;});
+      const pill=(t,c)=>({l:t,bg:PILL[c][0],fg:PILL[c][1]}),ownF={};(s.foods||[]).forEach(f=>{ownF[f.id]=f;});
+      const meta=(k,x,L)=>{let a=pill('CientiFitness','cf'),st=null,act=null;
+        if(L){a=pill(L.name||L.email,'by');const p=PX[L.uid+'|'+k+'|'+x.id];
+          if(BID[k][x.id])st=pill('En la común','ok');
+          else if(p&&p.status==='pending'){st=pill('Propuesta','pend');act=['Aprobar y añadir',()=>this.decide(p,true)];}
+          else act=['Añadir a la común',()=>{this.adopt(k,x,k==='foods'?[]:fidsOf(k,x).map(id=>(L.foods||[]).find(f=>f.id===id)).filter(Boolean),L.name||L.email,L.uid);this.toast('Añadido a la biblioteca común');}];}
+        else if(ceo){if(x.by)a=pill('por '+x.by,'by');}
+        else if(x._base||x._s==='base'){if(x.by)a=pill('CientiFitness · por '+x.by,'cf');}
+        else if(x._s!=='db'){const raw=k==='foods'?(ownF[x.id]||x):x,b=bIdx(k)[x.id];
+          if((k==='presets'&&x.builtin)||(k==='tpls'&&RC.has(x.id))||(b&&b.byId!==this.uid))a=pill('Copia de CientiFitness','copy');
+          else{a=pill('Mía','own');const p=PX[k+'|'+x.id];
+            if(cloud&&!s.propsErr){if(!p)act=['Proponer a la común',()=>this.propose(k,raw)];
+              else if(p.status==='pending'){st=pill('Propuesta enviada','pend');act=['Retirar',()=>this.unpropose(p)];}
+              else if(p.status==='approved'){st=pill('En la común','ok');if(stab(libClean(raw))!==stab(libClean(p.item||{})))act=['Proponer cambios',()=>this.propose(k,raw)];}
+              else{st=pill('No aprobada','no');act=['Proponer de nuevo',()=>this.propose(k,raw)];}}}}
+        return {srcL:a.l,srcBg:a.bg,srcFg:a.fg,hasSt:!!st,stL:st?st.l:'',stBg:st?st.bg:'',stFg:st?st.fg:'',hasAct:!!act,actL:act?act[0]:'',act:act?act[1]:null};};
       {const nb=allFoods.filter(f=>f.kBad).length;v.hasBadK=nb>0;v.badKText=nb+' alimentos tienen en la ficha unas kcal que no cuadran con sus macros. La app usa siempre las kcal calculadas (P×4 + C×4 + G×9); revisa sus macros si ves valores raros.';v.badKBtn=s.onlyBadK?'Ver todos':'Ver solo estos';v.toggleBadK=()=>this.setState({onlyBadK:!s.onlyBadK});}
       if(v.isEq){const FL=allFoods,q2=norm(s.eqQ||''),ref=FM[s.eqRef]||FM.db54||FL[0],g=num(s.eqG)||100;
         v.eqQ=s.eqQ||'';v.onEqQ=e=>this.setState({eqQ:e.target.value});
@@ -2566,37 +2666,52 @@ class Component extends DCLogic {
         v.eqList=v.eqList.map(e=>{const inG=!!(selG&&selG.items.includes(e.fid));return {...e,addLbl:inG?'✓ En grupo':'+ Añadir',addBg:inG?'#e3f4ea':'var(--color-accent-100)',addFg:inG?'#1d6b43':'var(--color-accent-800)',
           add:()=>{if(selG)setG(a=>a.map(G=>G.id!==selG.id?G:{...G,items:inG?G.items.filter(x=>x!==e.fid):G.items.concat([e.fid])}));else{const id=uid();setG(a=>a.concat([{id,name:'Equivalentes de '+ref.name.toLowerCase(),items:[ref.id,e.fid]}]));this.setState({eqGroupSel:id});}}};});
         v.newGroup=()=>{if(!ref)return;const id=uid();setG(a=>a.concat([{id,name:'Equivalentes de '+ref.name.toLowerCase(),items:[ref.id]}]));this.setState({eqGroupSel:id});};
-        v.eqGroupsV=GR.map(G=>{const sel=!!(selG&&selG.id===G.id);return {name:G.name,count:G.items.length+' alimentos',bd:sel?'var(--color-accent)':'var(--color-divider)',bg:sel?'var(--color-accent-100)':'#fff',
+        const GV=coachV?coachItems('eqGroups'):(ceo?GR:this.libAll('eqGroups').filter(G=>src==='all'||(src==='base')===!!G._base)).map(G=>({x:G}));
+        v.eqGroupsV=GV.map(({x:G,L})=>{const ed=!L&&!G._base,sel=ed&&!!(selG&&selG.id===G.id);return {ed,ro:!ed,...meta('eqGroups',G,L),name:G.name,count:(G.items||[]).length+' alimentos',bd:sel?'var(--color-accent)':'var(--color-divider)',bg:sel?'var(--color-accent-100)':'#fff',
           onName:e=>{const x=e.target.value;setG(a=>a.map(q=>q.id===G.id?{...q,name:x}:q));},
           del:()=>setG(a=>a.filter(q=>q.id!==G.id)),
-          items:G.items.map(id=>FM[id]).filter(Boolean).map(f=>{const m2=mainMacro(f);return {name:f.name,bg:MBG[m2],fg:MINK[m2],ref:()=>this.setState({eqRef:f.id,eqGroupSel:G.id}),remove:()=>setG(a=>a.map(q=>q.id===G.id?{...q,items:q.items.filter(x=>x!==f.id)}:q))};})};});
-        v.noGroups=GR.length===0;}
+          items:(G.items||[]).map(id=>FMx[id]).filter(Boolean).map(f=>{const m2=mainMacro(f);return {name:f.name,bg:MBG[m2],fg:MINK[m2],canRm:ed,ref:()=>this.setState({eqRef:f.id,eqGroupSel:ed?G.id:null}),remove:()=>setG(a=>a.map(q=>q.id===G.id?{...q,items:q.items.filter(x=>x!==f.id)}:q))};})};});
+        v.noGroups=GV.length===0;v.noGroupsText=coachV?'Ningún entrenador ha creado grupos de equivalencias.':viewOwn?'Aún no hay grupos. Elige una referencia y pulsa «+ Añadir» en la lista de sugerencias.':'No hay grupos en esta vista.';}
       if(v.isPresets){const co=s.clients.map(c=>({id:c.id,name:c.name||'Sin nombre'}));
-        const fnm=o=>SLOTS.reduce((acc,[sl])=>acc.concat((o[sl]||[]).map(x=>(FM[x.fid]||{}).name).filter(Boolean)),[]).join(' · ');
-        v.presetCards=this.presetsList().map(P=>({name:P.name,desc:P.desc,tags:presetTags(P),clients:co,
+        const fnm=o=>SLOTS.reduce((acc,[sl])=>acc.concat((o[sl]||[]).map(x=>(FMx[x.fid]||{}).name).filter(Boolean)),[]).join(' · ');
+        const PV=coachV?coachItems('presets'):(ceo?this.ownPresets():this.libAll('presets').filter(P=>src==='all'||(src==='base')===!!P._base)).map(P=>({x:P}));
+        v.presetCards=PV.map(({x:P,L})=>({ed:!L&&!P._base,canApply:!L,...meta('presets',P,L),name:P.name,desc:P.desc,tags:presetTags(P),clients:co,
           hasMeals:!!(P.meals&&P.meals.length),meals:(P.meals||[]).map(pmN).map(m=>({name:m.name,pct:num(m.pct)+'%',foods:(m.opts||[]).length?fnm(m.opts[0])+((m.opts||[]).length>1?' · +'+(m.opts.length-1)+(m.opts.length===2?' opción':' opciones'):''):'Sin alimentos'})),
           edit:()=>this.setState({pe:JSON.parse(JSON.stringify({...P,meals:(P.meals||[]).map(pmN)})),peDel:false}),
           dup:()=>{const id=uid();this.setPresets(L=>{const i=L.findIndex(x=>x.id===P.id),c={...JSON.parse(JSON.stringify(P)),id,name:P.name+' (copia)',builtin:false};L.splice(i+1,0,c);return L;});this.toast('Preset duplicado');},
           applyTo:e=>{const id=e.target.value;if(!id)return;const c0=s.clients.find(c=>c.id===id);this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==id)return c;const n=JSON.parse(JSON.stringify(c));applyPreset(n,P,true);n.updated=Date.now();return n;})}));this.toast(P.name+' volcado en '+((c0&&c0.name)||'cliente')+' · cantidades ajustadas');}}));
+        v.noPresets=PV.length===0;
         v.presetNew=()=>this.setState({pe:{id:uid(),name:'',desc:'',adj:-20,mode:'gkg',pg:2,fg:0.9,pp:30,pc:45,pf:25,meals:[PM('Desayuno',25,[opt()]),PM('Comida',35,[opt()]),PM('Merienda',15,[opt()]),PM('Cena',25,[opt()])],_new:true},peDel:false});
-        v.presetsCustom=!!s.presets;v.presetsReset=()=>{if(!s.presetsResetAsk){this.setState({presetsResetAsk:true});return;}this.setState({presets:null,presetsResetAsk:false});this._defP=null;this.toast('Presets restaurados');};v.presetsResetLabel=s.presetsResetAsk?'¿Seguro? Se pierden tus cambios':'Restaurar originales';}
+        v.presetsCustom=ceo&&!!s.presets;v.presetsReset=()=>{if(!s.presetsResetAsk){this.setState({presetsResetAsk:true});return;}this.setState({presets:null,presetsResetAsk:false});this._defP=null;this.toast('Presets restaurados');};v.presetsResetLabel=s.presetsResetAsk?'¿Seguro? Se pierden tus cambios':'Restaurar originales';}
       const q=norm(s.foodQuery);
-      const rows=allFoods.filter(f=>(!q||norm(f.name).includes(q))&&(!s.foodCat||f.cat===s.foodCat)&&(!s.onlyBadK||f.kBad));
+      const FR=coachV?coachItems('foods').map(({x,L})=>({f:nFood(x),x,L})):allFoods.filter(f=>ceo||src==='all'||(src==='own')===(f._s==='own')).map(f=>({f,x:f}));
+      const rows=FR.filter(({f})=>(!q||norm(f.name).includes(q))&&(!s.foodCat||f.cat===s.foodCat)&&(!s.onlyBadK||f.kBad));
       v.foodQuery=s.foodQuery;v.onFoodQuery=e=>this.setState({foodQuery:e.target.value});
       v.foodCat=s.foodCat;v.onFoodCat=e=>this.setState({foodCat:e.target.value});
       v.foodCount=rows.length+' alimentos · valores por 100 g · kcal = P×4 + C×4 + G×9';
       v.showNewFood=s.showNewFood;v.newFoodLabel=s.showNewFood?'Cerrar':'Nuevo alimento';v.toggleNewFood=()=>this.setState({showNewFood:!s.showNewFood});
-      v.foodRows=rows.map(f=>({name:f.name,al:f.al,cat:f.cat,macro:MLBL[mainMacro(f)],mbg:MBG[mainMacro(f)],mink:MINK[mainMacro(f)],kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f}));
+      v.foodRows=rows.map(({f,x,L})=>({...meta('foods',x,L),name:f.name,al:f.al,cat:f.cat,macro:MLBL[mainMacro(f)],mbg:MBG[mainMacro(f)],mink:MINK[mainMacro(f)],kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f}));
       v.libRecQ=s.libRecQ;v.onLibRecQ=e=>this.setState({libRecQ:e.target.value});
-      v.recGroupsLib=this.recGroups(s.libRecQ,FM,tp=>{const names=[];(tp.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FM[x.fid])names.push(FM[x.fid].name);})));
-        return {name:tp.name,nameRows:String(Math.max(1,Math.min(5,Math.ceil((tp.name||'').length/26)))),foods:names.join(' · '),meta:(tp.opts||[]).length+((tp.opts||[]).length===1?' opción':' opciones'),cat:tp.cat||guessCat(tp.name),cats:RCATS,
+      const TL=coachV?coachItems('tpls').map(({x,L})=>({...x,_L:L})):(ceo?s.tpls:this.libAll('tpls').filter(t=>src==='all'||(src==='base')===!!t._base));
+      v.recGroupsLib=this.recGroups(s.libRecQ,FMx,tp=>{const L=tp._L,ed=!L&&!tp._base,names=[];(tp.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FMx[x.fid])names.push(FMx[x.fid].name);})));
+        return {ed,ro:!ed,...meta('tpls',tp,L),name:tp.name,nameRows:String(Math.max(1,Math.min(5,Math.ceil((tp.name||'').length/26)))),foods:names.join(' · '),meta:(tp.opts||[]).length+((tp.opts||[]).length===1?' opción':' opciones'),cat:tp.cat||guessCat(tp.name),cats:RCATS,
           onCat:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,cat:x}:q)}));},
           onName:e=>{const x=e.target.value;this.setState(st=>({tpls:st.tpls.map(q=>q.id===tp.id?{...q,name:x}:q)}));},
           del:()=>{if(s.recDel!==tp.id){this.setState({recDel:tp.id});return;}this.setState(st=>({tpls:st.tpls.filter(x=>x.id!==tp.id),recDel:null}));this.toast('Receta eliminada');},delLabel:s.recDel===tp.id?'¿Seguro?':'Eliminar',
-          edit:()=>this.setState({re:JSON.parse(JSON.stringify({...tp,cat:tp.cat||guessCat(tp.name),opts:(tp.opts&&tp.opts.length?tp.opts:[opt()])})),reQ:null})};});
+          edit:()=>this.setState({re:JSON.parse(JSON.stringify({...tp,cat:tp.cat||guessCat(tp.name),opts:(tp.opts&&tp.opts.length?tp.opts:[opt()])})),reQ:null})};},TL);
       v.reNew=()=>this.setState({re:{id:uid(),name:'',cat:'Comidas',opts:[opt()],_new:true},reQ:null});
-      v.noRecMatch=s.tpls.length>0&&v.recGroupsLib.length===0;
-      v.noTpls=s.tpls.length===0;
+      v.noRecMatch=TL.length>0&&v.recGroupsLib.length===0;
+      v.noTpls=TL.length===0;v.noTplsText=coachV?'Ningún entrenador ha creado recetas todavía.':viewOwn?'Aún no hay recetas. Guárdalas desde cualquier comida del plan con «Guardar receta».':'No hay recetas en esta vista.';
+      if(v.isProps){
+        v.propCards=P0.filter(p=>p.status==='pending').map(p=>{const it=p.item||{},k=p.kind;let sum='';
+          if(k==='foods')sum=R(num(it.p)*4+num(it.c)*4+num(it.f)*9)+' kcal · P '+num(it.p)+' · C '+num(it.c)+' · G '+num(it.f)+' por 100 g'+(it.cat?' · '+it.cat:'');
+          else if(k==='presets')sum=presetTags(it)+(it.desc?' · '+it.desc:'');
+          else sum=fidsOf(k,it).map(id=>FMx[id]&&FMx[id].name).filter(Boolean).join(' · ');
+          const nf=(it._foods||[]).filter(f=>f&&!FM[f.id]).length;
+          return {kind:LIBK[k]||k,by:p.coach_name||'Entrenador',date:p.created_at?new Date(p.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'',name:it.name||'Sin nombre',sum,
+            hasNew:nf>0,newTxt:'Incluye '+nf+(nf===1?' alimento propio que también se añadirá.':' alimentos propios que también se añadirán.'),replaces:!!(BID[k]&&BID[k][p.item_id]),
+            approve:()=>this.decide(p,true),reject:()=>{if(s.propNo!==p.id){this.setState({propNo:p.id});return;}this.setState({propNo:null});this.decide(p,false);},rejectLabel:s.propNo===p.id?'¿Seguro? Rechazar':'Rechazar'};});
+        v.noProps=!!s.props&&v.propCards.length===0;v.propsLoading=!s.props&&!s.propsErr;}
     }
     v.peOpen=!!s.pe;
     if(s.pe){const D=s.pe,setP=f=>this.setState(st=>{const r=JSON.parse(JSON.stringify(st.pe));f(r);return {pe:r};}),tv=e=>e.target.value;
@@ -2678,20 +2793,20 @@ class Component extends DCLogic {
       v.tdEmpty=s.tpls.length===0;
       const tdItem=t=>{const names=[];(t.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>o[sl].forEach(x=>{if(FM[x.fid])names.push(FM[x.fid].name);})));
         const on=(s.tdSel||[]).includes(t.id);
-        return {name:t.name,foods:names.join(' · '),bd:on?'var(--color-accent)':'transparent',bg:on?'var(--color-accent-100)':'#fff',ck:on?'var(--color-accent)':'#fff',ckBd:on?'var(--color-accent)':'var(--color-neutral-400)',ckOn:on,
+        return {name:t.name,isB:!!t._base,foods:names.join(' · '),bd:on?'var(--color-accent)':'transparent',bg:on?'var(--color-accent-100)':'#fff',ck:on?'var(--color-accent)':'#fff',ckBd:on?'var(--color-accent)':'var(--color-neutral-400)',ckOn:on,
           pick:()=>this.setState(st=>{const a=st.tdSel||[];return {tdSel:a.includes(t.id)?a.filter(x=>x!==t.id):a.concat([t.id])};})};};
       {const nS=(s.tdSel||[]).length,how=s.tdHow||'opts';v.tdAddLabel=nS?'Añadir '+nS+(nS===1?' receta':' recetas'):'Añadir';v.tdAddOp=nS?'1':'.5';
         v.tdHowSeg=this.seg([['opts','Una opción por receta'],['merge','Todo en una opción']],how,x=>this.setState({tdHow:x}));
         v.tdHowNote=how==='merge'?'Se juntan los alimentos de todas en una sola opción nueva (por ejemplo, plato + guarnición).':'Cada receta se añade como una opción nueva (B, C…). Lo que ya tiene la comida se mantiene.';
         v.tdClear=()=>this.setState({tdSel:[]});v.tdHasSel=nS>0;v.tdSelLabel=nS+(nS===1?' marcada':' marcadas');
-        v.tdAdd=()=>{const ts=(s.tdSel||[]).map(id=>s.tpls.find(t=>t.id===id)).filter(Boolean);if(!ts.length){this.toast('Marca al menos una receta',true);return;}
+        v.tdAdd=()=>{const TT=this.libAll('tpls'),ts=(s.tdSel||[]).map(id=>TT.find(t=>t.id===id)).filter(Boolean);if(!ts.length){this.toast('Marca al menos una receta',true);return;}
           const mid=s.td.mealId,cp=o=>{const c=JSON.parse(JSON.stringify(o));c.id=uid();SLOTS.forEach(([sl])=>{c[sl]=c[sl]||[];c[sl].forEach(x=>{x.id=uid();});});return c;},empty=o=>SLOTS.every(([sl])=>!(o[sl]||[]).length);
           let add=[].concat(...ts.map(t=>(t.opts||[]).filter(o=>!empty(o)).map(cp)));
           if(how==='merge'){const fs=ts.map(t=>(t.opts||[]).find(o=>!empty(o))).filter(Boolean).map(cp);if(fs.length){const b=fs[0];fs.slice(1).forEach(o=>SLOTS.forEach(([sl])=>{b[sl]=b[sl].concat(o[sl]);}));add=[b];}}
           if(!add.length){this.toast('Las recetas marcadas no tienen alimentos',true);return;}
           this.updC(n=>{const m=mealsOf(n).find(x=>x.id===mid);if(!m)return;m.options=(m.options||[]).filter(o=>!empty(o)).concat(add);});
           this.setState({td:null,tdSel:[]});this.toast(ts.length===1?'Receta añadida a la comida':ts.length+' recetas añadidas a la comida');};}
-      v.tdGroups=this.recGroups(s.tdQ,FM,tdItem);v.tdEmpty=v.tdGroups.length===0;
+      v.tdGroups=this.recGroups(s.tdQ,FM,tdItem,this.libAll('tpls'));v.tdEmpty=v.tdGroups.length===0;
     }
     v.eqOpen=false;
     if(s.eqd&&cl){
@@ -2708,7 +2823,7 @@ class Component extends DCLogic {
         v.onEqSrc=e=>{const k=e.target.value;this.setState(st=>({eqd:{...st.eqd,src:k,picks:{}}}));};
         v.eqClose=()=>this.setState({eqd:null});
         const FL=this.allFoodsN(),r=cur?solve(cur.o,mealTarget(cur.ml,T2),cl.planMode,FM,cl.round):null,rows=[];
-        if(r)SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{const E=equivsFor(x.food,x.g||100,FL,6,s.eqGroups);rows.push({sl,x,eqs:E.list,man:E.manual});}));
+        if(r)SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{const E=equivsFor(x.food,x.g||100,FL,6,this.libAll('eqGroups'));rows.push({sl,x,eqs:E.list,man:E.manual});}));
         const picks=s.eqd.picks||{},pick=(id,fid)=>this.setState(st=>({eqd:{...st.eqd,picks:{...(st.eqd.picks||{}),[id]:fid}}}));
         v.eqRows=rows.map(({sl,x,eqs,man})=>{const cp=picks[x.id]||null;return {name:x.food.name,g:x.g?x.g+' g':'',sw:SW[sl],bg:MBG[sl],src:man?'Tus equivalencias':eqs.length?'Automáticas · misma categoría':'Sin equivalencias · créalas en Biblioteca',srcFg:man?'#1d6b43':'var(--color-neutral-600)',
           chips:[{name:'Mantener',meta:'sin cambio',sel:!cp,pick:()=>pick(x.id,null)}].concat(eqs.map(q=>({name:q.f.name,meta:q.g+' g · '+q.sim+'% similar',sel:cp===q.f.id,pick:()=>pick(x.id,q.f.id)}))).map(c=>({...c,bd:c.sel?'var(--color-accent)':'var(--color-divider)',bgc:c.sel?'var(--color-accent-100)':'#fff'}))};});
