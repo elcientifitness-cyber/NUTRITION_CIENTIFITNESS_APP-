@@ -116,3 +116,30 @@ button:focus-visible,.cf-nav-btn:focus-visible{outline:2px solid var(--color-acc
 @container calp (max-width:760px){.cf-cal-layout{grid-template-columns:minmax(0,1fr)!important}}
 @container calm (max-width:640px){.cf-cal-hint{display:none}}
 select.input[data-open="1"]{border-color:var(--color-accent-300);box-shadow:0 0 0 3px var(--color-accent-100)}
+
+/* Barras deslizables: grupos de botones en una sola fila (deslizar, rueda o arrastrar) */
+.cf-rail{display:flex;flex-wrap:nowrap!important;overflow-x:auto;overflow-y:hidden;max-width:100%;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-padding-inline:28px}
+.cf-rail::-webkit-scrollbar{display:none}
+.cf-rail>*{flex:none!important;white-space:nowrap}
+.cf-rail[data-ov="r"]{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+.cf-rail[data-ov="l"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
+.cf-rail[data-ov="lr"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
+.cf-rail.cf-dragging{cursor:grabbing;-webkit-user-select:none;user-select:none}
+/* Campos de la ventana de medición: color por grupo */
+.cf-mf::placeholder{color:var(--color-neutral-400);font-weight:600}
+.cf-mf:focus{outline:none;background:#fff!important}
+.cf-mf[data-g="bas"]:focus{border-color:#1180c2!important;box-shadow:0 0 0 4px var(--color-accent-100)}
+.cf-mf[data-g="pl"]:focus{border-color:#9580dc!important;box-shadow:0 0 0 4px var(--fat-bg)}
+.cf-mf[data-g="per"]:focus{border-color:#4fb487!important;box-shadow:0 0 0 4px var(--veg-bg)}
+.cf-mf[data-g="dia"]:focus{border-color:#d9a92c!important;box-shadow:0 0 0 4px var(--carb-bg)}
+/* Informe de progreso: al imprimir solo sale la hoja */
+@media print{
+  body.cf-rep-on{background:#fff!important}
+  body.cf-rep-on>*:not(.cf-rep){display:none!important}
+  body.cf-rep-on .cf-rep{position:static!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.cf-rep-on .cf-rep-bar,body.cf-rep-on .cf-rep-np{display:none!important}
+  body.cf-rep-on .cf-rep-po{display:block!important}
+  body.cf-rep-on .cf-rep-scroll{overflow:visible!important;padding:0!important;background:#fff!important}
+  body.cf-rep-on .cf-rep-sheet{width:auto!important;box-shadow:none!important;border-radius:0!important;padding:0!important;margin:0!important}
+  .cf-rep-avoid{break-inside:avoid}
+}

@@ -255,7 +255,24 @@ button{-webkit-user-select:none;user-select:none}
       <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ cbFg }}">Cumplimiento · 7 días</span><span style="font-weight:800;font-size:17px">{{ cbLabel }}</span><span style="font-size:12px;color:var(--color-neutral-800,#3b4a5a)">{{ cb30 }}</span></div>
     </section>
 
-    <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" tk="{{ sgTk }}" tone="coral" store-key="cf-as-seg" hint-size="100%,380px"></dc-import>
+    <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" pl-names="{{ sgPl }}" tk="{{ sgTk }}" tone="coral" store-key="cf-as-seg" hint-size="100%,380px"></dc-import>
+
+    <sc-if value="{{ msHas }}" hint-placeholder-val="{{ false }}">
+    <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+        <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:18px">Mis mediciones</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ msSub }}</span></div>
+        <div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content"><sc-for list="{{ msSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:800;padding:6px 12px;min-height:32px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+      </div>
+      <sc-for list="{{ msGroups }}" as="g" hint-placeholder-count="2">
+        <div style="border-radius:16px;overflow:hidden;border:1px solid var(--color-divider)">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:{{ g.bg }};color:{{ g.ink }}"><span style="width:10px;height:10px;border-radius:3px;background:{{ g.solid }};flex:none"></span><span style="font-weight:800;font-size:14px;margin-right:auto">{{ g.title }}</span><span style="font-size:11px;font-weight:800">{{ g.dfHead }}</span></div>
+          <div style="display:flex;flex-direction:column;padding:0 14px">
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:{{ r.bt }};font-size:14px;font-variant-numeric:tabular-nums"><span style="margin-right:auto;min-width:0;display:flex;flex-direction:column"><span>{{ r.label }}</span><sc-if value="{{ r.hasGoal }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;color:var(--color-neutral-600)">{{ r.goal }}</span></sc-if></span><strong>{{ r.val }}</strong><span style="min-width:62px;text-align:right;font-size:13px;font-weight:800;color:{{ r.fc }}">{{ r.df }}</span></div></sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+    </sc-if>
 
     <dc-import name="FotosProgreso" sb="{{ sbc }}" coach="{{ coachId }}" ckey="{{ clientKey }}" by="client" hint-size="100%,120px"></dc-import>
     <p style="margin:0 4px;font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Tus fotos solo las vemos tú y tu nutricionista. Hazlas en ayunas, con la misma luz y postura: de frente, de perfil y de espalda.</p>
@@ -591,7 +608,21 @@ class Component extends DCLogic {
         return {body:m.body,showDay:sd,day:dk===today?'Hoy':cap(d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})),time:(mine?'':(coFirst||'Nutricionista')+' · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
       v.draft=s.draft;v.onDraft=e=>this.setState({draft:e.target.value});v.send=()=>this.send();}
 
-    if(v.isProg){v.sgLogs=s.logs;v.sgMetrics=P.metrics||[];v.sgPer=P.perNames||[];v.sgTk=Tk;}
+    if(v.isProg){v.sgLogs=s.logs;v.sgMetrics=P.metrics||[];v.sgPer=P.perNames||[];v.sgPl=P.plNames||[];v.sgTk=Tk;
+      const MS=(P.metrics||[]).slice().sort((a,b)=>a.d<b.d?-1:1),GO=P.goals||{};v.msHas=MS.length>0;
+      if(MS.length){const mode=s.msMode||'prev',B=MS[MS.length-1],A=mode==='first'?(MS.length>1?MS[0]:null):(MS[MS.length-2]||null);
+        const dL=d=>parseD(d).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}),f1=(x,d)=>Number(x).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
+        v.msSeg=[['prev','vs anterior'],['first','vs inicio']].map(([k,l])=>({label:l,bg:mode===k?'#fff':'transparent',fg:mode===k?'var(--color-text)':'var(--color-neutral-700)',pick:()=>this.setState({msMode:k})}));
+        v.msSub='Última medición · '+dL(B.d)+' · '+MS.length+(MS.length===1?' medición':' mediciones');
+        const G=[['Composición','#e3f1fa','#0a4468','#1180c2',[['Peso','w','kg',1,0],['% grasa','bf','%',1,-1],['Masa grasa','fm','kg',1,-1],['Masa magra','lbm','kg',1,1],['Masa muscular','mm','kg',1,1],['Masa ósea','mo','kg',1,0]]],
+          ['Pliegues','#eee9fc','#51408d','#9580dc',(P.plNames||[]).map(([k,l])=>[l,'pl.'+k,'mm',1,-1]).concat([['Σ6 pliegues','s6','mm',0,-1],['Σ8 pliegues','s8','mm',0,-1]])],
+          ['Perímetros','#e0f4e8','#21633d','#4fb487',(P.perNames||[]).map(([k,l])=>[l,'per.'+k,'cm',1,0])],
+          ['Diámetros óseos','#fdf3d4','#77560a','#d9a92c',(P.diaNames||[]).map(([k,l])=>[l,'dia.'+k,'cm',1,0])]];
+        const get=(m,k)=>{if(!m)return null;const p=k.split('.'),x=p[1]?(m[p[0]]||{})[p[1]]:m[p[0]];return x==null||!(+x>0)?null:+x;};
+        const head=A?'vs '+dShort(A.d):'';
+        v.msGroups=G.map(([title,bg,ink,solid,rows])=>{const rs=rows.map(([l,k,u,d,dir])=>{const b=get(B,k),a=get(A,k);if(b==null)return null;const df=a!=null?b-a:null,gv=num(GO[k.startsWith('per.')?k.slice(4):k]);
+            return {label:l,val:f1(b,d)+(u?' '+u:''),df:df==null?'—':(df>0?'+':df<0?'−':'±')+f1(Math.abs(df),d),fc:df==null||!dir||Math.abs(df)<1e-9?'var(--color-neutral-700)':df*dir>0?'#1d6b43':'#b3541e',hasGoal:gv>0,goal:gv>0?'Objetivo '+f1(gv,d)+(u?' '+u:''):''};}).filter(Boolean);
+          rs.forEach((r,i)=>{r.bt=i?'1px solid var(--color-neutral-200)':'0';});return {title,bg,ink,solid,dfHead:head,rows:rs};}).filter(g=>g.rows.length);}}
 
     const A=s.add;v.hasAdd=!!A;
     if(A){const FD=window.CF_FOODS||[],q=norm(A.q);v.addTitle=A.meal;v.addMeal=A.meal;v.addQ=A.q;v.onAddQ=e=>this.setState({add:{...A,q:e.target.value}});v.addClose=()=>this.setState({add:null});

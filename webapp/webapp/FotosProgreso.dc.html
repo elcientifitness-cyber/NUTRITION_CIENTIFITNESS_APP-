@@ -157,7 +157,7 @@ class Component extends DCLogic {
   state={delId:null,delDay:null,photos:[],open:false,mode:'gallery',upDay:todayIso(),busy:false,err:null,view:null,a:null,b:null,slot:'a',cmp:'slider',sl:50,delAsk:false};
   fileRef=React.createRef();slRef=React.createRef();dateRef=React.createRef();
   componentDidMount(){this.load();}
-  componentDidUpdate(pp,ps){if(pp.ckey!==this.props.ckey||pp.coach!==this.props.coach||pp.sb!==this.props.sb||(this.isLocal()&&pp.localPhotos!==this.props.localPhotos))this.load();
+  componentDidUpdate(pp,ps){if(pp.ckey!==this.props.ckey||pp.coach!==this.props.coach||pp.sb!==this.props.sb||pp.rev!==this.props.rev||(this.isLocal()&&pp.localPhotos!==this.props.localPhotos))this.load();
     const lock=this.state.open||this.state.view!=null;if(lock!==this._lock){this._lock=lock;document.body.style.overflow=lock?'hidden':'';}}
   componentWillUnmount(){document.body.style.overflow='';}
   isLocal(){return !this.props.sb||!this.props.coach;}

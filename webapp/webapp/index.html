@@ -88,7 +88,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ clientCount }}</div>
       <h1 style="margin:4px 0 0">Clientes</h1>
     </div>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:rgba(255,255,255,.7);border-radius:999px;width:fit-content;position:relative"><sc-for list="{{ sortSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+    <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:rgba(255,255,255,.7);border-radius:999px;width:fit-content;position:relative"><sc-for list="{{ sortSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
     <input class="input cf-search" placeholder="Buscar cliente" value="{{ clientQuery }}" onChange="{{ onClientQuery }}" style="width:240px;max-width:100%;position:relative">
     <button class="btn btn-primary" onClick="{{ newClient }}" style="min-height:38px;position:relative">
       <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
@@ -158,13 +158,15 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700);flex:0 1 180px">WhatsApp<input class="input" type="tel" value="{{ cPhone }}" onChange="{{ onPhone }}" placeholder="+34 600 000 000"></label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Alergias / vetos<input class="input" value="{{ cAllergies }}" onChange="{{ onAllergies }}" placeholder="Separados por comas: gluten, lactosa"></label>
     </div>
-    <div style="display:flex;gap:6px;margin-top:22px;flex-wrap:wrap">
+    <div style="display:flex;gap:6px 10px;margin-top:22px;flex-wrap:wrap;align-items:center">
+      <div class="cf-rail" style="display:flex;gap:6px;min-width:0;max-width:100%">
       <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
         <button onClick="{{ t.go }}" style="font:inherit;display:flex;gap:8px;align-items:baseline;padding:9px 16px;background:{{ t.bd }};border:0;border-radius:999px;color:{{ t.fg }};cursor:pointer;white-space:nowrap">
           <span style="font-size:11px;font-variant-numeric:tabular-nums">{{ t.num }}</span>
           <span style="font-weight:700;font-size:15px">{{ t.label }}</span>
         </button>
       </sc-for>
+      </div>
       <div data-noprint="1" style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <sc-if value="{{ cHasNext }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cOpenNext }}" style="font:inherit;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:0;border-radius:999px;background:var(--veg-bg);color:var(--veg-ink);cursor:pointer"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M3 10h18"></path></svg>{{ cNextLabel }}</button></sc-if>
         <button class="btn btn-secondary" onClick="{{ cNewAppt }}" style="border-radius:999px;font-size:13px"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Agendar cita</button>
@@ -211,7 +213,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
       <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;gap:12px;align-items:baseline"><span style="font-size:13px;color:var(--color-accent-700);font-variant-numeric:tabular-nums">01</span><h3 style="margin:0;font-size:22px">Datos personales</h3></div>
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
           <sc-for list="{{ sexoSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px">
@@ -264,12 +266,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Horas de pie extra al día<input class="input" type="number" step="0.5" value="{{ pie }}" onChange="{{ onPie }}"></label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Hobbies activos (h/semana)<input class="input" type="number" step="0.5" value="{{ hobbies }}" onChange="{{ onHobbies }}"></label>
           <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Desplazamientos
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+            <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
               <sc-for list="{{ desplSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Fidgeting
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+            <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
               <sc-for list="{{ fidgSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
             </div>
           </div>
@@ -285,12 +287,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;gap:12px;align-items:baseline"><span style="font-size:13px;color:var(--color-accent-700)">04</span><h3 style="margin:0;font-size:22px">Objetivo y macros</h3></div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:12px;color:var(--color-neutral-700)">Presets de dieta</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ presetChips }}" as="pc" hint-placeholder-count="6"><button onClick="{{ pc.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid {{ pc.bd }};background:{{ pc.bg }};color:{{ pc.fg }};cursor:pointer">{{ pc.label }}</button></sc-for></div>
+          <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ presetChips }}" as="pc" hint-placeholder-count="6"><button onClick="{{ pc.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid {{ pc.bd }};background:{{ pc.bg }};color:{{ pc.fg }};cursor:pointer">{{ pc.label }}</button></sc-for></div>
           <sc-if value="{{ showPresetOffer }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px"><span style="flex:1 1 260px">{{ presetOfferText }}</span><button class="btn btn-primary" onClick="{{ applyPresetMeals }}" style="font-size:12px;padding:7px 12px">Volcar dieta</button><button class="btn btn-ghost" onClick="{{ dismissPreset }}" style="font-size:12px">Ahora no</button></div></sc-if>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end">
           <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Kcal del plan
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+            <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
               <sc-for list="{{ kcalSrcSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
             </div>
           </div>
@@ -299,7 +301,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           </sc-if>
           <sc-if value="{{ isCalcSrc }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Ajuste sobre mantenimiento
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+              <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
                 <sc-for list="{{ adjSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
                 <sc-if value="{{ showAdjPct }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;align-items:center;gap:4px;margin-left:12px"><input class="input" type="number" value="{{ adjPct }}" onChange="{{ onAdjPct }}" style="width:64px"><span style="font-size:13px;color:var(--color-text)">%</span></div>
@@ -309,7 +311,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           </sc-if>
         </div>
         <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Definir macros por
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+          <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
             <sc-for list="{{ macroModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
           </div>
         </div>
@@ -406,14 +408,14 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px 24px;padding:16px 18px;border-radius:20px;background:#fff;box-shadow:var(--shadow-sm)">
       <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
         <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Tipo de plan</span>
-        <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
           <sc-for list="{{ planModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ modeHelp }}</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
         <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Redondeo de gramos</span>
-        <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px;width:fit-content;max-width:100%;box-sizing:border-box">
           <sc-for list="{{ roundSeg }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 13px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ roundNote }}</span>
@@ -431,14 +433,14 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
     <sc-if value="{{ isClosedPlan }}" hint-placeholder-val="{{ false }}">
       <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
           <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-right:6px">Menús de la semana</span>
           <sc-for list="{{ menuTabs }}" as="mt" hint-placeholder-count="3"><button onClick="{{ mt.pick }}" style="font:inherit;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 16px;border:0;border-radius:14px;background:{{ mt.bg }};color:{{ mt.fg }};cursor:pointer;text-align:left"><span style="font-weight:700;font-size:14px">{{ mt.name }}</span><span style="font-size:11px;opacity:.85">{{ mt.days }}</span></button></sc-for>
           <button onClick="{{ addMenu }}" style="font:inherit;font-size:13px;font-weight:600;padding:12px 16px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:14px;color:var(--color-accent-700);cursor:pointer" style-hover="background:var(--color-accent-100)">+ Menú</button>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;padding-top:14px;border-top:1px solid var(--color-divider)">
           <input class="input" value="{{ menuName }}" onChange="{{ onMenuName }}" placeholder="Nombre del menú" style="width:200px;font-weight:700">
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div class="cf-rail" style="display:flex;gap:6px;flex-wrap:wrap">
             <sc-for list="{{ dayChips }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.toggle }}" title="{{ d.full }}" style="font:inherit;width:40px;height:40px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};font-weight:700;font-size:13px;cursor:pointer">{{ d.l }}</button></sc-for>
           </div>
           <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 200px">Pulsa un día para asignarlo a este menú; los días en gris están en otro menú.</span>
@@ -466,7 +468,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
               <sc-for list="{{ daBars }}" as="b" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0"><div style="position:relative;height:84px;display:flex;align-items:flex-end"><div style="width:100%;height:{{ b.h }};background:{{ b.bg }};opacity:{{ b.op }};border-radius:8px 8px 4px 4px;min-height:4px;transition:height .25s"></div><div style="position:absolute;left:0;right:0;bottom:{{ daAvgPct }};border-top:1.5px dashed var(--color-neutral-600)"></div></div><span style="font-size:12px;font-weight:700;text-align:center">{{ b.l }}</span><span style="font-size:11px;text-align:center;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ b.k }}</span><span style="font-size:10px;text-align:center;color:var(--color-neutral-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.ty }}</span></div></sc-for>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--carb)"></span>Por encima de la media</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-accent)"></span>Por debajo</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-neutral-400)"></span>Igual</span><span>Más claro = día en «Auto»</span><span style="display:flex;align-items:center;gap:6px"><span style="width:16px;border-top:1.5px dashed var(--color-neutral-600)"></span>Media de Necesidades</span></div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:2px">Rápido</span><sc-for list="{{ daPresets }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer" style-hover="background:var(--color-accent-100)">{{ p.label }}</button></sc-for><span style="flex:1"></span><button class="btn btn-ghost" onClick="{{ daReset }}" style="font-size:12px">Restablecer semana</button></div>
+            <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:2px">Rápido</span><sc-for list="{{ daPresets }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer" style-hover="background:var(--color-accent-100)">{{ p.label }}</button></sc-for><span style="flex:1"></span><button class="btn btn-ghost" onClick="{{ daReset }}" style="font-size:12px">Restablecer semana</button></div>
             <div style="overflow-x:auto;margin:0 -4px;padding:0 4px 4px"><div style="min-width:724px;display:flex;flex-direction:column;gap:6px">
               <div style="display:grid;grid-template-columns:minmax(110px,1.2fr) minmax(140px,1.3fr) 84px 64px 70px 70px 70px 30px;gap:8px;padding:0 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-600)"><span>Día</span><span>Tipo</span><span>% vs media</span><span style="text-align:right">Kcal</span><span>Proteína</span><span>Hidratos</span><span>Grasas</span><span></span></div>
               <sc-for list="{{ daRows }}" as="r" hint-placeholder-count="7">
@@ -489,7 +491,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </section>
     </sc-if>
 
-    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);margin-right:4px">Ir a</span><sc-for list="{{ mealNav }}" as="mn" hint-placeholder-count="4"><button onClick="{{ mn.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:0;background:{{ mn.bg }};color:{{ mn.fg }};cursor:pointer;box-shadow:var(--shadow-sm)">{{ mn.name }}</button></sc-for></div>
+    <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);margin-right:4px">Ir a</span><sc-for list="{{ mealNav }}" as="mn" hint-placeholder-count="4"><button onClick="{{ mn.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:0;background:{{ mn.bg }};color:{{ mn.fg }};cursor:pointer;box-shadow:var(--shadow-sm)">{{ mn.name }}</button></sc-for></div>
     <sc-if value="{{ overWarn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:#fff1ee;border:1px solid #f4c9bf;color:#8f2a14;font-size:13px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span>{{ overWarnText }}</span></div></sc-if>
     <sc-for list="{{ meals }}" as="m" hint-placeholder-count="3">
       <section id="{{ m.domId }}" onDragOver="{{ m.mDragOver }}" onDrop="{{ m.mDrop }}" style="background:#fff;border-radius:22px;box-shadow:{{ m.mOut }};padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .15s">
@@ -640,7 +642,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div data-noprint="1" class="cf-stick" style="flex:1 1 260px;display:flex;flex-direction:column;gap:16px">
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Notas para el cliente<textarea class="input" rows="6" value="{{ notes }}" onChange="{{ onNotes }}" placeholder="Instrucciones, hidratación, suplementación…"></textarea></label>
       <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Lista de la compra para
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
           <sc-for list="{{ daysSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
       </div>
@@ -755,101 +757,308 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
   <sc-if value="{{ isProg }}" hint-placeholder-val="{{ false }}">
   <main class="cf-fade" style="max-width:1280px;width:100%;margin:0 auto;padding:28px 28px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:32px">
-    <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end">
-      <div style="margin-right:auto">
+    <div style="display:flex;flex-wrap:wrap;gap:16px 20px;align-items:center">
+      <div style="margin-right:auto;min-width:0">
         <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ lastLabel }}</div>
         <h3 style="margin:4px 0 0;font-size:24px">Composición corporal</h3>
       </div>
-      <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Protocolo de % grasa
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
-          <sc-for list="{{ protoSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
-        </div>
-      </div>
-      <sc-if value="{{ hasLogs }}" hint-placeholder-val="{{ true }}"><button class="btn btn-secondary" onClick="{{ applyToCalc }}" style="min-height:36px">{{ applyLabel }}</button></sc-if>
-      <button class="btn btn-primary" onClick="{{ toggleLogForm }}" style="min-height:36px">
-        <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>{{ logFormLabel }}
+      <sc-if value="{{ hasLogs }}" hint-placeholder-val="{{ true }}"><button class="btn btn-secondary" onClick="{{ openRep }}" style="min-height:52px;padding:0 18px;border-radius:16px;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h4"></path></svg>Informe PDF</button></sc-if>
+      <button onClick="{{ openLogForm }}" class="cf-lift" style="font:inherit;display:flex;align-items:center;gap:14px;padding:12px 26px 12px 12px;min-height:68px;border:0;border-radius:20px;background:linear-gradient(180deg,#1d92d8,#1180c2);color:#fff;cursor:pointer;text-align:left;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 26px rgba(17,128,194,.3)">
+        <span style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2.5;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:var(--font-heading);font-weight:700;font-size:19px;line-height:1.15">Nueva medición</span>
+          <span style="display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:#fff"><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:3px;background:var(--fat)"></span>Pliegues</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:3px;background:var(--veg)"></span>Perímetros</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:3px;background:var(--carb)"></span>Diámetros</span></span>
+        </span>
       </button>
     </div>
 
-    <dc-import name="FotosProgreso" sb="{{ phSb }}" coach="{{ phCoach }}" ckey="{{ phKey }}" by="coach" local-photos="{{ phLocal }}" on-local="{{ phOnLocal }}" hint-size="100%,84px"></dc-import>
+    <dc-import name="FotosProgreso" sb="{{ phSb }}" coach="{{ phCoach }}" ckey="{{ phKey }}" by="coach" local-photos="{{ phLocal }}" on-local="{{ phOnLocal }}" rev="{{ phRev }}" hint-size="100%,84px"></dc-import>
 
     <sc-if value="{{ sgShow }}" hint-placeholder-val="{{ false }}">
-      <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" tk="{{ sgTk }}" tone="blue" head="Seguimiento diario desde la app" head-sub="{{ sgSub }}" store-key="cf-coach-seg" hint-size="100%,420px"></dc-import>
+      <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" pl-names="{{ sgPl }}" tk="{{ sgTk }}" tone="blue" head="Seguimiento diario desde la app" head-sub="{{ sgSub }}" store-key="cf-coach-seg" hint-size="100%,420px"></dc-import>
     </sc-if>
 
-    <sc-if value="{{ showLogForm }}" hint-placeholder-val="{{ false }}">
-      <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:18px">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:420px">
-          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Fecha<input class="input" type="date" value="{{ lfDate }}" onChange="{{ onLfDate }}"></label>
-          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Peso (kg)<input class="input" type="number" step="0.1" value="{{ lfPeso }}" onChange="{{ onLfPeso }}"></label>
+    <sc-if value="{{ lfOpen }}" hint-placeholder-val="{{ false }}">
+    <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
+    <div data-noprint="1" onKeyDown="{{ lfKey }}" style="position:fixed;inset:0;z-index:1200;background:rgba(18,32,46,.62);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
+      <div class="cf-pop" style="width:min(1280px,100%);background:#f3f7fb;border-radius:clamp(0px,2vw,26px);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden">
+        <div style="background:#fff;border-bottom:1px solid var(--color-divider);padding:calc(14px + env(safe-area-inset-top)) 20px 14px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:14px;min-width:0">
+            <span style="width:46px;height:46px;border-radius:15px;background:var(--color-accent-100);color:var(--color-accent);display:flex;align-items:center;justify-content:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M3 17 17 3l4 4L7 21H3v-4Z"></path><path d="m7 13 2 2"></path><path d="m10 10 2 2"></path><path d="m13 7 2 2"></path></svg></span>
+            <div style="display:flex;flex-direction:column;min-width:0;margin-right:auto">
+              <span style="font-family:var(--font-heading);font-weight:700;font-size:22px;line-height:1.2">{{ lfTitle }}</span>
+              <span style="font-size:13px;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lfSub }}</span>
+            </div>
+            <button onClick="{{ lfClose }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:{{ lfCloseBg }};color:{{ lfCloseFg }};border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>{{ lfCloseLabel }}</button>
+          </div>
+          <sc-if value="{{ lfIsForm }}" hint-placeholder-val="{{ true }}">
+            <div class="cf-rail" style="display:flex;gap:8px">
+              <sc-for list="{{ lfNav }}" as="n" hint-placeholder-count="4"><button onClick="{{ n.go }}" style="font:inherit;display:inline-flex;align-items:center;gap:10px;padding:8px 10px 8px 12px;min-height:44px;border-radius:14px;border:1.5px solid {{ n.bd }};background:{{ n.bg }};color:{{ n.ink }};cursor:pointer"><span style="width:12px;height:12px;border-radius:4px;background:{{ n.solid }}"></span><span style="font-weight:800;font-size:14px">{{ n.label }}</span><span style="font-size:12px;font-weight:800;padding:2px 8px;border-radius:999px;background:#fff;font-variant-numeric:tabular-nums">{{ n.count }}</span></button></sc-for>
+            </div>
+          </sc-if>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--color-divider);padding-top:10px"><span style="font-weight:800">Pliegues (mm)</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ plHelp }}</span></div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">
-            <sc-for list="{{ lfPl }}" as="f" hint-placeholder-count="10">
-              <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:{{ f.fg }};font-weight:{{ f.w }}">{{ f.label }}<input class="input" type="number" step="0.5" value="{{ f.val }}" onChange="{{ f.on }}"></label>
-            </sc-for>
+
+        <sc-if value="{{ lfIsForm }}" hint-placeholder-val="{{ true }}">
+          <div ref="{{ lfBodyRef }}" tabIndex="-1" style="flex:1;min-height:0;overflow-y:auto;position:relative;padding:20px;outline:none">
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;max-width:1200px;margin:0 auto">
+              <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:18px">
+                <section data-sec="bas" style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--color-accent-100);color:var(--color-accent-800)"><span style="width:14px;height:14px;border-radius:5px;background:#1180c2;flex:none"></span><span style="font-family:var(--font-heading);font-weight:700;font-size:18px">Datos básicos</span></div>
+                  <div style="padding:16px 18px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+                    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                      <span style="font-size:13px;font-weight:700;color:var(--color-neutral-800)">Fecha</span>
+                      <button ref="{{ lfDateRef }}" onClick="{{ lfPickDate }}" style="font:inherit;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:8px 14px;border:2px solid var(--color-divider);border-radius:14px;background:#fff;color:var(--color-text);cursor:pointer;text-align:left">{{ lfDateLabel }}<svg width="18" height="18" viewBox="0 0 24 24" style="display:block;flex:none;stroke:var(--color-accent);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg></button>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                      <span style="font-size:13px;font-weight:700;color:var(--color-neutral-800)">Peso</span>
+                      <span style="position:relative;display:block"><input class="cf-mf" data-g="bas" type="number" inputmode="decimal" step="0.1" value="{{ lfPeso }}" onChange="{{ onLfPeso }}" style="width:100%;box-sizing:border-box;min-height:52px;padding:8px 46px 8px 14px;font:inherit;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--color-text);background:{{ lfPesoBg }};border:2px solid {{ lfPesoBd }};border-radius:14px;transition:border-color .15s,background .15s,box-shadow .15s"><span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:var(--color-neutral-600);pointer-events:none">kg</span></span>
+                      <span style="font-size:12px;color:{{ lfPesoFg }};font-variant-numeric:tabular-nums">{{ lfPesoPrev }}</span>
+                    </label>
+                  </div>
+                </section>
+                <sc-for list="{{ lfSecs }}" as="sec" hint-placeholder-count="3">
+                  <section data-sec="{{ sec.key }}" style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);overflow:hidden">
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:14px 18px;background:{{ sec.bg }};color:{{ sec.ink }}">
+                      <span style="width:14px;height:14px;border-radius:5px;background:{{ sec.solid }};flex:none"></span>
+                      <span style="font-family:var(--font-heading);font-weight:700;font-size:18px">{{ sec.title }}</span>
+                      <span style="font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;background:#fff">{{ sec.unit }}</span>
+                      <sc-if value="{{ sec.opt }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.6)">Opcional</span></sc-if>
+                      <span style="margin-left:auto;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums">{{ sec.count }}</span>
+                    </div>
+                    <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px">
+                      <sc-if value="{{ sec.hasProto }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font-size:13px;font-weight:700;color:var(--color-neutral-800)">Protocolo de % grasa</span>
+                          <div class="cf-rail" style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-100);border-radius:999px;width:fit-content"><sc-for list="{{ sec.proto }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:8px 14px;min-height:36px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+                        </div>
+                      </sc-if>
+                      <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ sec.help }}</span>
+                      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px 12px">
+                        <sc-for list="{{ sec.fields }}" as="f" hint-placeholder-count="6">
+                          <label style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                            <span style="display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:700;color:{{ f.lc }}"><span title="{{ f.label }}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ f.label }}</span><sc-if value="{{ f.req }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:{{ sec.bg }};color:{{ sec.ink }};flex:none">{{ f.reqTag }}</span></sc-if></span>
+                            <sc-if value="{{ f.multi }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+                                <sc-for list="{{ f.tomas }}" as="t" hint-placeholder-count="3"><input class="cf-mf" data-g="pl" data-skip="{{ t.skip }}" type="number" inputmode="decimal" step="0.1" value="{{ t.val }}" placeholder="{{ t.ph }}" aria-label="{{ t.aria }}" onChange="{{ t.on }}" style="width:100%;box-sizing:border-box;min-height:48px;padding:6px 4px;font:inherit;font-size:17px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;color:var(--color-text);background:{{ t.bg }};border:2px solid {{ t.bd }};border-radius:12px;transition:border-color .15s,background .15s,box-shadow .15s"></sc-for>
+                              </div>
+                              <span style="font-size:12px;font-weight:800;color:{{ f.medFg }};font-variant-numeric:tabular-nums">{{ f.medLabel }}</span>
+                            </sc-if>
+                            <sc-if value="{{ f.single }}" hint-placeholder-val="{{ true }}">
+                            <span style="position:relative;display:block"><input class="cf-mf" data-g="{{ f.g }}" type="number" inputmode="decimal" step="{{ f.step }}" value="{{ f.val }}" placeholder="{{ f.ph }}" onChange="{{ f.on }}" style="width:100%;box-sizing:border-box;min-height:50px;padding:8px 44px 8px 14px;font:inherit;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--color-text);background:{{ f.bg }};border:2px solid {{ f.bd }};border-radius:14px;transition:border-color .15s,background .15s,box-shadow .15s"><span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:var(--color-neutral-600);pointer-events:none">{{ sec.unit }}</span></span>
+                            </sc-if>
+                            <span style="font-size:12px;color:{{ f.prevFg }};font-weight:{{ f.prevFw }};font-variant-numeric:tabular-nums;min-height:18px">{{ f.prev }}</span>
+                          </label>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </section>
+                </sc-for>
+              </div>
+              <aside style="flex:1 1 290px;min-width:0;position:sticky;top:0;display:flex;flex-direction:column;gap:14px">
+                <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+                  <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-700)">Estimación en vivo</span>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span style="display:flex;align-items:baseline;gap:6px"><span style="font-family:var(--font-heading);font-weight:700;font-size:44px;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--color-accent-800)">{{ lfBf }}</span><span style="font-size:15px;font-weight:700;color:var(--color-neutral-700)">% grasa</span></span>
+                    <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ lfBfSub }}</span>
+                  </div>
+                  <sc-if value="{{ lfHasEsts }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:2px">
+                      <sc-for list="{{ lfEsts }}" as="e" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:5px 8px;border-radius:8px;background:{{ e.bg }};font-weight:{{ e.fw }};font-variant-numeric:tabular-nums"><span>{{ e.label }}</span><span>{{ e.val }}</span></div></sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ lfHasStats }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider);padding-top:8px">
+                      <sc-for list="{{ lfStats }}" as="r" hint-placeholder-count="3"><div style="display:flex;align-items:baseline;gap:8px;font-size:13px;padding:5px 0;font-variant-numeric:tabular-nums"><span style="margin-right:auto;color:var(--color-neutral-700)">{{ r.label }}</span><strong>{{ r.val }}</strong><span style="min-width:44px;text-align:right;font-size:12px;color:var(--color-neutral-600)">{{ r.delta }}</span></div></sc-for>
+                    </div>
+                  </sc-if>
+                  <div style="display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--color-divider);padding-top:14px">
+                    <sc-for list="{{ lfProg }}" as="p" hint-placeholder-count="4">
+                      <div style="display:flex;flex-direction:column;gap:4px">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:{{ p.ink }}">{{ p.label }}</span><span style="color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ p.count }}</span></div>
+                        <div style="height:6px;border-radius:999px;background:{{ p.bg }};overflow:hidden"><div style="height:100%;width:{{ p.w }};background:{{ p.solid }};border-radius:999px;transition:width .25s"></div></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+          <div style="background:#fff;border-top:1px solid var(--color-divider);padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <sc-if value="{{ lfWarn }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;padding:8px 12px;border-radius:12px;background:#fff8e6;color:#8a5a00"><svg width="16" height="16" viewBox="0 0 24 24" style="display:block;flex:none;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>{{ lfWarnText }}</span></sc-if>
+            <span style="font-size:13px;font-weight:600;color:var(--color-neutral-700);flex:1 1 260px;min-width:0;text-wrap:pretty">{{ lfFoot }}</span>
+            <button class="btn btn-primary" onClick="{{ saveLog }}" style="min-height:52px;padding:0 28px;font-size:16px;border-radius:16px;opacity:{{ lfSaveOp }}"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5 10 17 19 7"></path></svg>Guardar medición</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ lfIsPh }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;min-height:0;overflow-y:auto;padding:32px 20px calc(32px + env(safe-area-inset-bottom))">
+            <div style="width:min(640px,100%);margin:0 auto;display:flex;flex-direction:column;gap:22px">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+                <span style="width:64px;height:64px;border-radius:50%;background:var(--veg-bg);color:var(--veg-ink);display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5 10 17 19 7"></path></svg></span>
+                <span style="font-family:var(--font-heading);font-weight:700;font-size:24px">Medición guardada</span>
+                <span style="font-size:14px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;text-wrap:pretty">{{ lfDoneSum }}</span>
+              </div>
+              <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;gap:14px;align-items:flex-start">
+                  <span style="width:44px;height:44px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent);display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-weight:800;font-size:18px">¿Quieres añadir fotos a esta medición?</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ lfPhSub }}</span></div>
+                </div>
+                <sc-if value="{{ lfHasPh }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:800;color:var(--veg-ink)">{{ lfPhCount }}</span>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px"><sc-for list="{{ lfPhList }}" as="p" hint-placeholder-count="3"><img src="{{ p.url }}" alt="Foto de la medición" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;background:var(--color-neutral-100)"></sc-for></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ lfPhErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--danger)">{{ lfPhErr }}</span></sc-if>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-primary" onClick="{{ lfPhPick }}" style="min-height:54px;padding:0 24px;font-size:16px;border-radius:16px;flex:1 1 220px">{{ lfPhLabel }}</button>
+                  <button class="btn btn-secondary" onClick="{{ lfFinish }}" style="min-height:54px;padding:0 24px;font-size:16px;border-radius:16px;flex:1 1 160px">{{ lfFinishLabel }}</button>
+                </div>
+                <input type="file" accept="image/*" multiple="" ref="{{ lfFileRef }}" onChange="{{ lfPhOn }}" style="display:none">
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    </x-import>
+    </sc-if>
+
+    <sc-if value="{{ repOpen }}" hint-placeholder-val="{{ false }}">
+    <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
+    <div class="cf-rep" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
+      <div class="cf-rep-bar" style="background:#fff;border-bottom:1px solid var(--color-divider);padding:calc(12px + env(safe-area-inset-top)) 20px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+        <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px">Informe de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">Elige el periodo y qué incluir. Al imprimir, elige «Guardar como PDF».</span></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><select class="input" value="{{ cmpAVal }}" onChange="{{ onCmpA }}" style="min-height:40px;font-size:13px;width:auto;max-width:200px"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select><span style="font-weight:800;color:var(--color-neutral-500)">→</span><select class="input" value="{{ cmpBVal }}" onChange="{{ onCmpB }}" style="min-height:40px;font-size:13px;width:auto;max-width:200px"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select></div>
+        <div class="cf-rail" style="display:flex;gap:6px"><sc-for list="{{ repToggles }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.toggle }}" style="font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;min-height:38px;border-radius:999px;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};cursor:pointer"><span style="width:16px;height:16px;border-radius:5px;border:2px solid {{ t.bd }};background:{{ t.box }};box-sizing:border-box"></span>{{ t.label }}</button></sc-for></div>
+        <button class="btn btn-primary" onClick="{{ repPrint }}" style="min-height:44px;padding:0 18px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9V3h12v6"></path><rect x="3" y="9" width="18" height="8" rx="2"></rect><path d="M6 14h12v7H6z"></path></svg>Imprimir / Guardar PDF</button>
+        <button onClick="{{ repClose }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--color-neutral-100);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer">Cerrar</button>
+      </div>
+      <div class="cf-rep-scroll" style="flex:1;min-height:0;overflow-y:auto;padding:24px 12px 40px;background:#e9eef3">
+        <div class="cf-rep-sheet" style="width:min(820px,100%);margin:0 auto;background:#fff;border-radius:6px;box-shadow:var(--shadow-md);padding:clamp(20px,5vw,44px);box-sizing:border-box;display:flex;flex-direction:column;gap:26px">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;padding-bottom:18px;border-bottom:2px solid var(--color-accent)">
+            <img src="assets/logo.png" alt="CientiFitness" style="height:60px;width:auto;display:block">
+            <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--color-accent-700)">Informe de progreso</span><span style="font-family:var(--font-heading);font-weight:700;font-size:26px;line-height:1.15">{{ repName }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ repPeriod }}</span></div>
+            <span style="font-size:12px;color:var(--color-neutral-600)">{{ repIssued }}</span>
+          </div>
+          <div class="cf-rep-avoid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">
+            <sc-for list="{{ repCards }}" as="c" hint-placeholder-count="6"><div style="border:1px solid var(--color-divider);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+              <span style="display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)"><span style="width:8px;height:8px;border-radius:3px;background:{{ c.dot }};flex:none"></span>{{ c.label }}</span>
+              <span style="display:flex;align-items:baseline;gap:4px"><span style="font-weight:800;font-size:26px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.1">{{ c.val }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ c.unit }}</span></span>
+              <span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ c.delta }}</span>
+              <sc-if value="{{ c.hasGoal }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;color:var(--color-accent-800)">{{ c.goal }}</span></sc-if>
+            </div></sc-for>
+          </div>
+          <sc-if value="{{ repHasCharts }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Evolución</span>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px">
+                <sc-for list="{{ repCharts }}" as="ch" hint-placeholder-count="4"><div class="cf-rep-avoid" style="border:1px solid var(--color-divider);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800"><span style="width:8px;height:8px;border-radius:3px;background:{{ ch.dot }}"></span>{{ ch.label }}</span><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ ch.delta }}</span></div>
+                  {{ ch.svg }}
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-neutral-600)"><span>{{ ch.x0 }}</span><span>{{ ch.x1 }}</span></div>
+                </div></sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Mediciones · {{ cmpALabel }} → {{ cmpBLabel }}</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">
+              <sc-for list="{{ repTables }}" as="zt" hint-placeholder-count="3"><div class="cf-rep-avoid" style="border-radius:14px;overflow:hidden;border:1px solid var(--color-divider)">
+                <div style="display:flex;align-items:center;gap:8px;padding:9px 14px;background:{{ zt.bg }};color:{{ zt.ink }}"><span style="width:10px;height:10px;border-radius:3px;background:{{ zt.solid }}"></span><span style="font-weight:800;font-size:14px">{{ zt.title }}</span></div>
+                <table style="width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums">
+                  <thead><tr><th style="text-align:left;padding:7px 12px 5px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-600)">Zona</th><th style="text-align:right;padding:7px 6px 5px;font-size:10px;color:var(--color-neutral-600)">{{ cmpALabel }}</th><th style="text-align:right;padding:7px 6px 5px;font-size:10px;color:var(--color-neutral-600)">{{ cmpBLabel }}</th><th style="text-align:right;padding:7px 12px 5px;font-size:10px;color:var(--color-neutral-600)">Dif.</th></tr></thead>
+                  <tbody><sc-for list="{{ zt.rows }}" as="r" hint-placeholder-count="5"><tr><td style="padding:5px 12px;border-top:1px solid var(--color-neutral-200)">{{ r.label }}</td><td style="text-align:right;padding:5px 6px;border-top:1px solid var(--color-neutral-200);color:var(--color-neutral-700)">{{ r.a }}</td><td style="text-align:right;padding:5px 6px;border-top:1px solid var(--color-neutral-200);font-weight:700">{{ r.b }}</td><td style="text-align:right;padding:5px 12px;border-top:1px solid var(--color-neutral-200);font-weight:700;color:{{ r.fc }};white-space:nowrap">{{ r.df }}</td></tr></sc-for></tbody>
+                </table>
+              </div></sc-for>
+            </div>
+          </div>
+          <sc-if value="{{ repPhLoading }}" hint-placeholder-val="{{ false }}"><span class="cf-rep-np" style="font-size:13px;color:var(--color-neutral-700)">Cargando fotos…</span></sc-if>
+          <sc-if value="{{ repHasPh }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:12px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Fotos de progreso</span>
+              <sc-for list="{{ repPhRows }}" as="pr" hint-placeholder-count="2"><div class="cf-rep-avoid" style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:800;color:var(--color-neutral-700)">{{ pr.label }}</span><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ pr.items }}" as="p" hint-placeholder-count="3"><img src="{{ p.url }}" alt="{{ pr.label }}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block;background:var(--color-neutral-100)"></sc-for></div></div></sc-for>
+            </div>
+          </sc-if>
+          <div class="{{ repNoteCls }}" style="display:flex;flex-direction:column;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Comentario del entrenador</span>
+            <textarea class="input cf-rep-np" value="{{ repNote }}" onChange="{{ onRepNote }}" placeholder="Opcional: valoración del periodo, próximos objetivos… (solo se imprime si escribes algo)" style="min-height:90px"></textarea>
+            <div class="cf-rep-po" style="display:none;white-space:pre-wrap;font-size:13px;line-height:1.6">{{ repNote }}</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding-top:14px;border-top:1px solid var(--color-divider)">
+            <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:15px;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:var(--color-accent)">Fitness</span></span>
+            <span style="font-size:12px;color:var(--color-neutral-700);margin-left:auto">{{ repFoot }}</span>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--color-divider);padding-top:10px"><span style="font-weight:800">Perímetros (cm)</span><span style="font-size:12px;color:var(--color-neutral-700)">Cintura, cadera y cuello: US Navy. Brazo, muslo y pantorrilla + su pliegue: perímetros corregidos.</span></div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">
-            <sc-for list="{{ lfPer }}" as="f" hint-placeholder-count="13">
-              <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">{{ f.label }}<input class="input" type="number" step="0.5" value="{{ f.val }}" onChange="{{ f.on }}"></label>
-            </sc-for>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--color-divider);padding-top:10px"><span style="font-weight:800">Diámetros óseos (cm)</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Opcional</span><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">{{ diaHelp }}</span></div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">
-            <sc-for list="{{ lfDia }}" as="f" hint-placeholder-count="3">
-              <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">{{ f.label }}<input class="input" type="number" step="0.1" value="{{ f.val }}" placeholder="{{ f.ph }}" onChange="{{ f.on }}"></label>
-            </sc-for>
-          </div>
-          <span style="font-size:12px;color:var(--color-neutral-700)">Permiten calcular masa ósea y muscular (modelo de 4 componentes) y, con tríceps, subescapular, supraespinal, pantorrilla y perímetros de brazo contraído y pantorrilla, el somatotipo.</span>
-        </div>
-        <sc-if value="{{ lfPreview }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ lfPreviewText }}</div></sc-if>
-        <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ saveLog }}">Guardar medición</button><button class="btn btn-secondary" onClick="{{ toggleLogForm }}">Cancelar</button></div>
-      </section>
+      </div>
+    </div>
+    </x-import>
     </sc-if>
 
     <sc-if value="{{ noLogs }}" hint-placeholder-val="{{ false }}">
-      <p style="color:var(--color-neutral-700);margin:0">Aún no hay mediciones. Registra la primera con «Nueva medición».</p>
+      <div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+        <span style="font-weight:800;font-size:17px">Aún no hay mediciones</span>
+        <span style="font-size:13px;color:var(--color-neutral-700);max-width:440px;text-wrap:pretty">Registra la primera con «Nueva medición». Aquí verás la composición corporal, su evolución y las tablas por zona.</span>
+      </div>
     </sc-if>
 
     <sc-if value="{{ hasLogs }}" hint-placeholder-val="{{ true }}">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px">
-        <sc-for list="{{ compCells }}" as="c" hint-placeholder-count="8">
-          <div style="background:{{ c.bg }};color:{{ c.fg }};border-radius:18px;box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:4px">
-            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">{{ c.label }}</span>
-            <span style="display:flex;align-items:baseline;gap:4px"><span style="font-weight:800;font-size:30px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.05">{{ c.val }}</span><span style="font-size:13px">{{ c.unit }}</span></span>
-            <span style="font-size:12px;font-variant-numeric:tabular-nums;opacity:.8">{{ c.delta }}</span>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+          <span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Protocolo de % grasa</span>
+          <div class="cf-rail" style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+            <sc-for list="{{ protoSeg }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
           </div>
-        </sc-for>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:-14px">
-        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-          <span style="font-size:12px;color:var(--color-neutral-700);margin-right:4px">Estimaciones de % grasa</span>
-          <sc-for list="{{ estPills }}" as="e" hint-placeholder-count="3"><span style="font-size:12px;padding:5px 12px;border-radius:999px;background:{{ e.bg }};color:{{ e.fg }};box-shadow:var(--shadow-sm);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none"><strong>{{ e.val }}</strong> · {{ e.label }}</span></sc-for>
+          <button class="btn btn-secondary" onClick="{{ applyToCalc }}" style="min-height:38px;margin-left:auto">{{ applyLabel }}</button>
         </div>
-        <p style="margin:0;font-size:12px;color:var(--color-neutral-700)">{{ methodNote }}</p>
-      </div>
-
-      <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:18px">
-        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
-          <div style="margin-right:auto;display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:20px">Evolución</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ chartAxis }}</span></div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
-            <sc-for list="{{ rangeSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:7px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <sc-for list="{{ metGroups }}" as="mg" hint-placeholder-count="2">
-            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-              <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);width:96px;flex:none">{{ mg.label }}</span>
-              <sc-for list="{{ mg.items }}" as="mi" hint-placeholder-count="6"><button onClick="{{ mi.toggle }}" style="font:inherit;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 9px;border-radius:999px;border:1.5px solid {{ mi.bd }};background:{{ mi.bg }};color:{{ mi.fg }};cursor:pointer"><span style="width:9px;height:9px;border-radius:50%;background:{{ mi.dot }}"></span>{{ mi.label }}</button></sc-for>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px">
+          <sc-for list="{{ compCells }}" as="c" hint-placeholder-count="8">
+            <div style="background:{{ c.bg }};color:{{ c.fg }};border-radius:18px;box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:4px">
+              <span style="display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase"><span style="width:8px;height:8px;border-radius:3px;background:{{ c.dot }};flex:none"></span>{{ c.label }}</span>
+              <span style="display:flex;align-items:baseline;gap:4px"><span style="font-weight:800;font-size:30px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.05">{{ c.val }}</span><span style="font-size:13px">{{ c.unit }}</span></span>
+              <span style="font-size:12px;font-variant-numeric:tabular-nums;opacity:.8">{{ c.delta }}</span>
             </div>
           </sc-for>
         </div>
+        <div class="cf-rail" style="display:flex;gap:6px;align-items:center;padding:2px 2px 6px">
+          <span style="font-size:12px;color:var(--color-neutral-700);margin-right:4px">Estimaciones de % grasa</span>
+          <sc-for list="{{ estPills }}" as="e" hint-placeholder-count="3"><span style="font-size:12px;padding:5px 12px;border-radius:999px;background:{{ e.bg }};color:{{ e.fg }};box-shadow:var(--shadow-sm);font-variant-numeric:tabular-nums"><strong>{{ e.val }}</strong> · {{ e.label }}</span></sc-for>
+        </div>
+        <p style="margin:0;font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ methodNote }}</p>
+      </div>
+
+      <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 24px;display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+          <div style="margin-right:auto;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:800;font-size:20px">Evolución</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ chartAxis }}</span></div>
+          <button onClick="{{ toggleGoals }}" style="font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;min-height:36px;border-radius:999px;border:1.5px solid {{ goalBd }};background:{{ goalBg }};color:var(--color-text);cursor:pointer"><span style="width:16px;border-top:2px dashed var(--color-accent)"></span>{{ goalBtnLabel }}</button>
+          <div class="cf-rail" style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+            <sc-for list="{{ rangeSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;background:var(--color-neutral-100)">
+          <sc-for list="{{ metGroups }}" as="mg" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;padding:6px 10px;border-radius:999px;background:{{ mg.bg }};color:{{ mg.ink }};width:120px;text-align:center;flex:none;box-sizing:border-box">{{ mg.label }}</span>
+              <div class="cf-rail" style="display:flex;gap:6px;min-width:0;flex:1 1 0;padding:2px 0">
+                <sc-for list="{{ mg.items }}" as="mi" hint-placeholder-count="6"><button onClick="{{ mi.toggle }}" style="font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:7px;padding:6px 14px 6px 10px;min-height:36px;border-radius:999px;border:1.5px solid {{ mi.bd }};background:{{ mi.bg }};color:{{ mi.fg }};cursor:pointer"><span style="width:10px;height:10px;border-radius:50%;background:{{ mi.dot }}"></span>{{ mi.label }}</button></sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ goalOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:16px;border:1.5px dashed var(--color-neutral-300)">
+            <span style="font-size:13px;font-weight:700">Objetivo de cada métrica seleccionada · se marca con una línea discontinua</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px">
+              <sc-for list="{{ goalRows }}" as="gr" hint-placeholder-count="3"><label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:{{ gr.c }}"></span>{{ gr.label }}</span><span style="position:relative;display:block"><input class="input" type="number" inputmode="decimal" step="0.1" value="{{ gr.val }}" placeholder="Sin objetivo" onChange="{{ gr.on }}" style="padding-right:42px"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--color-neutral-600);pointer-events:none">{{ gr.unit }}</span></span></label></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasSerCards }}" hint-placeholder-val="{{ false }}">
+          <div class="cf-rail" style="display:flex;gap:10px">
+            <sc-for list="{{ serCards }}" as="sc" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:2px;padding:10px 14px 10px 12px;border-radius:14px;border:1.5px solid {{ sc.bd }};min-width:150px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span style="width:10px;height:10px;border-radius:50%;background:{{ sc.c }}"></span>{{ sc.label }}</span>
+                <span style="font-weight:800;font-size:20px;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">{{ sc.val }}</span>
+                <span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ sc.delta }}</span>
+                <sc-if value="{{ sc.hasGoal }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--color-neutral-800);margin-top:2px"><span style="width:14px;border-top:2px dashed {{ sc.c }};flex:none"></span>{{ sc.goal }}</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
         <sc-if value="{{ hasChart }}" hint-placeholder-val="{{ true }}">
           <div style="display:grid;grid-template-columns:48px minmax(0,1fr);column-gap:10px;row-gap:6px">
             <div style="position:relative;height:300px">
@@ -858,6 +1067,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <div style="position:relative;height:300px;border-radius:12px">
               {{ chartSvg }}
               <sc-for list="{{ chartDots }}" as="d" hint-placeholder-count="0"><span style="position:absolute;left:{{ d.x }};top:{{ d.y }};width:{{ d.s }};height:{{ d.s }};border-radius:50%;background:{{ d.c }};border:2px solid #fff;box-shadow:0 1px 3px rgba(31,38,48,.25);transform:translate(-50%,-50%);pointer-events:none;box-sizing:border-box"></span></sc-for>
+              <sc-for list="{{ chartGoals }}" as="cg" hint-placeholder-count="0"><span style="position:absolute;right:6px;top:{{ cg.top }};transform:translateY(-120%);font-size:11px;font-weight:800;color:var(--color-text);background:rgba(255,255,255,.92);border:1.5px dashed {{ cg.c }};padding:1px 7px;border-radius:7px;pointer-events:none;white-space:nowrap">{{ cg.label }}</span></sc-for>
               <div onMouseMove="{{ chartMove }}" onMouseLeave="{{ chartLeave }}" onTouchStart="{{ chartMove }}" onTouchMove="{{ chartMove }}" style="position:absolute;inset:0;cursor:crosshair"></div>
               <sc-if value="{{ tipShow }}" hint-placeholder-val="{{ false }}">
                 <div style="position:absolute;top:10px;left:{{ tipLeft }};transform:{{ tipTx }};background:#fff;border-radius:14px;box-shadow:var(--shadow-md);padding:12px 14px;min-width:200px;pointer-events:none;display:flex;flex-direction:column;gap:7px;z-index:2">
@@ -874,33 +1084,47 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </sc-if>
       </section>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px">
-        <sc-for list="{{ zoneTables }}" as="zt" hint-placeholder-count="2">
-          <div style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px 18px 8px;display:flex;flex-direction:column;gap:6px;min-width:0">
-            <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:800;font-size:17px">{{ zt.title }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ zt.sub }}</span></div>
-            <div style="overflow-x:auto">
-              <table class="table" style="min-width:380px">
-                <thead><tr><th>Zona</th><th style="text-align:right">Inicio</th><th style="text-align:right">Actual</th><th style="text-align:right">vs anterior</th><th style="text-align:right">vs inicio</th></tr></thead>
-                <tbody>
-                  <sc-for list="{{ zt.rows }}" as="r" hint-placeholder-count="6">
-                    <tr><td>{{ r.label }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-neutral-700)">{{ r.first }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:700">{{ r.last }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.fp }}">{{ r.dp }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.ff }}">{{ r.df }}</td></tr>
-                  </sc-for>
-                </tbody>
-              </table>
+      <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 24px;display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+          <div style="margin-right:auto;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:800;font-size:20px">Comparar mediciones</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ cmpSub }}</span></div>
+          <div class="cf-rail" style="display:flex;gap:6px"><sc-for list="{{ cmpPresets }}" as="p" hint-placeholder-count="2"><button onClick="{{ p.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 14px;min-height:36px;border-radius:999px;border:1.5px solid {{ p.bd }};background:{{ p.bg }};color:{{ p.fg }};cursor:pointer">{{ p.label }}</button></sc-for></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px">
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700);flex:1 1 220px;min-width:0">Medición A<select class="input" value="{{ cmpAVal }}" onChange="{{ onCmpA }}"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select></label>
+          <span style="font-size:18px;font-weight:800;color:var(--color-neutral-500);padding:0 2px 8px">→</span>
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700);flex:1 1 220px;min-width:0">Medición B<select class="input" value="{{ cmpBVal }}" onChange="{{ onCmpB }}"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select></label>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px">
+          <sc-for list="{{ cmpTables }}" as="zt" hint-placeholder-count="3">
+            <div style="border-radius:18px;overflow:hidden;border:1px solid var(--color-divider);display:flex;flex-direction:column;min-width:0">
+              <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:{{ zt.bg }};color:{{ zt.ink }}"><span style="width:12px;height:12px;border-radius:4px;background:{{ zt.solid }};flex:none"></span><span style="font-weight:800;font-size:16px">{{ zt.title }}</span></div>
+              <div style="overflow-x:auto;padding:2px 14px 6px">
+                <table class="table" style="min-width:340px">
+                  <thead><tr><th>Zona</th><th style="text-align:right">{{ cmpALabel }}</th><th style="text-align:right">{{ cmpBLabel }}</th><th style="text-align:right">Diferencia</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ zt.rows }}" as="r" hint-placeholder-count="6">
+                      <tr><td>{{ r.label }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-neutral-700)">{{ r.a }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:700">{{ r.b }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:{{ r.fc }}">{{ r.df }}</td></tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </sc-for>
-      </div>
+          </sc-for>
+        </div>
+      </section>
 
-      <div style="overflow-x:auto;background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:8px 16px">
+      <div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 16px 8px;display:flex;flex-direction:column;gap:6px;min-width:0">
+        <span style="font-weight:800;font-size:17px;padding:0 4px">Historial de mediciones</span>
+        <div style="overflow-x:auto">
         <table class="table" style="min-width:820px">
           <thead><tr><th>Fecha</th><th style="text-align:right">Peso</th><th style="text-align:right">% grasa</th><th style="text-align:right">Masa magra</th><th style="text-align:right">Σ6</th><th style="text-align:right">Σ8</th><th style="text-align:right">Cintura</th><th style="text-align:right">Cadera</th><th></th></tr></thead>
           <tbody>
             <sc-for list="{{ logRows }}" as="r" hint-placeholder-count="5">
-              <tr><td style="font-weight:600">{{ r.date }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.peso }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.bf }}<div style="font-size:11px;color:var(--color-neutral-600)">{{ r.meth }}</div></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.lbm }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s6 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s8 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cin }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cad }}</td><td style="text-align:right"><button class="btn btn-ghost" onClick="{{ r.del }}" style="font-size:12px">{{ r.delLabel }}</button></td></tr>
+              <tr><td style="font-weight:600">{{ r.date }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.peso }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.bf }}<div style="font-size:11px;color:var(--color-neutral-600)">{{ r.meth }}</div></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.lbm }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s6 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s8 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cin }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cad }}</td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost" onClick="{{ r.edit }}" style="font-size:12px">Editar</button><button class="btn btn-ghost" onClick="{{ r.del }}" style="font-size:12px">{{ r.delLabel }}</button></td></tr>
             </sc-for>
           </tbody>
         </table>
+        </div>
       </div>
     </sc-if>
   </main>
@@ -915,7 +1139,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <h1 style="margin:0;line-height:1.2">Agenda</h1>
       <div style="font-size:14px;color:var(--color-neutral-700);margin-top:4px">{{ calSub }}</div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:#fff;border-radius:999px;box-shadow:var(--shadow-sm)"><sc-for list="{{ calViews }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+    <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:#fff;border-radius:999px;box-shadow:var(--shadow-sm)"><sc-for list="{{ calViews }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
     <button class="btn btn-primary" onClick="{{ newAppt }}" style="min-height:40px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Nueva cita</button>
   </div>
   <div style="container-type:inline-size;container-name:calp"><div class="cf-cal-layout" style="display:grid;grid-template-columns:{{ calCols }};gap:18px;align-items:start">
@@ -1097,7 +1321,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Email<input class="input" type="email" value="{{ tiEmail }}" onChange="{{ onTiEmail }}" placeholder="ana@email.com"></label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">WhatsApp<input class="input" type="tel" value="{{ tiPhone }}" onChange="{{ onTiPhone }}" placeholder="+34 600 000 000"></label>
     </div>
-    <sc-if value="{{ tiPlanShow }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font-size:12px;color:var(--color-neutral-700)">Plan</span><div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ tiPlanSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">{{ tiPlanNote }}</span></div></sc-if>
+    <sc-if value="{{ tiPlanShow }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font-size:12px;color:var(--color-neutral-700)">Plan</span><div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ tiPlanSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div><span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 260px">{{ tiPlanNote }}</span></div></sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
       <button class="btn btn-primary" onClick="{{ tiCreate }}" style="min-height:40px">{{ tiCreateLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ tiInvite }}" style="min-height:40px">Invitar por email</button>
@@ -1137,14 +1361,14 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 80px;max-width:1280px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
   <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><h1 style="margin:0;margin-right:auto">Biblioteca</h1></div>
-  <div style="display:flex;flex-wrap:wrap;gap:6px">
+  <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px">
     <sc-for list="{{ libTabs }}" as="t" hint-placeholder-count="2">
       <button onClick="{{ t.go }}" style="font:inherit;font-weight:700;font-size:15px;padding:9px 16px;background:{{ t.bd }};border:0;border-radius:999px;color:{{ t.fg }};cursor:pointer">{{ t.label }}</button>
     </sc-for>
   </div>
   <sc-if value="{{ libSrcShow }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center">
-      <div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ libSrcSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+      <div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ libSrcSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
       <sc-if value="{{ libCoachPick }}" hint-placeholder-val="{{ false }}"><select class="input" value="{{ libCoach }}" onChange="{{ onLibCoach }}" style="width:240px;max-width:100%;min-height:36px"><sc-for list="{{ libCoachOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
       <span style="font-size:13px;color:var(--color-neutral-700);flex:1 1 260px;text-wrap:pretty">{{ libSrcNote }}</span>
       <sc-if value="{{ libPlanShow }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;background:{{ libPlanBg }};color:{{ libPlanFg }}">{{ libPlanLabel }}</span></sc-if>
@@ -1308,7 +1532,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="margin-right:auto"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ srCtx }}</div><div style="font-weight:800;font-size:20px">Añadir alimentos</div></div>
         <button class="btn btn-ghost" onClick="{{ srToggleCreate }}" style="font-size:13px">{{ srCreateLabel }}</button>
       </div>
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+      <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
         <sc-for list="{{ srFilters }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:6px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
       </div>
       <input class="input cf-search" placeholder="Buscar: pollo, arroz, aceite…" value="{{ srQuery }}" onChange="{{ onSrQuery }}" autofocus="autofocus">
@@ -1375,7 +1599,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </div>
       <sc-if value="{{ tdEmpty }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700);margin:0">No hay recetas que coincidan.</p></sc-if>
       <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--color-divider)">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:12px;color:var(--color-neutral-700)">Añadir como</span><div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px"><sc-for list="{{ tdHowSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:12px;color:var(--color-neutral-700)">Añadir como</span><div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px"><sc-for list="{{ tdHowSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ tdHowNote }}</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px"><sc-if value="{{ tdHasSel }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);margin-right:auto">{{ tdSelLabel }} · <button onClick="{{ tdClear }}" style="font:inherit;font-size:12px;border:0;background:none;color:var(--color-accent-700);text-decoration:underline;cursor:pointer;padding:0">quitar</button></span></sc-if><button class="btn btn-secondary" onClick="{{ tdClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ tdAdd }}" style="opacity:{{ tdAddOp }}">{{ tdAddLabel }}</button></div>
@@ -1408,7 +1632,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Descripción<textarea class="input" value="{{ peDesc }}" onChange="{{ onPeDesc }}" placeholder="Para quién es y cuánto tiempo aplicarlo" style="min-height:60px"></textarea></label>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;align-items:start">
         <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Ajuste calórico (%)<input class="input" type="number" min="-50" max="50" step="1" value="{{ peAdj }}" onChange="{{ onPeAdj }}"><span style="font-weight:700;color:var(--color-accent-700)">{{ peAdjTxt }}</span></label>
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--color-neutral-700)"><span>Macros en</span><div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ peModes }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--color-neutral-700)"><span>Macros en</span><div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ peModes }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
       </div>
       <sc-if value="{{ peIsGkg }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
         <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--prot-ink);font-weight:600">Proteína (g/kg)<input class="input" type="number" step="0.1" min="0" value="{{ pePg.val }}" onChange="{{ pePg.on }}"></label>
@@ -1555,7 +1779,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div style="overflow-y:auto;flex:1;padding:16px 22px 18px;display:flex;flex-direction:column;gap:16px">
       <div style="display:flex;flex-direction:column;gap:8px">
         <span style="font-size:12px;color:var(--color-neutral-700)">Tipo de cita</span>
-        <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ evTypes }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:{{ t.fw }};display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};cursor:pointer"><span style="width:8px;height:8px;border-radius:50%;background:{{ t.dot }}"></span>{{ t.label }}</button></sc-for></div>
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ evTypes }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:{{ t.fw }};display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};cursor:pointer"><span style="width:8px;height:8px;border-radius:50%;background:{{ t.dot }}"></span>{{ t.label }}</button></sc-for></div>
         <sc-if value="{{ evIsOtherType }}" hint-placeholder-val="{{ false }}"><input class="input" placeholder="Especifica: consulta deportiva, charla grupal, llamada con proveedor…" value="{{ evTypeText }}" onChange="{{ onEvTypeText }}"></sc-if>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
@@ -1570,7 +1794,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <span style="font-size:12px;color:var(--color-neutral-700)">Modalidad</span>
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ evModes }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ evModes }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div>
         <sc-if value="{{ evIsPres }}" hint-placeholder-val="{{ true }}"><input class="input" placeholder="Dirección o consulta (opcional)" value="{{ evPlace }}" onChange="{{ onEvPlace }}"></sc-if>
         <sc-if value="{{ evIsOnline }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input class="input" placeholder="Enlace de videollamada (Meet, Zoom, Jitsi…)" value="{{ evLink }}" onChange="{{ onEvLink }}" style="flex:1 1 260px;width:auto"><button class="btn btn-secondary" onClick="{{ evJitsi }}" style="font-size:13px">Crear sala Jitsi</button><sc-if value="{{ evHasLink }}" hint-placeholder-val="{{ false }}"><a class="btn btn-ghost" href="{{ evLinkHref }}" target="_blank" rel="noopener" style="font-size:13px;text-decoration:none">Abrir</a></sc-if></div></sc-if>
         <sc-if value="{{ evIsPhone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">{{ evPhoneInfo }}</span></sc-if>
@@ -1649,11 +1873,32 @@ const LS='ecf-manager-v4';
 const PL=[['tri','Tríceps'],['bic','Bíceps'],['sub','Subescapular'],['pec','Pectoral'],['axi','Axilar medio'],['sup','Cresta ilíaca / suprailíaco'],['spn','Supraespinal'],['abd','Abdominal'],['mus','Muslo anterior'],['pan','Pantorrilla medial']];
 const PER=[['cuello','Cuello'],['hombros','Hombros'],['pecho','Pecho / tórax'],['brazo','Brazo relajado'],['brazoc','Brazo contraído'],['antebrazo','Antebrazo'],['muneca','Muñeca'],['cintura','Cintura (mínima)'],['abdomen','Abdomen (ombligo)'],['cadera','Cadera (máxima)'],['muslos','Muslo superior'],['muslo','Muslo medio'],['pantorrilla','Pantorrilla']];
 const DIA=[['hum','Húmero (biepicondíleo)'],['fem','Fémur (bicondíleo)'],['mun','Muñeca (biestiloideo)']];
+const LFG={bas:{solid:'#1180c2',bg:'var(--color-accent-100)',ink:'var(--color-accent-800)'},pl:{solid:'#9580dc',bg:'var(--fat-bg)',ink:'var(--fat-ink)'},per:{solid:'#4fb487',bg:'var(--veg-bg)',ink:'var(--veg-ink)'},dia:{solid:'#d9a92c',bg:'var(--carb-bg)',ink:'var(--carb-ink)'}};
+const sigLF=x=>JSON.stringify([x.date,x.peso,x.plT||{},x.per||{},x.dia||{}]);
+const medT=a=>{const v=(a||[]).map(q=>parseFloat(q)).filter(x=>x>0);if(!v.length)return 0;if(v.length<3)return v.reduce((s,x)=>s+x,0)/v.length;return v.slice().sort((x,y)=>x-y)[1];};
+const need3=a=>{const v=(a||[]).slice(0,2).map(q=>parseFloat(q));return v[0]>0&&v[1]>0&&Math.abs(v[0]-v[1])/Math.min(v[0],v[1])>0.05;};
+const farOff=(g,fv,pv)=>{if(!(fv>0)||!(pv>0))return false;const d=Math.abs(fv-pv);return g==='pl'?d>Math.max(2,pv*0.25):g==='per'?d>Math.max(2,pv*0.05):g==='dia'?d>Math.max(0.4,pv*0.06):d>Math.max(2,pv*0.04);};
+const CMP=[['bas','Composición',[['Peso','w','kg',1,0],['% grasa','bf','%',1,-1],['Masa grasa','fm','kg',1,-1],['Masa magra','lbm','kg',1,1],['Masa muscular','mm','kg',1,1],['Masa ósea','mo','kg',1,0],['FFMI','ffmi','',1,1],['Cintura / cadera','icc','',2,-1],['Cintura / altura','whtr','',2,-1]]],
+  ['pl','Pliegues',PL.map(([k,l])=>[l,'pl.'+k,'mm',1,-1]).concat([['Σ6 pliegues','s6','mm',0,-1],['Σ8 pliegues','s8','mm',0,-1]])],
+  ['per','Perímetros',PER.map(([k,l])=>[l,k,'cm',1,0]).concat([['Brazo corregido','bcorr','cm',1,1],['Muslo corregido','mcorr','cm',1,1],['Pantorrilla corregida','pcorr','cm',1,1]])],
+  ['dia','Diámetros óseos',DIA.map(([k,l])=>[l,'dia.'+k,'cm',1,0])]];
+const cget=(c,k)=>{if(!c)return null;let x;if(k.startsWith('pl.'))x=parseFloat((c.pl||{})[k.slice(3)]);else if(k.startsWith('dia.'))x=parseFloat((c.dia||{})[k.slice(4)]);else x=c[k];return x==null||isNaN(x)||(k.includes('.')&&!(x>0))?null:x;};
+function cmpT(A,B){return CMP.map(([g,title,rows])=>({key:g,title,...LFG[g],rows:rows.map(([l,k,u,d,dir])=>{const a=cget(A&&A.c,k),b=cget(B&&B.c,k);if(a==null&&b==null)return null;const df=a!=null&&b!=null&&A!==B?b-a:null;
+  const fc=df==null||!dir||Math.abs(df)<1e-9?'var(--color-neutral-700)':(df*dir>0?'#1d6b43':'#b3541e');
+  return {label:l,a:a==null?'—':fx(a,d),b:b==null?'—':fx(b,d),df:df==null?'—':sgn(df,d)+(u?' '+u:''),fc};}).filter(Boolean)})).filter(t=>t.rows.length);}
+function miniSvg(pts,col,goal){const E=React.createElement,W=340,H=110,P=8,ys=pts.map(p=>p.y).concat(goal!=null?[goal]:[]);let mn=Math.min(...ys),mx=Math.max(...ys);const pd=Math.max((mx-mn)*0.18,0.5);mn-=pd;mx+=pd;
+  const t0=pts[0].t,t1=pts[pts.length-1].t,X=t=>t1===t0?W/2:P+(t-t0)/(t1-t0)*(W-2*P),Y=y=>P+(1-(y-mn)/(mx-mn))*(H-2*P);
+  const d=pts.map((p,i)=>(i?'L':'M')+X(p.t).toFixed(1)+' '+Y(p.y).toFixed(1)).join(' ');
+  const kids=[E('line',{key:'b',x1:0,x2:W,y1:H-0.5,y2:H-0.5,stroke:'#e0e8f0'}),E('path',{key:'a',d:d+' L'+X(t1).toFixed(1)+' '+H+' L'+X(t0).toFixed(1)+' '+H+' Z',fill:col,fillOpacity:0.12})];
+  if(goal!=null)kids.push(E('line',{key:'g',x1:0,x2:W,y1:Y(goal),y2:Y(goal),stroke:col,strokeWidth:1.5,strokeDasharray:'5 4'}));
+  kids.push(E('path',{key:'l',d,fill:'none',stroke:col,strokeWidth:2.5,strokeLinejoin:'round',strokeLinecap:'round'}));
+  pts.forEach((p,i)=>kids.push(E('circle',{key:'c'+i,cx:X(p.t),cy:Y(p.y),r:3.5,fill:'#fff',stroke:col,strokeWidth:2})));
+  return E('svg',{viewBox:'0 0 '+W+' '+H,style:{width:'100%',height:'auto',display:'block',overflow:'visible'}},kids);}
 const PROTO={jp3:m=>m?['pec','abd','mus']:['tri','sup','mus'],jp7:()=>['pec','axi','tri','sub','abd','sup','mus'],dw:()=>['bic','tri','sub','sup'],fk:()=>['tri','sub','sup','abd']};
 const PNAME={jp3:'Jackson-Pollock 3',jp7:'Jackson-Pollock 7',dw:'Durnin-Womersley',fk:'Faulkner',navy:'US Navy'};
 const S6=['tri','sub','spn','abd','mus','pan'],S8=['tri','bic','sub','sup','spn','abd','mus','pan'];
 const PAL=['#1180c2','#e8826e','#4fb487','#9580dc','#d9a92c','#df79a3','#3d4f63','#5ec0e6'];
-const MET=[['w','Peso','kg',1,'c'],['bf','% grasa','%',1,'c'],['lbm','Masa magra','kg',1,'c'],['mm','Masa muscular','kg',1,'c'],['mo','Masa ósea','kg',1,'c'],['fm','Masa grasa','kg',1,'c'],['ffmi','FFMI','',1,'c'],['s6','Σ6 pliegues','mm',0,'c'],['s8','Σ8 pliegues','mm',0,'c'],
+const MET=[['w','Peso','kg',1,'c'],['bf','% grasa','%',1,'c'],['lbm','Masa magra','kg',1,'c'],['mm','Masa muscular','kg',1,'c'],['mo','Masa ósea','kg',1,'c'],['fm','Masa grasa','kg',1,'c'],['ffmi','FFMI','',1,'c'],['s6','Σ6 pliegues','mm',0,'l'],['s8','Σ8 pliegues','mm',0,'l'],
  ['cintura','Cintura','cm',1,'p'],['abdomen','Abdomen','cm',1,'p'],['cadera','Cadera','cm',1,'p'],['pecho','Pecho','cm',1,'p'],['hombros','Hombros','cm',1,'p'],['brazo','Brazo relajado','cm',1,'p'],['brazoc','Brazo contraído','cm',1,'p'],['muslo','Muslo medio','cm',1,'p'],['pantorrilla','Pantorrilla','cm',1,'p'],['bcorr','Brazo corregido','cm',1,'p'],['mcorr','Muslo corregido','cm',1,'p']];
 const METM={};MET.forEach(m=>{METM[m[0]]=m;});
 const DAYS=['L','M','X','J','V','S','D'],DAYSS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],DAYSF=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -1705,12 +1950,13 @@ function computeComp(l,cl){
   return o;
 }
 const niceStep=r=>{const p=Math.pow(10,Math.floor(Math.log10(r)));const n=r/p;return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p;};
-function overlay(comps,sel){
+function overlay(comps,sel,goals){
   const W=1000,H=300,PT=16,PB=16,t0=comps[0].t,t1=comps[comps.length-1].t;
   const X=t=>t1===t0?W/2:30+(t-t0)/(t1-t0)*(W-60),single=sel.length===1;
   const ser=sel.map((k,i)=>{const pts=comps.map((x,j)=>({j,t:x.t,raw:x.c[k]})).filter(p=>p.raw!=null);const v0=pts.length?pts[0].raw:null;
     pts.forEach(p=>{p.y=single?p.raw:(v0?(p.raw-v0)/Math.abs(v0)*100:0);});return {k,meta:METM[k],color:PAL[i%PAL.length],pts,v0};});
-  const ys=[].concat(...ser.map(s=>s.pts.map(p=>p.y)));
+  ser.forEach(s=>{const gv=goals?parseFloat(goals[s.k]):0;s.goal=gv>0?gv:null;s.gy=s.goal==null?null:single?s.goal:(s.v0?(s.goal-s.v0)/Math.abs(s.v0)*100:null);});
+  const ys=[].concat(...ser.map(s=>s.pts.map(p=>p.y)),ser.filter(s=>s.gy!=null).map(s=>s.gy));
   let mn=ys.length?Math.min(...ys):0,mx=ys.length?Math.max(...ys):1;
   if(!single){mn=Math.min(mn,0);mx=Math.max(mx,0);}
   if(mx-mn<1e-6){mn-=1;mx+=1;}
@@ -1924,6 +2170,18 @@ class Component extends DCLogic {
     sr:null,srQuery:'',srFilter:'all',srSel:[],srCreate:false,
     nf:{name:'',cat:'Carnes',k:'',p:'',c:'',f:'',al:''},showNewFood:false,foodQuery:'',foodCat:'',
     td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:(()=>{try{return localStorage.getItem('cf-last-email')||'elcientifitness@gmail.com';}catch(e){return 'elcientifitness@gmail.com';}})(),loginPass:'',loginErr:null,syncErr:false};
+  lfBodyRef=React.createRef();lfDateRef=React.createRef();lfFileRef=React.createRef();
+  async uploadLogPhotos(files,day,key,cloud){
+    const upd=fn=>this.setState(st=>st.logForm&&st.logForm.step==='photos'?{logForm:{...st.logForm,...fn(st.logForm)}}:null);
+    upd(()=>({busy:true,err:null}));const urls=[];
+    try{
+      if(cloud){for(const f of files){await window.CFL.uploadPhoto(this.sb,this.uid,key,day,f,'coach');urls.push(URL.createObjectURL(f));}}
+      else{const add=[];for(const f of files){const b=await window.CFL.compress(f,1000,0.78),u=await window.CFL.toDataUrl(b);add.push({id:window.CFL.rid(),day,by:'coach',url:u});urls.push(u);}
+        this.setState(st=>({clients:st.clients.map(c=>c.id!==key?c:{...c,photos:(c.photos||[]).concat(add),updated:Date.now()})}));}
+    }catch(e){upd(()=>({err:'No se pudo subir: '+(e.message||e)}));}
+    if(cloud)this.setState(st=>({phRev:(st.phRev||0)+1}));
+    upd(lf=>({busy:false,ph:(lf.ph||[]).concat(urls.map(url=>({url})))}));
+  }
   componentDidMount(){
     setTimeout(()=>this.initCloud(0),0);
     this._poll=setInterval(()=>this.pullCloud(false),20000);
@@ -2239,12 +2497,12 @@ class Component extends DCLogic {
       v.tabs=[['calc','01','Necesidades'],['plan','02','Plan de comidas'],['view','03','Vista cliente'],['prog','04','Progreso']].map(([k,nm,l])=>({num:nm,label:l,bd:s.tab===k?'var(--color-accent)':'transparent',fg:s.tab===k?'#fff':'var(--color-neutral-700)',go:()=>this.setState({tab:k})}));
       v.isCalc=s.tab==='calc';v.isPlan=inPlan;v.isView=s.tab==='view';v.isProg=s.tab==='prog';
       if(s.tab==='prog'){
-        const cloudOn=s.auth==='in'&&!!this.sb&&!!this.uid;v.phSb=cloudOn?this.sb:null;v.phCoach=cloudOn?this.uid:'';v.phKey=cl.id;v.phLocal=cl.photos||[];v.phOnLocal=arr=>this.updC(n=>{n.photos=arr;});
+        const cloudOn=s.auth==='in'&&!!this.sb&&!!this.uid;v.phSb=cloudOn?this.sb:null;v.phCoach=cloudOn?this.uid:'';v.phKey=cl.id;v.phLocal=cl.photos||[];v.phOnLocal=arr=>this.updC(n=>{n.photos=arr;});v.phRev=s.phRev||0;
         const proto=cl.proto||'jp3',m=cl.calc.sexo==='hombre';
         const comps=(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>({l,c:computeComp(l,{...cl,proto}),t:Date.parse(l.date)}));
         {const linked=(s.links||[]).some(q=>q.client_key===cl.id);v.sgShow=cloudOn&&linked;
           if(v.sgShow){const DL=(s.daylAll||{})[cl.id];v.sgLogs=DL||{};v.sgTk=computeTargets(cl,computeCalc(cl)).k;v.sgPer=PER;
-            v.sgMetrics=comps.map(x=>{const per={};PER.forEach(([k])=>{if(x.c[k])per[k]=x.c[k];});return {d:x.l.date,w:x.c.w,bf:x.c.bf,lbm:x.c.lbm,mm:x.c.mm,per};});
+            v.sgMetrics=comps.map(x=>{const per={};PER.forEach(([k])=>{if(x.c[k])per[k]=x.c[k];});return {d:x.l.date,w:x.c.w,bf:x.c.bf,lbm:x.c.lbm,mm:x.c.mm,s6:x.c.s6,pl:x.c.pl,per};});v.sgPl=PL;
             v.sgSub=!DL?'Cargando registros…':'Peso, comidas y cuestionario que registra en su app, junto a tus mediciones';}}
         const last=comps[comps.length-1],prev=comps[comps.length-2],first=comps[0];
         v.hasLogs=comps.length>0;v.noLogs=!v.hasLogs;
@@ -2255,7 +2513,7 @@ class Component extends DCLogic {
         const CELLS=[['Peso','w','kg',1],['% grasa','bf','%',1],['Masa grasa','fm','kg',1],['Masa magra','lbm','kg',1],['Masa muscular','mm','kg',1],['Masa ósea','mo','kg',1],['Σ6 pliegues','s6','mm',0],['Σ8 pliegues','s8','mm',0],['FFMI','ffmi','',1],['Cintura','cintura','cm',1],['Cintura / cadera','icc','',2],['Cintura / altura','whtr','',2]];
         v.compCells=last?CELLS.filter(([l,k])=>!['mm','mo'].includes(k)||last.c[k]!=null).map(([l,k,u,d])=>{const a=last.c[k],b=prev?prev.c[k]:null;
           let delta=prev?'—':'Primera medición';if(a!=null&&b!=null)delta=sgn(a-b,d)+(u?' '+u:'')+' vs '+fd(prev.l.date);
-          const hi=k==='bf';return {label:l,val:fx(a,d),unit:u,delta,bg:hi?'var(--color-accent)':'var(--color-bg)',fg:hi?'#fff':'var(--color-text)'};}):[];
+          const hi=k==='bf',cg=['s6','s8'].includes(k)?'pl':['cintura','icc','whtr'].includes(k)?'per':['mm','mo'].includes(k)?'dia':'bas';return {label:l,val:fx(a,d),unit:u,delta,dot:hi?'rgba(255,255,255,.85)':LFG[cg].solid,bg:hi?'var(--color-accent)':'var(--color-bg)',fg:hi?'#fff':'var(--color-text)'};}):[];
         if(last){const c=last.c;
           v.estPills=['jp3','jp7','dw','fk','navy'].filter(k=>c.est[k]!=null).map(k=>({label:PNAME[k],val:fx(c.est[k],1)+' %',bg:k===c.method?'var(--color-accent)':'var(--color-bg)',fg:k===c.method?'#fff':'var(--color-text)'}));
           v.methodNote=c.bf==null?'Faltan pliegues para estimar el % de grasa.':('Se usa '+PNAME[c.method]+(c.method==='navy'||c.method==='fk'?'':' + Siri')+'.'+(c.method!==proto?' Faltan pliegues para '+PNAME[proto]+'.':'')+' FFMI = masa magra / altura². Perímetro corregido = perímetro − π × pliegue.'+(c.mo!=null?' Masa ósea: Rocha (talla, muñeca y fémur)'+(c.diaInh?', con los diámetros de una medición anterior':'')+'; masa residual: Würch ('+(m?'24,1':'20,9')+' % del peso); masa muscular = peso − grasa − ósea − residual.':' Añade los diámetros óseos (una vez basta) para calcular masa ósea y muscular.')+(c.endo!=null&&c.meso!=null&&c.ecto!=null?' Somatotipo (Heath-Carter): '+fx(c.endo,1)+' – '+fx(c.meso,1)+' – '+fx(c.ecto,1)+' (endo – meso – ecto).':''));}
@@ -2266,57 +2524,150 @@ class Component extends DCLogic {
         const avail=MET.filter(q=>comps.some(x=>x.c[q[0]]!=null));
         let sel=(s.chartSel||['w','bf','lbm']).filter(k=>avail.some(q=>q[0]===k));
         if(!sel.length&&avail.length)sel=[avail[0][0]];
-        v.metGroups=[['c','Composición'],['p','Perímetros']].map(([gk,gl])=>({label:gl,items:avail.filter(q=>q[4]===gk).map(q=>{const i=sel.indexOf(q[0]),on=i>=0,col=on?PAL[i%PAL.length]:'var(--color-neutral-300)';
-          return {label:q[1],dot:col,bd:on?col:'var(--color-neutral-200)',bg:on?'var(--color-bg)':'transparent',fg:on?'var(--color-text)':'var(--color-neutral-700)',
+        v.metGroups=[['c','Composición','bas'],['l','Pliegues','pl'],['p','Perímetros','per']].map(([gk,gl,gc])=>({label:gl,bg:LFG[gc].bg,ink:LFG[gc].ink,items:avail.filter(q=>q[4]===gk).map(q=>{const i=sel.indexOf(q[0]),on=i>=0,col=on?PAL[i%PAL.length]:'var(--color-neutral-300)';
+          return {label:q[1],dot:col,bd:on?col:'var(--color-neutral-200)',bg:on?'color-mix(in srgb,'+col+' 12%,#fff)':'#fff',fg:on?'var(--color-text)':'var(--color-neutral-700)',
             toggle:()=>{const nx=on?sel.filter(k=>k!==q[0]):sel.concat([q[0]]);this.setState({chartSel:nx.length?nx:sel,chartHover:null});}};})})).filter(g=>g.items.length);
-        v.hasChart=rc.length>0&&sel.length>0;
+        v.hasChart=rc.length>0&&sel.length>0;v.hasSerCards=false;
+        {const GL=cl.goals||{},nG=Object.keys(GL).filter(k=>parseFloat(GL[k])>0).length;v.goalOpen=!!s.goalOpen;
+          v.goalBtnLabel=nG?'Objetivos · '+nG:'Objetivos';v.goalBg=s.goalOpen?'var(--color-accent-100)':'#fff';v.goalBd=s.goalOpen?'var(--color-accent)':'var(--color-divider)';
+          v.toggleGoals=()=>this.setState(st=>({goalOpen:!st.goalOpen}));
+          v.goalRows=sel.map((k,i)=>{const q=METM[k];return {label:q[1],c:PAL[i%PAL.length],unit:q[2],val:GL[k]!=null?String(GL[k]):'',on:e=>{const val=e.target.value;this.updC(n=>{n.goals={...(n.goals||{})};if(String(val).trim()!=='')n.goals[k]=val;else delete n.goals[k];});}};});}
         if(v.hasChart){
-          const g=overlay(rc,sel),hov=s.chartHover!=null&&s.chartHover<rc.length?s.chartHover:null,E=React.createElement,NS={vectorEffect:'non-scaling-stroke'};
+          const g=overlay(rc,sel,cl.goals||{}),hov=s.chartHover!=null&&s.chartHover<rc.length?s.chartHover:null,E=React.createElement,NS={vectorEffect:'non-scaling-stroke'};
           const kids=g.ticks.map((tv,i)=>E('line',{key:'t'+i,x1:0,x2:g.W,y1:g.Y(tv),y2:g.Y(tv),stroke:!g.single&&tv===0?'#b4bdc9':'#e9edf2',strokeWidth:1,...NS}));
           if(hov!=null){const hx=g.X(rc[hov].t);kids.push(E('line',{key:'hv',x1:hx,x2:hx,y1:0,y2:g.H,stroke:'#8f99a8',strokeWidth:1,strokeDasharray:'4 4',...NS}));}
+          g.ser.forEach(se=>{if(se.gy!=null)kids.push(E('line',{key:'g'+se.k,x1:0,x2:g.W,y1:g.Y(se.gy),y2:g.Y(se.gy),stroke:se.color,strokeWidth:1.5,strokeDasharray:'7 6',strokeOpacity:0.9,...NS}));});
           g.ser.forEach(se=>{const P=se.pts.map(p=>g.X(p.t).toFixed(1)+' '+g.Y(p.y).toFixed(1));if(!P.length)return;
             if(g.single&&P.length>1){const yb=g.Y(g.ticks[0]).toFixed(1);kids.push(E('path',{key:'a'+se.k,d:'M'+g.X(se.pts[0].t).toFixed(1)+' '+yb+' L'+P.join(' L')+' L'+g.X(se.pts[se.pts.length-1].t).toFixed(1)+' '+yb+' Z',fill:se.color,fillOpacity:0.09,stroke:'none'}));}
             kids.push(E('polyline',{key:'l'+se.k,points:P.join(' '),fill:'none',stroke:se.color,strokeWidth:2.5,strokeLinejoin:'round',strokeLinecap:'round',...NS}));});
           v.chartSvg=E('svg',{viewBox:'0 0 '+g.W+' '+g.H,preserveAspectRatio:'none',style:{position:'absolute',inset:0,width:'100%',height:'100%',display:'block',overflow:'hidden'}},kids);
           v.chartDots=[].concat(...g.ser.map(se=>se.pts.map(p=>({x:(g.X(p.t)/g.W*100)+'%',y:(g.Y(p.y)/g.H*100)+'%',c:se.color,s:p.j===hov?'14px':'10px'}))));
+          v.chartGoals=g.ser.filter(se=>se.gy!=null).map(se=>({top:(g.Y(se.gy)/g.H*100)+'%',c:se.color,label:'Objetivo '+fx(se.goal,se.meta[3])+(se.meta[2]?' '+se.meta[2]:'')}));
           v.chartTicks=g.ticks.map(tv=>({top:(g.Y(tv)/g.H*100)+'%',label:g.single?fx(tv,METM[sel[0]][3]):(tv>0?'+':tv<0?'−':'')+fx(Math.abs(tv),g.step<1?1:0)+'%'}));
           const every=Math.ceil(rc.length/7);
           v.chartX=rc.map((x,j)=>({j,x})).filter(o=>o.j%every===0||o.j===rc.length-1).map(o=>({left:(g.X(o.x.t)/g.W*100)+'%',label:fd(o.x.l.date)}));
           v.chartAxis=g.single?METM[sel[0]][1]+(METM[sel[0]][2]?' ('+METM[sel[0]][2]+')':''):'Variación respecto a la primera medición del periodo · pasa el cursor para ver valores';
           v.chartMove=e=>{const p=e.touches&&e.touches[0]?e.touches[0]:e,r=e.currentTarget.getBoundingClientRect(),px=(p.clientX-r.left)/r.width*g.W;let bi=0,bd=1e9;rc.forEach((x,j)=>{const d=Math.abs(g.X(x.t)-px);if(d<bd){bd=d;bi=j;}});if(bi!==this.state.chartHover)this.setState({chartHover:bi});};
           v.chartLeave=()=>this.setState({chartHover:null});
+          v.serCards=g.ser.map(se=>{const q=se.meta,P=se.pts;if(!P.length)return null;const a=rc[P[0].j].c[se.k],b=rc[P[P.length-1].j].c[se.k],df=a!=null&&b!=null&&P.length>1?b-a:null;
+            return {c:se.color,bd:'color-mix(in srgb,'+se.color+' 35%,#fff)',label:q[1],val:fx(b,q[3])+(q[2]?' '+q[2]:''),delta:df==null?'Un solo dato en el periodo':sgn(df,q[3])+(q[2]?' '+q[2]:'')+' desde '+fd(rc[P[0].j].l.date),hasGoal:se.goal!=null,goal:se.goal==null?'':(b!=null&&Math.abs(se.goal-b)<Math.pow(10,-q[3])/2?'Objetivo alcanzado':'Objetivo '+fx(se.goal,q[3])+(q[2]?' '+q[2]:'')+(b!=null?' · a '+fx(Math.abs(se.goal-b),q[3]):''))};}).filter(Boolean);
+          v.hasSerCards=v.serCards.length>0;
           v.tipShow=hov!=null;
           if(hov!=null){const hx=g.X(rc[hov].t)/g.W;v.tipLeft=(hx*100)+'%';v.tipTx=hx>0.6?'translateX(calc(-100% - 14px))':'translateX(14px)';
             v.tipDate=new Date(rc[hov].l.date+'T00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
             v.tipRows=g.ser.map(se=>{const q=se.meta,val=rc[hov].c[se.k],df=val!=null&&se.v0!=null&&se.pts.length&&se.pts[0].j!==hov?val-se.v0:null;
               return {c:se.color,label:q[1],val:val!=null?fx(val,q[3])+(q[2]?' '+q[2]:''):'—',delta:df==null?'':sgn(df,q[3])};});}
         }
-        // zone tables
-        const zrow=(label,get,d,good)=>{const vals=comps.map(get);if(!vals.some(x=>x!=null))return null;const fi=vals.find(x=>x!=null),la=vals[vals.length-1],pr=vals.length>1?vals[vals.length-2]:null;
-          const col=df=>df==null||!good||Math.abs(df)<1e-9?'var(--color-neutral-700)':df<0?'#1d6b43':'#b3541e';
-          const dp=la!=null&&pr!=null?la-pr:null,dfi=la!=null&&fi!=null&&vals.length>1?la-fi:null;
-          return {label,first:fx(fi,d),last:fx(la,d),dp:dp==null?'—':sgn(dp,d),df:dfi==null?'—':sgn(dfi,d),fp:col(dp),ff:col(dfi)};};
-        v.zoneTables=[{title:'Pliegues',sub:'mm',rows:PL.map(([k,l])=>zrow(l,x=>num(x.c.pl[k])||null,1,true)).concat([zrow('Σ6 pliegues',x=>x.c.s6,0,true),zrow('Σ8 pliegues',x=>x.c.s8,0,true)]).filter(Boolean)},
-          {title:'Perímetros',sub:'cm',rows:PER.map(([k,l])=>zrow(l,x=>x.c[k],1,false)).concat([zrow('Brazo corregido',x=>x.c.bcorr,1,false),zrow('Muslo corregido',x=>x.c.mcorr,1,false),zrow('Pantorrilla corregida',x=>x.c.pcorr,1,false)]).filter(Boolean)}].filter(z=>z.rows.length);
         v.logRows=comps.slice().reverse().map(x=>({date:fd(x.l.date)+' '+x.l.date.slice(0,4),peso:fx(x.c.w,1)+' kg',bf:x.c.bf!=null?fx(x.c.bf,1)+' %':'—',meth:x.c.method?PNAME[x.c.method]:'',lbm:x.c.lbm!=null?fx(x.c.lbm,1)+' kg':'—',s6:x.c.s6!=null?fx(x.c.s6,0)+' mm':'—',s8:x.c.s8!=null?fx(x.c.s8,0)+' mm':'—',cin:x.c.cintura?fx(x.c.cintura,1)+' cm':'—',cad:x.c.cadera?fx(x.c.cadera,1)+' cm':'—',
+          edit:()=>{const l=x.l,st=o=>{const r={};Object.keys(o||{}).forEach(k=>{r[k]=String(o[k]);});return r;},plT={};PL.forEach(([k])=>{const T=l.plT&&l.plT[k];if(T&&T.some(q=>q>0))plT[k]=T.map(q=>q>0?String(q):'').concat(['','','']).slice(0,3);else if(num((l.pl||{})[k])>0)plT[k]=[String(l.pl[k]),'',''];});
+            const nf={step:'form',editId:l.id,date:l.date,peso:String(l.peso||''),pl:st(l.pl),plT,per:st(l.per),dia:st(l.dia)};nf.orig=sigLF(nf);document.body.style.overflow='hidden';this.setState({lfAsk:false,logForm:nf,confirmLog:null});},
           delLabel:s.confirmLog===x.l.id?'¿Eliminar?':'Eliminar',del:()=>{if(s.confirmLog===x.l.id){this.updC(n=>{n.logs=(n.logs||[]).filter(q=>q.id!==x.l.id);});this.setState({confirmLog:null});}else this.setState({confirmLog:x.l.id});}}));
-        const lf=s.logForm;v.showLogForm=!!lf;v.logFormLabel=lf?'Cerrar formulario':'Nueva medición';
-        v.toggleLogForm=()=>this.setState({logForm:lf?null:{date:iso(Date.now()),peso:last&&last.c.w?String(last.c.w):String(cl.calc.peso||''),pl:{},per:{},dia:{}}});
+        const lf=s.logForm,dL=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+        const byId=id=>comps.find(x=>x.l.id===id);let cA=byId(s.cmpA)||first,cB=byId(s.cmpB)||last;if(cA&&cB&&cA.t>cB.t){const t0=cA;cA=cB;cB=t0;}
+        v.cmpOpts=comps.slice().reverse().map(x=>({id:x.l.id,label:fd(x.l.date)+' '+x.l.date.slice(0,4)+' · '+fx(x.c.w,1)+' kg'}));
+        v.cmpAVal=cA?cA.l.id:'';v.cmpBVal=cB?cB.l.id:'';v.onCmpA=e=>this.setState({cmpA:e.target.value});v.onCmpB=e=>this.setState({cmpB:e.target.value});
+        {const pr=[['Inicio → última',first,last]];if(prev&&prev!==first)pr.push(['Anterior → última',prev,last]);
+          v.cmpPresets=comps.length>1?pr.map(([l,a,b])=>{const on=cA===a&&cB===b;return {label:l,bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)',pick:()=>this.setState({cmpA:a.l.id,cmpB:b.l.id})};}):[];}
+        {const dd=cA&&cB?Math.round((cB.t-cA.t)/86400000):0;v.cmpSub=!cA?'':cA===cB?'Solo hay una medición: con dos o más podrás compararlas':dd+' días entre ambas'+(dd>=14?' ('+Math.round(dd/7)+' semanas)':'');}
+        v.cmpALabel=cA?fd(cA.l.date):'A';v.cmpBLabel=cB?fd(cB.l.date):'B';v.cmpTables=cmpT(cA,cB);
+        v.openRep=()=>{document.body.style.overflow='hidden';document.body.classList.add('cf-rep-on');this.setState({rep:{charts:true,pl:true,fotos:true,note:''},repPh:null});
+          if(cloudOn&&window.CFL)window.CFL.listPhotos(this.sb,this.uid,cl.id).then(ps=>this.setState({repPh:ps||[]}),()=>this.setState({repPh:[]}));else this.setState({repPh:cl.photos||[]});};
+        v.repOpen=!!s.rep;
+        if(s.rep){const RP=s.rep,GL2=cl.goals||{},dLr=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+          v.repClose=()=>{document.body.style.overflow='';document.body.classList.remove('cf-rep-on');this.setState({rep:null});};
+          v.repPrint=()=>window.print();
+          v.repToggles=[['charts','Gráficas'],['pl','Pliegues'],['fotos','Fotos']].map(([k,l])=>({label:l,bg:RP[k]?'var(--color-accent-100)':'#fff',bd:RP[k]?'var(--color-accent)':'var(--color-divider)',fg:RP[k]?'var(--color-accent-800)':'var(--color-neutral-700)',box:RP[k]?'var(--color-accent)':'#fff',toggle:()=>this.setState(st=>({rep:{...st.rep,[k]:!st.rep[k]}}))}));
+          v.repName=cl.name||'Cliente';v.repIssued='Emitido el '+dLr(iso(Date.now()));
+          const inR=cA&&cB?comps.filter(x=>x.t>=cA.t&&x.t<=cB.t):[];
+          v.repPeriod=!cA?'':(cA===cB?dLr(cA.l.date):'Del '+dLr(cA.l.date)+' al '+dLr(cB.l.date))+' · '+inR.length+(inR.length===1?' medición':' mediciones');
+          const KEYS=[['w','Peso','kg',1,'bas'],['bf','% grasa','%',1,'bas'],['lbm','Masa magra','kg',1,'bas'],['fm','Masa grasa','kg',1,'bas'],['mm','Masa muscular','kg',1,'dia'],['cintura','Cintura','cm',1,'per'],['cadera','Cadera','cm',1,'per'],['s6','Σ6 pliegues','mm',0,'pl']].filter(q=>RP.pl||q[4]!=='pl');
+          v.repCards=KEYS.filter(([k])=>cB&&cB.c[k]!=null).map(([k,l,u,d,g])=>{const a=cA&&cA!==cB?cA.c[k]:null,b=cB.c[k],df=a!=null?b-a:null,gv=parseFloat(GL2[k]);
+            return {label:l,dot:LFG[g].solid,val:fx(b,d),unit:u,delta:df==null?'':sgn(df,d)+(u?' '+u:'')+' desde '+fd(cA.l.date),hasGoal:gv>0,goal:gv>0?'Objetivo '+fx(gv,d)+(u?' '+u:''):''};});
+          v.repCharts=RP.charts?KEYS.map(([k,l,u,d,g])=>{const pts=inR.filter(x=>x.c[k]!=null).map(x=>({t:x.t,y:x.c[k],d:x.l.date}));if(pts.length<2)return null;const gv=parseFloat(GL2[k]),df=pts[pts.length-1].y-pts[0].y;
+            return {label:l,dot:LFG[g].solid,delta:sgn(df,d)+(u?' '+u:''),svg:miniSvg(pts,LFG[g].solid,gv>0?gv:null),x0:fd(pts[0].d),x1:fd(pts[pts.length-1].d)};}).filter(Boolean).slice(0,6):[];
+          v.repHasCharts=v.repCharts.length>0;
+          v.repTables=cmpT(cA,cB).filter(t=>RP.pl||t.key!=='pl');
+          const PH=s.repPh,dates=PH?[...new Set(PH.map(p=>p.day))].sort():[];
+          const near=d=>dates.reduce((b0,x)=>Math.abs(Date.parse(x)-Date.parse(d))<Math.abs(Date.parse(b0)-Date.parse(d))?x:b0,dates[0]);
+          let phRows=[];if(RP.fotos&&dates.length&&cA&&cB){const dA=near(cA.l.date),dB=near(cB.l.date),mk=(d,l)=>({label:l+' · '+dLr(d),items:PH.filter(p=>p.day===d).slice(0,3).map(p=>({url:p.url}))});phRows=dA===dB?[mk(dB,'Fotos')]:[mk(dA,'Inicio'),mk(dB,'Actual')];}
+          v.repPhRows=phRows;v.repHasPh=phRows.length>0;v.repPhLoading=!!RP.fotos&&PH==null;
+          v.repNote=RP.note;v.onRepNote=e=>{const t=e.target.value;this.setState(st=>({rep:{...st.rep,note:t}}));};v.repNoteCls=RP.note.trim()?'cf-rep-avoid':'cf-rep-avoid cf-rep-np';
+          {const ph=this.myPhone?this.myPhone():'';v.repFoot=ph?'Dudas por WhatsApp: '+ph:'';}
+        }
+        v.openLogForm=()=>{document.body.style.overflow='hidden';const nf={step:'form',date:iso(Date.now()),peso:last&&last.c.w?String(last.c.w):String(cl.calc.peso||''),pl:{},plT:{},per:{},dia:{}};nf.orig=sigLF(nf);this.setState({lfAsk:false,logForm:nf});setTimeout(()=>{const b=this.lfBodyRef.current;if(b)try{b.focus({preventScroll:true});}catch(x){}},80);};
+        v.lfOpen=!!lf;
         if(lf){
-          const req=PROTO[proto](m);
-          const setLF=(g,k)=>e=>{const val=e.target.value;this.setState(st=>({logForm:g?{...st.logForm,[g]:{...st.logForm[g],[k]:val}}:{...st.logForm,[k]:val}}));};
-          v.lfDate=lf.date;v.onLfDate=setLF(null,'date');v.lfPeso=lf.peso;v.onLfPeso=setLF(null,'peso');
-          v.plHelp='* obligatorios para '+PNAME[proto]+'. Completa los 10 para Σ6, Σ8 y comparar fórmulas. Lado derecho, media de 2–3 tomas.';
-          v.lfPl=PL.map(([k,l])=>{const r=req.includes(k);return {label:l+(r?' *':''),fg:r?'var(--color-accent-700)':'var(--color-neutral-700)',w:r?700:400,val:lf.pl[k]||'',on:setLF('pl',k)};});
-          v.lfPer=PER.map(([k,l])=>({label:l,val:lf.per[k]||'',on:setLF('per',k)}));
-          {const pc0=computeComp({...lf,dia:{}},{...cl,proto});v.lfDia=DIA.map(([k,l])=>({label:l,val:(lf.dia||{})[k]||'',ph:pc0.dia&&num(pc0.dia[k])?String(pc0.dia[k]).replace('.',',')+' (anterior)':'—',on:setLF('dia',k)}));
-            v.diaHelp=pc0.diaInh?'Ya hay diámetros de una medición anterior y se reutilizan: deja en blanco salvo que quieras actualizarlos.':'Con calibre de diámetros (paquímetro), en cm. Basta con tomarlos en la consulta inicial: se reutilizan en las siguientes.';}
-          const pc=computeComp(lf,{...cl,proto}),ests=['jp3','jp7','dw','fk','navy'].filter(k=>pc.est[k]!=null);
-          v.lfPreview=ests.length>0;
-          v.lfPreviewText='Estimación en vivo: '+ests.map(k=>PNAME[k]+' '+fx(pc.est[k],1)+' %').join(' · ')+(pc.lbm!=null?' — masa magra '+fx(pc.lbm,1)+' kg':'')+(pc.mm!=null?' · muscular '+fx(pc.mm,1)+' kg · ósea '+fx(pc.mo,1)+' kg':'');
-          v.saveLog=()=>{if(!num(lf.peso)||!lf.date)return;const clean=o=>{const r={};Object.keys(o).forEach(k=>{if(num(o[k])>0)r[k]=num(o[k]);});return r;};
-            const e={id:uid(),date:lf.date,peso:num(lf.peso),pl:clean(lf.pl),per:clean(lf.per),dia:clean(lf.dia||{})};
-            this.updC(n=>{n.logs=(n.logs||[]).concat([e]);});this.setState({logForm:null});};
+          const closeLF=()=>{document.body.style.overflow='';this.setState({logForm:null,lfAsk:false});};
+          const isForm=lf.step!=='photos',dirty=isForm&&sigLF(lf)!==lf.orig,ask=dirty&&s.lfAsk;
+          v.lfClose=()=>{if(dirty&&!s.lfAsk){this.setState({lfAsk:true});return;}closeLF();};
+          v.lfCloseLabel=ask?'¿Descartar lo anotado?':'Cerrar';v.lfCloseBg=ask?'#c0392b':'var(--color-neutral-100)';v.lfCloseFg=ask?'#fff':'var(--color-text)';
+          v.lfIsForm=isForm;v.lfIsPh=!isForm;v.lfBodyRef=this.lfBodyRef;v.lfDateRef=this.lfDateRef;v.lfFileRef=this.lfFileRef;
+          v.lfTitle=isForm?(lf.editId?'Editar medición':'Nueva medición'):'Fotos de la medición';v.lfSub=(cl.name||'Cliente')+' · '+dL(lf.date);
+          v.lfKey=e=>{if(e.key==='Escape'){e.preventDefault();v.lfClose();return;}
+            const t=e.target;if(e.key==='Enter'&&t&&t.classList&&t.classList.contains('cf-mf')){e.preventDefault();const all=[...e.currentTarget.querySelectorAll('input.cf-mf')].filter(x=>x===t||x.getAttribute('data-skip')!=='1'),nx=all[all.indexOf(t)+(e.shiftKey?-1:1)];if(nx){nx.focus();try{nx.select();}catch(x){}}else t.blur();}};
+          if(isForm){
+            const others=comps.filter(x=>x.l.id!==lf.editId),bse=others.filter(x=>x.l.date<=lf.date).pop()||null;
+            const req=PROTO[proto](m),PSH={jp3:'JP 3',jp7:'JP 7',dw:'D-W',fk:'Faulkner'}[proto]||'',lp=bse?bse.l:null;let nWarn=0;
+            const setLF=(g,k)=>e=>{const val=e.target.value;this.setState(st=>({lfAsk:false,logForm:g?{...st.logForm,[g]:{...st.logForm[g],[k]:val}}:{...st.logForm,[k]:val}}));};
+            const setT=(k,i)=>e=>{const val=e.target.value;this.setState(st=>{const L0=st.logForm,T=[...(((L0.plT||{})[k])||['','',''])];T[i]=val;const md=medT(T);return {lfAsk:false,logForm:{...L0,plT:{...(L0.plT||{}),[k]:T},pl:{...L0.pl,[k]:md>0?String(Math.round(md*100)/100):''}}};});};
+            const field=(g,k,l,step,isReq)=>{const val=(lf[g]||{})[k]||'',fv=num(val),pv=lp&&lp[g]?num(lp[g][k]):0,C=LFG[g],far=farOff(g,fv,pv);if(far)nWarn++;
+              let prev='';if(pv>0)prev=far?'Revisa: anterior '+fx(pv,1)+' ('+sgn(fv-pv,1)+')':'Anterior '+fx(pv,1)+(fv>0?' · '+(Math.abs(fv-pv)<0.05?'igual':sgn(fv-pv,1)):'');
+              const o={g,label:l,val,on:setLF(g,k),step,ph:'',prev,prevFg:far?'#8a5a00':'var(--color-neutral-600)',prevFw:far?800:500,req:!!isReq,reqTag:PSH,bg:far?'#fff8e6':fv>0?C.bg:'#fff',bd:far?'#e2a33a':fv>0?C.solid:'var(--color-divider)',lc:isReq?C.ink:'var(--color-neutral-800)',multi:false,single:true};
+              if(g==='pl'){const T=(lf.plT||{})[k]||['','',''],n3=need3(T),nT=T.filter(q=>num(q)>0).length;o.multi=true;o.single=false;
+                o.tomas=[0,1,2].map(i=>{const q=T[i]||'',on3=i===2&&n3&&!(num(q)>0);return {val:q,ph:(i+1)+'ª',aria:l+', toma '+(i+1),skip:i===2&&!n3?'1':'0',on:setT(k,i),bg:num(q)>0?C.bg:on3?'#fff8e6':'#fff',bd:on3?'#e2a33a':num(q)>0?C.solid:'var(--color-divider)'};});
+                o.medLabel=n3&&nT<3?'Difieren más de un 5 %: haz una 3ª toma':fv>0?'Valor: '+fx(fv,1)+' mm'+(nT===2?' (media)':nT===3?' (mediana)':''):'Anota 2 tomas';
+                o.medFg=n3&&nT<3?'#8a5a00':fv>0?C.ink:'var(--color-neutral-600)';}
+              return o;};
+            const cnt=(g,list)=>list.filter(([k])=>num((lf[g]||{})[k])>0).length,nPl=cnt('pl',PL),nPer=cnt('per',PER),nDia=cnt('dia',DIA),reqOk=req.filter(k=>num(lf.pl[k])>0).length;
+            const pc0=computeComp({...lf,dia:{}},{...cl,proto});
+            v.lfSecs=[
+              {key:'pl',title:'Pliegues cutáneos',unit:'mm',...LFG.pl,opt:false,count:nPl+' / '+PL.length,hasProto:true,
+                proto:[['jp3','JP 3'],['jp7','JP 7'],['dw','Durnin-W.'],['fk','Faulkner']].map(([k,l])=>({label:l,bg:k===proto?LFG.pl.solid:'transparent',fg:k===proto?'#fff':'var(--color-neutral-700)',pick:()=>this.updC(n=>{n.proto=k;})})),
+                help:'Lado derecho. Anota 2 tomas por punto: si difieren más de un 5 % se pide una 3ª y se usa la mediana (ISAK). Los marcados con «'+PSH+'» los necesita el protocolo elegido ('+reqOk+' de '+req.length+'). Completa los 10 para Σ6, Σ8 y comparar fórmulas.',
+                fields:PL.map(([k,l])=>field('pl',k,l,'0.5',req.includes(k)))},
+              {key:'per',title:'Perímetros',unit:'cm',...LFG.per,opt:false,count:nPer+' / '+PER.length,hasProto:false,proto:[],
+                help:'Cintura, cadera y cuello: US Navy. Brazo, muslo y pantorrilla + su pliegue: perímetros corregidos.',
+                fields:PER.map(([k,l])=>field('per',k,l,'0.5',false))},
+              {key:'dia',title:'Diámetros óseos',unit:'cm',...LFG.dia,opt:true,count:nDia+' / '+DIA.length,hasProto:false,proto:[],
+                help:(pc0.diaInh?'Ya hay diámetros de una medición anterior y se reutilizan: deja en blanco salvo que quieras actualizarlos. ':'Con paquímetro, en cm. Basta con tomarlos en la consulta inicial: se reutilizan en las siguientes. ')+'Permiten calcular masa ósea y muscular y, con tríceps, subescapular, supraespinal, pantorrilla y perímetros de brazo contraído y pantorrilla, el somatotipo.',
+                fields:DIA.map(([k,l])=>{const f=field('dia',k,l,'0.1',false),iv=pc0.dia?num(pc0.dia[k]):0;if(iv&&!num((lf.dia||{})[k])){f.ph=fx(iv,1);f.prev='Se reutiliza '+fx(iv,1);}return f;})}];
+            const pw=num(lf.peso),nBas=(lf.date?1:0)+(pw>0?1:0);
+            const prog=[['bas','Básicos',nBas,2],['pl','Pliegues',nPl,PL.length],['per','Perímetros',nPer,PER.length],['dia','Diámetros',nDia,DIA.length]];
+            v.lfNav=prog.map(([k,l,n,t])=>({label:l,count:n+' / '+t,...LFG[k],bd:n>=t?LFG[k].solid:'transparent',
+              go:()=>{const b=this.lfBodyRef.current,el=b&&b.querySelector('[data-sec="'+k+'"]');if(b&&el)b.scrollTo({top:Math.max(0,el.offsetTop-16),behavior:'smooth'});}}));
+            v.lfProg=prog.map(([k,l,n,t])=>({label:l,count:n+' / '+t,w:Math.round(n/t*100)+'%',...LFG[k]}));
+            v.lfDateLabel=dL(lf.date);
+            v.lfPickDate=()=>{const el=this.lfDateRef.current;if(el&&window.CFDate)window.CFDate.open(el,lf.date,val=>{if(val)this.setState(st=>({logForm:st.logForm?{...st.logForm,date:val}:null}));},{max:iso(Date.now())});};
+            const bw=bse&&bse.c.w?bse.c.w:0,pfar=farOff('bas',pw,bw);if(pfar)nWarn++;
+            v.lfPeso=lf.peso;v.onLfPeso=setLF(null,'peso');v.lfPesoBg=pfar?'#fff8e6':pw>0?LFG.bas.bg:'#fff';v.lfPesoBd=pfar?'#e2a33a':pw>0?LFG.bas.solid:'var(--color-divider)';v.lfPesoFg=pfar?'#8a5a00':'var(--color-neutral-600)';
+            v.lfPesoPrev=bw?(pfar?'Revisa: anterior '+fx(bw,1)+' kg ('+sgn(pw-bw,1)+')':'Anterior '+fx(bw,1)+' kg ('+fd(bse.l.date)+')'+(pw>0?' · '+(Math.abs(pw-bw)<0.05?'igual':sgn(pw-bw,1)+' kg'):'')):'Primera medición';
+            const pc=computeComp(lf,{...cl,proto}),miss=req.filter(k=>!(num(lf.pl[k])>0)).map(k=>(PL.find(q=>q[0]===k)||[k,k])[1].toLowerCase());
+            v.lfBf=pc.bf!=null?fx(pc.bf,1):'—';
+            v.lfBfSub=pc.bf!=null?PNAME[pc.method]+(bse&&bse.c.bf!=null?' · '+sgn(pc.bf-bse.c.bf,1)+' vs anterior':''):miss.length?'Faltan: '+miss.join(', '):'Sin estimación todavía';
+            v.lfEsts=['jp3','jp7','dw','fk','navy'].filter(k=>pc.est[k]!=null).map(k=>({label:PNAME[k],val:fx(pc.est[k],1)+' %',fw:k===pc.method?800:500,bg:k===pc.method?'var(--color-accent-100)':'transparent'}));
+            v.lfHasEsts=v.lfEsts.length>1;
+            v.lfStats=[['Masa magra',pc.lbm,'kg','lbm',1],['Masa grasa',pc.fm,'kg','fm',1],['Masa muscular',pc.mm,'kg','mm',1],['Masa ósea',pc.mo,'kg','mo',1],['Σ6 pliegues',pc.s6,'mm','s6',0],['Σ8 pliegues',pc.s8,'mm','s8',0]].filter(r=>r[1]!=null).map(([l,val,u,k,d])=>{const pv=bse?bse.c[k]:null;return {label:l,val:fx(val,d)+' '+u,delta:pv!=null?sgn(val-pv,d):''};});
+            v.lfHasStats=v.lfStats.length>0;
+            const canSave=pw>0&&!!lf.date;v.lfSaveOp=canSave?'1':'.55';
+            v.lfFoot=!canSave?'Indica el peso para poder guardar.':pc.bf!=null?'Estimación: '+fx(pc.bf,1)+' % de grasa ('+PNAME[pc.method]+')'+(pc.lbm!=null?' · masa magra '+fx(pc.lbm,1)+' kg':''):'Enter pasa al siguiente campo · Mayús + Enter vuelve al anterior';
+            v.lfWarn=nWarn>0;v.lfWarnText=nWarn===1?'1 valor muy distinto del anterior: revísalo antes de guardar':nWarn+' valores muy distintos del anterior: revísalos antes de guardar';
+            v.saveLog=()=>{if(!canSave)return;const clean=o=>{const r={};Object.keys(o||{}).forEach(k=>{if(num(o[k])>0)r[k]=num(o[k]);});return r;};
+              const e={id:lf.editId||uid(),date:lf.date,peso:pw,pl:clean(lf.pl),per:clean(lf.per),dia:clean(lf.dia),plT:{}};
+              Object.keys(lf.plT||{}).forEach(k=>{const T=(lf.plT[k]||[]).map(num);if(T.filter(x=>x>0).length>1)e.plT[k]=T.map(x=>x>0?x:0);});
+              if(lf.editId){this.updC(n=>{n.logs=(n.logs||[]).map(q=>q.id===lf.editId?{...q,...e}:q);});closeLF();this.toast('Medición actualizada');return;}
+              this.updC(n=>{n.logs=(n.logs||[]).concat([e]);});
+              const sum=[fx(pw,1)+' kg',pc.bf!=null?fx(pc.bf,1)+' % de grasa':null,pc.lbm!=null?'masa magra '+fx(pc.lbm,1)+' kg':null].filter(Boolean).join(' · ');
+              this.setState({lfAsk:false,logForm:{step:'photos',date:lf.date,sum,ph:[],busy:false,err:null}});};
+          }else{
+            const ph=lf.ph||[];
+            v.lfDoneSum=dL(lf.date)+' · '+lf.sum;
+            v.lfPhSub='Se guardan en la galería de fotos con la fecha de esta medición. Frente, perfil y espalda, con la misma luz y postura.';
+            v.lfPhList=ph;v.lfHasPh=ph.length>0;v.lfPhErr=lf.err||'';v.lfPhCount=ph.length===1?'1 foto añadida':ph.length+' fotos añadidas';
+            v.lfPhLabel=lf.busy?'Subiendo…':ph.length?'Añadir más fotos':'Sí, añadir fotos';v.lfFinishLabel=ph.length?'Terminar':'No, terminar';
+            v.lfPhPick=()=>{if(!lf.busy&&this.lfFileRef.current)this.lfFileRef.current.click();};
+            v.lfPhOn=e=>{const files=[...(e.target.files||[])];e.target.value='';if(files.length)this.uploadLogPhotos(files,lf.date,cl.id,cloudOn);};
+            v.lfFinish=closeLF;
+          }
         }
       }
       v.tK=T.k.toLocaleString('es-ES');
@@ -2581,7 +2932,7 @@ class Component extends DCLogic {
         v.shop=order.filter(k=>shop[k]).map(k=>({cat:k,bg:SHC[k]?MBG[SHC[k]]:'var(--color-neutral-100)',ink:SHC[k]?MINK[SHC[k]]:'var(--color-neutral-700)',items:Object.entries(shop[k]).map(([n,g])=>{const t=g*dayMul;return {name:n,g:t>=1000?(t/1000).toFixed(1).replace('.',',')+' kg':R(t)+' g'};})}));
         v.shopNote=byMenu?(s.shopDays===7?'Semana completa según los días de cada menú':'1 día del menú activo'):(s.shopDays===7?'Cantidades para 7 días':'Cantidades para 1 día')+(open?' · incluye todas las alternativas':'');
         {const pub=cl.pub,em=(cl.email||'').trim().toLowerCase(),cloudOn=s.auth==='in'&&!!this.sb;
-          const mSig=(cl.logs||[]).map(l=>l.id+':'+l.date+':'+l.peso).join('|');const pubDirty=!pub||pub.hash!==hash||(pub.msig||'')!==mSig;
+          const mSig=(cl.logs||[]).map(l=>l.id+':'+l.date+':'+l.peso+':'+JSON.stringify([l.pl||{},l.per||{},l.dia||{}])).join('|')+'#'+JSON.stringify(cl.goals||{});const pubDirty=!pub||pub.hash!==hash||(pub.msig||'')!==mSig;
           v.pubStatus=!em?'Falta email':!pub?'Sin publicar':pubDirty?'Cambios sin publicar':'Publicado · v'+pub.v;
           v.pubBg=!pub||pubDirty?'#fff4dc':'#e3f4ea';v.pubFg=!pub||pubDirty?'#8a5a00':'#1d6b43';
           v.publishLabel=pub&&!pubDirty?'Volver a publicar':'Publicar en la app';
@@ -2591,7 +2942,7 @@ class Component extends DCLogic {
             const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
-              perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});return {d:l.date,w:c.w,bf:c.bf!=null?Math.round(c.bf*10)/10:null,lbm:c.lbm!=null?Math.round(c.lbm*10)/10:null,mm:c.mm!=null?Math.round(c.mm*10)/10:null,per};})};
+              perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
               this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};

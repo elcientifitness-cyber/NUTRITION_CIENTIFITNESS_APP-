@@ -11,9 +11,21 @@
 <link rel="stylesheet" href="cf-theme.css">
 </helmet>
 <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px;font-family:var(--font-body);color:var(--color-text)">
-  <sc-if value="{{ hasHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:18px">{{ head }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ headSub }}</span></div></sc-if>
-  <div style="display:flex;flex-wrap:wrap;gap:6px">
-    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;padding:6px 12px;min-height:34px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;flex:none">{{ c.label }}</button></sc-for>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+    <sc-if value="{{ hasHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:18px">{{ head }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ headSub }}</span></div></sc-if>
+    <div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;margin-left:auto">
+      <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.pick }}" style="font:inherit;font-size:12px;font-weight:800;padding:6px 12px;min-height:32px;border:0;border-radius:999px;background:{{ r.bg }};color:{{ r.fg }};cursor:pointer">{{ r.label }}</button></sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:16px;background:var(--color-neutral-100)">
+    <sc-for list="{{ chipGroups }}" as="cg" hint-placeholder-count="2">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-700);width:96px;flex:none">{{ cg.label }}</span>
+        <div class="cf-rail" style="display:flex;gap:6px;min-width:0;flex:1 1 0;padding:2px 0">
+          <sc-for list="{{ cg.items }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;padding:6px 12px;min-height:34px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;flex:none">{{ c.label }}</button></sc-for>
+        </div>
+      </div>
+    </sc-for>
   </div>
   <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
     <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0">
@@ -27,13 +39,13 @@
 
   <sc-if value="{{ showLine }}" hint-placeholder-val="{{ false }}">
     <div style="display:grid;grid-template-columns:minmax(0,1fr) 40px;column-gap:6px">
-      <svg viewBox="0 0 320 150" style="width:100%;height:auto;display:block;overflow:visible">
-        <path d="M0 12H320M0 71H320M0 130H320" stroke="#e8eef4" stroke-width="1" fill="none"></path>
+      <svg viewBox="0 0 320 150" preserveAspectRatio="none" style="width:100%;height:200px;display:block;overflow:visible">
+        <path d="M0 12H320M0 71H320M0 130H320" stroke="#e8eef4" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"></path>
         <path d="{{ area }}" fill="{{ soft }}"></path>
-        <path d="{{ line }}" fill="none" stroke="{{ solid }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
-        <path d="{{ dotsSmall }}" fill="none" stroke="{{ solid }}" stroke-width="5" stroke-linecap="round"></path>
-        <path d="{{ dotsBig }}" fill="none" stroke="{{ ink }}" stroke-width="9" stroke-linecap="round"></path>
-        <path d="{{ dotsBig }}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"></path>
+        <path d="{{ line }}" fill="none" stroke="{{ solid }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+        <path d="{{ dotsSmall }}" fill="none" stroke="{{ solid }}" stroke-width="5" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+        <path d="{{ dotsBig }}" fill="none" stroke="{{ ink }}" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+        <path d="{{ dotsBig }}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
       </svg>
       <div style="position:relative;font-size:10px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums"><span style="position:absolute;top:8%;transform:translateY(-50%)">{{ yHi }}</span><span style="position:absolute;top:47%;transform:translateY(-50%)">{{ yMid }}</span><span style="position:absolute;top:86.7%;transform:translateY(-50%)">{{ yLo }}</span></div>
     </div>
@@ -50,9 +62,6 @@
 
   <sc-if value="{{ hasLegend }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--color-neutral-700)"><sc-for list="{{ legend }}" as="g" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:{{ g.r }};background:{{ g.c }}"></span>{{ g.l }}</span></sc-for></div></sc-if>
 
-  <div style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;align-self:center">
-    <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.pick }}" style="font:inherit;font-size:12px;font-weight:800;padding:6px 12px;min-height:32px;border:0;border-radius:999px;background:{{ r.bg }};color:{{ r.fg }};cursor:pointer">{{ r.label }}</button></sc-for>
-  </div>
 </section>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;420px&quot;,&quot;height&quot;:&quot;420px&quot;},&quot;logs&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;metrics&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;array&quot;},&quot;perNames&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;array&quot;},&quot;tk&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1850,&quot;tsType&quot;:&quot;number&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;coral&quot;,&quot;blue&quot;],&quot;default&quot;:&quot;coral&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;head&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;headSub&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;storeKey&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;cf-seg&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
@@ -78,11 +87,15 @@ class Component extends DCLogic {
     const key0=p.storeKey||'cf-seg';let saved={};try{saved=JSON.parse(localStorage.getItem(key0)||'{}');}catch(e){}
     const defs=[['cump','Cumplimiento','bars'],['kcal','Kcal','bars'],['peso','Peso','line'],['sat','Satisfacción','bars'],['hambre','Hambre','bars'],['energia','Energía','bars']];
     if(ms.some(m=>m.bf!=null))defs.push(['bf','% Grasa','line']);if(ms.some(m=>m.lbm!=null))defs.push(['lbm','Masa magra','line']);if(ms.some(m=>m.mm!=null))defs.push(['mm','Masa muscular','line']);
+    if(ms.some(m=>m.s6!=null))defs.push(['s6','Σ6 pliegues','line']);
+    (p.plNames||[]).forEach(([k,l])=>{if(ms.some(m=>m.pl&&num(m.pl[k])>0))defs.push(['pl:'+k,l,'line']);});
     PN.forEach(([k,l])=>{if(ms.some(m=>m.per&&m.per[k]))defs.push(['per:'+k,l,'line']);});
     const metric=s.metric||saved.m,cur=defs.find(d=>d[0]===metric)||defs[0],range=s.range||saved.r||'30';
     const save=o=>{try{localStorage.setItem(key0,JSON.stringify({m:cur[0],r:range,...o}));}catch(e){}};
     const v={ink,solid,soft,hasHead:!!p.head,head:p.head||'',headSub:p.headSub||'',hasDelta:false,showLine:false,showBars:false,empty:false,hasTarget:false,hasLegend:false};
-    v.chips=defs.map(([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'#fff',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft}));
+    const dayK=['cump','kcal','sat','hambre','energia'],mk=([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'#fff',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft});
+    const isPl=d=>d[0].startsWith('pl:'),isPer=d=>d[0].startsWith('per:');
+    v.chipGroups=[['Día a día',defs.filter(d=>dayK.includes(d[0]))],['Cuerpo',defs.filter(d=>!dayK.includes(d[0])&&!isPl(d)&&!isPer(d))],['Pliegues',defs.filter(isPl)],['Perímetros',defs.filter(isPer)]].filter(g=>g[1].length).map(([label,ds])=>({label,items:ds.map(mk)}));
     v.ranges=[['14','2 sem.'],['30','1 mes'],['91','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:range===r?'#fff':'transparent',fg:range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>{save({r});this.setState({range:r});}}));
     const allDays=Object.keys(lg).sort(),first=allDays[0]||today;
     const nDays=range==='all'?Math.max(14,Math.min(730,R((parseD(today)-parseD(first))/86400000)+1)):num(range),from=addDays(today,-(nDays-1));
@@ -103,10 +116,10 @@ class Component extends DCLogic {
       if(k==='kcal'&&Tk){v.hasTarget=true;v.target=(Tk/mx*100)+'%';v.targetLabel='Objetivo '+R(Tk).toLocaleString('es-ES');}
       v.hasLegend=true;v.legend=k==='cump'?[{c:'#2f9e62',l:'80 % o más'},{c:'#efc95e',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='kcal'?[{c:'#2f9e62',l:'±10 % del objetivo'},{c:'#efc95e',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}].map(g=>({...g,r:'3px'})):[{c:SQ[k][1]?SCALE[0]:SCALE[4],l:SQ[k][1]?'5 = mucha hambre':'5 = muy bien'},{c:SQ[k][1]?SCALE[4]:SCALE[0],l:SQ[k][1]?'1 = nada de hambre':'1 = muy mal'}].map(g=>({...g,r:'3px'}));
       if(!got.length){v.showBars=false;v.hasLegend=false;v.empty=true;v.emptyText=k==='kcal'?'Sin comidas registradas en este periodo.':'Sin respuestas en este periodo. Se rellenan desde el cuestionario diario de la app.';}}
-    else{const k=cur[0],unit=k==='bf'?'%':k.startsWith('per:')?'cm':'kg';
+    else{const k=cur[0],unit=k==='bf'?'%':k.startsWith('per:')?'cm':(k==='s6'||k.startsWith('pl:'))?'mm':'kg';
       let pts;
       if(k==='peso'){const m={};Object.keys(lg).forEach(d=>{const w=lg[d]&&lg[d].survey&&num(lg[d].survey.peso);if(w)m[d]={y:w,big:false};});ms.forEach(x=>{if(x.w)m[x.d]={y:num(x.w),big:true};});pts=Object.keys(m).sort().map(d=>({d,...m[d]}));}
-      else pts=ms.map(x=>({d:x.d,y:k==='bf'?x.bf:k==='lbm'?x.lbm:k==='mm'?x.mm:(x.per||{})[k.slice(4)],big:true})).filter(q=>q.y!=null&&q.y>0);
+      else pts=ms.map(x=>({d:x.d,y:k==='bf'?x.bf:k==='lbm'?x.lbm:k==='mm'?x.mm:k==='s6'?x.s6:k.startsWith('pl:')?num((x.pl||{})[k.slice(3)]):(x.per||{})[k.slice(4)],big:true})).filter(q=>q.y!=null&&q.y>0);
       if(range!=='all')pts=pts.filter(q=>q.d>=from);
       v.title=cur[1]+(k==='peso'?' · cuestionario diario y mediciones':' · mediciones en consulta');v.unit=unit;
       v.val=pts.length?fx(pts[pts.length-1].y,1):'—';
