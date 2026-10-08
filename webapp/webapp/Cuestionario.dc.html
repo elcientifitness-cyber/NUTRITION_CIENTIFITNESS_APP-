@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="cf-theme.css">
+<script src="config.js"></script>
+<script src="cf-forms.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</helmet>
+<div id="cf-form-top" style="max-width:600px;margin:0 auto;padding:18px 16px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font-family:var(--font-body);color:var(--color-text)">
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="assets/logo.png" alt="CientiFitness" style="height:38px;width:auto">
+    <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:18px;text-transform:uppercase;margin-right:auto">Cienti<span style="color:var(--color-accent)">Fitness</span></span>
+    <sc-if value="{{ hasClose }}" hint-placeholder-val="{{ false }}"><button onClick="{{ close }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:#fff;color:var(--color-text);border-radius:999px;padding:10px 16px;min-height:44px;box-shadow:var(--shadow-sm);cursor:pointer">Cerrar</button></sc-if>
+  </div>
+
+  <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:28px 22px;text-align:center;font-size:14px;color:var(--color-neutral-700)">Cargando cuestionario…</div>
+  </sc-if>
+
+  <sc-if value="{{ isMsg }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:30px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+      <sc-if value="{{ msgOk }}" hint-placeholder-val="{{ false }}"><span style="width:56px;height:56px;border-radius:50%;background:var(--veg-bg);color:var(--veg-ink);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+      <span style="font-family:var(--font-heading);font-weight:700;font-size:22px">{{ msgTitle }}</span>
+      <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);max-width:420px;text-wrap:pretty">{{ msgText }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h1 style="margin:0;font-family:var(--font-heading);font-weight:700;font-size:26px;letter-spacing:-0.01em;text-wrap:balance">{{ title }}</h1>
+      <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ intro }}</p></sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span>{{ secLabel }}</span><span style="font-variant-numeric:tabular-nums">Paso {{ stepN }} de {{ stepT }}</span></div>
+      <div style="height:6px;border-radius:999px;background:var(--color-accent-100);overflow:hidden"><div style="height:100%;width:{{ progW }};background:var(--color-accent);border-radius:999px;transition:width .3s ease"></div></div>
+    </div>
+    <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:22px">
+      <sc-for list="{{ qs }}" as="q" hint-placeholder-count="4">
+        <div id="{{ q.id }}" style="display:flex;flex-direction:column;gap:8px">
+          <sc-if value="{{ q.showLabel }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:15px;line-height:1.35;text-wrap:pretty">{{ q.label }}<sc-if value="{{ q.req }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent)"> *</span></sc-if></span></sc-if>
+          <sc-if value="{{ q.hasHelp }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);margin-top:-4px;text-wrap:pretty">{{ q.help }}</span></sc-if>
+          <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><input class="input" value="{{ q.val }}" onChange="{{ q.onIn }}" style="font-size:16px;min-height:46px"></sc-if>
+          <sc-if value="{{ q.isLong }}" hint-placeholder-val="{{ false }}"><textarea class="input" rows="3" value="{{ q.val }}" onChange="{{ q.onIn }}" style="font-size:16px;line-height:1.45;resize:vertical;min-height:84px"></textarea></sc-if>
+          <sc-if value="{{ q.isNum }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px"><input class="input" type="text" inputmode="decimal" value="{{ q.val }}" onChange="{{ q.onIn }}" style="font-size:16px;min-height:46px;width:140px;font-variant-numeric:tabular-nums"><span style="font-size:14px;font-weight:700;color:var(--color-neutral-700)">{{ q.unit }}</span></div></sc-if>
+          <sc-if value="{{ q.isChoice }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ q.isMulti }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);margin-top:-4px">Puedes elegir varias</span></sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:9px 16px;border-radius:999px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;text-align:left;transition:background .15s">{{ o.label }}</button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ q.isScale }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px">
+              <sc-for list="{{ q.scale }}" as="o" hint-placeholder-count="10"><button onClick="{{ o.pick }}" style="font:inherit;font-size:14px;font-weight:800;min-height:44px;padding:0;border-radius:12px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;font-variant-numeric:tabular-nums">{{ o.label }}</button></sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:600;color:var(--color-neutral-700)"><span>{{ q.lo }}</span><span>{{ q.hi }}</span></div>
+          </sc-if>
+          <sc-if value="{{ q.isConsent }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ q.toggle }}" style="font:inherit;display:flex;align-items:flex-start;gap:12px;text-align:left;border:1.5px solid var(--color-divider);background:var(--color-neutral-100);border-radius:16px;padding:14px;cursor:pointer;color:var(--color-text)">
+              <span style="width:24px;height:24px;flex:none;border-radius:7px;border:2px solid {{ q.ckBd }};background:{{ q.ckBg }};color:#fff;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <span style="font-size:14px;line-height:1.45;text-wrap:pretty">{{ q.label }}<sc-if value="{{ q.req }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent)"> *</span></sc-if></span>
+            </button>
+          </sc-if>
+          <sc-if value="{{ q.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#a8321a">Responde esta pregunta para continuar</span></sc-if>
+        </div>
+      </sc-for>
+    </section>
+    <sc-if value="{{ hasSendErr }}" hint-placeholder-val="{{ false }}"><div style="background:#fff1ee;border:1px solid #f4c9bf;color:#8f2a14;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:600">{{ sendErr }}</div></sc-if>
+    <div style="position:sticky;bottom:0;display:flex;gap:10px;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(242,246,250,0),#f2f6fa 35%)">
+      <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}"><button onClick="{{ prev }}" style="font:inherit;font-size:15px;font-weight:700;min-height:50px;padding:0 20px;border-radius:999px;border:1.5px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer">Anterior</button></sc-if>
+      <button onClick="{{ next }}" style="font:inherit;font-size:15px;font-weight:800;min-height:50px;padding:0 22px;border-radius:999px;border:0;background:var(--color-accent);color:#fff;cursor:pointer;flex:1;box-shadow:0 6px 18px rgba(17,128,194,.25)">{{ nextLabel }}</button>
+    </div>
+    <span style="font-size:11px;color:var(--color-neutral-600);text-align:center;text-wrap:pretty">Tus respuestas se guardan en este dispositivo hasta que las envíes. Solo las verá tu entrenador.</span>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;420px&quot;,&quot;height&quot;:&quot;760px&quot;},&quot;token&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sb&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;},&quot;onClose&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;}}">
+class Component extends DCLogic {
+  state={st:'loading',ans:{},step:0,tried:false,busy:false};
+  componentDidMount(){this.tk=this.props.token||new URLSearchParams(location.search).get('t')||'';this.boot(0);}
+  componentDidUpdate(pp){if(this.props.token&&pp.token!==this.props.token){this.tk=this.props.token;this.setState({st:'loading',step:0,tried:false,sendErr:''});this.boot(0);}}
+  client(){if(this.props.sb)return this.props.sb;if(this._sb)return this._sb;const c=window.CF_CONFIG;if(!c||!c.url||!window.supabase)return null;this._sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,storageKey:'cf-form-anon'}});return this._sb;}
+  boot(n){if(!this.tk){this.setState({st:'bad'});return;}
+    if(!window.CFForms||!(this.props.sb||(window.supabase&&window.CF_CONFIG))){if(n>100){this.setState({st:'err'});return;}setTimeout(()=>this.boot(n+1),100);return;}
+    const sb=this.client();if(!sb){this.setState({st:'err'});return;}
+    sb.rpc('cf_form_get',{t:this.tk}).then(({data,error})=>{if(error){this.setState({st:'err',errMsg:error.message});return;}if(!data){this.setState({st:'bad'});return;}
+      let ans={};try{ans=JSON.parse(localStorage.getItem('cf-form-'+this.tk)||'{}')||{};}catch(e){}
+      this.setState({st:data.status==='done'?'already':'form',title:data.title,form:data.form||{qs:[]},ans,step:0});});}
+  steps(){const qs=(this.state.form&&this.state.form.qs)||[],out=[];let cur=null;
+    qs.forEach(q=>{if(q.type==='sec'){cur={label:q.label,qs:[]};out.push(cur);}else{if(!cur){cur={label:'Preguntas',qs:[]};out.push(cur);}cur.qs.push(q);}});return out.filter(x=>x.qs.length);}
+  setA(id,v){this.setState(s=>{const ans={...s.ans,[id]:v};try{localStorage.setItem('cf-form-'+this.tk,JSON.stringify(ans));}catch(e){}return {ans};});}
+  scroller(){const t=document.getElementById('cf-form-top');return t&&t.closest?t.closest('[data-cf-scroll]'):null;}
+  toTop(){const sc=this.scroller();if(sc)sc.scrollTop=0;else window.scrollTo(0,0);}
+  go(d){const S=this.steps(),cur=S[this.state.step];
+    if(d>0&&cur){const miss=window.CFForms.missing(this.state.form,this.state.ans,cur.qs);if(miss.length){this.setState({tried:true});const el=document.getElementById('cfq-'+miss[0].id);if(el){const sc=this.scroller();if(sc)sc.scrollTo({top:sc.scrollTop+el.getBoundingClientRect().top-sc.getBoundingClientRect().top-90,behavior:'smooth'});else window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});}return;}}
+    const n=this.state.step+d;if(n>=S.length){this.submit();return;}this.setState({step:Math.max(0,n),tried:false});this.toTop();}
+  submit(){if(this.state.busy)return;const sb=this.client();if(!sb)return;this.setState({busy:true,sendErr:''});
+    sb.rpc('cf_form_submit',{t:this.tk,a:this.state.ans}).then(({data,error})=>{if(error){this.setState({busy:false,sendErr:'No se pudo enviar: '+error.message+'. Vuelve a intentarlo.'});return;}
+      try{localStorage.removeItem('cf-form-'+this.tk);}catch(e){}this.setState({busy:false,st:data?'thanks':'already'});this.toTop();if(this.props.onDone)this.props.onDone();});}
+  renderVals(){const s=this.state,F=window.CFForms;
+    const v={isLoading:s.st==='loading',isForm:s.st==='form'&&!!F,isMsg:['bad','err','already','thanks'].includes(s.st),hasClose:!!this.props.onClose,close:()=>{if(this.props.onClose)this.props.onClose();}};
+    const M={bad:['Enlace no válido','Este enlace no existe o ya no está disponible. Pide a tu entrenador uno nuevo.'],err:['No se pudo abrir el cuestionario','Revisa tu conexión y vuelve a intentarlo.'+(s.errMsg?' ('+s.errMsg+')':'')],already:['Ya está enviado','Tu entrenador ya tiene tus respuestas. Si quieres cambiar algo, escríbele.'],thanks:['¡Gracias!','Tus respuestas ya le han llegado a tu entrenador.']};
+    const m=M[s.st]||['',''];v.msgTitle=m[0];v.msgText=m[1];v.msgOk=s.st==='thanks'||s.st==='already';v.title=s.title||'';
+    if(v.isForm){const S=this.steps(),i=Math.max(0,Math.min(s.step,S.length-1)),cur=S[i]||{label:'',qs:[]};
+      v.showIntro=i===0&&!!s.form.intro;v.intro=s.form.intro||'';v.stepN=i+1;v.stepT=Math.max(1,S.length);v.secLabel=cur.label;v.progW=Math.round((i+1)/Math.max(1,S.length)*100)+'%';
+      v.hasPrev=i>0;v.prev=()=>this.go(-1);v.next=()=>this.go(1);v.nextLabel=i>=S.length-1?(s.busy?'Enviando…':'Enviar respuestas'):'Siguiente';v.sendErr=s.sendErr||'';v.hasSendErr=!!s.sendErr;
+      const SEL=on=>({bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)'});
+      v.qs=cur.qs.map(q=>{const val=s.ans[q.id];
+        const o={id:'cfq-'+q.id,label:q.label,req:!!q.req,help:q.help||'',hasHelp:!!q.help,showLabel:q.type!=='consent',err:s.tried&&!!q.req&&F.empty(val),
+          isText:q.type==='text'||q.type==='date',isLong:q.type==='long',isNum:q.type==='num',isChoice:['one','multi','yesno'].includes(q.type),isMulti:q.type==='multi',isScale:q.type==='scale',isConsent:q.type==='consent',
+          val:val==null||typeof val==='object'?'':String(val),unit:q.unit||'',onIn:e=>this.setA(q.id,e.target.value)};
+        if(o.isChoice){const opts=q.type==='yesno'?['Sí','No']:(q.opts||[]);o.opts=opts.map(lb=>{const on=q.type==='multi'?Array.isArray(val)&&val.includes(lb):val===lb;
+          return {label:lb,...SEL(on),pick:()=>{if(q.type==='multi'){const a=Array.isArray(this.state.ans[q.id])?this.state.ans[q.id].slice():[];const k=a.indexOf(lb);if(k>=0)a.splice(k,1);else a.push(lb);this.setA(q.id,a);}else this.setA(q.id,on?'':lb);}};});}
+        if(o.isScale){o.scale=[1,2,3,4,5,6,7,8,9,10].map(n=>({label:String(n),...SEL(val===n),pick:()=>this.setA(q.id,val===n?'':n)}));o.lo=q.lo||'';o.hi=q.hi||'';}
+        if(o.isConsent){o.ckBg=val?'var(--color-accent)':'#fff';o.ckBd=val?'var(--color-accent)':'var(--color-neutral-400)';o.toggle=()=>this.setA(q.id,!val);}
+        return o;});}
+    return v;}
+}
+</script>
+</body>
+</html>
