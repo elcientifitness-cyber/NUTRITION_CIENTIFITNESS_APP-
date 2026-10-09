@@ -1,5 +1,5 @@
 // Siempre intenta la red primero (datos al día); si no hay conexión, usa la última copia.
-const C='cf-v2';
+const C='cf-v3';
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
@@ -10,7 +10,9 @@ self.addEventListener('fetch',e=>{
 // Notificaciones push
 self.addEventListener('push',e=>{
   let d={};try{d=e.data?e.data.json():{};}catch(x){d={body:e.data?e.data.text():''};}
-  e.waitUntil(self.registration.showNotification(d.title||'CientiFitness',{body:d.body||'',icon:'assets/icon-192.png',badge:'assets/icon-192.png',tag:d.tag||undefined,renotify:!!d.tag,data:{url:d.url||'asesorado.html'}}));
+  // Con la app abierta (iPhone no enseña el aviso del sistema), además se muestra dentro de la app.
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{cs.forEach(c=>{if(c.visibilityState==='visible')c.postMessage({cfPush:d});});
+    return self.registration.showNotification(d.title||'CientiFitness',{body:d.body||'',icon:'assets/icon-192.png',badge:'assets/icon-192.png',tag:d.tag||undefined,renotify:!!d.tag,data:{url:d.url||'asesorado.html'}});}));
 });
 self.addEventListener('notificationclick',e=>{
   e.notification.close();
