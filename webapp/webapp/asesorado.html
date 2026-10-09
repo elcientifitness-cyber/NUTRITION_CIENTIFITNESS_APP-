@@ -26,7 +26,7 @@
 <script src="cf-forms.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{margin:0;background:#f2f6fa;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+body{margin:0;background:#f5f8fb;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-600)}
 input[type=number]{-moz-appearance:textfield}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -65,6 +65,7 @@ button{-webkit-user-select:none;user-select:none}
         <span style="font-size:12px;color:{{ thInk }};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hello }}</span>
         <span style="font-family:var(--font-heading);font-weight:700;font-size:21px;color:var(--color-text)">{{ thTitle }}</span>
       </div>
+      <button onClick="{{ ntBell }}" aria-label="Notificaciones" title="Notificaciones" style="font:inherit;position:relative;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.7);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><sc-if value="{{ ntBellDot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:#e0664f;border:2px solid #fff"></span></sc-if></button>
       <button onClick="{{ doLogout }}" style="font:inherit;font-size:12px;font-weight:700;border:0;background:rgba(255,255,255,.7);color:var(--color-neutral-700);border-radius:999px;padding:8px 12px;min-height:36px;cursor:pointer">Salir</button>
     </div>
   </header>
@@ -72,6 +73,14 @@ button{-webkit-user-select:none;user-select:none}
   <div style="max-width:560px;margin:0 auto;padding:14px 16px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
 
   <sc-if value="{{ isHoy }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ ntBanner }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:12px 14px">
+        <span style="width:40px;height:40px;border-radius:50%;background:#e3f1fa;color:#0e5a8a;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0"><span style="font-size:14px;font-weight:800">Activa los recordatorios</span><span style="font-size:12px;color:var(--color-neutral-700)">Agua, preentreno, revisiones y mensajes en tu móvil.</span></span>
+        <button onClick="{{ ntBell }}" style="font:inherit;font-size:13px;font-weight:800;border:0;border-radius:999px;background:#1180c2;color:#fff;padding:9px 14px;min-height:40px;cursor:pointer;flex:none">Activar</button>
+        <button onClick="{{ ntDismiss }}" aria-label="Ahora no" style="font:inherit;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--color-neutral-600);cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+      </div>
+    </sc-if>
     <sc-for list="{{ pendForms }}" as="pf" hint-placeholder-count="0">
       <button onClick="{{ pf.open }}" style="font:inherit;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:20px;padding:14px 16px;min-height:64px;background:var(--color-accent);color:#fff;cursor:pointer;box-shadow:var(--shadow-sm)">
         <span style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg></span>
@@ -114,6 +123,13 @@ button{-webkit-user-select:none;user-select:none}
       </div>
     </section>
 
+    <sc-if value="{{ gdHas }}" hint-placeholder-val="{{ false }}">
+    <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:16px;margin-right:auto">{{ gdTitle }}</span><span style="font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:{{ gdBg }};color:{{ gdFg }}">{{ gdType }}</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px"><sc-for list="{{ gdItems }}" as="g" hint-placeholder-count="3"><div style="background:var(--color-neutral-100);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-700)">{{ g.l }}</span><span style="font-size:18px;font-weight:800;font-variant-numeric:tabular-nums">{{ g.v }}</span></div></sc-for></div>
+      <sc-if value="{{ gdHasTxt }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:1.45;color:var(--color-neutral-800,#3b4a5a);white-space:pre-wrap">{{ gdTxt }}</span></sc-if>
+    </section>
+    </sc-if>
     <button onClick="{{ survOpenFn }}" style="font:inherit;color:inherit;text-align:left;background:#fdf3d4;border:0;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer">
       <span style="display:flex;align-items:center;gap:12px;width:100%">
         <span style="width:40px;height:40px;border-radius:12px;background:#efc95e;color:#77560a;display:flex;align-items:center;justify-content:center;flex:none">{{ icSurv }}</span>
@@ -136,6 +152,8 @@ button{-webkit-user-select:none;user-select:none}
         <sc-if value="{{ m.hasOpts }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;align-self:flex-start"><sc-for list="{{ m.optSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;min-height:36px">{{ o.label }}</button></sc-for></div>
         </sc-if>
+        <sc-if value="{{ m.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:9px 12px;border-radius:12px;background:#eef6fc;color:#0e4f78;white-space:pre-wrap">{{ m.note }}</div></sc-if>
+        <sc-if value="{{ m.hasOnote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:9px 12px;border-radius:12px;background:#eef6fc;color:#0e4f78;white-space:pre-wrap">{{ m.onote }}</div></sc-if>
         <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2">
           <div style="display:flex;flex-direction:column;gap:6px">
             <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ b.ink }};display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ b.sw }}"></span>{{ b.label }}</span>
@@ -152,6 +170,7 @@ button{-webkit-user-select:none;user-select:none}
                 </sc-if>
                 <sc-if value="{{ l.hideGr }}" hint-placeholder-val="{{ true }}"><strong style="font-size:14px;font-variant-numeric:tabular-nums;flex:none;color:var(--color-neutral-800,#3b4a5a)">{{ l.plan }}</strong></sc-if>
               </div>
+              <sc-if value="{{ l.hasAlts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 4px 38px"><button onClick="{{ l.altBtn }}" style="font:inherit;font-size:12px;font-weight:800;min-height:32px;padding:4px 12px;border-radius:999px;border:1.5px dashed #a6d2ef;background:#fff;color:#0e5a8a;cursor:pointer">{{ l.altLbl }}</button><sc-if value="{{ l.altOpen }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ l.alts }}" as="al" hint-placeholder-count="0"><button onClick="{{ al.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:36px;padding:6px 12px;border-radius:999px;border:0;background:#e3f1fa;color:#0e5a8a;cursor:pointer">{{ al.label }}</button></sc-for></sc-if></div></sc-if>
             </sc-for>
           </div>
         </sc-for>
@@ -195,6 +214,7 @@ button{-webkit-user-select:none;user-select:none}
         <sc-for list="{{ pMacros }}" as="m" hint-placeholder-count="3"><div style="background:{{ m.bg }};color:{{ m.fg }};padding:12px 14px;border-radius:16px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700">{{ m.label }}</div><div style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ m.g }} g</div><div style="font-size:12px">al día</div></div></sc-for>
       </div>
       <sc-if value="{{ pHasNotes }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 16px;border-radius:16px;background:#e0f4e8;font-size:14px;white-space:pre-wrap;line-height:1.45"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#21633d;font-weight:800;margin-bottom:4px">Notas de tu nutricionista</div>{{ pNotes }}</div></sc-if>
+      <sc-if value="{{ pGuideOn }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:16px;background:#e3f1fa;display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#0e5a8a;font-weight:800">Pautas del día</div><sc-for list="{{ pGuideRows }}" as="gr" hint-placeholder-count="2"><div style="font-size:13px;line-height:1.45"><strong>{{ gr.label }}:</strong> {{ gr.txt }}</div></sc-for></div></sc-if>
       <sc-if value="{{ pOpen }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada comida elige una opción y, dentro de ella, un alimento de cada grupo: las cantidades ya están ajustadas para que cualquiera cuadre.</p></sc-if>
       <sc-for list="{{ pGroups }}" as="g" hint-placeholder-count="1">
         <div style="display:flex;flex-direction:column;gap:18px">
@@ -202,9 +222,11 @@ button{-webkit-user-select:none;user-select:none}
           <sc-for list="{{ g.meals }}" as="vm" hint-placeholder-count="3">
             <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
               <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:4px"><span style="font-weight:800;font-size:17px">{{ vm.name }}</span><span style="font-size:13px;font-variant-numeric:tabular-nums">{{ vm.kcal }}</span></div>
+              <sc-if value="{{ vm.note }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:8px 12px;border-radius:12px;background:#e0f4e8;color:#21633d;white-space:pre-wrap">{{ vm.note }}</div></sc-if>
               <sc-for list="{{ vm.opts }}" as="vo" hint-placeholder-count="1">
                 <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
                   <sc-if value="{{ vo.title }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;color:#21633d">{{ vo.title }}</span></sc-if>
+                  <sc-if value="{{ vo.note }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.4;color:#21633d;white-space:pre-wrap">{{ vo.note }}</span></sc-if>
                   <sc-for list="{{ vo.blocks }}" as="b" hint-placeholder-count="2">
                     <div style="display:flex;flex-direction:column;gap:2px">
                       <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ b.ink }};display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ b.sw }}"></span>{{ b.label }}</span>
@@ -401,6 +423,39 @@ button{-webkit-user-select:none;user-select:none}
 </div>
 </sc-if>
 
+<sc-if value="{{ ntOpenOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ ntClose }}" style="position:fixed;inset:0;z-index:110;background:rgba(20,40,60,.38);display:flex;align-items:flex-end;justify-content:center">
+  <div onClick="{{ stop }}" style="width:min(560px,100%);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font-family:var(--font-body);color:var(--color-text)">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;margin-right:auto">Notificaciones</span><span style="font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:{{ ntStBg }};color:{{ ntStFg }}">{{ ntStatus }}</span><button onClick="{{ ntClose }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:var(--color-neutral-100);color:var(--color-text);border-radius:999px;padding:8px 14px;min-height:36px;cursor:pointer">Cerrar</button></div>
+    <sc-if value="{{ ntNeedInstall }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#e3f1fa;color:#0e4f78;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.45">
+        <strong>En iPhone, primero instala la app:</strong>
+        <span>1. Abre esta página en Safari.</span>
+        <span>2. Pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</span>
+        <span>3. Elige «Añadir a pantalla de inicio» y después «Añadir».</span>
+        <span>4. Abre CientiFitness desde el icono nuevo, toca la campana y activa las notificaciones.</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ ntUnsup }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">Este navegador no admite notificaciones. Prueba con Chrome en Android o instala la app en tu iPhone desde Safari.</span></sc-if>
+    <sc-if value="{{ ntBlocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:1.45;color:#8a5a00;background:#fff4dc;border-radius:14px;padding:12px;text-wrap:pretty">Las notificaciones están bloqueadas. Actívalas en los ajustes del móvil (Notificaciones → CientiFitness) o en los permisos del navegador y vuelve a abrir la app.</span></sc-if>
+    <sc-if value="{{ ntCanOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ntEnable }}" style="font:inherit;font-size:16px;font-weight:800;min-height:52px;border:0;border-radius:999px;background:#1180c2;color:#fff;cursor:pointer">{{ ntBtn }}</button></sc-if>
+    <sc-if value="{{ ntIsOn }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onClick="{{ ntTest }}" style="font:inherit;font-size:14px;font-weight:700;min-height:46px;border:1.5px solid var(--color-divider);border-radius:999px;background:#fff;color:var(--color-text);cursor:pointer">Enviar una prueba</button><button onClick="{{ ntDisable }}" style="font:inherit;font-size:14px;font-weight:700;min-height:46px;border:0;border-radius:999px;background:var(--color-neutral-100);color:#a8321a;cursor:pointer">Desactivar</button></div></sc-if>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Tus horarios</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px">
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Me levanto<input class="input" type="time" value="{{ ntWake }}" onChange="{{ onNtWake }}" style="font-size:16px;min-height:44px"></label>
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Me acuesto<input class="input" type="time" value="{{ ntSleep }}" onChange="{{ onNtSleep }}" style="font-size:16px;min-height:44px"></label>
+        <sc-if value="{{ ntShowTrain }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Entreno a las<input class="input" type="time" value="{{ ntTrain }}" onChange="{{ onNtTrain }}" style="font-size:16px;min-height:44px"></label></sc-if>
+      </div>
+      <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Sirven para repartir los avisos de agua durante el día y avisarte del preentreno.</span>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600);padding-bottom:6px">Qué quieres recibir</span>
+      <sc-for list="{{ ntTypes }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.toggle }}" style="font:inherit;display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-size:15px;font-weight:600;flex:1;min-width:0">{{ t.label }}</span><span style="width:42px;height:24px;border-radius:999px;background:{{ t.bg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ t.knob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span></button></sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ formOn }}" hint-placeholder-val="{{ false }}">
 <div data-cf-scroll="1" style="position:fixed;inset:0;z-index:120;background:#f2f6fa;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
   <dc-import name="Cuestionario" token="{{ formTok }}" sb="{{ sbc }}" on-done="{{ formDone }}" on-close="{{ formClose }}" hint-size="100%,100%"></dc-import>
@@ -435,7 +490,8 @@ function dayScore(L,Tk){if(!L)return null;const F=L.foods||[],S=L.survey||{};let
   if(S.cump)b=(S.cump-1)/4*100;if(a==null&&b==null)return null;return a==null?b:b==null?a:(a+b)/2;}
 
 class Component extends DCLogic {
-  state={auth:'checking',authMsg:'',loginEmail:'',loginPass:'',newPass:'',link:null,tab:(()=>{try{return localStorage.getItem('cf-as-tab')||'hoy';}catch(e){return 'hoy';}})(),
+  state={auth:'checking',authMsg:'',loginEmail:'',loginPass:'',newPass:'',link:null,tab:(()=>{try{const q=new URLSearchParams(location.search).get('tab');if(q&&['hoy','plan','chat','prog'].includes(q))return q;return localStorage.getItem('cf-as-tab')||'hoy';}catch(e){return 'hoy';}})(),
+    ntPrefs:(()=>{try{return JSON.parse(localStorage.getItem('cf-nt-prefs')||'{}')||{};}catch(e){return {};}})(),ntDis:(()=>{try{return localStorage.getItem('cf-nt-dis')==='1';}catch(e){return false;}})(),ntOn:null,
     day:isoD(new Date()),logs:{},saving:false,msgs:[],draft:'',add:null,shopOpen:false,toast:null,toastBad:false,survOpen:false,
     metric:(()=>{try{return localStorage.getItem('cf-as-metric')||'cump';}catch(e){return 'cump';}})(),range:'3m'};
   thrRef=React.createRef();
@@ -471,7 +527,28 @@ class Component extends DCLogic {
     q(true).then(({data,error})=>{
       if(!first){if(data&&data.length)this.setState({link:data[0]});return;}
       if(error||!data||!data.length){this.setState({auth:'nolink',authMsg:error?'Error: '+error.message:'Tu cuenta ('+sess.user.email+') aún no tiene un plan publicado. Avisa a tu nutricionista.'});return;}
-      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.loadForms();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>{this.loadMsgs();this._plN=(this._plN||0)+1;if(this._plN%3===0){this.loadLink(false);this.loadForms();}},20000);});}
+      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.loadForms();this.ntCheck();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>{this.loadMsgs();this._plN=(this._plN||0)+1;if(this._plN%3===0){this.loadLink(false);this.loadForms();}},20000);});}
+  ntSup(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;}
+  ntIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+  ntStand(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
+  ntCheck(){if(!this.ntSup()){this.setState({ntOn:false});return;}navigator.serviceWorker.ready.then(r=>r.pushManager.getSubscription()).then(sub=>{this.setState({ntOn:!!sub});if(sub)this.ntSave(sub);}).catch(()=>this.setState({ntOn:false}));}
+  ntSave(sub){const k=sub.toJSON(),L=this.state.link;if(!L||!this.sb||!this.user)return Promise.resolve({error:{message:'Sin sesión'}});let tz='Europe/Madrid';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz;}catch(e){}
+    return this.sb.from('cf_push_subs').upsert({endpoint:k.endpoint,user_id:this.user.id,coach_id:L.coach_id,client_key:L.client_key,p256dh:k.keys.p256dh,auth:k.keys.auth,tz,prefs:this.state.ntPrefs||{},ua:navigator.userAgent.slice(0,180),updated_at:new Date().toISOString()});}
+  ntEnable(){if(this.state.ntBusy)return;if(!this.ntSup()){this.toastMsg('Este navegador no admite notificaciones',true);return;}
+    const u8=s=>{const b=atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4)),o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;};
+    this.setState({ntBusy:true});const fail=(m)=>{this.setState({ntBusy:false});if(m)this.toastMsg(m,true);};
+    Notification.requestPermission().then(p=>{if(p!=='granted'){fail(p==='denied'?'Has bloqueado las notificaciones. Actívalas en los ajustes del móvil.':'');this.forceUpdate();return;}
+      return fetch('/api/push').then(r=>r.json()).catch(()=>null).then(j=>{if(!j||!j.pub){fail('Las notificaciones aún no están preparadas. Avisa a tu entrenador.');return;}
+        return navigator.serviceWorker.ready.then(reg=>reg.pushManager.getSubscription().then(s0=>s0||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(j.pub)})))
+          .then(sub=>this.ntSave(sub)).then(({error})=>{if(error){fail(/cf_push_subs|relation|schema/i.test(error.message||'')?'Falta preparar las notificaciones en el servidor. Avisa a tu entrenador.':'No se pudo activar: '+error.message);return;}
+            this.setState({ntBusy:false,ntOn:true});this.toastMsg('Notificaciones activadas');this.ntTest();});});})
+      .catch(e=>fail('No se pudo activar: '+((e&&e.message)||e)));}
+  ntDisable(){if(!this.ntSup())return;navigator.serviceWorker.ready.then(r=>r.pushManager.getSubscription()).then(sub=>{if(!sub)return;const ep=sub.endpoint;return sub.unsubscribe().catch(()=>{}).then(()=>this.sb.from('cf_push_subs').delete().eq('endpoint',ep));})
+    .then(()=>{this.setState({ntOn:false});this.toastMsg('Notificaciones desactivadas en este móvil');}).catch(()=>{});}
+  ntTest(){if(!this.sb)return;this.sb.auth.getSession().then(({data})=>fetch('/api/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({type:'test-me'})}))
+    .then(r=>r.json()).then(j=>{if(j&&j.error)this.toastMsg(j.error,true);else if(!j||!j.sent)this.toastMsg('No se pudo enviar la prueba',true);}).catch(()=>this.toastMsg('No se pudo conectar con el servidor',true));}
+  ntSetPref(fn){this.setState(st=>{const p=JSON.parse(JSON.stringify(st.ntPrefs||{}));fn(p);try{localStorage.setItem('cf-nt-prefs',JSON.stringify(p));}catch(e){}return {ntPrefs:p};},
+    ()=>{if(this.state.ntOn&&this.sb&&this.user){clearTimeout(this._ntT);this._ntT=setTimeout(()=>{this.sb.from('cf_push_subs').update({prefs:this.state.ntPrefs||{},updated_at:new Date().toISOString()}).eq('user_id',this.user.id).then(()=>{});},600);}});}
   loadForms(){if(!this.sb||!this.user)return;this.sb.from('cf_forms').select('id,title,token,status,created_at').eq('status','sent').order('created_at',{ascending:true}).then(({data,error})=>{if(error)return;this.setState({pendForms:data||[]});});}
   doLogin(){const s=this.state;if(!this.sb)return;this.setState({authMsg:'Entrando…'});
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({authMsg:'Email o contraseña incorrectos.'});return;}this.setState({authMsg:''});this.afterLogin(data.session);});}
@@ -517,6 +594,18 @@ class Component extends DCLogic {
     if(au!=='in'||!s.link)return v;
     const L0=s.link,P=L0.plan||{groups:[],T:{k:0,p:0,c:0,f:0}},T=P.T||{k:0,p:0,c:0,f:0},today=isoD(new Date()),Tk=num(T.k);const tkOf=d=>num((this.group(P,d).T||T).k);
     const th=TH[s.tab]||TH.hoy;v.thTitle=th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
+    {const sup=this.ntSup(),ios=this.ntIOS(),sa=this.ntStand(),perm=sup?Notification.permission:'default',NP=s.ntPrefs||{},off=NP.off||{},PN=(s.link&&s.link.plan&&s.link.plan.notif)||null;
+      v.ntBell=()=>this.setState({ntOpen:true});v.ntOpenOn=!!s.ntOpen;v.ntClose=()=>this.setState({ntOpen:false});
+      v.ntNeedInstall=ios&&!sa&&!sup;v.ntUnsup=!sup&&!v.ntNeedInstall;v.ntBlocked=sup&&perm==='denied';v.ntIsOn=!!s.ntOn;v.ntCanOn=sup&&!s.ntOn&&perm!=='denied';v.ntBellDot=!s.ntOn&&(sup||v.ntNeedInstall)&&perm!=='denied';
+      v.ntStatus=s.ntOn?'Activadas en este móvil':v.ntBlocked?'Bloqueadas':v.ntNeedInstall?'Instala la app primero':v.ntUnsup?'No disponibles en este navegador':'Desactivadas';
+      v.ntStBg=s.ntOn?'#dcf0e4':'#fff4dc';v.ntStFg=s.ntOn?'#1d6b43':'#8a5a00';
+      v.ntEnable=()=>this.ntEnable();v.ntDisable=()=>this.ntDisable();v.ntTest=()=>this.ntTest();v.ntBtn=s.ntBusy?'Activando…':'Activar notificaciones';
+      v.ntWake=NP.wake||'08:00';v.onNtWake=e=>{const x=e.target.value;this.ntSetPref(p=>{p.wake=x;});};
+      v.ntSleep=NP.sleep||'22:30';v.onNtSleep=e=>{const x=e.target.value;this.ntSetPref(p=>{p.sleep=x;});};
+      v.ntTrain=NP.train||'';v.onNtTrain=e=>{const x=e.target.value;this.ntSetPref(p=>{if(x)p.train=x;else delete p.train;});};v.ntShowTrain=!PN||!!PN.pre;
+      v.ntTypes=[['water','Beber agua'],['pre','Preentreno'],['rev','Revisiones'],['weigh','Pesarse'],['plan','Plan actualizado'],['msg','Mensajes de tu entrenador']].filter(([k])=>!PN||(k==='rev'?(PN.revBefore||PN.revDay):PN[k])).map(([k,l])=>{const on=!off[k];
+        return {label:l,bg:on?'#1180c2':'#d3dde7',knob:on?'20px':'2px',toggle:()=>this.ntSetPref(p=>{p.off=p.off||{};if(p.off[k])delete p.off[k];else p.off[k]=true;})};});
+      v.ntBanner=s.ntOn===false&&!s.ntDis&&(sup||v.ntNeedInstall)&&perm!=='denied';v.ntDismiss=()=>{try{localStorage.setItem('cf-nt-dis','1');}catch(e){}this.setState({ntDis:true});};}
     v.hello='Hola, '+((P.name||L0.name||'').split(' ')[0]||'bienvenido/a');
     const unread=s.msgs.filter(m=>m.sender==='coach'&&!m.read_at).length;
     const go=k=>{try{localStorage.setItem('cf-as-tab',k);}catch(e){}this.setState({tab:k});};
@@ -537,6 +626,9 @@ class Component extends DCLogic {
     if(v.isHoy||s.survOpen){const day=s.day,L=this.log(day),G=this.group(P,day),dd=parseD(day),TD=G.T||T,TkD=num(TD.k);
       v.dayTitle=day===today?'Hoy':day===addDays(today,-1)?'Ayer':cap(dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric'}));
       v.daySub=(G.title?G.title+' · ':'')+cap(dd.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}));
+      {const GD=P.guide,ti=dowMon(dd),tr=!!GD&&(GD.days||[0,2,4]).includes(ti),d=GD&&GD[tr?'train':'rest'];
+        const IT=d?[['steps','Pasos',x=>Number(String(x).replace(',','.')).toLocaleString('es-ES')],['water','Agua',x=>String(x).replace('.',',')+' L'],['salt','Sal',x=>String(x).replace('.',',')+' g'],['caff','Cafeína',x=>x+' mg']].filter(([k])=>d[k]!=null&&d[k]!=='').map(([k,l,fm])=>({l,v:fm(d[k])})):[];
+        v.gdHas=IT.length>0||!!(d&&d.txt);v.gdItems=IT;v.gdType=tr?'Día de entreno':'Día de descanso';v.gdBg=tr?'#e3f1fa':'#dcf0e4';v.gdFg=tr?'#0e5a8a':'#1d6b43';v.gdTxt=(d&&d.txt)||'';v.gdHasTxt=!!(d&&d.txt);v.gdTitle=day===today?'Pautas de hoy':'Pautas del día';}
       v.dayPrev=()=>this.setState({day:addDays(day,-1)});v.dayNext=()=>{if(day<today)this.setState({day:addDays(day,1)});};v.nextOp=day<today?'1':'.3';
       const F=L.foods||[],tot={k:0,p:0,c:0,f:0};F.forEach(x=>{tot.k+=num(x.k);tot.p+=num(x.p);tot.c+=num(x.c);tot.f+=num(x.f);});
       const pc=(a,b)=>Math.min(100,b?a/b*100:0)+'%';
@@ -551,9 +643,11 @@ class Component extends DCLogic {
         const blocks=o.blocks.map((b,bi)=>{const pick1=b.lines.length>1&&/elige 1/i.test(b.label),pre=mi+'-'+oi+'-'+bi+'-';
           const cnt=F.filter(x=>(x.key||'').startsWith(pre)).length;if(pick1){need++;if(cnt)done++;}else{need+=b.lines.length;done+=cnt;}
           return {label:b.label,sw:b.sw,ink:b.ink,lines:b.lines.map((ln,li)=>{const key=pre+li,f=F.find(x=>x.key===key);
-            return {name:ln.name,plan:ln.g,showGr:!!f,hideGr:!f,gr:f?String(f.gr):'',fw:f?'700':'500',bg:f?'#e3f1fa':'var(--color-neutral-100)',bd:f?'#a6d2ef':'transparent',
+            const AL=ln.alts||[];return {name:f&&f.alt?f.name:ln.name,plan:ln.g,hasAlts:AL.length>0,altOpen:s.altKey===key,altLbl:s.altKey===key?'Cerrar':'Otra opción',
+              altBtn:e=>{e.stopPropagation();this.setState({altKey:s.altKey===key?null:key});},
+              alts:AL.map(al=>({label:al.name+' · '+al.g,pick:e=>{e.stopPropagation();this.patchLog(n=>{n.foods=n.foods.filter(x=>x.key!==key);if(pick1)n.foods=n.foods.filter(x=>!(x.key||'').startsWith(pre));const fo=this.planFood(key,mi,m,al);fo.alt=ln.name;n.foods.push(fo);});this.setState({altKey:null});}})),showGr:!!f,hideGr:!f,gr:f?String(f.gr):'',fw:f?'700':'500',bg:f?'#e3f1fa':'var(--color-neutral-100)',bd:f?'#a6d2ef':'transparent',
               ckBd:f?'#1180c2':'#b1bfcd',ckBg:f?'#1180c2':'#fff',ck:f?'✓':'',subFg:f&&f.changed?'#77560a':'var(--color-neutral-700)',
-              sub:f?(f.changed?'Pautado '+ln.g+' · ':'')+f.k+' kcal':(ln.k||0)+' kcal',stop:e=>e.stopPropagation(),
+              sub:f?(f.alt?'En lugar de '+f.alt+' · ':'')+(f.changed?'Pautado '+(f.alt?f.planned+' g':ln.g)+' · ':'')+f.k+' kcal':(ln.k||0)+' kcal',stop:e=>e.stopPropagation(),
               minus:e=>{e.stopPropagation();this.setGr(key,num(f&&f.gr)-10);},plus:e=>{e.stopPropagation();this.setGr(key,num(f&&f.gr)+10);},
               toggle:()=>this.patchLog(n=>{const ex=n.foods.find(x=>x.key===key);if(ex){n.foods=n.foods.filter(x=>x.key!==key);return;}
                 if(pick1)n.foods=n.foods.filter(x=>!(x.key||'').startsWith(pre));n.foods.push(this.planFood(key,mi,m,ln));}),
@@ -561,7 +655,7 @@ class Component extends DCLogic {
         const extras=mF.filter(x=>x.src==='extra').map(x=>({name:x.name,sub:x.k+' kcal · P '+x.p+' · H '+x.c+' · G '+x.f,gr:String(x.gr),
           onGr:e=>this.setGr(x.key,num(e.target.value)),minus:()=>this.setGr(x.key,num(x.gr)-10),plus:()=>this.setGr(x.key,num(x.gr)+10),del:()=>this.patchLog(n=>{n.foods=n.foods.filter(y=>y.key!==x.key);})}));
         const anyPlan=mF.some(x=>x.src==='plan'),full=need>0&&done>=need,st=full?['Hecha','#dcf0e4','#1d6b43','#2f9e62']:mF.length?['En curso','#fdf3d4','#77560a','#efc95e']:['Pendiente','var(--color-neutral-100)','var(--color-neutral-700)','#b1bfcd'];
-        return {name:m.name,kLabel:R(mk)+' / '+m.kcal+(String(m.kcal).includes('kcal')?'':' kcal'),stLabel:st[0],stBg:st[1],stFg:st[2],bar:st[3],pct:Math.min(100,mT?mk/mT*100:(need?done/need*100:0))+'%',hasOpts:m.opts.length>1,
+        return {note:m.note||'',hasNote:!!m.note,onote:o.note||'',hasOnote:!!o.note,name:m.name,kLabel:R(mk)+' / '+m.kcal+(String(m.kcal).includes('kcal')?'':' kcal'),stLabel:st[0],stBg:st[1],stFg:st[2],bar:st[3],pct:Math.min(100,mT?mk/mT*100:(need?done/need*100:0))+'%',hasOpts:m.opts.length>1,
           optSeg:m.opts.map((x,i)=>({label:'Opción '+String.fromCharCode(65+i),bg:i===oi?'#fff':'transparent',fg:i===oi?'var(--color-text)':'var(--color-neutral-700)',pick:()=>this.patchLog(n=>{n.opts=n.opts||{};n.opts[mi]=i;n.foods=n.foods.filter(y=>!(y.mi===mi&&y.src==='plan'&&!(y.key||'').startsWith(mi+'-'+i+'-')));})})),
           blocks,extras,hasExtras:extras.length>0,allLabel:anyPlan?'Desmarcar todo':'✓ Comí lo pautado',allBg:anyPlan?'var(--color-neutral-100)':'#1180c2',allFg:anyPlan?'var(--color-neutral-700)':'#fff',
           all:()=>this.patchLog(n=>{if(anyPlan){n.foods=n.foods.filter(y=>!(y.mi===mi&&y.src==='plan'));return;}
@@ -589,6 +683,8 @@ class Component extends DCLogic {
 
     if(v.isPlan){v.planKicker='Plan nutricional · v'+(P.v||1)+(L0.plan_at?' · '+new Date(L0.plan_at).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}):'');v.planName=P.name||L0.name||'';
       v.pK=R(Tk).toLocaleString('es-ES');v.pMacros=MAC.map(([k,l,ink,sw,bg])=>({label:l,g:String(R(T[k]||0)),bg,fg:ink}));
+      {const GD=P.guide,fm=d=>d?[['steps',x=>Number(String(x).replace(',','.')).toLocaleString('es-ES')+' pasos'],['water',x=>'agua '+String(x).replace('.',',')+' L'],['salt',x=>'sal '+String(x).replace('.',',')+' g'],['caff',x=>'cafeína '+x+' mg']].filter(([k])=>d[k]!=null&&d[k]!=='').map(([k,f])=>f(d[k])).concat(d.txt?[d.txt]:[]).join(' · '):'';
+        const DL=['L','M','X','J','V','S','D'],td=(GD&&GD.days)||[0,2,4];v.pGuideRows=GD?[['train','Días de entreno ('+td.map(i=>DL[i]).join(' ')+')'],['rest','Días de descanso']].map(([k,l])=>({label:l,txt:fm(GD[k])})).filter(x=>x.txt):[];v.pGuideOn=v.pGuideRows.length>0;}
       v.pNotes=P.notes||'';v.pHasNotes=!!(P.notes||'').trim();v.pOpen=!!P.open;const td=dowMon(new Date());
       v.pKSub=(P.groups||[]).some(g=>g.T)?'kcal de media al día':'kcal al día';
       v.pGroups=(P.groups||[]).map(g=>({...g,hasTitle:!!g.title,hasK:!!g.kLine,kLine:g.kLine||'',isToday:(g.dayIdx||[]).includes(td)&&(P.groups||[]).length>1}));

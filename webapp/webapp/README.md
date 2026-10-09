@@ -37,3 +37,15 @@ Para cada asesorado:
 4. El asesorado abre el email, crea su contraseña y entra en `/asesorado.html` (puede añadirla a la pantalla de inicio del móvil).
 
 Los mensajes aparecen en **Mensajes** (menú lateral), junto con su registro de comidas y el cuestionario diario.
+
+
+## Notificaciones push (app de asesorados)
+
+Se hace una sola vez:
+
+1. Supabase → SQL Editor → New query → pega **notificaciones.sql** → Run.
+2. Vercel → tu proyecto → Settings → Environment Variables → añade VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y CRON_SECRET (los valores están en claves-push.txt, que no se sube a GitHub). Después Deployments → último → Redeploy.
+3. Supabase → SQL Editor → New query → pega el bloque de programación de claves-push.txt → Run (envía los recordatorios cada 15 minutos).
+4. En la app: Biblioteca → Notificaciones debe decir «Servidor listo».
+
+Cada asesorado: en iPhone, Safari → Compartir → «Añadir a pantalla de inicio»; abre la app desde el icono → campana → Activar notificaciones. En Android basta con pulsar la campana.

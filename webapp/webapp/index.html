@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="cf-theme.css">
 <script src="data/alimentos.js"></script>
 <script src="data/recetas.js"></script>
+<script src="data/listas.js"></script>
 <script src="config.js"></script>
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
@@ -439,6 +440,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
       <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }}">{{ distLabel }}</span>
       <span style="flex:1 1 0"></span>
+      <sc-if value="{{ flActive }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 5px 4px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Lista: {{ flActiveName }}<button onClick="{{ flUnset }}" title="Dejar de usar la lista permitida" aria-label="Quitar lista" style="font:inherit;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(17,128,194,.12);color:inherit;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-if>
+      <button class="btn btn-secondary" onClick="{{ lsOpenFn }}" title="Rellena las comidas con una lista de alimentos o limita los alimentos a esa lista" style="font-size:13px;min-height:38px">Lista de alimentos</button>
+      <button class="btn btn-ghost" onClick="{{ toggleLat }}" title="{{ latTitle }}" style="font-size:13px;min-height:38px">{{ latLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ archivePlan }}" title="Guarda una copia de este plan en la pestaña Archivo" style="font-size:13px;min-height:38px"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="5" rx="1.5"></rect><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path><path d="M10 13h4"></path></svg>Archivar plan</button>
       <button class="btn" onClick="{{ clearPlan }}" title="Vacía el plan actual para empezar uno nuevo" style="font-size:13px;min-height:38px;background:{{ clearBg }};color:{{ clearFg }}">{{ clearLabel }}</button>
       <button class="btn btn-ghost" onClick="{{ collapseAll }}" style="font-size:13px">Plegar todas</button>
@@ -510,6 +514,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
     <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);margin-right:4px">Ir a</span><sc-for list="{{ mealNav }}" as="mn" hint-placeholder-count="4"><button onClick="{{ mn.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:0;background:{{ mn.bg }};color:{{ mn.fg }};cursor:pointer;box-shadow:var(--shadow-sm)">{{ mn.name }}</button></sc-for></div>
     <sc-if value="{{ overWarn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:#fff1ee;border:1px solid #f4c9bf;color:#8f2a14;font-size:13px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span>{{ overWarnText }}</span></div></sc-if>
+    <section data-noprint="1" style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center"><div style="display:flex;flex-direction:column;gap:2px;flex:1 1 300px;min-width:0"><span style="font-weight:800;font-size:16px">Pautas del día</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ gdSum }}</span></div><button class="btn btn-secondary" onClick="{{ gdToggle }}" style="font-size:13px">{{ gdBtn }}</button></div>
+      <sc-if value="{{ gdOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700);margin-right:4px">Días de entreno</span><sc-for list="{{ gdDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="font:inherit;font-size:13px;font-weight:800;width:36px;height:36px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer">{{ d.l }}</button></sc-for></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:10px">
+          <sc-for list="{{ gdCols }}" as="c" hint-placeholder-count="2">
+            <div style="background:{{ c.bg }};border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ c.ink }}">{{ c.label }}</span>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><sc-for list="{{ c.fields }}" as="f" hint-placeholder-count="4"><label style="display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:700;color:{{ f.ink }}">{{ f.label }}<input class="input" type="text" inputmode="decimal" value="{{ f.val }}" onChange="{{ f.on }}" style="background:#fff;min-height:36px;font-variant-numeric:tabular-nums"></label></sc-for></div>
+              <input class="input" value="{{ c.txt }}" onChange="{{ c.onTxt }}" placeholder="Timings u otras pautas (p. ej.: preentreno 45 min antes)" style="background:#fff;font-size:13px">
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </section>
     <sc-for list="{{ meals }}" as="m" hint-placeholder-count="3">
       <section id="{{ m.domId }}" onDragOver="{{ m.mDragOver }}" onDrop="{{ m.mDrop }}" style="background:#fff;border-radius:22px;box-shadow:{{ m.mOut }};padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .15s">
         <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center">
@@ -561,34 +580,45 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           </div>
         </sc-if>
 
+        <sc-if value="{{ m.noteShow }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:#f3f8fc;border:1px solid var(--color-accent-100)">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-accent-700);margin-right:auto">Comentario para el asesorado</span>
+              <select class="input" value="" style="width:auto;max-width:200px;font-size:12px;min-height:30px;height:30px;padding:2px 24px 2px 8px" onChange="{{ m.notePre }}"><option value="">Predefinidos…</option><sc-for list="{{ notePresets }}" as="np" hint-placeholder-count="0"><option value="{{ np.val }}">{{ np.label }}</option></sc-for></select>
+              <button class="btn btn-ghost" onClick="{{ m.noteSave }}" style="font-size:12px">Guardar como predefinido</button>
+              <button class="btn btn-ghost" onClick="{{ m.noteDel }}" style="font-size:12px;color:#a8321a">Quitar</button></div>
+            <textarea class="input" rows="2" value="{{ m.note }}" onChange="{{ m.onNote }}" placeholder="Por ejemplo: cocina a la plancha o al horno." style="resize:vertical;font-size:14px;line-height:1.4;background:#fff"></textarea>
+          </div>
+        </sc-if>
+        <sc-if value="{{ m.noteHide }}" hint-placeholder-val="{{ true }}"><button onClick="{{ m.noteAdd }}" style="font:inherit;font-size:12px;font-weight:700;align-self:flex-start;width:fit-content;padding:6px 12px;border-radius:999px;border:1px dashed var(--color-neutral-300);background:transparent;color:var(--color-neutral-700);cursor:pointer" style-hover="border-color:var(--color-accent);color:var(--color-accent-700)">+ Comentario para el asesorado</button></sc-if>
         <sc-if value="{{ m.isCheat }}" hint-placeholder-val="{{ false }}">
           <div style="background:var(--color-accent-100);border-radius:16px;padding:18px 20px;display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap;color:var(--color-accent-800)"><span style="font-weight:800;font-size:17px">Comida libre</span><span style="font-size:13px">{{ m.cheatText }}</span></div>
         </sc-if>
         <sc-if value="{{ m.isOpen }}" hint-placeholder-val="{{ true }}">
-          <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="cf-opts" data-lat="{{ latView }}" style="display:flex;flex-direction:column;gap:14px">
           <sc-for list="{{ m.options }}" as="op" hint-placeholder-count="1">
-          <div style="display:flex;flex-direction:column;gap:6px">
+          <div class="cf-opt" style="display:flex;flex-direction:column;gap:6px">
           <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
             <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;padding:4px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ op.title }}</span>
             <span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;margin-right:auto">{{ op.kcalLine }}</span>
-            <button class="btn btn-ghost" onClick="{{ op.dup }}" style="font-size:12px">Duplicar opción</button>
+            <sc-if value="{{ op.onoteHide }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ op.onoteAdd }}" style="font-size:12px">+ Comentario</button></sc-if><button class="btn btn-ghost" onClick="{{ op.dup }}" style="font-size:12px">Duplicar opción</button>
             <sc-if value="{{ op.canRemove }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ op.remove }}" style="font-size:12px">Quitar opción</button></sc-if>
           </div>
+<sc-if value="{{ op.onoteShow }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start"><textarea class="input" rows="1" value="{{ op.onote }}" onChange="{{ op.onOnote }}" placeholder="Comentario de esta opción" style="flex:1 1 240px;min-width:0;resize:vertical;font-size:13px;background:#f3f8fc"></textarea><select class="input" value="" style="width:auto;max-width:200px;font-size:12px;min-height:30px;height:30px;padding:2px 24px 2px 8px" onChange="{{ op.onotePre }}"><option value="">Predefinidos…</option><sc-for list="{{ notePresets }}" as="np" hint-placeholder-count="0"><option value="{{ np.val }}">{{ np.label }}</option></sc-for></select><button class="btn btn-ghost" onClick="{{ op.onoteDel }}" style="font-size:12px;color:#a8321a">Quitar</button></div></sc-if>
 <sc-for list="{{ op.alerts }}" as="al" hint-placeholder-count="0"><div style="display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:{{ al.bg }};border:1px solid {{ al.bd }};color:{{ al.fg }};font-size:13px;line-height:1.4"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span>{{ al.txt }}</span></div></sc-for>
 <sc-if value="{{ op.hasZeros }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;border:1px dashed var(--color-neutral-300);background:#fff;font-size:13px;line-height:1.4"><sc-for list="{{ op.zeros }}" as="z" hint-placeholder-count="0"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:8px;height:8px;border-radius:50%;background:{{ z.sw }};flex:none"></span><span style="flex:1 1 220px;min-width:0;color:var(--color-neutral-800);text-wrap:pretty"><strong>{{ z.name }}</strong> {{ z.why }} ¿Añadirlo a mano aunque supere el objetivo?</span><button onClick="{{ z.add }}" style="font:inherit;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;border:1.5px solid {{ z.sw }};background:{{ z.bg }};color:{{ z.ink }};cursor:pointer;white-space:nowrap">+ Añadir {{ z.sug }} g a mano</button></div></sc-for></div></sc-if>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <div class="cf-opt-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
             <sc-for list="{{ op.cols }}" as="col" hint-placeholder-count="4">
-              <div onDragOver="{{ col.cDragOver }}" onDrop="{{ col.cDrop }}" style="background:{{ col.bg }};border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:150px;outline:{{ col.cOut }};outline-offset:-2px">
+              <div class="cf-col" onDragOver="{{ col.cDragOver }}" onDrop="{{ col.cDrop }}" style="background:{{ col.bg }};border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:150px;outline:{{ col.cOut }};outline-offset:-2px">
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px">
                   <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;display:flex;align-items:center;gap:6px;color:{{ col.ink }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ col.sw }}"></span>{{ col.label }}</span>
                   <span style="font-size:12px;color:{{ col.ink }};font-weight:600;font-variant-numeric:tabular-nums">{{ col.sub }}</span>
                 </div>
                 <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="2">
-                  <div onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;align-items:center;gap:6px;padding:8px 8px 8px 4px;background:#fff;border-radius:12px;box-shadow:{{ it.dropSh }}">
+                  <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;align-items:center;gap:6px;padding:8px 8px 8px 4px;background:#fff;border-radius:12px;box-shadow:{{ it.dropSh }}">
                     <span draggable="true" onDragStart="{{ it.dragStart }}" onDragEnd="{{ it.dragEnd }}" title="Arrastra para mover" style="cursor:grab;display:flex;padding:4px 2px;color:var(--color-neutral-400);flex:none"><svg width="10" height="16" viewBox="0 0 10 16" style="fill:currentColor"><circle cx="3" cy="3" r="1.4"></circle><circle cx="7" cy="3" r="1.4"></circle><circle cx="3" cy="8" r="1.4"></circle><circle cx="7" cy="8" r="1.4"></circle><circle cx="3" cy="13" r="1.4"></circle><circle cx="7" cy="13" r="1.4"></circle></svg></span>
                     <div style="flex:1;min-width:0;display:flex;flex-direction:column">
                       <span style="font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
-                      <span style="font-size:11px;color:{{ it.metaFg }}">{{ it.meta }}</span>
+                      <span class="cf-meta" style="font-size:11px;color:{{ it.metaFg }}">{{ it.meta }}</span>
                     </div>
                     <sc-if value="{{ it.isVeg }}" hint-placeholder-val="{{ false }}">
                       <input class="input" type="number" value="{{ it.g }}" onChange="{{ it.onG }}" style="width:58px;min-height:28px;padding:2px 6px;text-align:right;font-weight:700">
@@ -614,32 +644,33 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           </div>
           </div>
           </sc-for>
-          <div style="display:flex;flex-wrap:wrap;gap:8px"><button onClick="{{ m.addOption }}" style="font:inherit;font-size:13px;font-weight:600;padding:10px 14px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:12px;color:var(--color-accent-700);cursor:pointer" style-hover="background:var(--color-accent-100)">+ Añadir opción</button><button onClick="{{ m.openEq }}" style="font:inherit;font-size:13px;font-weight:700;padding:10px 14px;background:var(--color-accent-100);border:0;border-radius:12px;color:var(--color-accent-800);cursor:pointer" style-hover="background:var(--color-accent-200)">≈ Opción desde equivalencias</button></div>
+          <div class="cf-opt-add" style="display:flex;flex-wrap:wrap;gap:8px"><button onClick="{{ m.addOption }}" style="font:inherit;font-size:13px;font-weight:600;padding:10px 14px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:12px;color:var(--color-accent-700);cursor:pointer" style-hover="background:var(--color-accent-100)">+ Añadir opción</button><button onClick="{{ m.openEq }}" style="font:inherit;font-size:13px;font-weight:700;padding:10px 14px;background:var(--color-accent-100);border:0;border-radius:12px;color:var(--color-accent-800);cursor:pointer" style-hover="background:var(--color-accent-200)">≈ Opción desde equivalencias</button></div>
           </div>
         </sc-if>
 
         <sc-if value="{{ m.isClosed }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="cf-opts" data-lat="{{ latView }}" data-kind="closed" style="display:flex;flex-direction:column;gap:12px">
             <sc-for list="{{ m.options }}" as="op" hint-placeholder-count="1">
-              <div style="background:var(--color-surface);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px">
-                <div style="display:flex;align-items:baseline;gap:12px">
+              <div class="cf-opt" style="background:var(--color-surface);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap">
                   <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700">{{ op.title }}</span>
                   <span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;margin-right:auto">{{ op.kcalLine }}</span>
-                  <button class="btn btn-ghost" onClick="{{ op.dup }}" style="font-size:12px">Duplicar opción</button>
+                  <sc-if value="{{ op.onoteHide }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ op.onoteAdd }}" style="font-size:12px">+ Comentario</button></sc-if><button class="btn btn-ghost" onClick="{{ op.dup }}" style="font-size:12px">Duplicar opción</button>
                   <sc-if value="{{ op.canRemove }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ op.remove }}" style="font-size:12px">Quitar opción</button></sc-if>
                 </div>
+<sc-if value="{{ op.onoteShow }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start"><textarea class="input" rows="1" value="{{ op.onote }}" onChange="{{ op.onOnote }}" placeholder="Comentario de esta opción" style="flex:1 1 240px;min-width:0;resize:vertical;font-size:13px;background:#f3f8fc"></textarea><select class="input" value="" style="width:auto;max-width:200px;font-size:12px;min-height:30px;height:30px;padding:2px 24px 2px 8px" onChange="{{ op.onotePre }}"><option value="">Predefinidos…</option><sc-for list="{{ notePresets }}" as="np" hint-placeholder-count="0"><option value="{{ np.val }}">{{ np.label }}</option></sc-for></select><button class="btn btn-ghost" onClick="{{ op.onoteDel }}" style="font-size:12px;color:#a8321a">Quitar</button></div></sc-if>
 <sc-for list="{{ op.alerts }}" as="al" hint-placeholder-count="0"><div style="display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:{{ al.bg }};border:1px solid {{ al.bd }};color:{{ al.fg }};font-size:13px;line-height:1.4"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span>{{ al.txt }}</span></div></sc-for>
 <sc-if value="{{ op.hasZeros }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;border:1px dashed var(--color-neutral-300);background:#fff;font-size:13px;line-height:1.4"><sc-for list="{{ op.zeros }}" as="z" hint-placeholder-count="0"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:8px;height:8px;border-radius:50%;background:{{ z.sw }};flex:none"></span><span style="flex:1 1 220px;min-width:0;color:var(--color-neutral-800);text-wrap:pretty"><strong>{{ z.name }}</strong> {{ z.why }} ¿Añadirlo a mano aunque supere el objetivo?</span><button onClick="{{ z.add }}" style="font:inherit;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;border:1.5px solid {{ z.sw }};background:{{ z.bg }};color:{{ z.ink }};cursor:pointer;white-space:nowrap">+ Añadir {{ z.sug }} g a mano</button></div></sc-for></div></sc-if>
                 <sc-for list="{{ op.rows }}" as="row" hint-placeholder-count="4">
                   <div onDragOver="{{ row.cDragOver }}" onDrop="{{ row.cDrop }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 4px 2px;border-top:1px solid var(--color-neutral-200);outline:{{ row.cOut }};outline-offset:2px;border-radius:10px">
                     <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:{{ row.sw }};color:{{ row.swFg }}">{{ row.tag }}</span>
                     <sc-for list="{{ row.items }}" as="it" hint-placeholder-count="1">
-                      <div onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:16px;font-size:13px;box-shadow:{{ it.dropSh }};max-width:100%;min-width:0;box-sizing:border-box">
+                      <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:nowrap;align-items:center;gap:4px 6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:16px;font-size:13px;box-shadow:{{ it.dropSh }};max-width:100%;min-width:0;box-sizing:border-box">
                         <span draggable="true" onDragStart="{{ it.dragStart }}" onDragEnd="{{ it.dragEnd }}" title="Arrastra para mover" style="cursor:grab;display:flex;padding:4px 2px;color:var(--color-neutral-400);flex:none"><svg width="10" height="16" viewBox="0 0 10 16" style="fill:currentColor"><circle cx="3" cy="3" r="1.4"></circle><circle cx="7" cy="3" r="1.4"></circle><circle cx="3" cy="8" r="1.4"></circle><circle cx="7" cy="8" r="1.4"></circle><circle cx="3" cy="13" r="1.4"></circle><circle cx="7" cy="13" r="1.4"></circle></svg></span>
-                        <span style="font-weight:600;min-width:0;overflow-wrap:anywhere">{{ it.name }}</span>
+                        <span title="{{ it.name }}" style="font-weight:600;min-width:48px;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
                         <sc-if value="{{ it.flag }}" hint-placeholder-val="{{ false }}"><span class="tag tag-danger" style="padding:1px 7px;font-size:10px">Alergia</span></sc-if>
                         <sc-if value="{{ it.showShare }}" hint-placeholder-val="{{ false }}">
-                          <input type="range" min="5" max="100" step="5" value="{{ it.share }}" onChange="{{ it.onShare }}" title="Reparto dentro del macro" style="flex:0 1 84px;width:84px;min-width:52px;color:{{ it.sw }}"><span style="font-size:11px;font-weight:800;min-width:32px;font-variant-numeric:tabular-nums">{{ it.shareLbl }}</span>
+                          <input type="range" min="5" max="100" step="5" value="{{ it.share }}" onChange="{{ it.onShare }}" title="Reparto dentro del macro" style="flex:0 1 84px;width:84px;min-width:40px;color:{{ it.sw }}"><span style="font-size:11px;font-weight:800;min-width:32px;font-variant-numeric:tabular-nums">{{ it.shareLbl }}</span>
                         </sc-if>
                         <span style="display:inline-flex;align-items:center;gap:4px;flex:none;margin-left:auto">
                         <sc-if value="{{ it.isVeg }}" hint-placeholder-val="{{ false }}">
@@ -650,6 +681,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                         <span style="font-size:12px">g</span>
                         <sc-if value="{{ it.isAuto }}" hint-placeholder-val="{{ true }}"><button onClick="{{ it.setMan }}" title="Fijar los gramos a mano" style="width:22px;height:22px;flex:none;border-radius:50%;border:0;background:rgba(255,255,255,.85);color:{{ it.ink }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:#fff;color:var(--color-accent)"><svg width="12" height="12" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button></sc-if>
                         <sc-if value="{{ it.isMan }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.unMan }}" title="Volver al ajuste automático" style="font:inherit;font-size:10px;font-weight:800;padding:2px 7px;flex:none;border-radius:999px;border:0;background:rgba(255,255,255,.85);color:{{ it.ink }};cursor:pointer" style-hover="background:#fff">Auto</button></sc-if>
+                        <sc-if value="{{ it.eqShow }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.eqOpen }}" title="Equivalencias que el asesorado puede pedir" style="font:inherit;font-size:11px;font-weight:800;padding:2px 7px;flex:none;border-radius:999px;border:0;background:{{ it.eqBg }};color:{{ it.ink }};cursor:pointer">{{ it.eqLabel }}</button></sc-if>
                         <button onClick="{{ it.remove }}" title="Quitar" style="border:0;background:transparent;cursor:pointer;color:var(--color-neutral-600);padding:2px;display:flex" style-hover="color:var(--color-accent)"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
                         </span>
                       </div>
@@ -659,7 +691,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                 </sc-for>
               </div>
             </sc-for>
-            <div style="display:flex;flex-wrap:wrap;gap:8px"><button onClick="{{ m.addOption }}" style="font:inherit;font-size:13px;font-weight:600;padding:10px 14px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:12px;color:var(--color-accent-700);cursor:pointer" style-hover="background:var(--color-accent-100)">+ Añadir opción</button><button onClick="{{ m.openEq }}" style="font:inherit;font-size:13px;font-weight:700;padding:10px 14px;background:var(--color-accent-100);border:0;border-radius:12px;color:var(--color-accent-800);cursor:pointer" style-hover="background:var(--color-accent-200)">≈ Opción desde equivalencias</button></div>
+            <div class="cf-opt-add" style="display:flex;flex-wrap:wrap;gap:8px"><button onClick="{{ m.addOption }}" style="font:inherit;font-size:13px;font-weight:600;padding:10px 14px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:12px;color:var(--color-accent-700);cursor:pointer" style-hover="background:var(--color-accent-100)">+ Añadir opción</button><button onClick="{{ m.openEq }}" style="font:inherit;font-size:13px;font-weight:700;padding:10px 14px;background:var(--color-accent-100);border:0;border-radius:12px;color:var(--color-accent-800);cursor:pointer" style-hover="background:var(--color-accent-200)">≈ Opción desde equivalencias</button></div>
           </div>
         </sc-if>
         </sc-if>
@@ -717,6 +749,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </sc-if>
         <button class="btn btn-ghost" onClick="{{ openChat }}" style="justify-content:center;border-radius:12px">Abrir chat</button>
         <span style="font-size:12px;color:var(--color-neutral-700)">{{ pubNote }}</span>
+      </div>
+      <div style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:16px">Notificaciones</span><span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:{{ cnDevBg }};color:{{ cnDevFg }}">{{ cnDev }}</span></div>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Siguen la plantilla de Biblioteca → Notificaciones. Lo que cambies aquí solo afecta a este cliente.</span>
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ cnRows }}" as="r" hint-placeholder-count="7">
+            <button onClick="{{ r.toggle }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:8px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left">
+              <span style="font-size:13px;font-weight:600;flex:1;min-width:0">{{ r.label }}</span>
+              <sc-if value="{{ r.cus }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--carb-bg);color:var(--carb-ink)">Personalizado</span></sc-if>
+              <span style="width:38px;height:22px;border-radius:999px;background:{{ r.bg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ r.knob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+            </button>
+          </sc-for>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap">Preentreno<input class="input" type="text" inputmode="numeric" value="{{ cnPre }}" onChange="{{ onCnPre }}" style="width:64px;min-height:32px;text-align:center">min antes de entrenar</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary" onClick="{{ cnTest }}" style="font-size:13px">Enviar prueba</button><sc-if value="{{ cnHasCus }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ cnReset }}" style="font-size:13px">Volver a la plantilla</button></sc-if></div>
       </div>
     </div>
 
@@ -811,6 +858,22 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <dc-import name="Seguimiento" logs="{{ sgLogs }}" metrics="{{ sgMetrics }}" per-names="{{ sgPer }}" pl-names="{{ sgPl }}" tk="{{ sgTk }}" tone="blue" head="Seguimiento diario desde la app" head-sub="{{ sgSub }}" store-key="cf-coach-seg" hint-size="100%,420px"></dc-import>
     </sc-if>
 
+    <sc-if value="{{ rvShow }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+          <div style="margin-right:auto;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:800;font-size:20px">Revisiones semanales</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ rvSub }}</span></div>
+          <sc-if value="{{ rvMore }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ rvMoreFn }}" style="font-size:13px">{{ rvMoreLabel }}</button></sc-if>
+          <button class="btn btn-secondary" onClick="{{ rvSend }}" style="font-size:13px">Enviar revisión</button>
+        </div>
+        <sc-for list="{{ rvRows }}" as="r" hint-placeholder-count="2">
+          <div style="border:1px solid var(--color-divider);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline"><span style="font-weight:800;font-size:15px">{{ r.date }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ r.title }}</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ r.chips }}" as="c" hint-placeholder-count="5"><span style="display:inline-flex;gap:6px;align-items:baseline;font-size:12px;padding:5px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};white-space:nowrap"><span style="font-weight:600">{{ c.l }}</span><strong style="font-weight:800;font-variant-numeric:tabular-nums">{{ c.v }}</strong></span></sc-for></div>
+            <sc-if value="{{ r.hasNotes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:8px 16px"><sc-for list="{{ r.notes }}" as="n" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12px;color:var(--color-neutral-700)">{{ n.q }}</span><span style="font-size:13px;font-weight:600;color:{{ n.fg }};white-space:pre-wrap;overflow-wrap:anywhere;text-wrap:pretty">{{ n.a }}</span></div></sc-for></div></sc-if>
+          </div>
+        </sc-for>
+      </section>
+    </sc-if>
     <sc-if value="{{ lfOpen }}" hint-placeholder-val="{{ false }}">
     <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
     <div data-noprint="1" onKeyDown="{{ lfKey }}" style="position:fixed;inset:0;z-index:1200;background:rgba(18,32,46,.62);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
@@ -937,7 +1000,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                 </div>
                 <sc-if value="{{ lfHasPh }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:800;color:var(--veg-ink)">{{ lfPhCount }}</span>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px"><sc-for list="{{ lfPhList }}" as="p" hint-placeholder-count="3"><img src="{{ p.url }}" alt="Foto de la medición" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;background:var(--color-neutral-100)"></sc-for></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px"><sc-for list="{{ lfPhList }}" as="p" hint-placeholder-count="0"><img loading="lazy" src="{{ p.url }}" alt="Foto de la medición" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;background:var(--color-neutral-100)"></sc-for></div>
                   </div>
                 </sc-if>
                 <sc-if value="{{ lfPhErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--danger)">{{ lfPhErr }}</span></sc-if>
@@ -1005,7 +1068,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <sc-if value="{{ repPhLoading }}" hint-placeholder-val="{{ false }}"><span class="cf-rep-np" style="font-size:13px;color:var(--color-neutral-700)">Cargando fotos…</span></sc-if>
           <sc-if value="{{ repHasPh }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Fotos de progreso</span>
-              <sc-for list="{{ repPhRows }}" as="pr" hint-placeholder-count="2"><div class="cf-rep-avoid" style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:800;color:var(--color-neutral-700)">{{ pr.label }}</span><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ pr.items }}" as="p" hint-placeholder-count="3"><img src="{{ p.url }}" alt="{{ pr.label }}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block;background:var(--color-neutral-100)"></sc-for></div></div></sc-for>
+              <sc-for list="{{ repPhRows }}" as="pr" hint-placeholder-count="2"><div class="cf-rep-avoid" style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:800;color:var(--color-neutral-700)">{{ pr.label }}</span><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ pr.items }}" as="p" hint-placeholder-count="0"><img loading="lazy" src="{{ p.url }}" alt="{{ pr.label }}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block;background:var(--color-neutral-100)"></sc-for></div></div></sc-for>
             </div>
           </sc-if>
           <div class="{{ repNoteCls }}" style="display:flex;flex-direction:column;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:16px">Comentario del entrenador</span>
@@ -1633,6 +1696,60 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <sc-if value="{{ noRecMatch }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700);margin:0">Ninguna receta coincide con la búsqueda.</p></sc-if>
     <sc-if value="{{ noTpls }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700)">{{ noTplsText }}</p></sc-if>
   </sc-if>
+  <sc-if value="{{ isNotifLib }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start">
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Plantilla de recordatorios para todos tus asesorados. En la ficha de cada cliente (Vista cliente → Notificaciones) puedes cambiarla solo para él. Llegan a su móvil cuando activa las notificaciones en su app (campana de arriba).</p>
+      <span style="font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;background:{{ ntSrvBg }};color:{{ ntSrvFg }};white-space:nowrap">{{ ntSrvTxt }}</span>
+    </div>
+    <sc-if value="{{ ntNotReady }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:13px;max-width:860px;text-wrap:pretty">Falta configurar el servidor: añade en Vercel las claves de claves-push.txt, ejecuta notificaciones.sql en Supabase y después el bloque de programación de claves-push.txt. Pasos en el README.</div></sc-if>
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:860px">
+      <sc-for list="{{ ntRows }}" as="r" hint-placeholder-count="7">
+        <div style="background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span style="font-weight:800;font-size:15px">{{ r.label }}</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ r.desc }}</span></div>
+            <button onClick="{{ r.toggle }}" aria-label="{{ r.label }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.bg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.knob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button>
+          </div>
+          <sc-if value="{{ r.hasParams }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center">
+              <sc-for list="{{ r.params }}" as="p" hint-placeholder-count="1"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-neutral-700)">{{ p.label }}<input class="input" type="{{ p.type }}" value="{{ p.val }}" onChange="{{ p.on }}" style="width:110px;min-height:34px;text-align:center;font-variant-numeric:tabular-nums"><span>{{ p.unit }}</span></label></sc-for>
+              <sc-if value="{{ r.hasDays }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:4px;flex-wrap:wrap"><sc-for list="{{ r.days }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="font:inherit;font-size:13px;font-weight:800;width:34px;height:34px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer">{{ d.l }}</button></sc-for></div></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isNotesLib }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Comentarios que puedes insertar en cualquier comida u opción del plan con «Predefinidos…». También se guardan desde el plan con «Guardar como predefinido».</p>
+      <sc-if value="{{ nlCanReset }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ nlReset }}">Restaurar originales</button></sc-if>
+      <button class="btn btn-primary" onClick="{{ nlAdd }}">+ Nuevo comentario</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:860px">
+      <sc-for list="{{ nlRows }}" as="r" hint-placeholder-count="4"><div style="display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:10px 12px"><textarea class="input" rows="2" value="{{ r.t }}" onChange="{{ r.on }}" style="flex:1;min-width:0;resize:vertical;font-size:14px;line-height:1.4"></textarea><button class="btn btn-ghost" onClick="{{ r.rm }}" style="font-size:13px;color:#a8321a">Eliminar</button></div></sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isListsLib }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Listas de alimentos para hacer dietas generales rápido. Desde el plan de un cliente («Lista de alimentos») puedes rellenar todas sus comidas con una lista o usarla como lista permitida al añadir alimentos.</p>
+      <sc-if value="{{ llCanReset }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ llReset }}">{{ llResetLabel }}</button></sc-if>
+      <button class="btn btn-primary" onClick="{{ llNew }}">+ Nueva lista</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px">
+      <sc-for list="{{ llCards }}" as="t" hint-placeholder-count="3">
+        <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto;min-width:0">{{ t.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);white-space:nowrap">{{ t.tag }}</span></div>
+          <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ t.desc }} · {{ t.meta }}</span>
+          <sc-for list="{{ t.groups }}" as="g" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">{{ g.label }}</span><sc-for list="{{ g.lines }}" as="ln" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.4"><span style="width:8px;height:8px;border-radius:50%;background:{{ ln.sw }};flex:none;margin-top:4px"></span><span style="min-width:0;text-wrap:pretty">{{ ln.txt }}</span></div></sc-for></div></sc-for>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:auto">
+            <button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:13px">Editar</button>
+            <button class="btn btn-ghost" onClick="{{ t.dup }}" style="font-size:13px">Duplicar</button>
+            <sc-if value="{{ t.canDel }}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{ t.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ t.delLabel }}</button></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
   <sc-if value="{{ isFormsLib }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
       <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Plantillas que envías a tus clientes desde su ficha (pestaña Cuestionarios) o con «Alta con cuestionario». Los cambios se aplican a los próximos envíos, no a los ya enviados.</p>
@@ -1684,6 +1801,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
         <sc-for list="{{ srFilters }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:6px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
       </div>
+        <sc-if value="{{ srHasList }}" hint-placeholder-val="{{ false }}"><button onClick="{{ srListToggle }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--color-accent-300);background:{{ srListBg }};color:var(--color-accent-800);cursor:pointer;width:fit-content">{{ srListLabel }}</button></sc-if>
       <input class="input cf-search" placeholder="Buscar: pollo, arroz, aceite…" value="{{ srQuery }}" onChange="{{ onSrQuery }}" autofocus="autofocus">
     </div>
     <sc-if value="{{ srHasConf }}" hint-placeholder-val="{{ false }}">
@@ -1851,6 +1969,68 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
       </sc-for>
       <sc-if value="{{ revMore }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ revMoreFn }}" style="align-self:center">{{ revMoreLabel }}</button></sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ lsOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ lsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(900px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:18px 22px 14px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:21px">Lista de alimentos</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ lsMode }} Los gramos los calcula la app como siempre. Las listas se editan en Biblioteca → Listas de alimentos.</span></div><button class="btn btn-ghost" onClick="{{ lsClose }}">Cerrar</button></div>
+    <div style="overflow:auto;padding:16px 22px 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px;background:var(--color-neutral-100)">
+      <sc-for list="{{ lsCards }}" as="c" hint-placeholder-count="4">
+        <div style="background:#fff;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;border:1.5px solid {{ c.bd }}">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-weight:800;font-size:15px;margin-right:auto">{{ c.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);white-space:nowrap">{{ c.tag }}</span></div>
+          <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ c.desc }} · {{ c.meta }}</span>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
+            <button onClick="{{ c.fill }}" style="font:inherit;font-size:13px;font-weight:700;min-height:38px;border-radius:12px;border:1px solid var(--color-divider);background:{{ c.fillBg }};color:{{ c.fillFg }};cursor:pointer">{{ c.fillLabel }}</button>
+            <button onClick="{{ c.allow }}" style="font:inherit;font-size:12px;font-weight:700;min-height:34px;border-radius:12px;border:0;background:{{ c.allowBg }};color:{{ c.allowFg }};cursor:pointer">{{ c.allowLabel }}</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ leOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" style="width:min(980px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar lista de alimentos</span><button class="btn btn-ghost" onClick="{{ leClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ leSave }}">Guardar</button></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><input value="{{ leName }}" onChange="{{ onLeName }}" placeholder="Nombre" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:22px;border:0;border-bottom:2px solid transparent;padding:0;background:transparent;color:var(--color-text);flex:1 1 260px;min-width:0" style-focus="border-bottom-color:var(--color-accent);outline:none"><input class="input" value="{{ leTag }}" onChange="{{ onLeTag }}" placeholder="Etiqueta (p. ej. Vegetal)" style="width:200px"></div>
+      <input class="input" value="{{ leDesc }}" onChange="{{ onLeDesc }}" placeholder="Descripción breve">
+    </div>
+    <div style="overflow:auto;padding:16px 22px 22px;display:flex;flex-direction:column;gap:18px;background:var(--color-neutral-100)">
+      <sc-for list="{{ leGroups }}" as="g" hint-placeholder-count="2">
+        <div style="background:#fff;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span style="font-weight:800;font-size:16px;margin-right:auto">{{ g.label }}</span><input class="input cf-search" value="{{ g.q }}" onChange="{{ g.onQ }}" placeholder="Buscar alimento para añadir…" style="width:280px;max-width:100%"></div>
+          <sc-if value="{{ g.hasRes }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700)">Pulsa P, C, G o V para añadirlo a Proteína, Hidratos, Grasas o Verdura / fruta. La marcada es la sugerida.</span><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ g.results }}" as="r" hint-placeholder-count="4"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 4px 3px 10px;border-radius:999px;border:1px dashed var(--color-neutral-300);background:#fff;max-width:100%"><span style="font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><sc-for list="{{ r.slots }}" as="b" hint-placeholder-count="4"><button onClick="{{ b.add }}" title="{{ b.title }}" aria-label="{{ b.title }}" style="font:inherit;font-size:10px;font-weight:800;min-width:24px;height:24px;padding:0 6px;flex:none;border-radius:999px;border:1.5px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.ink }};cursor:pointer">{{ b.l }}</button></sc-for></span></sc-for></div></sc-if>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px">
+            <sc-for list="{{ g.slots }}" as="sl" hint-placeholder-count="4">
+              <div style="background:{{ sl.bg }};border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ sl.ink }};display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ sl.sw }}"></span>{{ sl.label }}</span>
+                <sc-if value="{{ sl.empty }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-600)">Sin alimentos</span></sc-if>
+                <div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ sl.items }}" as="x" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 4px 3px 9px;border-radius:999px;background:#fff;max-width:100%;min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ x.name }}</span><button onClick="{{ x.rm }}" aria-label="Quitar" style="font:inherit;width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-neutral-700);cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-for></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ eqiOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ eqiClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:18px 20px 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Equivalencias · {{ eqiCount }}</span><span style="font-family:var(--font-heading);font-weight:700;font-size:19px;text-wrap:pretty">{{ eqiTitle }}</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ eqiSub }}</span></div><button class="btn btn-ghost" onClick="{{ eqiClose }}">Cerrar</button></div>
+    <div style="overflow:auto;padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px">
+      <sc-if value="{{ eqiEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Todavía no tiene equivalencias. Añade hasta 3: no crean una opción nueva.</span></sc-if>
+      <sc-for list="{{ eqiCur }}" as="q" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--color-accent-100)"><span style="font-weight:700;font-size:14px;flex:1;min-width:0">{{ q.name }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums;color:var(--color-accent-800)">{{ q.g }}</span><button onClick="{{ q.rm }}" aria-label="Quitar" style="font:inherit;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:#fff;color:#a8321a;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></sc-for>
+      <sc-if value="{{ eqiFull }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Máximo 3 equivalencias. Quita una para añadir otra.</span></sc-if>
+      <sc-if value="{{ eqiHasSug }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Sugeridas por similitud de macros</span><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiSug }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px dashed var(--color-neutral-300);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}</span><span style="font-size:11px;color:var(--color-neutral-600)">{{ q.sim }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
+      <input class="input cf-search" value="{{ eqiQ }}" onChange="{{ onEqiQ }}" placeholder="Buscar otro alimento…">
+      <sc-if value="{{ eqiHasRes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiRes }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
     </div>
   </div>
 </div>
@@ -2204,6 +2384,15 @@ function overlay(comps,sel,goals){
 const uid=()=>Math.random().toString(36).slice(2,9);
 const CFF0={DEFS:[],TYPES:[],MAPS:[],fmt:(q,v)=>v==null||v===''?'—':String(v),alerts:()=>[],missing:()=>[],apply:()=>[],hasCalc:()=>false,empty:v=>v==null||v==='',clone:x=>JSON.parse(JSON.stringify(x))};
 const CFF=()=>window.CFForms||CFF0;
+const DEF_NOTES=['Pesa los alimentos en crudo, antes de cocinarlos.','Cocina a la plancha, al horno, al vapor o en airfryer; evita los fritos.','Puedes cambiar el orden de las comidas si te encaja mejor en tu día.','Bebe uno o dos vasos de agua con esta comida.','Toma el preentreno entre 30 y 45 minutos antes de entrenar.','Si entrenas por la tarde, haz esta comida 1–2 horas antes del entreno.','Las verduras son libres: puedes repetir si te quedas con hambre.','Si comes fuera, elige una proteína a la plancha con guarnición de verdura.'];
+const NDEF={water:true,waterL:2,pre:true,preMin:60,revBefore:true,revDay:true,revHour:'20:00',plan:true,weigh:true,weighDow:0,weighHour:'08:30',msg:true};
+const NTYPES=[['water','Beber agua','Reparte los avisos entre que se levanta y se acuesta, según los litros de sus pautas del día.'],['pre','Preentreno','Antes de su hora de entreno, solo los días de entreno.'],['revBefore','Víspera de la revisión','El día antes de cada revisión o medición de la agenda.'],['revDay','Día de la revisión','Dos horas antes de la cita.'],['weigh','Pesarse','Una vez por semana.'],['plan','Plan actualizado','Al publicar cambios en su app.'],['msg','Mensaje nuevo','Cuando le escribes por el chat.']];
+const isLig=n=>/desay|merien|snack|media ma|pre.?entreno|post.?entreno|recena/.test(norm(n||''));
+const LGRP=[['ligera','Desayuno, merienda y snacks'],['principal','Comida y cena']];
+function fillFromList(n,Lst){let c=0;mealsOf(n).forEach(m=>{if(m.cheat)return;const G=Lst[isLig(m.name)?'ligera':'principal'];if(!G)return;const V=()=>(G.veg||[]).map(([f,g])=>vg(f,g));
+  if(n.planMode==='closed'){const k=Math.max(1,Math.min(3,Math.max(G.prot.length,G.carb.length,1)));m.options=[];for(let i=0;i<k;i++)m.options.push(opt(G.prot.length?[it(G.prot[i%G.prot.length],100)]:[],G.carb.length?[it(G.carb[i%G.carb.length],100)]:[],G.fat.length?[it(G.fat[i%G.fat.length],100)]:[],V()));}
+  else m.options=[opt(G.prot.map(f=>it(f,100)),G.carb.map(f=>it(f,100)),G.fat.map(f=>it(f,100)),V())];c++;});return c;}
+const listIds=Lst=>{const S=new Set();LGRP.forEach(([g])=>{const G=Lst&&Lst[g];if(!G)return;['prot','carb','fat'].forEach(sl=>(G[sl]||[]).forEach(f=>S.add(f)));(G.veg||[]).forEach(([f])=>S.add(f));});return S;};
 const fSecs=(form,ans)=>{const F=CFF(),out=[],A=ans||{};let cur=null;(form.qs||[]).forEach(q=>{if(q.type==='sec'){cur={label:q.label,items:[]};out.push(cur);return;}if(!cur){cur={label:'Respuestas',items:[]};out.push(cur);}
   const a=F.fmt(q,A[q.id]),al=!!q.alert&&F.alerts({qs:[q]},A).length>0;cur.items.push({q:q.type==='consent'?'Consentimiento de datos':q.label,a,fg:al?'#a8321a':a==='—'?'var(--color-neutral-500)':'var(--color-text)'});});return out.filter(x=>x.items.length);};
 const R=Math.round;
@@ -2302,7 +2491,7 @@ const pmN=pm=>Array.isArray(pm)?{name:pm[0],pct:pm[1],comp:pm.length>2?[pm[2],pm
 const cloneOpts=os=>JSON.parse(JSON.stringify(os||[])).map(o=>{o.id=uid();SLOTS.forEach(([sl])=>{o[sl]=(o[sl]||[]);o[sl].forEach(x=>{x.id=uid();});});return o;});
 function applyPreset(n,P,withMeals){n.calc.adj=num(P.adj)===0?'mant':num(P.adj)<0?'deficit':'superavit';if(num(P.adj))n.calc.adjPct=Math.abs(num(P.adj));n.tg.kcalMode='calc';n.tg.macroMode=P.mode;
   if(P.mode==='gkg'){n.tg.pg=num(P.pg);n.tg.fg=num(P.fg);}else{n.tg.pp=num(P.pp);n.tg.pc=num(P.pc);n.tg.pf=num(P.pf);}n.preset=P.id;
-  if(withMeals&&P.meals&&P.meals.length){const a=mealsOf(n);P.meals.map(pmN).forEach((pm,i)=>{let m=a[i];if(!m){m=meal(pm.name,pm.pct);a.push(m);}m.name=pm.name;m.pct=num(pm.pct);m.split=false;m.cheat=false;if(pm.comp){m.comp='custom';m.cp=pm.comp[0];m.cc=pm.comp[1];m.cf=pm.comp[2];}else m.comp='auto';if(pm.opts&&pm.opts.length)m.options=cloneOpts(pm.opts);});a.splice(P.meals.length);}}
+  if(withMeals&&P.meals&&P.meals.length){const a=mealsOf(n);P.meals.map(pmN).forEach((pm,i)=>{let m=a[i];if(!m){m=meal(pm.name,pm.pct);a.push(m);}m.name=pm.name;m.pct=num(pm.pct);m.split=false;m.cheat=false;if(pm.comp){m.comp='custom';m.cp=pm.comp[0];m.cc=pm.comp[1];m.cf=pm.comp[2];}else m.comp='auto';if(pm.opts&&pm.opts.length)m.options=cloneOpts(pm.opts);if(pm.note)m.note=pm.note;});a.splice(P.meals.length);}}
 const PO_=(p,c,f,v)=>{const sh=a=>(a||[]).map(x=>it(x,Math.round(100/a.length)));return opt(sh(p),sh(c),sh(f),(v||[]).map(([id,g])=>vg(id,g)));};
 const PM=(name,pct,opts,comp)=>({name,pct,comp:comp||null,opts:opts||[]});
 const DIETS={
@@ -2425,7 +2614,7 @@ class Component extends DCLogic {
     upd(lf=>({busy:false,ph:(lf.ph||[]).concat(urls.map(url=>({url})))}));
   }
   componentDidMount(){
-    try{if(localStorage.getItem('cf-side-mini')==='1')this.setState({sideMini:true});}catch(e){}
+    try{if(localStorage.getItem('cf-side-mini')==='1')this.setState({sideMini:true});if(localStorage.getItem('cf-latview')==='1')this.setState({latView:true});}catch(e){}
     setTimeout(()=>this.initCloud(0),0);
     this._poll=setInterval(()=>this.pullCloud(false),20000);
     const onVis=()=>{if(document.visibilityState==='visible')this.pullCloud(false);else if(this.state.dirty)this.pushCloud(false,false);};
@@ -2434,7 +2623,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -2456,7 +2645,7 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
@@ -2482,7 +2671,7 @@ class Component extends DCLogic {
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
@@ -2523,13 +2712,13 @@ class Component extends DCLogic {
     this.sb.from('cf_messages').update({read_at:at}).eq('coach_id',this.uid).eq('client_key',key).eq('sender','client').is('read_at',null).then(()=>{});}
   sendMsg(key){const body=(this.state.chatDraft||'').trim();if(!body||!this.sb)return;this.setState({chatDraft:''});
     const tmp={id:'t'+Date.now(),client_key:key,sender:'coach',body,created_at:new Date().toISOString(),read_at:null};this.setState(st=>({msgs:(st.msgs||[]).concat([tmp])}));
-    this.sb.from('cf_messages').insert({coach_id:this.uid,client_key:key,sender:'coach',body}).then(({error})=>{if(error){this.toast('No se pudo enviar: '+error.message,true);this.setState(st=>({msgs:st.msgs.filter(m=>m!==tmp),chatDraft:body}));return;}this.loadChats();});}
+    this.sb.from('cf_messages').insert({coach_id:this.uid,client_key:key,sender:'coach',body}).then(({error})=>{if(error){this.toast('No se pudo enviar: '+error.message,true);this.setState(st=>({msgs:st.msgs.filter(m=>m!==tmp),chatDraft:body}));return;}this.loadChats();this.pushNotify('msg',key,body);});}
   loadDaylogsAll(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-400);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).then(({data,error})=>{const m={};(error?[]:data||[]).forEach(r=>{m[r.day]={foods:r.foods||[],survey:r.survey||{}};});this.setState(st=>({daylAll:{...(st.daylAll||{}),[key]:m}}));});}
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -2540,9 +2729,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -2555,7 +2744,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2568,10 +2757,10 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms};ps=ps||snap||this._snap;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif};ps=ps||snap||this._snap;
     if(ps.events!==s.events&&this._cloud)this.agendaSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -2637,6 +2826,14 @@ class Component extends DCLogic {
   }
   recGroups(q,FM,mk,list){const s=this.state,qq=norm(q||''),nm=t=>{const a=[];(t.opts||[]).forEach(o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(FM[x.fid])a.push(FM[x.fid].name);})));return a.join(' ');};
     return RCATS.map(c=>({c,items:(list||s.tpls).filter(t=>(t.cat||guessCat(t.name))===c&&(!qq||norm(t.name+' '+nm(t)).includes(qq)))})).filter(g=>g.items.length).map(g=>{const open=qq?true:!s.recClosed[g.c];return {name:g.c,count:g.items.length+(g.items.length===1?' receta':' recetas'),open,chev:open?'rotate(90deg)':'rotate(0deg)',toggle:()=>this.setState(st=>({recClosed:{...st.recClosed,[g.c]:!st.recClosed[g.c]}})),items:g.items.map(mk)};});}
+  pushNotify(type,ck,text){if(!this.sb)return;const T=type==='test';
+    this.sb.auth.getSession().then(({data})=>fetch('/api/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({type,client_key:ck,text:text||''})}))
+      .then(r=>r.json().catch(()=>({error:'Respuesta no válida del servidor (¿está subida la carpeta api?)'})))
+      .then(j=>{if(!T)return;if(!j||j.error){this.toast((j&&j.error)||'No se pudo enviar',true);return;}this.toast(j.devices?'Prueba enviada a '+j.sent+' de '+j.devices+(j.devices===1?' dispositivo':' dispositivos'):'Este cliente aún no ha activado las notificaciones',!j.devices);})
+      .catch(()=>{if(T)this.toast('No se pudo conectar con el servidor',true);});}
+  loadNtDev(ck){if(!this.sb)return;this.sb.from('cf_push_subs').select('endpoint').eq('coach_id',this.uid).eq('client_key',ck).then(({data,error})=>this.setState(st=>({ntDev:{...(st.ntDev||{}),[ck]:error?{err:/cf_push_subs|relation|schema/i.test(error.message||'')?'sql':(error.message||'error')}:{n:(data||[]).length}}})));}
+  notesAll(){return this.state.mnotes||DEF_NOTES;}
+  listsAll(){return this.state.lists||window.CF_LISTS||[];}
   formTpls(){const F=CFF();return this.state.forms||F.DEFS;}
   formLink(t){return location.href.replace(/[?#].*$/,'').replace(/[^/]*$/,'')+'cuestionario.html?t='+t;}
   loadForms(){if(!this._cloud||!this.sb)return;this._fLoaded=true;this.sb.from('cf_forms').select('id,client_key,token,title,form,answers,status,created_at,answered_at').eq('coach_id',this.uid).order('created_at',{ascending:false}).limit(400).then(({data,error})=>{
@@ -2791,6 +2988,20 @@ class Component extends DCLogic {
               return {name:ml.name||'Comida',kcal:R(mt.k)+' kcal',opts:(ml.options||[]).map((o,oi)=>{const r=solve(o,mt,a.planMode,FM,a.round);
                 return {label:(ml.options.length>1?'Opción '+String.fromCharCode(65+oi):''),lines:SLOTS.map(([sl])=>{const xs=r.S[sl].filter(x=>x.g>0);if(!xs.length)return null;return {sw:SW[sl],txt:xs.map(x=>x.food.name+' '+x.g+' g').join(a.planMode==='closed'?' · ':' o ')};}).filter(Boolean)};})};})};}):[]};});}
       if(s.tab==='prog'){
+        {if(this._cloud&&!this._fLoaded){this._fLoaded=true;setTimeout(()=>this.loadForms(),0);}
+          const F=CFF(),RW=(s.formsDb||[]).filter(r=>r.client_key===cl.id&&r.status==='done'&&r.answers&&(r.form||{}).kind!=='inicial').sort((a,b)=>(a.answered_at||'')<(b.answered_at||'')?1:-1);
+          const SH=l=>/dieta/i.test(l)?'Dieta':/entren/i.test(l)?'Entreno':/hambre/i.test(l)?'Hambre':/energ/i.test(l)?'Energía':/sue/i.test(l)?'Sueño':/estr/i.test(l)?'Estrés':String(l).replace(/[¿?]/g,'').slice(0,18);
+          const col=(n,inv)=>{const g=inv?11-n:n;return g>=7?['var(--veg-bg)','var(--veg-ink)']:g>=4?['var(--carb-bg)','var(--carb-ink)']:['var(--danger-bg)','var(--danger)'];};
+          const N=s.rvAll?RW.length:4,fd=d=>d?new Date(d).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}):'';
+          v.rvShow=RW.length>0||!!this._cloud;v.rvEmpty=!RW.length;v.rvSub=RW.length?RW.length+(RW.length===1?' revisión respondida':' revisiones respondidas')+' · la más reciente primero':'Cuando responda un cuestionario de seguimiento, sus respuestas aparecen aquí.';
+          v.rvMore=RW.length>4;v.rvMoreLabel=s.rvAll?'Ver solo las últimas':'Ver las '+RW.length;v.rvMoreFn=()=>this.setState({rvAll:!s.rvAll});
+          v.rvSend=()=>{const T=this.formTpls().find(t=>t.kind==='revision')||this.formTpls()[0];if(T)this.sendForm(cl.id,T.id,true);};
+          v.rvRows=RW.slice(0,N).map((r,i)=>{const qs=(r.form||{}).qs||[],A=r.answers||{},prev=RW[i+1];
+            const chips=[];qs.forEach(q=>{const a=A[q.id];if(F.empty(a))return;
+              if(q.type==='scale'){const n=Number(a),inv=/estr|hambre/i.test(q.label),c=col(n,inv);let d='';if(prev&&prev.answers&&prev.answers[q.id]!=null&&prev.answers[q.id]!==''){const df=n-Number(prev.answers[q.id]);if(df)d=(df>0?' ↑':' ↓')+Math.abs(df);}chips.push({l:SH(q.label),v:n+'/10'+d,bg:c[0],fg:c[1]});}
+              else if(q.type==='num'||q.type==='one'||q.type==='yesno')chips.push({l:q.type==='num'&&/peso/i.test(q.label)?'Peso':SH(q.label),v:F.fmt(q,a),bg:'var(--color-neutral-100)',fg:'var(--color-text)'});});
+            const notes=qs.filter(q=>(q.type==='long'||q.type==='text')&&!F.empty(A[q.id])).map(q=>({q:q.label,a:String(A[q.id]),fg:q.alert?'#a8321a':'var(--color-text)'}));
+            return {date:fd(r.answered_at),title:r.title,chips,notes,hasNotes:notes.length>0};});}
         const cloudOn=s.auth==='in'&&!!this.sb&&!!this.uid;v.phSb=cloudOn?this.sb:null;v.phCoach=cloudOn?this.uid:'';v.phKey=cl.id;v.phLocal=cl.photos||[];v.phOnLocal=arr=>this.updC(n=>{n.photos=arr;});v.phRev=s.phRev||0;
         const proto=cl.proto||'jp3',m=cl.calc.sexo==='hombre';
         const comps=(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>({l,c:computeComp(l,{...cl,proto}),t:Date.parse(l.date)}));
@@ -3101,6 +3312,8 @@ class Component extends DCLogic {
               manAuto:isM&&s.focusMan===x.id,manBlur:()=>{if(this.state.focusMan)this.setState({focusMan:null});},
               setMan:()=>{this.setState({focusMan:x.id});ed(it2=>{it2.man=true;it2.mg=x.g>0?x.g:(x.sug||50);});},
               unMan:()=>ed(it2=>{delete it2.man;delete it2.mg;}),
+              eqShow:cl.planMode==='closed'&&sl!=='veg',eqLabel:(x.eqs&&x.eqs.length)?'≈ '+x.eqs.length:'≈',eqBg:(x.eqs&&x.eqs.length)?'#fff':'rgba(255,255,255,.55)',
+              eqOpen:()=>this.setState({eqItem:{mealId:ml.id,optId:o.id,sl,itemId:x.id,g:x.g},eqiQ:''}),
               meta:fl?'Contiene alérgeno vetado':zero?(x.low?'No aporta '+MLBL[sl].toLowerCase():'0 g · el resto ya cubre el objetivo'):(R(x.g*f.k/100)+' kcal · P '+R(x.g*f.p/100)+' · C '+R(x.g*f.c/100)+' · G '+R(x.g*f.f/100)+(isM?' · a mano':'')),metaFg:fl?'#b3361b':zero?'var(--color-accent-700)':'var(--color-neutral-700)',
               share:num(x.pct)||0,shareLbl:R((x.sh||0)*100)+'%',showShare:sl!=='veg'&&!isM&&o[sl].filter(q=>!q.man).length>1,
               onShare:e=>{const val=e.target.value;um(m=>{const it2=m.options.find(q=>q.id===o.id)[sl].find(q=>q.id===x.id);it2.pct=num(val);});},
@@ -3143,6 +3356,11 @@ class Component extends DCLogic {
             cheatLabel:ml.cheat?'Quitar comida libre':'Comida libre',toggleCheat:()=>um(m=>{m.cheat=!m.cheat;}),
             cheatText:'~'+R(mt.k)+' kcal orientativas. El cliente come libremente; se contabiliza como el objetivo de la comida.',
             addOption:()=>um(m=>{m.options.push(opt());}),
+            note:ml.note||'',noteShow:!!ml.note||s.noteOpen===ml.id,noteHide:!(ml.note||s.noteOpen===ml.id),noteAdd:()=>this.setState({noteOpen:ml.id}),
+            onNote:e=>{const x=e.target.value;um(m=>{if(x.trim())m.note=x;else delete m.note;});},
+            notePre:e=>{const x=e.target.value;e.target.value='';if(!x)return;um(m=>{m.note=(m.note?m.note.replace(/\s+$/,'')+'\n':'')+x;});},
+            noteSave:()=>{const t=(ml.note||'').trim();if(!t){this.toast('Escribe antes el comentario',true);return;}this.setState(st=>{const a=(st.mnotes||DEF_NOTES).slice();if(!a.includes(t))a.push(t);return {mnotes:a};});this.toast('Guardado en comentarios predefinidos');},
+            noteDel:()=>{um(m=>{delete m.note;});this.setState({noteOpen:null});},
             dupMeal:()=>{this.updC(n=>{const a=mealsOf(n),i=a.findIndex(x=>x.id===ml.id);if(i<0)return;const cp=JSON.parse(JSON.stringify(a[i]));cp.id=uid();cp.name=(cp.name||'Comida')+' (copia)';cp.options=cloneOpts(cp.options);a.splice(i+1,0,cp);});this.toast('Comida duplicada debajo');},
             copyOpts:CPL.filter(q=>q.src.id!==ml.id).map(q=>({val:q.val,label:q.label})),hasCopy:CPL.length>1,
             copyFrom:e=>{const val=e.target.value;e.target.value='';const it3=CPL.find(q=>q.val===val);if(!it3)return;const src=it3.src;um(m=>{m.options=cloneOpts(src.options);m.cheat=!!src.cheat;});this.toast('Alimentos copiados de «'+(src.name||'Comida')+'» · gramos ajustados a '+(ml.name||'esta comida'));}};
@@ -3152,6 +3370,10 @@ class Component extends DCLogic {
               zs.push({name:x.food.name,why:x.low?'apenas aporta '+nm+' y el ajuste lo deja en 0 g.':'se queda en 0 g: el resto de alimentos ya cubre el objetivo de '+nm+'.',sug:x.sug,sw:SW[sl],bg:MBG[sl],ink:MINK[sl],
                 add:()=>{this.setState({focusMan:x.id});um(m=>{const oo=m.options.find(q=>q.id===o.id),it2=oo&&oo[sl].find(q=>q.id===x.id);if(it2){it2.man=true;it2.mg=x.sug;}});}});}));
             const op={title:'Opción '+String.fromCharCode(65+oi),kcalLine:R(r.tot.k)+' / '+R(mt.k)+' kcal · P '+R(r.tot.p)+' · C '+R(r.tot.c)+' · G '+R(r.tot.f),alerts:al,zeros:zs,hasZeros:zs.length>0,
+              onote:o.note||'',onoteShow:!!o.note||s.noteOpen===o.id,onoteHide:!(o.note||s.noteOpen===o.id),onoteAdd:()=>this.setState({noteOpen:o.id}),
+              onOnote:e=>{const x=e.target.value;um(m=>{const oo=m.options.find(q=>q.id===o.id);if(oo){if(x.trim())oo.note=x;else delete oo.note;}});},
+              onotePre:e=>{const x=e.target.value;e.target.value='';if(!x)return;um(m=>{const oo=m.options.find(q=>q.id===o.id);if(oo)oo.note=(oo.note?oo.note.replace(/\s+$/,'')+'\n':'')+x;});},
+              onoteDel:()=>{um(m=>{const oo=m.options.find(q=>q.id===o.id);if(oo)delete oo.note;});this.setState({noteOpen:null});},
               canRemove:ml.options.length>1,remove:()=>um(m=>{m.options=m.options.filter(q=>q.id!==o.id);}),
               dup:()=>um(m=>{const i=m.options.findIndex(q=>q.id===o.id);const cp=JSON.parse(JSON.stringify(o));cp.id=uid();SLOTS.forEach(([sl])=>cp[sl].forEach(x=>{x.id=uid();}));m.options.splice(i+1,0,cp);})};
             if(open)op.cols=SLOTS.map(([sl,l,tag,mk2])=>{const vc=sl==='veg'?r.S.veg.reduce((a,x)=>a+x.g*x.food.c/100,0):0,first=r.S[sl][0];
@@ -3176,6 +3398,38 @@ class Component extends DCLogic {
         v.clearLabel=s.confirmClear?'¿Borrar? Pulsa otra vez':'Borrar plan';v.clearBg=s.confirmClear?'#c0392b':'transparent';v.clearFg=s.confirmClear?'#fff':'#a8321a';
         v.clearPlan=()=>{if(!s.confirmClear){this.setState({confirmClear:true});clearTimeout(this._cc);this._cc=setTimeout(()=>this.setState({confirmClear:false}),4000);return;}
           this.updC(n=>{n.meals=newClient().meals;n.menus=[];delete n.activeMenu;delete n.dayT;if(n.planMode==='closed')ensureMenus(n);});this.setState({confirmClear:false,collapsed:{}});this.toast('Plan borrado · empiezas de cero');};
+        v.latView=s.latView?'1':'0';v.latLabel=s.latView?'Vista en columnas':'Vista en fila';v.latTitle=s.latView?'Opciones una debajo de otra':'Opciones en fila con desplazamiento lateral';
+        v.notePresets=this.notesAll().map(t=>({val:t,label:t.length>64?t.slice(0,62)+'…':t}));
+        {const E=s.eqItem;v.eqiOn=false;if(E){const m0=mealsOf(cl).find(q=>q.id===E.mealId),o0=m0&&m0.options.find(q=>q.id===E.optId),x0=o0&&(o0[E.sl]||[]).find(q=>q.id===E.itemId),ref=x0&&FM[x0.fid];
+          if(ref){v.eqiOn=true;const g=num(E.g)||100,mc=E.sl==='prot'?'p':E.sl==='fat'?'f':'c',eqg=f=>rg(g*ref[mc]/Math.max(0.1,f[mc]),f,cl.round),cur=x0.eqs||[],full=cur.length>=3;
+            const upd=fn=>this.updC(n=>{const m2=mealsOf(n).find(q=>q.id===E.mealId),oo=m2&&m2.options.find(q=>q.id===E.optId),it2=oo&&(oo[E.sl]||[]).find(q=>q.id===E.itemId);if(it2){it2.eqs=it2.eqs||[];fn(it2);if(!it2.eqs.length)delete it2.eqs;}});
+            const add=fid=>{if(full||cur.includes(fid))return;upd(it2=>{if(it2.eqs.length<3&&!it2.eqs.includes(fid))it2.eqs.push(fid);});};
+            const kc=f=>{const gg=eqg(f);return gg+' g · '+R(gg*f.k/100)+' kcal';};
+            v.eqiTitle=ref.name;v.eqiSub=g+' g en el plan · el asesorado solo las ve si pulsa «Otra opción»';v.eqiCount=cur.length+' de 3';v.eqiFull=full;
+            v.eqiCur=cur.map((fid,i)=>{const f=FM[fid];return f?{name:f.name,g:kc(f),rm:()=>upd(it2=>{it2.eqs.splice(i,1);})}:null;}).filter(Boolean);v.eqiEmpty=!v.eqiCur.length;
+            v.eqiSug=full?[]:equivs(ref,g,allFoods,8,false).filter(q=>!cur.includes(q.f.id)).map(q=>({name:q.f.name,g:kc(q.f),sim:q.sim+' % similar',add:()=>add(q.f.id)}));
+            v.eqiHasSug=v.eqiSug.length>0;const qq=norm(s.eqiQ||'');v.eqiQ=s.eqiQ||'';v.onEqiQ=e=>this.setState({eqiQ:e.target.value});v.eqiHasRes=!full&&qq.length>=2;
+            v.eqiRes=v.eqiHasRes?allFoods.filter(f=>f.id!==ref.id&&!cur.includes(f.id)&&f[mc]>=1&&norm(f.name).includes(qq)).slice(0,8).map(f=>({name:f.name,g:kc(f),add:()=>add(f.id)})):[];
+            v.eqiClose=()=>this.setState({eqItem:null,eqiQ:''});}}}
+        {const G=cl.guide||{},updG=fn=>this.updC(n=>{n.guide=n.guide||{days:[0,2,4],train:{},rest:{}};fn(n.guide);});
+          const GF=[['steps','Pasos'],['water','Agua (L)'],['salt','Sal (g)'],['caff','Cafeína (mg)']];
+          const sumOf=d=>[['steps',x=>Number(String(x).replace(',','.')).toLocaleString('es-ES')+' pasos'],['water',x=>'agua '+x+' L'],['salt',x=>'sal '+x+' g'],['caff',x=>'cafeína '+x+' mg']].filter(([k])=>d&&d[k]!=null&&d[k]!=='').map(([k,fm])=>fm(d[k])).join(' · ');
+          v.gdOpen=!!s.guideOpen;v.gdToggle=()=>this.setState({guideOpen:!s.guideOpen});v.gdBtn=s.guideOpen?'Cerrar':(cl.guide?'Editar':'Añadir pautas');
+          v.gdSum=cl.guide?([['train','Entreno'],['rest','Descanso']].map(([k,l])=>{const t=sumOf(G[k]);return t?l+': '+t:'';}).filter(Boolean).join('  |  ')||'Sin valores todavía'):'Pasos, agua, sal y cafeína para días de entreno y de descanso. El asesorado las ve en su app.';
+          v.gdDays=['L','M','X','J','V','S','D'].map((l,i)=>{const on=(G.days||[0,2,4]).includes(i);return {l,bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)',pick:()=>updG(g=>{g.days=g.days||[];const j=g.days.indexOf(i);if(j>=0)g.days.splice(j,1);else g.days.push(i);g.days.sort();})};});
+          v.gdCols=[['train','Día de entreno','var(--color-accent-100)','var(--color-accent-800)'],['rest','Día de descanso','var(--veg-bg)','var(--veg-ink)']].map(([k,l,bg,ink])=>{const d=G[k]||{};
+            return {label:l,bg,ink,fields:GF.map(([f,fl])=>({label:fl,ink,val:d[f]==null?'':String(d[f]),on:e=>{const x=e.target.value.trim();updG(g=>{g[k]=g[k]||{};if(x==='')delete g[k][f];else g[k][f]=x;});}})),
+              txt:d.txt||'',onTxt:e=>{const x=e.target.value;updG(g=>{g[k]=g[k]||{};if(x.trim())g[k].txt=x;else delete g[k].txt;});}};});}
+        v.toggleLat=()=>{const x=!this.state.latView;try{localStorage.setItem('cf-latview',x?'1':'0');}catch(e){}this.setState({latView:x});};
+        {const LL=this.listsAll(),act=cl.foodList&&LL.find(q=>q.id===cl.foodList);v.flActive=!!act;v.flActiveName=act?act.name:'';v.flUnset=()=>this.updC(n=>{delete n.foodList;});
+          v.lsOpenFn=()=>this.setState({lsOpen:true,lsAsk:null});v.lsOn=!!s.lsOpen;v.lsClose=()=>this.setState({lsOpen:false,lsAsk:null});
+          v.lsMode=cl.planMode==='closed'?'Menú cerrado: cada comida recibe hasta 3 opciones (A, B, C) con un alimento de cada macro.':'Intercambios: cada comida recibe todos los alimentos de la lista como alternativas.';
+          v.lsCards=LL.map(Lst=>{const on=cl.foodList===Lst.id,ask=s.lsAsk===Lst.id,nI=listIds(Lst).size;
+            return {name:Lst.name,tag:Lst.tag||'',desc:Lst.desc||'',meta:nI+' alimentos',bd:on?'var(--color-accent)':'var(--color-divider)',
+              fillLabel:ask?'Sustituye los alimentos · pulsa otra vez':'Rellenar comidas',fillBg:ask?'var(--color-accent)':'#fff',fillFg:ask?'#fff':'var(--color-text)',
+              fill:()=>{if(!ask){this.setState({lsAsk:Lst.id});clearTimeout(this._lsT);this._lsT=setTimeout(()=>this.setState({lsAsk:null}),4000);return;}this.updC(n=>{fillFromList(n,Lst);n.foodList=Lst.id;});this.setState({lsOpen:false,lsAsk:null,collapsed:{}});this.toast('Comidas rellenadas con «'+Lst.name+'» · gramos ajustados');},
+              allowLabel:on?'Lista permitida activa':'Usar como lista permitida',allowBg:on?'var(--color-accent-100)':'transparent',allowFg:on?'var(--color-accent-800)':'var(--color-text)',
+              allow:()=>{this.updC(n=>{if(on)delete n.foodList;else n.foodList=Lst.id;});if(!on)this.toast('Al añadir alimentos verás solo los de «'+Lst.name+'»');}};});}
         v.collapseAll=()=>{const c={};MLS.forEach(m=>{c[m.id]=true;});this.setState({collapsed:c});};
         v.expandAll=()=>this.setState({collapsed:{}});
         v.mealNav=MLS.map(m=>({name:m.name||'Comida',bg:s.collapsed[m.id]?'#fff':'var(--color-accent-100)',fg:s.collapsed[m.id]?'var(--color-neutral-700)':'var(--color-accent-800)',
@@ -3200,7 +3454,8 @@ class Component extends DCLogic {
         const GRP={Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'};
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
         const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
-        const LN=x=>{const q=x.g/100,F=x.food;return {name:F.name,g:x.g+' g',id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};};
+        const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={name:F.name,g:x.g+' g',id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
+          if(!open&&sl&&sl!=='veg'&&x.eqs&&x.eqs.length&&x.g>0){const mc=sl==='prot'?'p':sl==='fat'?'f':'c';o.alts=x.eqs.map(fid=>FM[fid]).filter(Boolean).map(f=>{const gg=rg(x.g*F[mc]/Math.max(0.1,f[mc]),f,cl.round),qq=gg/100;return {name:f.name,g:gg+' g',id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10};});}return o;};
         const buildMeal=(ml,mul,TT)=>{const mt=mealTarget(ml,TT||T);
           if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
           const rs=ml.options.map(o=>solve(o,mt,cl.planMode,FM,cl.round));
@@ -3209,9 +3464,9 @@ class Component extends DCLogic {
           rs.forEach((r,i)=>{if(multi)txt.push('Opción '+Lt(i)+':');
             if(open)SLOTS.forEach(([sl,l])=>{const a=r.S[sl];if(a.length)txt.push('• '+l+(a.length>1&&sl!=='veg'?' (elige 1)':'')+': '+a.map(x=>x.food.name+' '+x.g+' g').join(' / '));});
             else SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>txt.push('• '+x.food.name+' '+x.g+' g')));});
-          return {name:ml.name,kcal:R(mt.k)+' kcal',txt,opts:rs.map((r,i)=>({title:multi?'Opción '+Lt(i)+' · '+R(r.tot.k)+' kcal':'',
-            blocks:open?SLOTS.filter(([sl])=>r.S[sl].length).map(([sl,l])=>({sw:SW[sl],ink:MINK[sl],label:sl==='veg'||r.S[sl].length<2?l:l+' · elige 1',lines:r.S[sl].map(LN)}))
-              :[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Menú',lines:[].concat(...SLOTS.map(([sl])=>r.S[sl].map(LN)))}]}))};};
+          return {name:ml.name,kcal:R(mt.k)+' kcal',note:ml.note||'',txt,opts:rs.map((r,i)=>({note:(ml.options[i]||{}).note||'',title:multi?'Opción '+Lt(i)+' · '+R(r.tot.k)+' kcal':'',
+            blocks:open?SLOTS.filter(([sl])=>r.S[sl].length).map(([sl,l])=>({sw:SW[sl],ink:MINK[sl],label:sl==='veg'||r.S[sl].length<2?l:l+' · elige 1',lines:r.S[sl].map(x=>LN(x,sl))}))
+              :[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Menú',lines:[].concat(...SLOTS.map(([sl])=>r.S[sl].map(x=>LN(x,sl))))}]}))};};
         const byMenu=!open&&cl.menus&&cl.menus.length;
         const kLineOf=t=>t.k.toLocaleString('es-ES')+' kcal · P '+t.p+' · C '+t.c+' · G '+t.f+' g';
         const groups=byMenu?[].concat(...cl.menus.map(mn=>{const ds=mn.days.slice().sort(),parts=[];
@@ -3223,7 +3478,7 @@ class Component extends DCLogic {
           :[{hasTitle:false,title:'',days:'',kLine:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
         v.vGroups=groups;
         // versions & sending
-        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[])));
+        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[]).concat(cl.guide?[{g:cl.guide}]:[])));
         const vers=cl.versions||[],lastV=vers[vers.length-1],dirty=!lastV||lastV.hash!==hash;
         v.verStatus=!lastV?'Sin guardar':dirty?'Cambios sin guardar':'v'+lastV.n+' guardada';
         v.verBg=dirty?'#fff4dc':'#e3f4ea';v.verFg=dirty?'#8a5a00':'#1d6b43';
@@ -3258,16 +3513,24 @@ class Component extends DCLogic {
           v.pubStatus=!em?'Falta email':!pub?'Sin publicar':pubDirty?'Cambios sin publicar':'Publicado · v'+pub.v;
           v.pubBg=!pub||pubDirty?'#fff4dc':'#e3f4ea';v.pubFg=!pub||pubDirty?'#8a5a00':'#1d6b43';
           v.publishLabel=pub&&!pubDirty?'Volver a publicar':'Publicar en la app';
+          {const N0={...NDEF,...(s.notif||{})},O=(cl.notif&&typeof cl.notif==='object')?cl.notif:{},E={...N0,...O},clean=n=>{if(n.notif&&!Object.keys(n.notif).length)delete n.notif;};
+            v.cnRows=NTYPES.map(([k,l])=>{const on=!!E[k];return {label:l,cus:k in O,bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
+              toggle:()=>this.updC(n=>{const cur={...N0,...(n.notif||{})},nv=!cur[k];n.notif=n.notif||{};if(nv===!!N0[k])delete n.notif[k];else n.notif[k]=nv;clean(n);})};});
+            v.cnPre=String(E.preMin);v.onCnPre=e=>{const x=e.target.value.trim();this.updC(n=>{n.notif=n.notif||{};if(x===''||num(x)===num(N0.preMin))delete n.notif.preMin;else n.notif.preMin=Math.max(0,Math.round(num(x)));clean(n);});};
+            v.cnHasCus=Object.keys(O).length>0;v.cnReset=()=>this.updC(n=>{delete n.notif;});v.cnTest=()=>this.pushNotify('test',cl.id);
+            const D=s.ntDev&&s.ntDev[cl.id];if(cloudOn&&!D&&this._ntDL!==cl.id){this._ntDL=cl.id;setTimeout(()=>this.loadNtDev(cl.id),0);}
+            v.cnDev=!cloudOn?'Sin nube':!D?'Comprobando…':D.err?(D.err==='sql'?'Falta notificaciones.sql':'Error'):D.n?'Activadas · '+D.n+(D.n===1?' dispositivo':' dispositivos'):'No activadas en su móvil';
+            v.cnDevBg=D&&D.n?'#e3f4ea':'#fff4dc';v.cnDevFg=D&&D.n?'#1d6b43':'#8a5a00';}
           v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
-            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',open,
-              groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,opts:m.opts.map(o=>({title:o.title,blocks:o.blocks}))}))})),
+            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{})},open,
+              groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,note:m.note||'',opts:m.opts.map(o=>({title:o.title,note:o.note||'',blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
             this.sb.from('cf_links').upsert({coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()}).then(({error})=>{
               if(error){this.toast(/duplicate|unique/i.test(error.message)?'Ese email ya está enlazado a otro cliente':'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
-              this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();});};
+              this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();this.pushNotify('plan',cl.id);});};
           const callAcc=(mode,done)=>{if(!cloudOn){this.toast('Inicia sesión en la nube',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             if(!pub){this.toast('Primero pulsa «Publicar en la app»',true);return;}if(s.accBusy)return;this.setState({accBusy:true});
             this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({email:em,mode})}))
@@ -3292,19 +3555,36 @@ class Component extends DCLogic {
       const ceo=this.isCEO(),cloud=!!this._cloud,plan=this.myPlan(),std=!ceo&&plan==='standard',P0=s.props||[],AL=s.allLibs||[];
       const src=ceo?(cloud&&s.libSrc==='coach'?'coach':'base'):(['all','base','own'].includes(s.libSrc)?s.libSrc:'all'),coachV=src==='coach',viewOwn=ceo?!coachV:src!=='base';
       const tab=s.libTab==='props'&&!(ceo&&cloud)?'foods':s.libTab,pc=ceo?P0.filter(p=>p.status==='pending').length:0;
-      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['tpls','Recetas'],['forms','Cuestionarios']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
-      v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';v.isFormsLib=tab==='forms';
-      v.libSrcShow=cloud&&!v.isProps&&!v.isFormsLib;v.libCanAdd=viewOwn;
+      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['lists','Listas de alimentos'],['tpls','Recetas'],['notes','Comentarios'],['notif','Notificaciones'],['forms','Cuestionarios']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
+      v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';v.isFormsLib=tab==='forms';v.isListsLib=tab==='lists';v.isNotesLib=tab==='notes';v.isNotifLib=tab==='notif';
+      v.libSrcShow=cloud&&!v.isProps&&!v.isFormsLib&&!v.isListsLib&&!v.isNotesLib&&!v.isNotifLib;v.libCanAdd=viewOwn;
       v.libSrcSeg=this.seg(ceo?[['base','Biblioteca común'],['coach','De los entrenadores']]:[['all','Todo'],['base','CientiFitness'],['own','Mía']],src,x=>{this.setState({libSrc:x});if(x==='coach')this.loadAllLibs();});
       v.libCoachPick=coachV;v.libCoach=s.libCoach||'';v.onLibCoach=e=>this.setState({libCoach:e.target.value});
       v.libCoachOpts=[{v:'',l:'Todos los entrenadores'}].concat(AL.map(L=>({v:L.uid,l:L.name||L.email})));
       v.libSrcNote=coachV?(s.allLibs?'Lo que han creado tus entrenadores. «Añadir a la común» lo comparte con su nombre.':'Cargando…'):ceo?'Biblioteca común: la ven tus entrenadores según su plan.':src==='own'?'Tu biblioteca personal. Puedes proponer cualquier elemento para la común.':src==='base'?'Biblioteca común de CientiFitness. Se usa tal cual.':'Tu biblioteca personal y la común de CientiFitness.';
       v.libPlanShow=!ceo&&!!plan;v.libPlanLabel=std?'Plan Estándar':'Plan Premium';v.libPlanBg=std?'var(--color-neutral-200)':'var(--color-accent)';v.libPlanFg=std?'var(--color-text)':'#fff';
-      v.libLocked=std&&src!=='own'&&!v.isFoods&&!v.isProps&&!v.isFormsLib;v.libNoSql=ceo&&cloud&&(!!s.propsErr||(coachV&&!!s.allLibsErr));
+      v.libLocked=std&&src!=='own'&&!v.isFoods&&!v.isProps&&!v.isFormsLib&&!v.isListsLib&&!v.isNotesLib&&!v.isNotifLib;v.libNoSql=ceo&&cloud&&(!!s.propsErr||(coachV&&!!s.allLibsErr));
       if(v.isTpls&&ceo&&!coachV){const RV=window.CF_RECREV;if(!RV)this.loadRev();else{const st=s.recRev||{},ids=new Set((s.tpls||[]).map(t=>t.id)),IT=RV.items.filter(x=>x.v!=='ok'&&(ids.has(x.id)||st[x.id])),P=IT.filter(x=>!st[x.id]),nv=k=>P.filter(x=>x.v===k).length;
         v.revShow=IT.length>0;v.revTitle=P.length?'Revisión del recetario · '+P.length+' propuestas pendientes':'Revisión del recetario completada';
         v.revSub=P.length?nv('fix')+' correcciones, '+nv('review')+' para revisar y '+nv('remove')+' que se recomienda quitar. No cambia nada hasta que lo apruebes.':'Has revisado todas las propuestas. Puedes consultarlas o deshacer cualquier decisión.';
         v.revBtn=P.length?'Revisar propuestas':'Ver revisión';v.revOpenFn=()=>this.setState({revOpen:true,revF:P.length?'pend':'done',revN:40,revBulkAsk:false});}}
+      if(v.isNotifLib){const N={...NDEF,...(s.notif||{})},setN=fn=>this.setState(st=>{const a={...NDEF,...(st.notif||{})};fn(a);return {notif:a};});
+        const P=(label,key,type,unit)=>({label,unit,type,val:String(N[key]==null?'':N[key]),on:e=>{const x=e.target.value;setN(a=>{a[key]=type==='time'?x:num(x);});}});
+        const PR={water:[P('Si sus pautas no tienen agua','waterL','text','L')],pre:[P('Avisar','preMin','text','min antes')],revBefore:[P('A las','revHour','time','')],weigh:[P('A las','weighHour','time','')]};
+        v.ntRows=NTYPES.map(([k,l,d])=>{const on=!!N[k];return {label:l,desc:d,bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'21px':'3px',toggle:()=>setN(a=>{a[k]=!a[k];}),
+          params:PR[k]||[],hasParams:!!PR[k]&&on,hasDays:k==='weigh'&&on,days:k==='weigh'?['L','M','X','J','V','S','D'].map((dl,i)=>{const sel=num(N.weighDow)===i;return {l:dl,bg:sel?'var(--color-accent)':'#fff',fg:sel?'#fff':'var(--color-text)',bd:sel?'var(--color-accent)':'var(--color-divider)',pick:()=>setN(a=>{a.weighDow=i;})};}):[]};});
+        if(s.ntSrv===undefined&&!this._ntSrvL){this._ntSrvL=true;fetch('/api/push').then(r=>r.json()).then(j=>this.setState({ntSrv:j||{}})).catch(()=>this.setState({ntSrv:{ready:false,err:true}}));}
+        const sv=s.ntSrv;v.ntSrvTxt=!sv?'Comprobando el servidor…':sv.ready?'Servidor listo':'Servidor sin configurar';v.ntSrvBg=sv&&sv.ready?'#e3f4ea':'#fff4dc';v.ntSrvFg=sv&&sv.ready?'#1d6b43':'#8a5a00';v.ntNotReady=!!sv&&!sv.ready;}
+      if(v.isNotesLib){const setN=fn=>this.setState(st=>{const a=(st.mnotes||DEF_NOTES).slice();fn(a);return {mnotes:a};});
+        v.nlRows=this.notesAll().map((t,i)=>({t,on:e=>{const x=e.target.value;setN(a=>{a[i]=x;});},rm:()=>setN(a=>{a.splice(i,1);})}));
+        v.nlAdd=()=>setN(a=>{a.push('Nuevo comentario');});v.nlCanReset=!!s.mnotes;v.nlReset=()=>{this.setState({mnotes:null});this.toast('Comentarios restaurados');};}
+      if(v.isListsLib){const LL=this.listsAll(),setL=fn=>this.setState(st=>{const a=JSON.parse(JSON.stringify(st.lists||window.CF_LISTS||[]));fn(a);return {lists:a};}),nm=id=>(FM[id]||{}).name||'';
+        v.llCards=LL.map(L=>({name:L.name,tag:L.tag||'',desc:L.desc||'',meta:listIds(L).size+' alimentos',
+          groups:LGRP.map(([g,gl])=>{const G=L[g]||{};return {label:gl,lines:[['prot','Proteína'],['carb','Hidratos'],['fat','Grasas'],['veg','Verdura / fruta']].map(([sl,l])=>({sw:SW[sl],txt:(G[sl]||[]).map(x=>nm(sl==='veg'?x[0]:x)).filter(Boolean).join(', ')})).filter(x=>x.txt)};}),
+          edit:()=>this.setState({lsEdit:JSON.parse(JSON.stringify(L)),leQ:{}}),dup:()=>{setL(a=>{const c=JSON.parse(JSON.stringify(L));c.id='l-'+uid();c.name=L.name+' (copia)';delete c.builtin;a.push(c);});this.toast('Lista duplicada');},
+          canDel:LL.length>1,delLabel:s.llDel===L.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.llDel!==L.id){this.setState({llDel:L.id});return;}setL(a=>{const i=a.findIndex(x=>x.id===L.id);if(i>=0)a.splice(i,1);});this.setState({llDel:null});}}));
+        v.llNew=()=>this.setState({leQ:{},lsEdit:{id:'l-'+uid(),name:'Nueva lista',tag:'',desc:'',ligera:{prot:[],carb:[],fat:[],veg:[]},principal:{prot:[],carb:[],fat:[],veg:[]}}});
+        v.llCanReset=!!s.lists;v.llResetLabel=s.llReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.llReset=()=>{if(!s.llReset){this.setState({llReset:true});return;}this.setState({lists:null,llReset:false});this.toast('Listas restauradas');};}
       if(v.isFormsLib){const TP=this.formTpls(),F=CFF();const setF=fn=>this.setState(st=>{const a=F.clone(st.forms||F.DEFS);fn(a);return {forms:a};});
         v.flCards=TP.map(t=>({name:t.name,kind:t.kind==='inicial'?'Inicial':t.kind==='revision'?'Revisión':'Otro',meta:(t.qs||[]).filter(q=>q.type!=='sec').length+' preguntas · '+(t.qs||[]).filter(q=>q.type==='sec').length+' secciones',
           edit:()=>this.setState({fEdit:F.clone(t)}),dup:()=>{setF(a=>{const c=F.clone(t);c.id='f-'+uid();c.name=t.name+' (copia)';if(c.kind==='inicial')c.kind='otro';a.push(c);});this.toast('Cuestionario duplicado');},
@@ -3451,7 +3731,8 @@ class Component extends DCLogic {
       v.srQuery=s.srQuery;v.onSrQuery=e=>this.setState({srQuery:e.target.value});
       v.showSrCreate=s.srCreate;v.srCreateLabel=s.srCreate?'Cerrar':'+ Crear alimento';v.srToggleCreate=()=>this.setState({srCreate:!s.srCreate});
       const q=norm(s.srQuery);
-      const res=allFoods.filter(f=>{const mm=mainMacro(f);const fOk=s.srFilter==='all'||(s.srFilter==='veg'?(f.cat==='Verduras'||f.cat==='Frutas'):mm===s.srFilter);return fOk&&(!q||norm(f.name).includes(q)||norm(f.cat).includes(q));}).slice(0,40);
+      const LA=cl.foodList&&this.listsAll().find(q=>q.id===cl.foodList),LS=LA&&!s.srAllF?listIds(LA):null;v.srHasList=!!LA;v.srListLabel=LA?(s.srAllF?'Mostrando todos · ver solo «'+LA.name+'»':'Solo «'+LA.name+'» · ver todos'):'';v.srListBg=LA&&!s.srAllF?'var(--color-accent-100)':'#fff';v.srListToggle=()=>this.setState({srAllF:!s.srAllF});
+      const res=allFoods.filter(f=>{if(LS&&!LS.has(f.id))return false;const mm=mainMacro(f);const fOk=s.srFilter==='all'||(s.srFilter==='veg'?(f.cat==='Verduras'||f.cat==='Frutas'):mm===s.srFilter);return fOk&&(!q||norm(f.name).includes(q)||norm(f.cat).includes(q));}).slice(0,40);
       v.srNone=res.length===0;
       v.srResults=res.map(f=>{const sel=s.srSel.includes(f.id);const mm=mainMacro(f);return {name:f.name,mbg:MBG[mm],mink:MINK[mm],mlabel:MLBL[mm],flag:this.flag(f,vt),meta:f.cat+' · P '+f.p+' · C '+f.c+' · G '+f.f,kcal:f.k+' kcal',
         bg:sel&&this.flag(f,vt)?'#fff1ee':sel?'var(--color-accent-100)':'transparent',ring:sel?'var(--color-accent)':'var(--color-divider)',box:sel?'var(--color-accent)':'transparent',check:sel?'✓':'',
@@ -3706,6 +3987,17 @@ class Component extends DCLogic {
       v.feAddQ=()=>upd(x=>{x.qs.push({id:uid(),type:'text',label:'Nueva pregunta'});});v.feAddS=()=>upd(x=>{x.qs.push({id:uid(),type:'sec',label:'Nueva sección'});});
       v.feClose=()=>this.setState({fEdit:null});
       v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{const a=F.clone(st.forms||F.DEFS),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {forms:a,fEdit:null};});this.toast('Cuestionario guardado');};}
+    if(s.lsEdit){const E=s.lsEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.lsEdit));fn(e);return {lsEdit:e};});
+      v.leOn=true;v.leName=E.name||'';v.onLeName=e=>{const x=e.target.value;upd(q=>{q.name=x;});};v.leTag=E.tag||'';v.onLeTag=e=>{const x=e.target.value;upd(q=>{q.tag=x;});};v.leDesc=E.desc||'';v.onLeDesc=e=>{const x=e.target.value;upd(q=>{q.desc=x;});};
+      v.leGroups=LGRP.map(([g,gl])=>{const G=E[g]||{},q=norm((s.leQ||{})[g]||'');
+        return {label:gl,q:(s.leQ||{})[g]||'',onQ:e=>{const x=e.target.value;this.setState(st=>({leQ:{...(st.leQ||{}),[g]:x}}));},
+          slots:[['prot','Proteína'],['carb','Hidratos'],['fat','Grasas'],['veg','Verdura / fruta']].map(([sl,l])=>({label:l,sw:SW[sl],bg:MBG[sl],ink:MINK[sl],empty:!(G[sl]||[]).length,
+            items:(G[sl]||[]).map((x,i)=>{const fid=sl==='veg'?x[0]:x;return {name:((FM[fid]||{}).name||fid)+(sl==='veg'?' · '+x[1]+' g':''),rm:()=>upd(e=>{e[g][sl].splice(i,1);})};})})),
+          hasRes:q.length>=2,results:q.length>=2?allFoods.filter(f=>norm(f.name).includes(q)).slice(0,10).map(f=>{const mm=f.cat==='Frutas'||f.cat==='Verduras'?'veg':mainMacro(f);
+            const addTo=sl=>upd(e=>{e[g]=e[g]||{prot:[],carb:[],fat:[],veg:[]};['prot','carb','fat'].forEach(k=>{e[g][k]=(e[g][k]||[]).filter(y=>y!==f.id);});e[g].veg=(e[g].veg||[]).filter(y=>y[0]!==f.id);const a=e[g][sl];if(sl==='veg')a.push([f.id,f.cat==='Frutas'?130:150]);else a.push(f.id);});
+            return {name:f.name,slots:[['prot','P','Proteína'],['carb','C','Hidratos'],['fat','G','Grasas'],['veg','V','Verdura / fruta']].map(([sl,l,t])=>({l,title:'Añadir a '+t,bg:sl===mm?SW[sl]:MBG[sl],ink:sl===mm?'#fff':MINK[sl],bd:SW[sl],add:()=>addTo(sl)}))};}):[]};});
+      v.leClose=()=>this.setState({lsEdit:null,leQ:{}});
+      v.leSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Lista';this.setState(st=>{const a=JSON.parse(JSON.stringify(st.lists||window.CF_LISTS||[])),i=a.findIndex(x=>x.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {lists:a,lsEdit:null,leQ:{}};});this.toast('Lista guardada');};}
     if(s.revOpen){const RV=window.CF_RECREV;v.revOn=true;v.revClose=()=>this.setState({revOpen:false,revBulkAsk:false});
       if(!RV){this.loadRev();v.revIntro='Cargando la propuesta…';v.revTabs=[];v.revCards=[];}
       else{const st=s.recRev||{},TB={};(s.tpls||[]).forEach(t=>{TB[t.id]=t;});

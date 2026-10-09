@@ -164,3 +164,26 @@ select.input[data-open="1"]{border-color:var(--color-accent-300);box-shadow:0 0 
   body.cf-rep-on .cf-rep-sheet{width:auto!important;box-shadow:none!important;border-radius:0!important;padding:0!important;margin:0!important}
   .cf-rep-avoid{break-inside:avoid}
 }
+
+/* Plan de comidas · vista en fila (opciones con desplazamiento lateral) */
+.cf-opts[data-lat="1"]{flex-direction:row!important;align-items:flex-start;overflow-x:auto;scroll-snap-type:x proximity;gap:12px!important;padding:2px 2px 10px;scrollbar-width:thin}
+.cf-opts[data-lat="1"]>.cf-opt{flex:0 0 min(360px,88%);scroll-snap-align:start;background:#fff;border:1px solid var(--color-divider);border-radius:18px;padding:10px;box-sizing:border-box;min-width:0}
+.cf-opts[data-lat="1"] .cf-opt-grid{grid-template-columns:minmax(0,1fr)!important;gap:6px!important}
+.cf-opts[data-lat="1"] .cf-col{min-height:0!important;padding:8px 10px!important;gap:4px!important;border-radius:14px!important}
+.cf-opts[data-lat="1"] .cf-food{padding:2px 6px 2px 2px!important;border-radius:999px!important;gap:4px!important;box-shadow:none!important}
+.cf-opts[data-lat="1"] .cf-meta{display:none}
+.cf-opts[data-lat="1"] .cf-food input{min-height:24px!important}
+.cf-opts[data-lat="1"]>.cf-opt-add{flex:0 0 auto;flex-direction:column;align-self:stretch}
+.cf-opts[data-lat="1"][data-kind="closed"]>.cf-opt{flex-basis:min(440px,90%);border:1px solid var(--color-divider)}
+.cf-opts[data-lat="1"][data-kind="closed"] .cf-food{max-width:100%}
+
+/* ===== Estilo minimalista suave (Bloque 4). Para volver al anterior, borra este bloque. ===== */
+:root{--shadow-sm:0 0 0 1px rgba(20,50,80,.06);--shadow-md:0 0 0 1px rgba(20,50,80,.06),0 8px 24px rgba(20,50,80,.06);--shadow-lg:0 0 0 1px rgba(20,50,80,.05),0 20px 50px rgba(20,50,80,.14);--color-divider:#e7edf3;--color-surface:#f1f5f9}
+body{background:#f5f8fb;line-height:1.6}
+.btn-primary{background:#1180c2;box-shadow:none}
+.btn-primary:hover{background:#0e6fa9}
+.btn-secondary{border-color:#e4ebf2}
+.btn-secondary:hover{background:#f5f8fb}
+.input{border-width:1px}
+.cf-lift:hover{transform:none;box-shadow:0 0 0 1px rgba(17,128,194,.28)}
+.cf-nav-btn[data-on="1"]{font-weight:700}
