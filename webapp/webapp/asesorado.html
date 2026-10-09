@@ -65,7 +65,7 @@ button{-webkit-user-select:none;user-select:none}
         <span style="font-size:12px;color:{{ thInk }};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hello }}</span>
         <span style="font-family:var(--font-heading);font-weight:700;font-size:21px;color:var(--color-text)">{{ thTitle }}</span>
       </div>
-      <button onClick="{{ ntBell }}" aria-label="Notificaciones" title="Notificaciones" style="font:inherit;position:relative;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.7);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><sc-if value="{{ ntBellDot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:#e0664f;border:2px solid #fff"></span></sc-if></button>
+      <button onClick="{{ ibOpenFn }}" aria-label="Notificaciones" title="Notificaciones" style="font:inherit;position:relative;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.7);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><sc-if value="{{ ibUn }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#e0664f;color:#fff;font-size:11px;font-weight:800;line-height:18px;text-align:center;border:2px solid #fff">{{ ibUnN }}</span></sc-if><sc-if value="{{ ntBellDot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:#e0664f;border:2px solid #fff"></span></sc-if></button>
       <button onClick="{{ doLogout }}" style="font:inherit;font-size:12px;font-weight:700;border:0;background:rgba(255,255,255,.7);color:var(--color-neutral-700);border-radius:999px;padding:8px 12px;min-height:36px;cursor:pointer">Salir</button>
     </div>
   </header>
@@ -444,6 +444,25 @@ button{-webkit-user-select:none;user-select:none}
   <button onClick="{{ pbClose }}" aria-label="Cerrar" style="font:inherit;width:30px;height:30px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-neutral-700);cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
 </div>
 </sc-if>
+<sc-if value="{{ ibOn }}" hint-placeholder-val="{{ false }}">
+<div data-cf-lock="1" onClick="{{ ibClose }}" style="position:fixed;inset:0;overscroll-behavior:contain;z-index:110;background:rgba(20,40,60,.38);display:flex;align-items:flex-end;justify-content:center">
+  <div onClick="{{ stop }}" style="width:min(560px,100%);max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff;border-radius:24px 24px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));box-sizing:border-box;display:flex;flex-direction:column;gap:12px;font-family:var(--font-body);color:var(--color-text)">
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;margin-right:auto">Notificaciones</span>
+      <button onClick="{{ ibSettings }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:var(--color-neutral-100);color:var(--color-text);border-radius:999px;padding:8px 14px;min-height:36px;cursor:pointer">Ajustes</button>
+      <button onClick="{{ ibClose }}" style="font:inherit;font-size:13px;font-weight:700;border:0;background:var(--color-neutral-100);color:var(--color-text);border-radius:999px;padding:8px 14px;min-height:36px;cursor:pointer">Cerrar</button></div>
+    <sc-if value="{{ ibEmpty }}" hint-placeholder-val="{{ true }}"><div style="padding:22px 8px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center"><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">Aún no tienes notificaciones. Aquí verás los recordatorios y avisos de tu entrenador.</span><sc-if value="{{ ibNoNt }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ibSettings }}" style="font:inherit;font-size:14px;font-weight:800;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:#1180c2;color:#fff;cursor:pointer">Activar notificaciones</button></sc-if></div></sc-if>
+    <sc-if value="{{ ibHas }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <sc-for list="{{ ibList }}" as="n" hint-placeholder-count="0"><button onClick="{{ n.go }}" style="font:inherit;display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;padding:12px;border-radius:16px;border:1px solid #e7edf3;background:{{ n.bg }};color:var(--color-text);cursor:pointer">
+          <sc-if value="{{ n.isNew }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#1180c2;flex:none;margin-top:6px"></span></sc-if>
+          <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span style="display:flex;gap:8px;align-items:baseline"><span style="font-size:14px;font-weight:800;flex:1;min-width:0">{{ n.title }}</span><span style="font-size:11px;color:var(--color-neutral-600);flex:none">{{ n.when }}</span></span><span style="font-size:13px;line-height:1.4;color:var(--color-neutral-700);text-wrap:pretty">{{ n.body }}</span></span>
+        </button></sc-for>
+      </div>
+      <button onClick="{{ ibClear }}" style="font:inherit;font-size:13px;font-weight:700;min-height:40px;border:0;border-radius:999px;background:transparent;color:#a8321a;cursor:pointer">Borrar todas</button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ ntOpenOn }}" hint-placeholder-val="{{ false }}">
 <div data-cf-lock="1" onClick="{{ ntClose }}" style="position:fixed;inset:0;overscroll-behavior:contain;z-index:110;background:rgba(20,40,60,.38);display:flex;align-items:flex-end;justify-content:center">
   <div onClick="{{ stop }}" style="width:min(560px,100%);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font-family:var(--font-body);color:var(--color-text)">
@@ -516,16 +535,18 @@ class Component extends DCLogic {
     day:isoD(new Date()),logs:{},saving:false,msgs:[],draft:'',add:null,shopOpen:false,toast:null,toastBad:false,survOpen:false,
     metric:(()=>{try{return localStorage.getItem('cf-as-metric')||'cump';}catch(e){return 'cump';}})(),range:'3m'};
   thrRef=React.createRef();
-  componentDidMount(){this.init(0);if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.cfPush)this.onPush(e.data.cfPush);});}
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadForms();this.loadLogs();this.loadLink(false);}});}
+  componentDidMount(){this.init(0);this.loadInbox();document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))this.fixVV();});if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>this.fixVV());
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update();}catch(x){}}).catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.cfPush)this.onPush(e.data.cfPush);});}
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')this.loadInbox();if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadForms();this.loadLogs();this.loadLink(false);}});}
   componentDidUpdate(){this.lockScroll();const el=this.thrRef.current,n=this.state.msgs.length,tab=this.state.tab,prev=this._pTab;this._pTab=tab;
     if(tab==='chat'&&prev!==undefined&&prev!=='chat'&&this.sb&&this.user)this.loadLink(false);
     if(tab==='chat'){if(el&&(this._n!==n||prev!=='chat')){this._n=n;el.scrollTop=el.scrollHeight;}this.markRead();}
     if(prev!==undefined&&prev!==tab)window.scrollTo(0,0);}
-  lockScroll(){const on=!!document.querySelector('[data-cf-lock]'),b=document.body;if(on===(this._lk!=null))return;
-    if(on){this._lk=window.scrollY||0;b.style.position='fixed';b.style.top=-Math.floor(this._lk)+'px';b.style.left='0';b.style.right='0';b.style.overflow='hidden';}
-    else{const y=Math.floor(this._lk||0);this._lk=null;b.style.position='';b.style.top='';b.style.left='';b.style.right='';b.style.overflow='';window.scrollTo(0,y);}}
-  onPush(d){if(!d)return;clearTimeout(this._pbT);this.setState({pushB:{title:d.title||'CientiFitness',body:d.body||'',url:d.url||''}});this._pbT=setTimeout(()=>this.setState({pushB:null}),7000);
+  lockScroll(){const on=!!document.querySelector('[data-cf-lock]');if(on===!!this._lk)return;this._lk=on;const v=on?'hidden':'';document.documentElement.style.overflow=v;document.body.style.overflow=v;}
+  fixVV(){clearTimeout(this._vvT);this._vvT=setTimeout(()=>{window.scrollTo(window.scrollX,window.scrollY);},80);}
+  loadInbox(){if(!('caches' in window))return;caches.open('cf-notifs').then(c=>c.match('/__cf_notifs')).then(r=>r?r.json():[]).then(x=>{if(Array.isArray(x))this.setState({inbox:x});}).catch(()=>{});}
+  clearInbox(){if('caches' in window)caches.open('cf-notifs').then(c=>c.put('/__cf_notifs',new Response('[]',{headers:{'Content-Type':'application/json'}}))).catch(()=>{});this.setState({inbox:[]});}
+  onPush(d){if(!d)return;setTimeout(()=>this.loadInbox(),300);clearTimeout(this._pbT);this.setState({pushB:{title:d.title||'CientiFitness',body:d.body||'',url:d.url||''}});this._pbT=setTimeout(()=>this.setState({pushB:null}),7000);
     if(d.tag==='msg')this.loadMsgs();if(d.tag==='plan')this.loadLink(false);}
   toastMsg(m,bad){clearTimeout(this._tt);this.setState({toast:m,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
   demo(){const ln=(name,gr,k,p,c,f)=>({name,g:gr+' g',gr,k,p,c,f});
@@ -634,7 +655,7 @@ class Component extends DCLogic {
     const th=TH[s.tab]||TH.hoy;v.thTitle=th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
     {const sup=this.ntSup(),ios=this.ntIOS(),sa=this.ntStand(),perm=sup?Notification.permission:'default',NP=s.ntPrefs||{},off=NP.off||{},PN=(s.link&&s.link.plan&&s.link.plan.notif)||null;
       v.ntBell=()=>this.setState({ntOpen:true});v.ntOpenOn=!!s.ntOpen;v.ntClose=()=>this.setState({ntOpen:false});
-      v.ntNeedInstall=ios&&!sa&&!sup;v.ntUnsup=!sup&&!v.ntNeedInstall;v.ntBlocked=sup&&perm==='denied';v.ntIsOn=!!s.ntOn;v.ntCanOn=sup&&!s.ntOn&&perm!=='denied';v.ntBellDot=!s.ntOn&&(sup||v.ntNeedInstall)&&perm!=='denied';
+      v.ntNeedInstall=ios&&!sa&&!sup;v.ntUnsup=!sup&&!v.ntNeedInstall;v.ntBlocked=sup&&perm==='denied';v.ntIsOn=!!s.ntOn;v.ntCanOn=sup&&!s.ntOn&&perm!=='denied';v.ntBellDot=!s.ntOn&&(sup||v.ntNeedInstall)&&perm!=='denied'&&!(s.inbox||[]).some(x=>(x.t||0)>(s.ibSeen!=null?s.ibSeen:(()=>{try{return +localStorage.getItem('cf-nt-seen')||0;}catch(e){return 0;}})()));
       v.ntStatus=s.ntOn?'Activadas en este móvil':v.ntBlocked?'Bloqueadas':v.ntNeedInstall?'Instala la app primero':v.ntUnsup?'No disponibles en este navegador':'Desactivadas';
       v.ntStBg=s.ntOn?'#dcf0e4':'#fff4dc';v.ntStFg=s.ntOn?'#1d6b43':'#8a5a00';
       v.ntEnable=()=>this.ntEnable();v.ntDisable=()=>this.ntDisable();v.ntTest=()=>this.ntTest();v.ntBtn=s.ntBusy?'Activando…':'Activar notificaciones';
@@ -646,6 +667,14 @@ class Component extends DCLogic {
       v.ntBanner=s.ntOn===false&&!s.ntDis&&(sup||v.ntNeedInstall)&&perm!=='denied';v.ntDismiss=()=>{try{localStorage.setItem('cf-nt-dis','1');}catch(e){}this.setState({ntDis:true});};}
     {const pb=s.pushB;v.pbOn=!!pb;v.pbTitle=pb?pb.title:'';v.pbBody=pb?pb.body:'';v.pbClose=e=>{if(e)e.stopPropagation();this.setState({pushB:null});};
       v.pbGo=()=>{const m=/tab=(\w+)/.exec((pb&&pb.url)||''),k=m&&['hoy','plan','chat','prog'].includes(m[1])?m[1]:null;this.setState({pushB:null,ntOpen:false});if(k){try{localStorage.setItem('cf-as-tab',k);}catch(x){}this.setState({tab:k});}};}
+    {const IB=s.inbox||[],seen=s.ibSeen!=null?s.ibSeen:(()=>{try{return +localStorage.getItem('cf-nt-seen')||0;}catch(e){return 0;}})(),un=IB.filter(x=>(x.t||0)>seen).length;
+      const ago=t=>{const m=Math.round((Date.now()-t)/60000);if(m<1)return 'Ahora';if(m<60)return 'Hace '+m+' min';const hh=Math.round(m/60);if(hh<24)return 'Hace '+hh+' h';return new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' · '+new Date(t).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});};
+      const go=u=>{const m=/tab=(\w+)/.exec(u||''),k=m&&['hoy','plan','chat','prog'].includes(m[1])?m[1]:null;this.setState({ibOpen:false});if(k){try{localStorage.setItem('cf-as-tab',k);}catch(x){}this.setState({tab:k});}};
+      v.ibUn=un>0;v.ibUnN=un>9?'9+':String(un);v.ibOn=!!s.ibOpen;v.ibEmpty=!IB.length;v.ibHas=IB.length>0;
+      v.ibOpenFn=()=>{const now=Date.now();try{localStorage.setItem('cf-nt-seen',String(now));}catch(e){}this.loadInbox();this.setState({ibOpen:true,ibSeen:now,ibPrev:seen});};
+      v.ibClose=()=>this.setState({ibOpen:false});v.ibSettings=()=>this.setState({ibOpen:false,ntOpen:true});v.ibClear=()=>this.clearInbox();
+      const pv=s.ibPrev!=null?s.ibPrev:seen;v.ibList=IB.slice(0,40).map(x=>({title:x.title||'CientiFitness',body:x.body||'',when:ago(x.t||Date.now()),isNew:(x.t||0)>pv,bg:(x.t||0)>pv?'#eef6fc':'#fff',go:()=>go(x.url)}));
+      v.ibNoNt=s.ntOn===false;}
     v.hello='Hola, '+((P.name||L0.name||'').split(' ')[0]||'bienvenido/a');
     const unread=s.msgs.filter(m=>m.sender==='coach'&&!m.read_at).length;
     const go=k=>{try{localStorage.setItem('cf-as-tab',k);}catch(e){}this.setState({tab:k});};
