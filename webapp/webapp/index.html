@@ -763,6 +763,18 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             </button>
           </sc-for>
         </div>
+        <sc-if value="{{ cnHasCx }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column">
+            <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600);padding:4px 0">Avisos personalizados</span>
+            <sc-for list="{{ cnCx }}" as="r" hint-placeholder-count="0">
+              <button onClick="{{ r.toggle }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:8px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left">
+                <span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:13px;font-weight:600">{{ r.label }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ r.sum }}</span></span>
+                <sc-if value="{{ r.cus }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--carb-bg);color:var(--carb-ink)">Personalizado</span></sc-if>
+                <span style="width:38px;height:22px;border-radius:999px;background:{{ r.bg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ r.knob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap">Preentreno<input class="input" type="text" inputmode="numeric" value="{{ cnPre }}" onChange="{{ onCnPre }}" style="width:64px;min-height:32px;text-align:center">min antes de entrenar</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary" onClick="{{ cnTest }}" style="font-size:13px">Enviar prueba</button><sc-if value="{{ cnHasCus }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ cnReset }}" style="font-size:13px">Volver a la plantilla</button></sc-if></div>
       </div>
@@ -1732,6 +1744,33 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
       </sc-for>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap;max-width:860px">Máximo de notificaciones al día por asesorado<input class="input" type="text" inputmode="numeric" value="{{ ntMax }}" onChange="{{ onNtMax }}" style="width:60px;min-height:34px;text-align:center"><span style="font-size:12px">Primero van los avisos con hora; los de agua se reparten en los huecos que queden.</span></label>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;max-width:860px;margin-top:12px">
+      <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 320px;min-width:0"><h3 style="margin:0;font-size:19px">Avisos personalizados</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ nxNote }}</span></div>
+      <sc-if value="{{ nxCanNew }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ nxNew }}">+ Nuevo aviso</button></sc-if>
+    </div>
+    <sc-if value="{{ nxEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:18px;font-size:14px;color:var(--color-neutral-700);max-width:860px;box-sizing:border-box">Todavía no hay avisos personalizados.</div></sc-if>
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:860px">
+      <sc-for list="{{ nxRows }}" as="r" hint-placeholder-count="0">
+        <div style="background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+              <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="font-weight:800;font-size:15px">{{ r.title }}</span><sc-if value="{{ r.isBase }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--veg-bg);color:var(--veg-ink)">Común</span></sc-if><sc-if value="{{ r.hasBy }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--color-neutral-100);color:var(--color-neutral-700)">{{ r.by }}</span></sc-if></span>
+              <sc-if value="{{ r.hasBody }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ r.body }}</span></sc-if>
+              <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">{{ r.sum }}</span>
+            </div>
+            <button onClick="{{ r.toggle }}" aria-label="{{ r.title }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.bg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.knob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <sc-if value="{{ r.hasTime }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-neutral-700);margin-right:6px">Hora<input class="input" type="time" value="{{ r.time }}" onChange="{{ r.onTime }}" style="width:110px;min-height:34px;text-align:center"></label></sc-if>
+            <sc-if value="{{ r.canEdit }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ r.edit }}" style="font-size:13px">Editar</button></sc-if>
+            <sc-if value="{{ r.canDup }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ r.dup }}" style="font-size:13px">{{ r.dupLabel }}</button></sc-if>
+            <sc-if value="{{ r.canProp }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ r.prop }}" style="font-size:13px">Proponer a la común</button></sc-if>
+            <sc-if value="{{ r.canDel }}" hint-placeholder-val="{{ false }}"><button class="btn" onClick="{{ r.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ r.delLabel }}</button></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
   </sc-if>
   <sc-if value="{{ isNotesLib }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
@@ -1766,18 +1805,19 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   </sc-if>
   <sc-if value="{{ isFormsLib }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
-      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Plantillas que envías a tus clientes desde su ficha (pestaña Cuestionarios) o con «Alta con cuestionario». Los cambios se aplican a los próximos envíos, no a los ya enviados.</p>
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">{{ flNote }}</p>
       <sc-if value="{{ flCanReset }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ flReset }}">{{ flResetLabel }}</button></sc-if>
-      <button class="btn btn-primary" onClick="{{ flNew }}">+ Nuevo cuestionario</button>
+      <sc-if value="{{ flCanNew }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ flNew }}">+ Nuevo cuestionario</button></sc-if>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px">
       <sc-for list="{{ flCards }}" as="t" hint-placeholder-count="2">
         <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto;min-width:0;text-wrap:pretty">{{ t.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);white-space:nowrap">{{ t.kind }}</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto;min-width:0;text-wrap:pretty">{{ t.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);white-space:nowrap">{{ t.kind }}</span><sc-if value="{{ t.isBase }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--veg-bg);color:var(--veg-ink);white-space:nowrap">Común</span></sc-if><sc-if value="{{ t.hasBy }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--color-neutral-100);color:var(--color-neutral-700);white-space:nowrap">{{ t.by }}</span></sc-if></div>
           <span style="font-size:13px;color:var(--color-neutral-700)">{{ t.meta }}</span>
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:13px">Editar</button>
-            <button class="btn btn-ghost" onClick="{{ t.dup }}" style="font-size:13px">Duplicar</button>
+            <sc-if value="{{ t.canEdit }}" hint-placeholder-val="{{ true }}"><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:13px">Editar</button></sc-if>
+            <sc-if value="{{ t.canDup }}" hint-placeholder-val="{{ true }}"><button class="btn btn-ghost" onClick="{{ t.dup }}" style="font-size:13px">{{ t.dupLabel }}</button></sc-if>
+            <sc-if value="{{ t.canProp }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ t.prop }}" style="font-size:13px">Proponer a la común</button></sc-if>
             <sc-if value="{{ t.canDel }}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{ t.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ t.delLabel }}</button></sc-if>
           </div>
         </div>
@@ -2047,6 +2087,29 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <button onClick="{{ eqiAllT }}" style="font:inherit;font-size:12px;font-weight:700;align-self:flex-start;padding:7px 12px;border-radius:999px;border:1px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer">{{ eqiAllLbl }}</button>
       <input class="input cf-search" value="{{ eqiQ }}" onChange="{{ onEqiQ }}" placeholder="Buscar otro alimento…">
       <sc-if value="{{ eqiHasRes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiRes }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ nxeOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" style="width:min(580px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="padding:18px 22px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--color-divider)"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;margin-right:auto">Aviso personalizado</span><button class="btn btn-ghost" onClick="{{ nxeClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ nxeSave }}">Guardar</button></div>
+    <div style="overflow:auto;padding:16px 22px 22px;display:flex;flex-direction:column;gap:14px">
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Título<input class="input" value="{{ nxeTitle }}" onChange="{{ onNxeTitle }}" placeholder="Por ejemplo: Magnesio antes de dormir" style="font-size:15px"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Texto<textarea class="input" rows="2" value="{{ nxeBody }}" onChange="{{ onNxeBody }}" placeholder="Por ejemplo: Toma tu magnesio 30 minutos antes de acostarte." style="font-size:14px;resize:vertical"></textarea></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Cuándo<select class="input" value="{{ nxeKind }}" onChange="{{ onNxeKind }}"><sc-for list="{{ nxeKinds }}" as="o" hint-placeholder-count="4"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
+      <sc-if value="{{ nxeIsWeek }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ nxeDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="font:inherit;font-size:13px;font-weight:800;width:38px;height:38px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer">{{ d.l }}</button></sc-for></div></sc-if>
+      <sc-if value="{{ nxeIsPre }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--color-neutral-700)"><input class="input" type="text" inputmode="numeric" value="{{ nxeOffMin }}" onChange="{{ onNxeOffMin }}" style="width:70px;text-align:center">min<select class="input" value="{{ nxeOffDir }}" onChange="{{ onNxeOffDir }}" style="width:auto"><sc-for list="{{ nxeDirs }}" as="o" hint-placeholder-count="2"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select><span style="font-size:12px">Usa la hora de entreno que el asesorado pone en su app.</span></div></sc-if>
+      <sc-if value="{{ nxeIsRev }}" hint-placeholder-val="{{ false }}"><label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--color-neutral-700)"><input class="input" type="text" inputmode="numeric" value="{{ nxeDb }}" onChange="{{ onNxeDb }}" style="width:60px;text-align:center">días antes de cada revisión o medición de la agenda (0 = el mismo día)</label></sc-if>
+      <sc-if value="{{ nxeIsOnce }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Fecha<input class="input" type="date" value="{{ nxeDate }}" onChange="{{ onNxeDate }}" style="width:200px"></label></sc-if>
+      <sc-if value="{{ nxeIsEvery }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--color-neutral-700)">Cada<input class="input" type="text" inputmode="decimal" value="{{ nxeEvery }}" onChange="{{ onNxeEvery }}" style="width:60px;text-align:center">h, de<input class="input" type="time" value="{{ nxeFrom }}" onChange="{{ onNxeFrom }}" style="width:110px">a<input class="input" type="time" value="{{ nxeTo }}" onChange="{{ onNxeTo }}" style="width:110px"></div></sc-if>
+      <sc-if value="{{ nxeHasTime }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Hora<input class="input" type="time" value="{{ nxeTime }}" onChange="{{ onNxeTime }}" style="width:130px"></label></sc-if>
+      <button onClick="{{ nxeOnT }}" style="font:inherit;display:flex;align-items:center;gap:12px;padding:10px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left"><span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:14px;font-weight:700">Activado para todos los clientes</span><span style="font-size:12px;color:var(--color-neutral-700)">Puedes activarlo o quitarlo a cada cliente en Vista cliente → Notificaciones.</span></span><span style="width:44px;height:26px;border-radius:999px;background:{{ nxeOnBg }};position:relative;flex:none"><span style="position:absolute;top:3px;left:{{ nxeOnKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span></button>
+      <div style="display:flex;flex-direction:column;gap:6px;background:var(--color-neutral-100);border-radius:16px;padding:12px">
+        <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Así le llegará · {{ nxeSum }}</span>
+        <div style="display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:10px 12px"><img src="assets/icon-192.png" alt="" style="width:34px;height:34px;border-radius:9px;flex:none"><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;font-weight:800">{{ nxePT }}</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ nxePB }}</span></span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2407,6 +2470,13 @@ function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(
   const hits=[];ms.forEach(m=>(m.options||[]).forEach(o=>['prot','carb','fat'].forEach(sl=>(o[sl]||[]).forEach(x=>{if(x.fid===from)hits.push({m,o,sl,x});}))));
   const bn=hits.filter(q=>norm(q.m.name||'')===norm(mn||''));return bn.length?bn:hits;}
 const stripMk=b=>String(b||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,'');
+const NXK=[['daily','Cada día a una hora'],['week','Ciertos días de la semana'],['train','Solo días de entreno'],['rest','Solo días de descanso'],['pre','Antes o después del entreno'],['rev','Días antes de una revisión'],['once','Una sola vez, en una fecha'],['every','Cada X horas']];
+const NXT=['daily','week','train','rest','rev','once'],DLW=['L','M','X','J','V','S','D'];
+const nxSum=(x,t)=>{t=t||x.time||'09:00';const o=num(x.offset);switch(x.kind){case 'week':return ((x.days||[]).map(i=>DLW[i]).join(' ')||'Sin días')+' · '+t;case 'train':return 'Días de entreno · '+t;case 'rest':return 'Días de descanso · '+t;
+  case 'pre':return o<0?Math.abs(o)+' min antes de entrenar':o>0?o+' min después de entrenar':'A la hora de entrenar';case 'rev':{const d=num(x.dbefore);return (d?d+(d===1?' día':' días')+' antes de la revisión':'El día de la revisión')+' · '+t;}
+  case 'once':return (x.date?new Date(x.date+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}):'Sin fecha')+' · '+t;case 'every':return 'Cada '+String(num(x.every)||2).replace('.',',')+' h, de '+(x.from||'09:00')+' a '+(x.to||'21:00');default:return 'Cada día · '+t;}};
+const nxOn=(x,N)=>{const o=((N&&N.cxo)||{})[x.id];return o&&o.on!=null?!!o.on:x.on!==false;};
+const nxTime=(x,N)=>{const o=((N&&N.cxo)||{})[x.id];return (o&&o.time)||x.time||'09:00';};
 const isLig=n=>/desay|merien|snack|media ma|pre.?entreno|post.?entreno|recena/.test(norm(n||''));
 const LGRP=[['ligera','Desayuno, merienda y snacks'],['principal','Comida y cena']];
 function fillFromList(n,Lst){let c=0;mealsOf(n).forEach(m=>{if(m.cheat)return;const G=Lst[isLig(m.name)?'ligera':'principal'];if(!G)return;const V=()=>(G.veg||[]).map(([f,g])=>vg(f,g));
@@ -2526,7 +2596,7 @@ const DIETS={
 const DMAP={def30:'std',def20:'std',recomp:'std',mant:'std',vol10:'vol',vol20:'vol',lowcarb:'low',keto:'keto',med:'med',resist:'resist',ayuno:'ayuno',tarde:'tarde'};
 const defPreset=id=>{const P=PRESETS.find(x=>x.id===id);if(!P)return null;const d=DIETS[DMAP[id]];return {...P,builtin:true,meals:d?d():[]};};
 const defPresets=()=>PRESETS.map(P=>defPreset(P.id));
-const NOL=[],LIBK={foods:'Alimento',tpls:'Receta',presets:'Preset',eqGroups:'Equivalencias'};
+const NOL=[],LIBK={foods:'Alimento',tpls:'Receta',presets:'Preset',eqGroups:'Equivalencias',forms:'Cuestionario',nlist:'Aviso'};
 const fidsOf=(kind,it)=>{const a=[],scan=o=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{if(x&&x.fid)a.push(x.fid);}));if(kind==='tpls')(it.opts||[]).forEach(scan);else if(kind==='presets')(it.meals||[]).forEach(m=>(pmN(m).opts||[]).forEach(scan));else if(kind==='eqGroups')(it.items||[]).forEach(x=>a.push(x));return [...new Set(a)];};
 const libClean=it=>{const {_L,_base,_s,_foods,kd,kBad,...r}=it||{};return JSON.parse(JSON.stringify(r));};
 const nFood=f=>{const kc=Math.round(num(f.p)*4+num(f.c)*4+num(f.f)*9);return {...f,kd:f.k,k:kc,kBad:num(f.k)>0&&Math.abs(num(f.k)-kc)>Math.max(20,kc*0.2)};};
@@ -2643,7 +2713,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -2665,7 +2735,7 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
@@ -2691,12 +2761,12 @@ class Component extends DCLogic {
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
   loadBase(){if(!this.sb||this.isCEO())return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L)return;const std=L.plan==='standard';
-    const b={plan:std?'standard':'premium',foods:L.foods||[],tpls:std?[]:(L.tpls||[]),eqGroups:std?[]:(L.eqGroups||[]),presets:std?[]:(L.presets||defPresets())};
+    const b={plan:std?'standard':'premium',foods:L.foods||[],tpls:std?[]:(L.tpls||[]),eqGroups:std?[]:(L.eqGroups||[]),presets:std?[]:(L.presets||defPresets()),forms:L.forms||null,nlist:L.nlist||[]};
     if(stab(b)===stab(this.state.base||null))return;this.setState({base:b});try{localStorage.setItem('cf-base',JSON.stringify(b));}catch(e){}});}
   libAll(k){const own=k==='presets'?this.ownPresets():(this.state[k]||NOL),B=this.baseLib(k);if(!B.length)return own;
     const c=this._la||(this._la={}),e=c[k];if(e&&e.o===own&&e.b===B)return e.v;const ids=new Set(own.map(x=>x.id));
@@ -2712,7 +2782,7 @@ class Component extends DCLogic {
     this.setState(st=>{const o={},FM=this.foodMap(),put=(L,x)=>L.some(y=>y.id===x.id)?L.map(y=>y.id===x.id?x:y):L.concat([x]);let F=st.foods;
       (foods||[]).forEach(f=>{if(f&&f.id&&!FM[f.id]&&!F.some(y=>y.id===f.id))F=F.concat([{...libClean(f),by,byId}]);});
       if(kind==='foods')F=put(F,c);if(F!==st.foods)o.foods=F;
-      if(kind==='presets')o.presets=put(JSON.parse(JSON.stringify(st.presets||this.ownPresets())),c);else if(kind!=='foods')o[kind]=put(st[kind]||[],c);return o;});}
+      if(kind==='presets')o.presets=put(JSON.parse(JSON.stringify(st.presets||this.ownPresets())),c);else if(kind!=='foods')o[kind]=put(kind==='forms'?JSON.parse(JSON.stringify(st.forms||CFF().DEFS)):(st[kind]||[]),c);return o;});}
   decide(p,ok){const it=p.item||{};if(ok)this.adopt(p.kind,it,it._foods,p.coach_name||'',p.coach_id);
     this.sb.from('cf_proposals').update({status:ok?'approved':'rejected',decided_at:new Date().toISOString()}).eq('id',p.id).then(({error})=>{if(error){this.toast('No se pudo guardar: '+error.message,true);return;}this.toast(ok?'Añadido a la biblioteca común':'Propuesta rechazada');this.loadProps();});}
   pullLibrary(){if(!this.sb)return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L){this.toast('No se pudo leer la biblioteca de CientiFitness',true);return;}let n=0;
@@ -2738,7 +2808,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -2749,9 +2819,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -2764,7 +2834,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2777,10 +2847,10 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif};ps=ps||snap||this._snap;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist};ps=ps||snap||this._snap;
     if(ps.events!==s.events&&this._cloud)this.agendaSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -2854,7 +2924,9 @@ class Component extends DCLogic {
   loadNtDev(ck){if(!this.sb)return;this.sb.from('cf_push_subs').select('endpoint').eq('coach_id',this.uid).eq('client_key',ck).then(({data,error})=>this.setState(st=>({ntDev:{...(st.ntDev||{}),[ck]:error?{err:/cf_push_subs|relation|schema/i.test(error.message||'')?'sql':(error.message||'error')}:{n:(data||[]).length}}})));}
   notesAll(){return this.state.mnotes||DEF_NOTES;}
   listsAll(){return this.state.lists||window.CF_LISTS||[];}
-  formTpls(){const F=CFF();return this.state.forms||F.DEFS;}
+  formTpls(){const F=CFF();if(this.isCEO())return this.state.forms||F.DEFS;const own=this.myPlan()==='premium'?(this.state.forms||[]):[],B=this.state.base,com=(B&&B.forms)||F.DEFS,ids=new Set(own.map(x=>x.id));return own.concat(com.filter(x=>x&&!ids.has(x.id)).map(x=>({...x,_base:true})));}
+  formsOwn(st){st=st||this.state;return this.isCEO()?(st.forms||CFF().DEFS):(st.forms||[]);}
+  customAll(){const own=this.state.nlist||[];if(this.isCEO())return own;const B=this.state.base,mine=this.myPlan()==='premium'?own:[],ids=new Set(mine.map(x=>x.id));return mine.concat(((B&&B.nlist)||[]).filter(x=>x&&!ids.has(x.id)).map(x=>({...x,_base:true})));}
   formLink(t){return location.href.replace(/[?#].*$/,'').replace(/[^/]*$/,'')+'cuestionario.html?t='+t;}
   loadForms(){if(!this._cloud||!this.sb)return;this._fLoaded=true;this.sb.from('cf_forms').select('id,client_key,token,title,form,answers,status,created_at,answered_at').eq('coach_id',this.uid).order('created_at',{ascending:false}).limit(400).then(({data,error})=>{
     if(error){this.setState({formsErr:error.message});return;}this.setState({formsDb:data||[],formsErr:null},()=>this.applyForms());});}
@@ -3539,7 +3611,10 @@ class Component extends DCLogic {
             v.cnRows=NTYPES.map(([k,l])=>{const on=!!E[k];return {label:l,cus:k in O,bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
               toggle:()=>this.updC(n=>{const cur={...N0,...(n.notif||{})},nv=!cur[k];n.notif=n.notif||{};if(nv===!!N0[k])delete n.notif[k];else n.notif[k]=nv;clean(n);})};});
             v.cnPre=String(E.preMin);v.onCnPre=e=>{const x=e.target.value.trim();this.updC(n=>{n.notif=n.notif||{};if(x===''||num(x)===num(N0.preMin))delete n.notif.preMin;else n.notif.preMin=Math.max(0,Math.round(num(x)));clean(n);});};
-            v.cnHasCus=Object.keys(O).length>0;v.cnReset=()=>this.updC(n=>{delete n.notif;});v.cnTest=()=>this.pushNotify('test',cl.id);
+            v.cnHasCus=Object.keys(O).length>0;
+            v.cnCx=this.customAll().map(x=>{const tOn=x._base?nxOn(x,N0):x.on!==false,cc=O.cxc||{},has=x.id in cc,on=has?!!cc[x.id]:tOn;
+              return {label:x.title||'Aviso',sum:nxSum(x,x._base?nxTime(x,N0):x.time),cus:has,bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
+                toggle:()=>this.updC(n=>{n.notif=n.notif||{};const c={...(n.notif.cxc||{})},nv=!on;if(nv===tOn)delete c[x.id];else c[x.id]=nv;if(Object.keys(c).length)n.notif.cxc=c;else delete n.notif.cxc;clean(n);})};});v.cnHasCx=v.cnCx.length>0;v.cnReset=()=>this.updC(n=>{delete n.notif;});v.cnTest=()=>this.pushNotify('test',cl.id);
             const D=s.ntDev&&s.ntDev[cl.id];if(cloudOn&&!D&&this._ntDL!==cl.id){this._ntDL=cl.id;setTimeout(()=>this.loadNtDev(cl.id),0);}
             v.cnDev=!cloudOn?'Sin nube':!D?'Comprobando…':D.err?(D.err==='sql'?'Falta notificaciones.sql':'Error'):D.n?'Activadas · '+D.n+(D.n===1?' dispositivo':' dispositivos'):'No activadas en su móvil';
             v.cnDevBg=D&&D.n?'#e3f4ea':'#fff4dc';v.cnDevFg=D&&D.n?'#1d6b43':'#8a5a00';}
@@ -3550,7 +3625,7 @@ class Component extends DCLogic {
           v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
-            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{})},swap:{on:true,max:3,tol:10,...(cl.swap||{})},open,
+            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{})},open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,note:m.note||'',opts:m.opts.map(o=>({title:o.title,note:o.note||'',blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
@@ -3600,7 +3675,20 @@ class Component extends DCLogic {
         v.ntRows=NTYPES.map(([k,l,d])=>{const on=!!N[k];return {label:l,desc:d,bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'21px':'3px',toggle:()=>setN(a=>{a[k]=!a[k];}),
           params:PR[k]||[],hasParams:!!PR[k]&&on,hasDays:k==='weigh'&&on,days:k==='weigh'?['L','M','X','J','V','S','D'].map((dl,i)=>{const sel=num(N.weighDow)===i;return {l:dl,bg:sel?'var(--color-accent)':'#fff',fg:sel?'#fff':'var(--color-text)',bd:sel?'var(--color-accent)':'var(--color-divider)',pick:()=>setN(a=>{a.weighDow=i;})};}):[]};});
         if(s.ntSrv===undefined&&!this._ntSrvL){this._ntSrvL=true;fetch('/api/push').then(r=>r.json()).then(j=>this.setState({ntSrv:j||{}})).catch(()=>this.setState({ntSrv:{ready:false,err:true}}));}
-        const sv=s.ntSrv;v.ntSrvTxt=!sv?'Comprobando el servidor…':sv.ready?'Servidor listo':'Servidor sin configurar';v.ntSrvBg=sv&&sv.ready?'#e3f4ea':'#fff4dc';v.ntSrvFg=sv&&sv.ready?'#1d6b43':'#8a5a00';v.ntNotReady=!!sv&&!sv.ready;}
+        const sv=s.ntSrv;v.ntSrvTxt=!sv?'Comprobando el servidor…':sv.ready?'Servidor listo':'Servidor sin configurar';v.ntSrvBg=sv&&sv.ready?'#e3f4ea':'#fff4dc';v.ntSrvFg=sv&&sv.ready?'#1d6b43':'#8a5a00';v.ntNotReady=!!sv&&!sv.ready;
+        {const canOwn=ceo||plan==='premium',CX=this.customAll(),setNot=fn=>this.setState(st=>{const a={...NDEF,...(st.notif||{})};a.cxo={...(a.cxo||{})};fn(a);return {notif:a};}),setOwn=fn=>this.setState(st=>{const a=JSON.parse(JSON.stringify(st.nlist||[]));fn(a);return {nlist:a};});
+          v.ntMax=String(N.max==null?6:N.max);v.onNtMax=e=>{const x=Math.max(1,Math.min(20,Math.round(num(e.target.value))||6));setN(a=>{a.max=x;});};
+          v.nxNote=ceo?'Los avisos que crees aquí son los comunes: los reciben los asesorados de todos tus entrenadores que los tengan activados.':canOwn?'Los marcados «Común» vienen de CientiFitness. Puedes activarlos, cambiar la hora, duplicarlos para editarlos o crear los tuyos.':'Avisos comunes de CientiFitness. Puedes activarlos, desactivarlos y cambiar la hora. Para crear los tuyos necesitas el plan Premium.';
+          v.nxCanNew=canOwn;v.nxEmpty=!CX.length;
+          v.nxNew=()=>this.setState({nxEdit:{id:'n-'+uid(),title:'',body:'',kind:'daily',time:'09:00',days:[0,2,4],offset:-30,offDir:'before',dbefore:1,date:todayISO(),every:2,from:'09:00',to:'21:00',on:true}});
+          v.nxRows=CX.map(x=>{const base=!!x._base,on=base?nxOn(x,N):x.on!==false,t=base?nxTime(x,N):(x.time||'09:00');
+            return {title:x.title||'Aviso',body:x.body||'',hasBody:!!x.body,sum:nxSum(x,t),isBase:base,hasBy:!!x.by&&!base,by:'De '+(x.by||''),bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'21px':'3px',
+              toggle:()=>{if(base)setNot(a=>{a.cxo[x.id]={...(a.cxo[x.id]||{}),on:!on};});else setOwn(a=>{const q=a.find(y=>y.id===x.id);if(q)q.on=!on;});},
+              hasTime:base&&on&&NXT.includes(x.kind),time:t,onTime:e=>{const v2=e.target.value;setNot(a=>{a.cxo[x.id]={...(a.cxo[x.id]||{}),time:v2};});},
+              canEdit:!base,edit:()=>this.setState({nxEdit:JSON.parse(JSON.stringify(x))}),
+              canDup:canOwn,dupLabel:base?'Duplicar y editar':'Duplicar',dup:()=>{const c=JSON.parse(JSON.stringify(x));delete c._base;delete c.by;delete c.byId;c.id='n-'+uid();c.title=(x.title||'Aviso')+' (copia)';this.setState({nxEdit:c});},
+              canProp:!ceo&&canOwn&&!base,prop:()=>this.propose('nlist',x),
+              canDel:!base,delLabel:s.nxDel===x.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.nxDel!==x.id){this.setState({nxDel:x.id});return;}setOwn(a=>{const i=a.findIndex(y=>y.id===x.id);if(i>=0)a.splice(i,1);});this.setState({nxDel:null});}};});}}
       if(v.isNotesLib){const setN=fn=>this.setState(st=>{const a=(st.mnotes||DEF_NOTES).slice();fn(a);return {mnotes:a};});
         v.nlRows=this.notesAll().map((t,i)=>({t,on:e=>{const x=e.target.value;setN(a=>{a[i]=x;});},rm:()=>setN(a=>{a.splice(i,1);})}));
         v.nlAdd=()=>setN(a=>{a.push('Nuevo comentario');});v.nlCanReset=!!s.mnotes;v.nlReset=()=>{this.setState({mnotes:null});this.toast('Comentarios restaurados');};}
@@ -3611,12 +3699,16 @@ class Component extends DCLogic {
           canDel:LL.length>1,delLabel:s.llDel===L.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.llDel!==L.id){this.setState({llDel:L.id});return;}setL(a=>{const i=a.findIndex(x=>x.id===L.id);if(i>=0)a.splice(i,1);});this.setState({llDel:null});}}));
         v.llNew=()=>this.setState({leQ:{},lsEdit:{id:'l-'+uid(),name:'Nueva lista',tag:'',desc:'',ligera:{prot:[],carb:[],fat:[],veg:[]},principal:{prot:[],carb:[],fat:[],veg:[]}}});
         v.llCanReset=!!s.lists;v.llResetLabel=s.llReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.llReset=()=>{if(!s.llReset){this.setState({llReset:true});return;}this.setState({lists:null,llReset:false});this.toast('Listas restauradas');};}
-      if(v.isFormsLib){const TP=this.formTpls(),F=CFF();const setF=fn=>this.setState(st=>{const a=F.clone(st.forms||F.DEFS);fn(a);return {forms:a};});
-        v.flCards=TP.map(t=>({name:t.name,kind:t.kind==='inicial'?'Inicial':t.kind==='revision'?'Revisión':'Otro',meta:(t.qs||[]).filter(q=>q.type!=='sec').length+' preguntas · '+(t.qs||[]).filter(q=>q.type==='sec').length+' secciones',
-          edit:()=>this.setState({fEdit:F.clone(t)}),dup:()=>{setF(a=>{const c=F.clone(t);c.id='f-'+uid();c.name=t.name+' (copia)';if(c.kind==='inicial')c.kind='otro';a.push(c);});this.toast('Cuestionario duplicado');},
-          canDel:TP.length>1,delLabel:s.flDel===t.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.flDel!==t.id){this.setState({flDel:t.id});return;}setF(a=>{const i=a.findIndex(x=>x.id===t.id);if(i>=0)a.splice(i,1);});this.setState({flDel:null});}}));
+      if(v.isFormsLib){const TP=this.formTpls(),F=CFF(),canOwn=ceo||plan==='premium';const setF=fn=>this.setState(st=>{const a=F.clone(this.formsOwn(st));fn(a);return {forms:a};});
+        v.flNote=ceo?'Tus cuestionarios son los comunes: los usan todos tus entrenadores y los cambios se aplican a los próximos envíos.':canOwn?'Los marcados «Común» vienen de CientiFitness y se actualizan solos. Puedes crear los tuyos o duplicar uno común para editarlo.':'Tu plan usa los cuestionarios comunes de CientiFitness, que se actualizan solos. Para crear los tuyos necesitas el plan Premium.';
+        v.flCanNew=canOwn;
+        v.flCards=TP.map(t=>{const base=!!t._base;return {name:t.name,kind:t.kind==='inicial'?'Inicial':t.kind==='revision'?'Revisión':'Otro',meta:(t.qs||[]).filter(q=>q.type!=='sec').length+' preguntas · '+(t.qs||[]).filter(q=>q.type==='sec').length+' secciones',
+          isBase:base,hasBy:!!t.by&&!base,by:'De '+(t.by||''),canEdit:!base,edit:()=>this.setState({fEdit:F.clone(t)}),
+          canDup:canOwn,dupLabel:base?'Duplicar y editar':'Duplicar',dup:()=>{const c=F.clone(t);delete c._base;delete c.by;delete c.byId;c.id='f-'+uid();c.name=t.name+' (copia)';if(c.kind==='inicial')c.kind='otro';setF(a=>{a.push(c);});if(base)this.setState({fEdit:F.clone(c)});this.toast('Cuestionario duplicado');},
+          canProp:!ceo&&canOwn&&!base,prop:()=>this.propose('forms',t),
+          canDel:!base&&(!ceo||TP.length>1),delLabel:s.flDel===t.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.flDel!==t.id){this.setState({flDel:t.id});return;}setF(a=>{const i=a.findIndex(x=>x.id===t.id);if(i>=0)a.splice(i,1);});this.setState({flDel:null});}};});
         v.flNew=()=>this.setState({fEdit:{id:'f-'+uid(),kind:'otro',name:'Nuevo cuestionario',intro:'',qs:[{id:uid(),type:'sec',label:'Preguntas'},{id:uid(),type:'text',label:'Nueva pregunta'}]}});
-        v.flCanReset=!!s.forms;v.flResetLabel=s.flReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.flReset=()=>{if(!s.flReset){this.setState({flReset:true});return;}this.setState({forms:null,flReset:false});this.toast('Cuestionarios restaurados');};}
+        v.flCanReset=ceo&&!!s.forms;v.flResetLabel=s.flReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.flReset=()=>{if(!s.flReset){this.setState({flReset:true});return;}this.setState({forms:null,flReset:false});this.toast('Cuestionarios restaurados');};}
       const BID={foods:{},tpls:{},eqGroups:{},presets:{}};if(ceo)Object.keys(BID).forEach(k=>(k==='presets'?this.ownPresets():(s[k]||[])).forEach(x=>{if(x&&x.id)BID[k][x.id]=x;}));
       const RC=new Set(((window.CF_RECIPES||{}).list||[]).map(r=>r.id)),bl={},bIdx=k=>{if(!bl[k]){bl[k]={};this.baseLib(k).forEach(y=>{if(y&&y.id)bl[k][y.id]=y;});}return bl[k];};
       const genuine=(k,x,L)=>{if(!x||!x.id||(k==='presets'&&x.builtin)||(k==='tpls'&&RC.has(x.id)))return false;const b=BID[k][x.id];return !b||b.byId===L.uid;};
@@ -3694,10 +3786,10 @@ class Component extends DCLogic {
       if(v.isProps){
         v.propCards=P0.filter(p=>p.status==='pending').map(p=>{const it=p.item||{},k=p.kind;let sum='';
           if(k==='foods')sum=R(num(it.p)*4+num(it.c)*4+num(it.f)*9)+' kcal · P '+num(it.p)+' · C '+num(it.c)+' · G '+num(it.f)+' por 100 g'+(it.cat?' · '+it.cat:'');
-          else if(k==='presets')sum=presetTags(it)+(it.desc?' · '+it.desc:'');
+          else if(k==='presets')sum=presetTags(it)+(it.desc?' · '+it.desc:'');else if(k==='forms')sum=(it.qs||[]).filter(q=>q.type!=='sec').length+' preguntas';else if(k==='nlist')sum=nxSum(it)+(it.body?' · '+it.body:'');
           else sum=fidsOf(k,it).map(id=>FMx[id]&&FMx[id].name).filter(Boolean).join(' · ');
           const nf=(it._foods||[]).filter(f=>f&&!FM[f.id]).length;
-          return {kind:LIBK[k]||k,by:p.coach_name||'Entrenador',date:p.created_at?new Date(p.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'',name:it.name||'Sin nombre',sum,
+          return {kind:LIBK[k]||k,by:p.coach_name||'Entrenador',date:p.created_at?new Date(p.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'',name:it.name||it.title||'Sin nombre',sum,
             hasNew:nf>0,newTxt:'Incluye '+nf+(nf===1?' alimento propio que también se añadirá.':' alimentos propios que también se añadirán.'),replaces:!!(BID[k]&&BID[k][p.item_id]),
             approve:()=>this.decide(p,true),reject:()=>{if(s.propNo!==p.id){this.setState({propNo:p.id});return;}this.setState({propNo:null});this.decide(p,false);},rejectLabel:s.propNo===p.id?'¿Seguro? Rechazar':'Rechazar'};});
         v.noProps=!!s.props&&v.propCards.length===0;v.propsLoading=!s.props&&!s.propsErr;}
@@ -4016,7 +4108,21 @@ class Component extends DCLogic {
       v.feCount=qn+(qn===1?' pregunta':' preguntas');
       v.feAddQ=()=>upd(x=>{x.qs.push({id:uid(),type:'text',label:'Nueva pregunta'});});v.feAddS=()=>upd(x=>{x.qs.push({id:uid(),type:'sec',label:'Nueva sección'});});
       v.feClose=()=>this.setState({fEdit:null});
-      v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{const a=F.clone(st.forms||F.DEFS),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {forms:a,fEdit:null};});this.toast('Cuestionario guardado');};}
+      v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{delete e._base;const a=F.clone(this.formsOwn(st)),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {forms:a,fEdit:null};});this.toast('Cuestionario guardado');};}
+    if(s.nxEdit){const E=s.nxEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.nxEdit));fn(e);return {nxEdit:e};}),fv=k=>e=>{const x=e.target.value;upd(q=>{q[k]=x;});},k=E.kind||'daily';
+      v.nxeOn=true;v.nxeTitle=E.title||'';v.onNxeTitle=fv('title');v.nxeBody=E.body||'';v.onNxeBody=fv('body');v.nxeKinds=NXK.map(([val,label])=>({val,label}));v.nxeKind=k;v.onNxeKind=fv('kind');
+      v.nxeHasTime=NXT.includes(k);v.nxeTime=E.time||'09:00';v.onNxeTime=fv('time');
+      v.nxeIsWeek=k==='week';v.nxeDays=DLW.map((l,i)=>{const sel=(E.days||[]).includes(i);return {l,bg:sel?'var(--color-accent)':'#fff',fg:sel?'#fff':'var(--color-text)',bd:sel?'var(--color-accent)':'var(--color-divider)',pick:()=>upd(q=>{q.days=q.days||[];const j=q.days.indexOf(i);if(j>=0)q.days.splice(j,1);else q.days.push(i);q.days.sort();})};});
+      const dir=E.offDir||(num(E.offset)>0?'after':'before');v.nxeIsPre=k==='pre';v.nxeOffMin=String(Math.abs(num(E.offset)));v.nxeOffDir=dir;v.nxeDirs=[{val:'before',label:'antes de entrenar'},{val:'after',label:'después de entrenar'}];
+      v.onNxeOffMin=e=>{const x=Math.abs(Math.round(num(e.target.value)));upd(q=>{q.offset=((q.offDir||dir)==='after'?1:-1)*x;});};v.onNxeOffDir=e=>{const d=e.target.value;upd(q=>{q.offDir=d;q.offset=(d==='after'?1:-1)*Math.abs(num(q.offset));});};
+      v.nxeIsRev=k==='rev';v.nxeDb=String(E.dbefore==null?1:E.dbefore);v.onNxeDb=e=>{const x=Math.max(0,Math.min(7,Math.round(num(e.target.value))));upd(q=>{q.dbefore=x;});};
+      v.nxeIsOnce=k==='once';v.nxeDate=E.date||todayISO();v.onNxeDate=fv('date');
+      v.nxeIsEvery=k==='every';v.nxeEvery=String(E.every||2);v.onNxeEvery=e=>{const x=Math.max(0.5,Math.min(12,num(e.target.value)||2));upd(q=>{q.every=x;});};v.nxeFrom=E.from||'09:00';v.onNxeFrom=fv('from');v.nxeTo=E.to||'21:00';v.onNxeTo=fv('to');
+      v.nxeSum=nxSum(E);v.nxePT=E.title||'Título del aviso';v.nxePB=E.body||'Texto que verá en el móvil';
+      v.nxeOnBg=E.on!==false?'var(--color-accent)':'var(--color-neutral-300)';v.nxeOnKnob=E.on!==false?'21px':'3px';v.nxeOnT=()=>upd(q=>{q.on=q.on===false;});
+      v.nxeClose=()=>this.setState({nxEdit:null});
+      v.nxeSave=()=>{const e=JSON.parse(JSON.stringify(E));e.title=(e.title||'').trim();if(!e.title){this.toast('Pon un título al aviso',true);return;}delete e._base;
+        this.setState(st=>{const a=JSON.parse(JSON.stringify(st.nlist||[])),i=a.findIndex(x=>x.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {nlist:a,nxEdit:null};});this.toast('Aviso guardado');};}
     if(s.lsEdit){const E=s.lsEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.lsEdit));fn(e);return {lsEdit:e};});
       v.leOn=true;v.leName=E.name||'';v.onLeName=e=>{const x=e.target.value;upd(q=>{q.name=x;});};v.leTag=E.tag||'';v.onLeTag=e=>{const x=e.target.value;upd(q=>{q.tag=x;});};v.leDesc=E.desc||'';v.onLeDesc=e=>{const x=e.target.value;upd(q=>{q.desc=x;});};
       v.leGroups=LGRP.map(([g,gl])=>{const G=E[g]||{},q=norm((s.leQ||{})[g]||'');

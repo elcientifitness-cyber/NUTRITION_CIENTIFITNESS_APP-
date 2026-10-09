@@ -48,25 +48,44 @@ function local(tz) {
 }
 const effOf = (cfg, ck) => Object.assign({}, DEF, (cfg && cfg.tpl) || {}, (cfg && cfg.ovr && cfg.ovr[ck]) || {});
 
-function dueList(now, eff, pr, G, evs) {
+function dueList(now, eff, pr, G, evs, C) {
   const out = [], off = pr.off || {}, days = (G && G.days) || pr.days || [0, 2, 4], tr = days.includes(now.dow), D = (G && G[tr ? 'train' : 'rest']) || {};
-  const wake = hm(pr.wake) != null ? hm(pr.wake) : 480, sleep = hm(pr.sleep) != null ? hm(pr.sleep) : 1350;
-  if (eff.water && !off.water) {
-    const L = num(D.water) || num(eff.waterL);
-    if (L > 0) {
-      const k = Math.min(8, Math.max(3, Math.ceil(L / 0.5))), a = wake + 60, b = Math.max(a + 120, sleep - 60), ml = Math.max(100, Math.round(L * 1000 / k / 50) * 50);
-      for (let i = 0; i < k; i++) out.push({ key: 'w' + i, kind: 'water', at: Math.round(a + (b - a) * i / (k - 1)), data: { title: 'Bebe agua', body: 'Unos ' + ml + ' ml ahora (' + (i + 1) + ' de ' + k + '). Objetivo de hoy: ' + String(L).replace('.', ',') + ' L.', tag: 'water', url: 'asesorado.html?tab=hoy' } });
-    }
-  }
-  if (eff.pre && !off.pre && tr) { const t = hm(pr.train); if (t != null && t - num(eff.preMin) >= 0) out.push({ key: 'pre', at: t - num(eff.preMin), data: { title: 'Preentreno', body: 'Entrenas a las ' + fmt(t) + ': es el momento de tomar tu preentreno.', tag: 'pre', url: 'asesorado.html?tab=hoy' } }); }
+  const wake = hm(pr.wake) != null ? hm(pr.wake) : 480, sleep = hm(pr.sleep) != null ? hm(pr.sleep) : 1350, trn = hm(pr.train);
+  const MX = Math.max(1, Math.min(20, Math.round(num(eff.max)) || 6));
+  if (eff.pre && !off.pre && tr && trn != null && trn - num(eff.preMin) >= 0) out.push({ key: 'pre', at: trn - num(eff.preMin), data: { title: 'Preentreno', body: 'Entrenas a las ' + fmt(trn) + ': es el momento de tomar tu preentreno.', tag: 'pre', url: 'asesorado.html?tab=hoy' } });
   if (!off.rev) (evs || []).forEach(e => {
     const lb = e.ty === 'medicion' ? 'Medición corporal' : 'Revisión', t = e.all ? null : hm(e.t), at = t != null ? ' a las ' + fmt(t) : '';
     if (eff.revBefore && e.d === now.tom) out.push({ key: 'rb' + e.d + (e.t || ''), at: hm(eff.revHour) != null ? hm(eff.revHour) : 1200, data: { title: 'Mañana: ' + lb.toLowerCase(), body: lb + ' mañana' + at + '. Si puedes, pésate en ayunas antes.', tag: 'rev', url: 'asesorado.html?tab=prog' } });
     if (eff.revDay && e.d === now.d) out.push({ key: 'rd' + e.d + (e.t || ''), at: t != null ? Math.max(420, t - 120) : 540, data: { title: 'Hoy: ' + lb.toLowerCase(), body: lb + ' hoy' + at + '.', tag: 'rev', url: 'asesorado.html?tab=prog' } });
   });
   if (eff.weigh && !off.weigh && now.dow === num(eff.weighDow)) out.push({ key: 'wg', at: hm(eff.weighHour) != null ? hm(eff.weighHour) : 510, data: { title: 'Toca pesarse', body: 'Pésate en ayunas, después de ir al baño, y apúntalo en la app.', tag: 'weigh', url: 'asesorado.html?tab=prog' } });
+  (C || []).forEach(x => {
+    const o = (eff.cxo || {})[x.id] || {}, cc = (eff.cxc || {})[x.id], on = cc != null ? !!cc : (o.on != null ? !!o.on : x.on !== false);
+    if (!on || off['c:' + x.id]) return;
+    const T = hm(o.time || x.time) != null ? hm(o.time || x.time) : 540, d = { title: x.title || 'CientiFitness', body: x.body || '', tag: 'c' + x.id, url: 'asesorado.html?tab=hoy' };
+    const add = (k, at) => { if (at >= 0 && at < 1440) out.push({ key: 'c' + x.id + k, at, data: d }); };
+    switch (x.kind) {
+      case 'week': if ((x.days || []).includes(now.dow)) add('', T); break;
+      case 'train': if (tr) add('', T); break;
+      case 'rest': if (!tr) add('', T); break;
+      case 'pre': if (tr && trn != null) add('', trn + Math.round(num(x.offset))); break;
+      case 'rev': { const db = Math.max(0, Math.round(num(x.dbefore))); (evs || []).forEach(e => { if (e.d === addDay(now.d, db)) add(e.d, T); }); break; }
+      case 'once': if (x.date === now.d) add(x.date, T); break;
+      case 'every': { const a = hm(x.from) != null ? hm(x.from) : 540, b = hm(x.to) != null ? hm(x.to) : 1260, st = Math.max(30, Math.round(num(x.every) * 60) || 120); for (let m = a, i = 0; m <= b && i < 24; m += st, i++) add('e' + i, m); break; }
+      default: add('', T);
+    }
+  });
+  out.splice(MX);
+  if (eff.water && !off.water) {
+    const L = num(D.water) || num(eff.waterL), room = MX - out.length;
+    if (L > 0 && room > 0) {
+      const k = Math.min(room, 8, Math.max(3, Math.ceil(L / 0.5))), a = wake + 60, b = Math.max(a + 120, sleep - 60), ml = Math.max(100, Math.round(L * 1000 / k / 50) * 50);
+      for (let i = 0; i < k; i++) out.push({ key: 'w' + i, kind: 'water', at: k === 1 ? Math.round((a + b) / 2) : Math.round(a + (b - a) * i / (k - 1)), data: { title: 'Bebe agua', body: 'Unos ' + ml + ' ml ahora (' + (i + 1) + ' de ' + k + '). Objetivo de hoy: ' + String(L).replace('.', ',') + ' L.', tag: 'water', url: 'asesorado.html?tab=hoy' } });
+    }
+  }
   return out;
 }
+const customOf = cfg => { if (!cfg) return []; const own = cfg.own || [], com = cfg.common || []; if (cfg.owner) return own; const mine = cfg.prem ? own : [], ids = new Set(mine.map(x => x.id)); return mine.concat(com.filter(x => x && !ids.has(x.id))); };
 
 module.exports = async (req, res) => {
   const out = (c, o) => { res.statusCode = c; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(o)); };
@@ -91,7 +110,7 @@ module.exports = async (req, res) => {
       for (const s of subs) {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
-        const list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key));
+        const list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key), customOf(cfg));
         const st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
         let go = list.filter(x => x.at <= now.m && now.m - x.at < 40 && !st.k.includes(x.key));
         const w = go.filter(x => x.kind === 'water'); if (w.length > 1) { w.slice(0, -1).forEach(x => st.k.push(x.key)); go = go.filter(x => x.kind !== 'water' || x === w[w.length - 1]); }

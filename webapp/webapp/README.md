@@ -49,3 +49,11 @@ Se hace una sola vez:
 4. En la app: Biblioteca → Notificaciones debe decir «Servidor listo».
 
 Cada asesorado: en iPhone, Safari → Compartir → «Añadir a pantalla de inicio»; abre la app desde el icono → campana → Activar notificaciones. En Android basta con pulsar la campana.
+
+## Biblioteca común de cuestionarios y avisos
+
+Una vez: Supabase → SQL Editor → New query → pega **biblioteca-avisos.sql** → Run (después de biblioteca.sql y notificaciones.sql).
+
+- Los cuestionarios y avisos personalizados del CEO son los comunes y se leen en vivo.
+- Estándar: usa los comunes; puede activar o desactivar los avisos y cambiar su hora.
+- Premium: además crea los suyos, duplica los comunes para editarlos y puede proponerlos a la biblioteca común (el CEO los aprueba en Biblioteca → Propuestas).

@@ -641,7 +641,7 @@ class Component extends DCLogic {
       v.ntWake=NP.wake||'08:00';v.onNtWake=e=>{const x=e.target.value;this.ntSetPref(p=>{p.wake=x;});};
       v.ntSleep=NP.sleep||'22:30';v.onNtSleep=e=>{const x=e.target.value;this.ntSetPref(p=>{p.sleep=x;});};
       v.ntTrain=NP.train||'';v.onNtTrain=e=>{const x=e.target.value;this.ntSetPref(p=>{if(x)p.train=x;else delete p.train;});};v.ntShowTrain=!PN||!!PN.pre;
-      v.ntTypes=[['water','Beber agua'],['pre','Preentreno'],['rev','Revisiones'],['weigh','Pesarse'],['plan','Plan actualizado'],['msg','Mensajes de tu entrenador']].filter(([k])=>!PN||(k==='rev'?(PN.revBefore||PN.revDay):PN[k])).map(([k,l])=>{const on=!off[k];
+      v.ntTypes=[['water','Beber agua'],['pre','Preentreno'],['rev','Revisiones'],['weigh','Pesarse'],['plan','Plan actualizado'],['msg','Mensajes de tu entrenador']].filter(([k])=>!PN||(k==='rev'?(PN.revBefore||PN.revDay):PN[k])).concat(((PN&&PN.cx)||[]).map(x=>['c:'+x.id,x.title||'Aviso'])).map(([k,l])=>{const on=!off[k];
         return {label:l,bg:on?'#1180c2':'#d3dde7',knob:on?'20px':'2px',toggle:()=>this.ntSetPref(p=>{p.off=p.off||{};if(p.off[k])delete p.off[k];else p.off[k]=true;})};});
       v.ntBanner=s.ntOn===false&&!s.ntDis&&(sup||v.ntNeedInstall)&&perm!=='denied';v.ntDismiss=()=>{try{localStorage.setItem('cf-nt-dis','1');}catch(e){}this.setState({ntDis:true});};}
     {const pb=s.pushB;v.pbOn=!!pb;v.pbTitle=pb?pb.title:'';v.pbBody=pb?pb.body:'';v.pbClose=e=>{if(e)e.stopPropagation();this.setState({pushB:null});};
