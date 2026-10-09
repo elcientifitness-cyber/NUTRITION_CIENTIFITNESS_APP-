@@ -170,7 +170,20 @@ button{-webkit-user-select:none;user-select:none}
                 </sc-if>
                 <sc-if value="{{ l.hideGr }}" hint-placeholder-val="{{ true }}"><strong style="font-size:14px;font-variant-numeric:tabular-nums;flex:none;color:var(--color-neutral-800,#3b4a5a)">{{ l.plan }}</strong></sc-if>
               </div>
-              <sc-if value="{{ l.hasAlts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 4px 38px"><button onClick="{{ l.altBtn }}" style="font:inherit;font-size:12px;font-weight:800;min-height:32px;padding:4px 12px;border-radius:999px;border:1.5px dashed #a6d2ef;background:#fff;color:#0e5a8a;cursor:pointer">{{ l.altLbl }}</button><sc-if value="{{ l.altOpen }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ l.alts }}" as="al" hint-placeholder-count="0"><button onClick="{{ al.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:36px;padding:6px 12px;border-radius:999px;border:0;background:#e3f1fa;color:#0e5a8a;cursor:pointer">{{ al.label }}</button></sc-for></sc-if></div></sc-if>
+              <sc-if value="{{ l.hasAlts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;margin:-2px 0 4px 38px">
+                <button onClick="{{ l.altBtn }}" style="font:inherit;font-size:12px;font-weight:800;min-height:32px;padding:4px 12px;border-radius:999px;border:1.5px dashed #a6d2ef;background:#fff;color:#0e5a8a;cursor:pointer;align-self:flex-start">{{ l.altLbl }}</button>
+                <sc-if value="{{ l.altOpen }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ l.stop }}" style="display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid #e0e8f0;border-radius:16px;padding:8px">
+                    <sc-if value="{{ l.altCount }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;color:var(--color-neutral-700);padding:2px 6px">{{ l.altCount }}</span></sc-if>
+                    <sc-if value="{{ l.altEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding:6px">No hay alimentos parecidos de la misma categoría. Escribe a tu entrenador.</span></sc-if>
+                    <sc-for list="{{ l.alts }}" as="al" hint-placeholder-count="0"><button onClick="{{ al.pick }}" style="font:inherit;display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 10px;border:0;border-radius:12px;background:#f4f7fa;color:var(--color-text);cursor:pointer;text-align:left;opacity:{{ al.op }}">
+                      <span style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0"><span style="font-size:14px;font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap">{{ al.name }}<sc-if value="{{ al.rec }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:#e3f1fa;color:#0e5a8a">Recomendada</span></sc-if></span><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ al.meta }}</span></span>
+                      <span style="font-size:11px;font-weight:700;color:var(--color-neutral-600);font-variant-numeric:tabular-nums;flex:none">{{ al.sim }}</span></button></sc-for>
+                    <sc-if value="{{ l.altLimit }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:600;color:#77560a;padding:4px 6px;text-wrap:pretty">{{ l.altLimitTxt }}</span></sc-if>
+                    <sc-if value="{{ l.altBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ l.back }}" style="font:inherit;font-size:12px;font-weight:700;min-height:36px;border:0;border-radius:999px;background:transparent;color:#0e5a8a;cursor:pointer">{{ l.backLbl }}</button></sc-if>
+                  </div>
+                </sc-if>
+              </div></sc-if>
             </sc-for>
           </div>
         </sc-for>
@@ -579,6 +592,18 @@ class Component extends DCLogic {
       this.setState(st=>{const lg={...st.logs};if(lg[day])lg[day]={...lg[day],_dirty:false};return {logs:lg,saving:false};});});}
   group(plan,day){const gs=plan.groups||[],d=dowMon(parseD(day));return gs.find(g=>(g.dayIdx||[]).includes(d))||gs[0]||{meals:[]};}
   mkFood(o){const q=o.gr/100;return {...o,k:R(o.k100*q),p:r1(o.p100*q),c:r1(o.c100*q),f:r1(o.f100*q)};}
+  swapOpts(ln,AL,on,tol){const FL=window.CF_FOODS||[];if(!this._FMap){this._FMap={};FL.forEach(x=>{this._FMap[x.id]=x;});}const FM=this._FMap,gr=num(ln.gr)||100;
+    const ref=FM[ln.id]||{id:ln.id,k:num(ln.k)/gr*100,p:num(ln.p)/gr*100,c:num(ln.c)/gr*100,f:num(ln.f)/gr*100,cat:ln.cat||''};
+    const MM=x=>{if(x.cat==='Verduras')return 'veg';if(x.mm)return x.mm;const A=x.p*4,B=x.c*4,C=x.f*9;return A>=B&&A>=C?'prot':B>=C?'carb':'fat';};
+    const mm=MM(ref),vegRef=mm==='veg'||ref.cat==='Frutas',m=mm==='prot'?'p':mm==='fat'?'f':'c',tv=gr*ref[m]/100,oth=['p','c','f'].filter(q=>q!==m),W=q=>q==='f'?9:4,kRef=num(ln.k)||gr*ref.k/100;
+    const sim=o=>{let dk=0;oth.forEach(q=>{dk+=Math.abs(num(o[q])-gr*ref[q]/100)*W(q);});return Math.max(0,Math.round(100-dk/Math.max(40,kRef)*100));};
+    const mk=(x,gg,rec)=>{const q=gg/100,o={id:x.id,name:x.name,gr:gg,g:gg+' g',k:Math.round(num(x.k)*q),p:Math.round(num(x.p)*q*10)/10,c:Math.round(num(x.c)*q*10)/10,f:Math.round(num(x.f)*q*10)/10,rec};o.sim=sim(o);return o;};
+    const out=(AL||[]).map(al=>{const x=FM[al.id];if(x)return mk(x,num(al.gr),true);const o={...al,rec:true};o.sim=sim(o);return o;});
+    if(on&&tv>0&&ref.cat){FL.forEach(x=>{if(x.id===ref.id||!(x[m]>=1)||x.cat!==ref.cat||out.some(o=>o.id===x.id))return;if(x.cat==='Salsas y condimentos'&&ref.cat!=='Salsas y condimentos')return;if(!vegRef&&MM(x)!==mm)return;
+      const gg=x.k>=300?Math.round(tv/x[m]*100):Math.max(5,Math.round(tv/x[m]*20)*5);if(!(gg>0&&gg<=1500))return;const o=mk(x,gg,false);if(Math.abs(o.k-kRef)>Math.max(kRef*tol/100,15))return;out.push(o);});}
+    const rec=out.filter(o=>o.rec),own=out.filter(o=>!o.rec).sort((a,b)=>b.sim-a.sim).slice(0,8);return rec.concat(own).sort((a,b)=>b.sim-a.sim);}
+  swapMsg(meal,ln,al){if(!this.sb)return;const body='Cambio de alimento en '+meal+': '+ln.name+' ('+ln.g+') → '+al.name+' ('+al.g+'). No lo tenía en casa.\n[[cf:swap|'+ln.id+'|'+al.id+'|'+encodeURIComponent(meal||'')+']]';
+    this.sb.from('cf_messages').insert({...this.key(),sender:'client',body}).then(({error})=>{if(error)return;this.toastMsg('Cambio guardado · tu entrenador lo verá en el chat');this.loadMsgs();});}
   planFood(key,mi,m,ln){const g0=num(ln.gr)||100;return this.mkFood({key,mi,meal:m.name,name:ln.name,src:'plan',gr:g0,planned:g0,k100:num(ln.k)/g0*100,p100:num(ln.p)/g0*100,c100:num(ln.c)/g0*100,f100:num(ln.f)/g0*100,changed:false});}
   setGr(key,g){g=Math.max(0,R(g));this.patchLog(n=>{n.foods=n.foods.map(x=>x.key===key?this.mkFood({...x,gr:g,changed:x.src==='plan'&&g!==x.planned}):x);});}
   renderVals(){
@@ -643,9 +668,16 @@ class Component extends DCLogic {
         const blocks=o.blocks.map((b,bi)=>{const pick1=b.lines.length>1&&/elige 1/i.test(b.label),pre=mi+'-'+oi+'-'+bi+'-';
           const cnt=F.filter(x=>(x.key||'').startsWith(pre)).length;if(pick1){need++;if(cnt)done++;}else{need+=b.lines.length;done+=cnt;}
           return {label:b.label,sw:b.sw,ink:b.ink,lines:b.lines.map((ln,li)=>{const key=pre+li,f=F.find(x=>x.key===key);
-            const AL=ln.alts||[];return {name:f&&f.alt?f.name:ln.name,plan:ln.g,hasAlts:AL.length>0,altOpen:s.altKey===key,altLbl:s.altKey===key?'Cerrar':'Otra opción',
-              altBtn:e=>{e.stopPropagation();this.setState({altKey:s.altKey===key?null:key});},
-              alts:AL.map(al=>({label:al.name+' · '+al.g,pick:e=>{e.stopPropagation();this.patchLog(n=>{n.foods=n.foods.filter(x=>x.key!==key);if(pick1)n.foods=n.foods.filter(x=>!(x.key||'').startsWith(pre));const fo=this.planFood(key,mi,m,al);fo.alt=ln.name;n.foods.push(fo);});this.setState({altKey:null});}})),showGr:!!f,hideGr:!f,gr:f?String(f.gr):'',fw:f?'700':'500',bg:f?'#e3f1fa':'var(--color-neutral-100)',bd:f?'#a6d2ef':'transparent',
+            const AL=ln.alts||[],SWP=P.swap||{},swOn=SWP.on!==false,swMax=SWP.max==null?3:num(SWP.max),swTol=SWP.tol==null?10:num(SWP.tol),isOp=s.altKey===key,used=F.filter(x=>x.own&&x.key!==key).length,canOwn=swOn&&used<swMax;
+            const OPS=isOp?this.swapOpts(ln,AL,swOn,swTol):[];
+            return {name:f&&f.alt?f.name:ln.name,plan:ln.g,hasAlts:AL.length>0||swOn,altOpen:isOp,altLbl:isOp?'Cerrar':f&&f.alt?'Cambiar':'Otra opción',
+              altBtn:e=>{e.stopPropagation();this.setState({altKey:isOp?null:key});},
+              altEmpty:isOp&&!OPS.length,altCount:swOn?'Cambios libres hoy: '+Math.min(used,swMax)+' de '+swMax:'',altLimit:isOp&&swOn&&!canOwn,altLimitTxt:'Has usado tus '+swMax+' cambios libres de hoy. Puedes elegir las recomendadas.',
+              altBack:isOp&&!!(f&&f.alt),backLbl:'Volver a '+ln.name,back:e=>{e.stopPropagation();this.patchLog(n=>{n.foods=n.foods.filter(x=>x.key!==key);n.foods.push(this.planFood(key,mi,m,ln));});this.setState({altKey:null});},
+              alts:OPS.map(al=>{const dis=!al.rec&&!canOwn;return {name:al.name,meta:al.g+' · '+al.k+' kcal',rec:al.rec,sim:al.sim+' %',op:dis?'.45':'1',
+                pick:e=>{e.stopPropagation();if(dis){this.toastMsg('Ya has hecho '+swMax+' cambios libres hoy',true);return;}
+                  this.patchLog(n=>{n.foods=n.foods.filter(x=>x.key!==key);if(pick1)n.foods=n.foods.filter(x=>!(x.key||'').startsWith(pre));const fo=this.planFood(key,mi,m,al);fo.alt=ln.name;if(!al.rec)fo.own=true;n.foods.push(fo);});
+                  this.setState({altKey:null});if(!al.rec)this.swapMsg(m.name,ln,al);}};}),showGr:!!f,hideGr:!f,gr:f?String(f.gr):'',fw:f?'700':'500',bg:f?'#e3f1fa':'var(--color-neutral-100)',bd:f?'#a6d2ef':'transparent',
               ckBd:f?'#1180c2':'#b1bfcd',ckBg:f?'#1180c2':'#fff',ck:f?'✓':'',subFg:f&&f.changed?'#77560a':'var(--color-neutral-700)',
               sub:f?(f.alt?'En lugar de '+f.alt+' · ':'')+(f.changed?'Pautado '+(f.alt?f.planned+' g':ln.g)+' · ':'')+f.k+' kcal':(ln.k||0)+' kcal',stop:e=>e.stopPropagation(),
               minus:e=>{e.stopPropagation();this.setGr(key,num(f&&f.gr)-10);},plus:e=>{e.stopPropagation();this.setGr(key,num(f&&f.gr)+10);},
@@ -716,7 +748,7 @@ class Component extends DCLogic {
         v.apChange=()=>{const msg='Hola'+(coFirst?' '+coFirst:'')+', necesitaría cambiar la cita del '+d0.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+(noT?'':' a las '+nx.start)+'. ¿Qué otros huecos tienes?';this.setState({apOpen:false,draft:msg});this.toastMsg('Revisa el mensaje y pulsa Enviar');};}}
     if(v.isChat){v.thrRef=this.thrRef;v.noMsgs=s.msgs.length===0;let pd='';
       v.bubbles=s.msgs.map(m=>{const mine=m.sender==='client',d=new Date(m.created_at),dk=isoD(d),sd=dk!==pd;pd=dk;
-        return {body:m.body,showDay:sd,day:dk===today?'Hoy':cap(d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})),time:(mine?'':(coFirst||'Nutricionista')+' · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
+        return {body:String(m.body||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,''),showDay:sd,day:dk===today?'Hoy':cap(d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})),time:(mine?'':(coFirst||'Nutricionista')+' · ')+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'#51408d':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'18px 18px 4px 18px':'18px 18px 18px 4px'};});
       v.draft=s.draft;v.onDraft=e=>this.setState({draft:e.target.value});v.send=()=>this.send();}
 
     if(v.isProg){v.sgLogs=s.logs;v.sgMetrics=P.metrics||[];v.sgPer=P.perNames||[];v.sgPl=P.plNames||[];v.sgTk=Tk;

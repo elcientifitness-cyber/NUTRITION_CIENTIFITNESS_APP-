@@ -437,17 +437,18 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ roundNote }}</span>
       </div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
-      <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }}">{{ distLabel }}</span>
-      <span style="flex:1 1 0"></span>
+    <div style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;min-width:0">
+      <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }};white-space:nowrap;flex:none">{{ distLabel }}</span>
+      <div class="cf-rail" style="display:flex;gap:6px;align-items:center;flex:1 1 auto;min-width:0;padding:2px 0">
+      <span style="margin-left:auto"></span>
       <sc-if value="{{ flActive }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 5px 4px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Lista: {{ flActiveName }}<button onClick="{{ flUnset }}" title="Dejar de usar la lista permitida" aria-label="Quitar lista" style="font:inherit;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(17,128,194,.12);color:inherit;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-if>
       <button class="btn btn-secondary" onClick="{{ lsOpenFn }}" title="Rellena las comidas con una lista de alimentos o limita los alimentos a esa lista" style="font-size:13px;min-height:38px">Lista de alimentos</button>
       <button class="btn btn-ghost" onClick="{{ toggleLat }}" title="{{ latTitle }}" style="font-size:13px;min-height:38px">{{ latLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ archivePlan }}" title="Guarda una copia de este plan en la pestaña Archivo" style="font-size:13px;min-height:38px"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="5" rx="1.5"></rect><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path><path d="M10 13h4"></path></svg>Archivar plan</button>
       <button class="btn" onClick="{{ clearPlan }}" title="Vacía el plan actual para empezar uno nuevo" style="font-size:13px;min-height:38px;background:{{ clearBg }};color:{{ clearFg }}">{{ clearLabel }}</button>
-      <button class="btn btn-ghost" onClick="{{ collapseAll }}" style="font-size:13px">Plegar todas</button>
-      <button class="btn btn-ghost" onClick="{{ expandAll }}" style="font-size:13px">Desplegar todas</button>
-      <button class="btn btn-primary" onClick="{{ addMeal }}" style="min-height:38px">
+      <button class="btn btn-ghost" onClick="{{ foldAll }}" style="font-size:13px;min-height:38px">{{ foldLabel }}</button>
+      </div>
+      <button class="btn btn-primary" onClick="{{ addMeal }}" style="min-height:38px;flex:none">
         <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Comida
       </button>
     </div>
@@ -547,7 +548,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <span style="font-weight:700">{{ m.tgtLine }}</span>
             <span style="color:var(--color-neutral-700)">{{ m.actLine }}</span>
           </div>
-          <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+          <div class="cf-rail" style="display:flex;gap:4px;align-items:center;min-width:0;flex:0 1 auto">
             <sc-if value="{{ m.showCheatBtn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ m.toggleCheat }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:transparent;color:var(--color-accent-700);cursor:pointer">{{ m.cheatLabel }}</button></sc-if>
             <button class="btn btn-secondary" onClick="{{ m.openTpl }}" style="font-size:12px;padding:6px 10px">Recetas</button>
             <button class="btn btn-secondary" onClick="{{ m.saveTpl }}" style="font-size:12px;padding:6px 10px">Guardar receta</button>
@@ -764,6 +765,19 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap">Preentreno<input class="input" type="text" inputmode="numeric" value="{{ cnPre }}" onChange="{{ onCnPre }}" style="width:64px;min-height:32px;text-align:center">min antes de entrenar</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary" onClick="{{ cnTest }}" style="font-size:13px">Enviar prueba</button><sc-if value="{{ cnHasCus }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ cnReset }}" style="font-size:13px">Volver a la plantilla</button></sc-if></div>
+      </div>
+      <div style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+        <button onClick="{{ swToggle }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:0;border:0;background:transparent;color:var(--color-text);cursor:pointer;text-align:left">
+          <span style="font-weight:800;font-size:16px;flex:1;min-width:0">Cambios de alimento</span>
+          <span style="width:38px;height:22px;border-radius:999px;background:{{ swBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ swKnob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+        </button>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Si un día no tiene un alimento, puede cambiarlo en su app por otro de la misma categoría con gramos ajustados. Tus equivalencias salen marcadas como «Recomendada» y no cuentan para el límite. Cada cambio libre te llega por el chat.</span>
+        <sc-if value="{{ swOn }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:8px 14px">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-neutral-700)">Máximo<input class="input" type="text" inputmode="numeric" value="{{ swMax }}" onChange="{{ onSwMax }}" style="width:52px;min-height:32px;text-align:center">al día</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-neutral-700)">Diferencia máx.<input class="input" type="text" inputmode="numeric" value="{{ swTol }}" onChange="{{ onSwTol }}" style="width:52px;min-height:32px;text-align:center">% kcal</label>
+          </div>
+        </sc-if>
       </div>
     </div>
 
@@ -1465,7 +1479,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <sc-if value="{{ thNoMsgs }}" hint-placeholder-val="{{ false }}"><span style="margin:auto;font-size:13px;color:var(--color-neutral-700)">Sin mensajes. Escribe el primero.</span></sc-if>
           <sc-for list="{{ bubbles }}" as="b" hint-placeholder-count="3">
             <sc-if value="{{ b.showDay }}" hint-placeholder-val="{{ false }}"><span style="align-self:center;font-size:11px;font-weight:700;color:var(--color-neutral-600);padding:8px 0 2px">{{ b.day }}</span></sc-if>
-            <div style="align-self:{{ b.align }};max-width:78%;display:flex;flex-direction:column;align-items:{{ b.align }};gap:2px"><div style="padding:9px 13px;border-radius:{{ b.rad }};background:{{ b.bg }};color:{{ b.fg }};font-size:14px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:var(--shadow-sm)">{{ b.body }}</div><span style="font-size:10px;color:var(--color-neutral-600)">{{ b.time }}</span></div>
+            <div style="align-self:{{ b.align }};max-width:78%;display:flex;flex-direction:column;align-items:{{ b.align }};gap:2px"><div style="padding:9px 13px;border-radius:{{ b.rad }};background:{{ b.bg }};color:{{ b.fg }};font-size:14px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:var(--shadow-sm)">{{ b.body }}</div><sc-if value="{{ b.hasSwap }}" hint-placeholder-val="{{ false }}"><button onClick="{{ b.swapAdd }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;opacity:{{ b.swapOp }}">{{ b.swapLbl }}</button></sc-if><span style="font-size:10px;color:var(--color-neutral-600)">{{ b.time }}</span></div>
           </sc-for>
         </div>
         <div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--color-divider);align-items:flex-end">
@@ -2028,7 +2042,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <sc-if value="{{ eqiEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Todavía no tiene equivalencias. Añade hasta 3: no crean una opción nueva.</span></sc-if>
       <sc-for list="{{ eqiCur }}" as="q" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--color-accent-100)"><span style="font-weight:700;font-size:14px;flex:1;min-width:0">{{ q.name }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums;color:var(--color-accent-800)">{{ q.g }}</span><button onClick="{{ q.rm }}" aria-label="Quitar" style="font:inherit;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:#fff;color:#a8321a;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></sc-for>
       <sc-if value="{{ eqiFull }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Máximo 3 equivalencias. Quita una para añadir otra.</span></sc-if>
-      <sc-if value="{{ eqiHasSug }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Sugeridas por similitud de macros</span><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiSug }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px dashed var(--color-neutral-300);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}</span><span style="font-size:11px;color:var(--color-neutral-600)">{{ q.sim }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
+      <sc-if value="{{ eqiNoSame }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">No hay equivalencias parecidas en la misma categoría.</span></sc-if>
+      <sc-if value="{{ eqiHasSug }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">{{ eqiCatLbl }}</span><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiSug }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px dashed var(--color-neutral-300);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}<sc-if value="{{ q.cat }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--color-neutral-600)"> · {{ q.cat }}</span></sc-if></span><span style="font-size:11px;color:var(--color-neutral-600)">{{ q.sim }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
+      <button onClick="{{ eqiAllT }}" style="font:inherit;font-size:12px;font-weight:700;align-self:flex-start;padding:7px 12px;border-radius:999px;border:1px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer">{{ eqiAllLbl }}</button>
       <input class="input cf-search" value="{{ eqiQ }}" onChange="{{ onEqiQ }}" placeholder="Buscar otro alimento…">
       <sc-if value="{{ eqiHasRes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ eqiRes }}" as="q" hint-placeholder-count="0"><button onClick="{{ q.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer;text-align:left"><span style="font-weight:700;font-size:13px;flex:1;min-width:0">+ {{ q.name }}</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ q.g }}</span></button></sc-for></div></sc-if>
     </div>
@@ -2387,6 +2403,10 @@ const CFF=()=>window.CFForms||CFF0;
 const DEF_NOTES=['Pesa los alimentos en crudo, antes de cocinarlos.','Cocina a la plancha, al horno, al vapor o en airfryer; evita los fritos.','Puedes cambiar el orden de las comidas si te encaja mejor en tu día.','Bebe uno o dos vasos de agua con esta comida.','Toma el preentreno entre 30 y 45 minutos antes de entrenar.','Si entrenas por la tarde, haz esta comida 1–2 horas antes del entreno.','Las verduras son libres: puedes repetir si te quedas con hambre.','Si comes fuera, elige una proteína a la plancha con guarnición de verdura.'];
 const NDEF={water:true,waterL:2,pre:true,preMin:60,revBefore:true,revDay:true,revHour:'20:00',plan:true,weigh:true,weighDow:0,weighHour:'08:30',msg:true};
 const NTYPES=[['water','Beber agua','Reparte los avisos entre que se levanta y se acuesta, según los litros de sus pautas del día.'],['pre','Preentreno','Antes de su hora de entreno, solo los días de entreno.'],['revBefore','Víspera de la revisión','El día antes de cada revisión o medición de la agenda.'],['revDay','Día de la revisión','Dos horas antes de la cita.'],['weigh','Pesarse','Una vez por semana.'],['plan','Plan actualizado','Al publicar cambios en su app.'],['msg','Mensaje nuevo','Cuando le escribes por el chat.']];
+function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(m=>{if(!seen.has(m)){seen.add(m);ms.push(m);}});(n.menus||[]).forEach(x=>push(x.meals));push(mealsOf(n));
+  const hits=[];ms.forEach(m=>(m.options||[]).forEach(o=>['prot','carb','fat'].forEach(sl=>(o[sl]||[]).forEach(x=>{if(x.fid===from)hits.push({m,o,sl,x});}))));
+  const bn=hits.filter(q=>norm(q.m.name||'')===norm(mn||''));return bn.length?bn:hits;}
+const stripMk=b=>String(b||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,'');
 const isLig=n=>/desay|merien|snack|media ma|pre.?entreno|post.?entreno|recena/.test(norm(n||''));
 const LGRP=[['ligera','Desayuno, merienda y snacks'],['principal','Comida y cena']];
 function fillFromList(n,Lst){let c=0;mealsOf(n).forEach(m=>{if(m.cheat)return;const G=Lst[isLig(m.name)?'ligera':'principal'];if(!G)return;const V=()=>(G.veg||[]).map(([f,g])=>vg(f,g));
@@ -2472,7 +2492,7 @@ function eqMembers(id,groups){const s=new Set();(groups||[]).forEach(G=>{if(G.it
 function equivsFor(ref,g,FL,n,groups){const mem=eqMembers(ref.id,groups);if(mem.size)return {manual:true,list:equivs(ref,g,FL,n,false,mem)};return {manual:false,list:equivs(ref,g,FL,n,true)};}
 function equivs(ref,g,foods,n,sameCat,only){const mm=mainMacro(ref),m=mm==='prot'?'p':mm==='fat'?'f':'c',tv=g*ref[m]/100;if(!(tv>0))return [];
   const vegRef=mm==='veg'||ref.cat==='Frutas',oth=['p','c','f'].filter(q=>q!==m),W=q=>q==='f'?9:4,refO={};oth.forEach(q=>{refO[q]=g*ref[q]/100;});
-  return foods.filter(f=>f.id!==ref.id&&f[m]>=1&&(only?only.has(f.id):((vegRef?(f.cat==='Verduras'||f.cat==='Frutas'):mainMacro(f)===mm)&&(!sameCat||f.cat===ref.cat)))).map(f=>{const gg=f.k>=300?Math.round(tv/f[m]*100):Math.max(5,Math.round(tv/f[m]*20)*5);let dk=0;oth.forEach(q=>{dk+=Math.abs(gg*f[q]/100-refO[q])*W(q);});
+  return foods.filter(f=>f.id!==ref.id&&f[m]>=1&&(only||ref.cat==='Salsas y condimentos'||f.cat!=='Salsas y condimentos')&&(only?only.has(f.id):((vegRef?(f.cat==='Verduras'||f.cat==='Frutas'):mainMacro(f)===mm)&&(!sameCat||f.cat===ref.cat)))).map(f=>{const gg=f.k>=300?Math.round(tv/f[m]*100):Math.max(5,Math.round(tv/f[m]*20)*5);let dk=0;oth.forEach(q=>{dk+=Math.abs(gg*f[q]/100-refO[q])*W(q);});
     return {f,g:gg,dk,sim:Math.max(0,Math.round(100-dk/Math.max(40,g*ref.k/100)*100))};}).filter(x=>x.g>0&&x.g<=1500).sort((a,b)=>a.dk-b.dk).slice(0,n);}
 const PRESETS=[
  {id:'def30',name:'Déficit 30% estándar',desc:'Pérdida de grasa rápida con proteína alta para proteger la masa magra. Recomendado 4–8 semanas.',adj:-30,mode:'gkg',pg:2.4,fg:0.7},
@@ -3313,7 +3333,7 @@ class Component extends DCLogic {
               setMan:()=>{this.setState({focusMan:x.id});ed(it2=>{it2.man=true;it2.mg=x.g>0?x.g:(x.sug||50);});},
               unMan:()=>ed(it2=>{delete it2.man;delete it2.mg;}),
               eqShow:cl.planMode==='closed'&&sl!=='veg',eqLabel:(x.eqs&&x.eqs.length)?'≈ '+x.eqs.length:'≈',eqBg:(x.eqs&&x.eqs.length)?'#fff':'rgba(255,255,255,.55)',
-              eqOpen:()=>this.setState({eqItem:{mealId:ml.id,optId:o.id,sl,itemId:x.id,g:x.g},eqiQ:''}),
+              eqOpen:()=>this.setState({eqItem:{mealId:ml.id,optId:o.id,sl,itemId:x.id,g:x.g},eqiQ:'',eqiAll:false}),
               meta:fl?'Contiene alérgeno vetado':zero?(x.low?'No aporta '+MLBL[sl].toLowerCase():'0 g · el resto ya cubre el objetivo'):(R(x.g*f.k/100)+' kcal · P '+R(x.g*f.p/100)+' · C '+R(x.g*f.c/100)+' · G '+R(x.g*f.f/100)+(isM?' · a mano':'')),metaFg:fl?'#b3361b':zero?'var(--color-accent-700)':'var(--color-neutral-700)',
               share:num(x.pct)||0,shareLbl:R((x.sh||0)*100)+'%',showShare:sl!=='veg'&&!isM&&o[sl].filter(q=>!q.man).length>1,
               onShare:e=>{const val=e.target.value;um(m=>{const it2=m.options.find(q=>q.id===o.id)[sl].find(q=>q.id===x.id);it2.pct=num(val);});},
@@ -3407,7 +3427,8 @@ class Component extends DCLogic {
             const kc=f=>{const gg=eqg(f);return gg+' g · '+R(gg*f.k/100)+' kcal';};
             v.eqiTitle=ref.name;v.eqiSub=g+' g en el plan · el asesorado solo las ve si pulsa «Otra opción»';v.eqiCount=cur.length+' de 3';v.eqiFull=full;
             v.eqiCur=cur.map((fid,i)=>{const f=FM[fid];return f?{name:f.name,g:kc(f),rm:()=>upd(it2=>{it2.eqs.splice(i,1);})}:null;}).filter(Boolean);v.eqiEmpty=!v.eqiCur.length;
-            v.eqiSug=full?[]:equivs(ref,g,allFoods,8,false).filter(q=>!cur.includes(q.f.id)).map(q=>({name:q.f.name,g:kc(q.f),sim:q.sim+' % similar',add:()=>add(q.f.id)}));
+            const allC=!!s.eqiAll;v.eqiSug=full?[]:equivs(ref,g,allFoods,8,!allC).filter(q=>!cur.includes(q.f.id)).map(q=>({name:q.f.name,g:kc(q.f),sim:q.sim+' % similar',cat:allC&&q.f.cat!==ref.cat?q.f.cat:'',add:()=>add(q.f.id)}));
+            v.eqiCatLbl=allC?'Sugeridas de todas las categorías':'Sugeridas de '+ref.cat+' · por similitud de macros';v.eqiAllLbl=allC?'Solo '+ref.cat:'Mostrar opciones de todas las categorías';v.eqiAllT=()=>this.setState({eqiAll:!allC});v.eqiNoSame=!full&&!allC&&!v.eqiSug.length;
             v.eqiHasSug=v.eqiSug.length>0;const qq=norm(s.eqiQ||'');v.eqiQ=s.eqiQ||'';v.onEqiQ=e=>this.setState({eqiQ:e.target.value});v.eqiHasRes=!full&&qq.length>=2;
             v.eqiRes=v.eqiHasRes?allFoods.filter(f=>f.id!==ref.id&&!cur.includes(f.id)&&f[mc]>=1&&norm(f.name).includes(qq)).slice(0,8).map(f=>({name:f.name,g:kc(f),add:()=>add(f.id)})):[];
             v.eqiClose=()=>this.setState({eqItem:null,eqiQ:''});}}}
@@ -3432,6 +3453,7 @@ class Component extends DCLogic {
               allow:()=>{this.updC(n=>{if(on)delete n.foodList;else n.foodList=Lst.id;});if(!on)this.toast('Al añadir alimentos verás solo los de «'+Lst.name+'»');}};});}
         v.collapseAll=()=>{const c={};MLS.forEach(m=>{c[m.id]=true;});this.setState({collapsed:c});};
         v.expandAll=()=>this.setState({collapsed:{}});
+        {const allC=MLS.length>0&&MLS.every(m=>s.collapsed[m.id]);v.foldLabel=allC?'Desplegar todas':'Plegar todas';v.foldAll=allC?v.expandAll:v.collapseAll;}
         v.mealNav=MLS.map(m=>({name:m.name||'Comida',bg:s.collapsed[m.id]?'#fff':'var(--color-accent-100)',fg:s.collapsed[m.id]?'var(--color-neutral-700)':'var(--color-accent-800)',
           go:()=>{const c={};MLS.forEach(q=>{c[q.id]=q.id!==m.id;});this.setState({collapsed:c},()=>{const el=document.getElementById('meal-'+m.id);if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-16,behavior:'smooth'});});}}));
         const stf=(r,d,u)=>{const ad=R(Math.abs(d)).toLocaleString('es-ES')+' '+u;if(r>1.05)return {k:'over',label:'Te pasas +'+ad,bg:'#fff1ee',fg:'#a8321a'};if(r>=0.95)return {k:'ok',label:'Completo',bg:'#eaf7f0',fg:'#1d6b43'};if(r>=0.85)return {k:'near',label:'Queda poco · faltan '+ad,bg:'#fff8e6',fg:'#8a5a00'};return {k:'far',label:'Falta mucho · faltan '+ad,bg:'#fff1ee',fg:'#a8321a'};};
@@ -3454,7 +3476,7 @@ class Component extends DCLogic {
         const GRP={Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'};
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
         const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
-        const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={name:F.name,g:x.g+' g',id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
+        const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={sl:sl||'',cat:F.cat||'',name:F.name,g:x.g+' g',id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
           if(!open&&sl&&sl!=='veg'&&x.eqs&&x.eqs.length&&x.g>0){const mc=sl==='prot'?'p':sl==='fat'?'f':'c';o.alts=x.eqs.map(fid=>FM[fid]).filter(Boolean).map(f=>{const gg=rg(x.g*F[mc]/Math.max(0.1,f[mc]),f,cl.round),qq=gg/100;return {name:f.name,g:gg+' g',id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10};});}return o;};
         const buildMeal=(ml,mul,TT)=>{const mt=mealTarget(ml,TT||T);
           if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
@@ -3478,7 +3500,7 @@ class Component extends DCLogic {
           :[{hasTitle:false,title:'',days:'',kLine:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
         v.vGroups=groups;
         // versions & sending
-        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[]).concat(cl.guide?[{g:cl.guide}]:[])));
+        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[]).concat(cl.guide?[{g:cl.guide}]:[]).concat(cl.swap?[{sw:cl.swap}]:[])));
         const vers=cl.versions||[],lastV=vers[vers.length-1],dirty=!lastV||lastV.hash!==hash;
         v.verStatus=!lastV?'Sin guardar':dirty?'Cambios sin guardar':'v'+lastV.n+' guardada';
         v.verBg=dirty?'#fff4dc':'#e3f4ea';v.verFg=dirty?'#8a5a00':'#1d6b43';
@@ -3521,10 +3543,14 @@ class Component extends DCLogic {
             const D=s.ntDev&&s.ntDev[cl.id];if(cloudOn&&!D&&this._ntDL!==cl.id){this._ntDL=cl.id;setTimeout(()=>this.loadNtDev(cl.id),0);}
             v.cnDev=!cloudOn?'Sin nube':!D?'Comprobando…':D.err?(D.err==='sql'?'Falta notificaciones.sql':'Error'):D.n?'Activadas · '+D.n+(D.n===1?' dispositivo':' dispositivos'):'No activadas en su móvil';
             v.cnDevBg=D&&D.n?'#e3f4ea':'#fff4dc';v.cnDevFg=D&&D.n?'#1d6b43':'#8a5a00';}
+          {const SWc={on:true,max:3,tol:10,...(cl.swap||{})},setS=fn=>this.updC(n=>{n.swap={on:true,max:3,tol:10,...(n.swap||{})};fn(n.swap);});
+            v.swOn=!!SWc.on;v.swBg=SWc.on?'var(--color-accent)':'var(--color-neutral-300)';v.swKnob=SWc.on?'18px':'2px';v.swToggle=()=>setS(x=>{x.on=!x.on;});
+            v.swMax=String(SWc.max);v.onSwMax=e=>{const x=Math.max(0,Math.round(num(e.target.value)));setS(q=>{q.max=x;});};
+            v.swTol=String(SWc.tol);v.onSwTol=e=>{const x=Math.max(0,Math.min(50,num(e.target.value)));setS(q=>{q.tol=x;});};}
           v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
-            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{})},open,
+            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{})},swap:{on:true,max:3,tol:10,...(cl.swap||{})},open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,note:m.note||'',opts:m.opts.map(o=>({title:o.title,note:o.note||'',blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
@@ -3822,13 +3848,17 @@ class Component extends DCLogic {
           const sel=s.chatSel&&th.find(x=>x.l.client_key===s.chatSel)?s.chatSel:(th[0]&&th[0].l.client_key);this._selKey=sel;
           v.msgNoCloud=!this._cloud;v.msgErr=!!s.chatErr;v.msgEmpty=!!this._cloud&&!s.chatErr&&th.length===0;v.hasThreads=th.length>0;
           v.msgSummary=totUn?totUn+(totUn===1?' mensaje sin leer':' mensajes sin leer'):th.length+(th.length===1?' asesorado':' asesorados')+' en la app';
-          v.threads=th.map(x=>{const k=x.l.client_key,un=unBy[k]||0;return {name:x.c.name||'Sin nombre',ini:initials(x.c.name),snip:x.m?(x.m.sender==='coach'?'Tú: ':'')+x.m.body.replace(/\s+/g,' ').slice(0,70):'Sin mensajes todavía',time:x.m?ago(x.m.created_at):'',un:String(un),hasUn:un>0,fw:un?'800':'700',bg:k===sel?'var(--color-accent-100)':'transparent',pick:()=>this.setState({chatSel:k})};});
+          v.threads=th.map(x=>{const k=x.l.client_key,un=unBy[k]||0;return {name:x.c.name||'Sin nombre',ini:initials(x.c.name),snip:x.m?(x.m.sender==='coach'?'Tú: ':'')+stripMk(x.m.body).replace(/\s+/g,' ').slice(0,70):'Sin mensajes todavía',time:x.m?ago(x.m.created_at):'',un:String(un),hasUn:un>0,fw:un?'800':'700',bg:k===sel?'var(--color-accent-100)':'transparent',pick:()=>this.setState({chatSel:k})};});
           v.hasThread=!!sel;
           if(sel){const c=CN[sel],lk=LK.find(l=>l.client_key===sel),ms=MS.filter(m=>m.client_key===sel);this._thrRef=this._thrRef||React.createRef();v.thrRef=this._thrRef;
             v.thName=c.name||'Sin nombre';v.thSub=lk.email+(lk.plan_at?' · plan publicado '+new Date(lk.plan_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'');
             v.thOpen=()=>this.setState({activeId:sel,view:'client',tab:'prog',confirmDel:null});v.thNoMsgs=ms.length===0;
             let pd='';v.bubbles=ms.map(m=>{const mine=m.sender==='coach',d=new Date(m.created_at),dk=isoD(d),sd=dk!==pd;pd=dk;
-              return {body:m.body,mine,showDay:sd,day:dk===today?'Hoy':d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}),time:d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'var(--color-accent)':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'16px 16px 4px 16px':'16px 16px 16px 4px'};});
+              const mk=!mine&&/\[\[cf:swap\|([^|\]]*)\|([^|\]]*)\|([^\]]*)\]\]/.exec(m.body||''),sw={};
+              if(mk){const from=mk[1],to=mk[2],mn=decodeURIComponent(mk[3]||''),hits=swapFind(c,from,mn),closed=c.planMode==='closed',has=q=>closed?(q.x.eqs||[]).includes(to):(q.o[q.sl]||[]).some(y=>y.fid===to),done=hits.length>0&&hits.every(has),full=closed&&hits.length>0&&hits.every(q=>!has(q)&&(q.x.eqs||[]).length>=3);
+                sw.hasSwap=hits.length>0&&!!FM[to];sw.swapLbl=done?'Ya está en sus equivalencias':full?'Ya tiene 3 equivalencias':'Añadir a sus equivalencias fijas';sw.swapOp=done||full?'.55':'1';
+                sw.swapAdd=()=>{if(done||full)return;this.setState(st=>({clients:st.clients.map(q=>{if(q.id!==sel)return q;const n=JSON.parse(JSON.stringify(q));swapFind(n,from,mn).forEach(t=>{if(n.planMode==='closed'){t.x.eqs=t.x.eqs||[];if(!t.x.eqs.includes(to)&&t.x.eqs.length<3)t.x.eqs.push(to);}else if(!(t.o[t.sl]||[]).some(y=>y.fid===to))t.o[t.sl].push(it(to,100));});n.updated=Date.now();return n;})}));this.toast((FM[to]||{}).name+' añadido a sus equivalencias · vuelve a publicar el plan');};}
+              return {body:stripMk(m.body),hasSwap:!!sw.hasSwap,swapLbl:sw.swapLbl||'',swapOp:sw.swapOp||'1',swapAdd:sw.swapAdd||null,mine,showDay:sd,day:dk===today?'Hoy':d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}),time:d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+(mine&&m.read_at?' · Leído':''),align:mine?'flex-end':'flex-start',bg:mine?'var(--color-accent)':'#fff',fg:mine?'#fff':'var(--color-text)',rad:mine?'16px 16px 4px 16px':'16px 16px 16px 4px'};});
             v.chatDraft=s.chatDraft||'';v.onChatDraft=e=>this.setState({chatDraft:e.target.value});v.chatSend=()=>this.sendMsg(sel);
             v.onChatKey=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();this.sendMsg(sel);}};
             const DL=(s.dayl||{})[sel],Tk=computeTargets(c,computeCalc(c)).k,SV=[['cump','Cumpl.'],['sat','Satisf.'],['hambre','Hambre'],['energia','Energía']];
