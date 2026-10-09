@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="cf-theme.css">
+<script src="cf-lib.js"></script>
+<script src="cf-select.js"></script>
+</helmet>
+<section style="background:var(--color-bg,#fff);border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+    <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0">
+      <span style="font-weight:800;font-size:18px">Fotos de progreso</span>
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ sumText }}</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary" onClick="{{ pickFilesToday }}" style="min-height:40px">{{ upLabel }}</button>
+      <sc-if value="{{ canCompare }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ openCompare }}" style="min-height:40px">Comparar</button></sc-if>
+    </div>
+  </div>
+  <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ openGallery }}" style="font:inherit;color:inherit;border:0;background:var(--color-neutral-100);border-radius:18px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:8px;overflow:hidden">
+      <sc-for list="{{ strip }}" as="p" hint-placeholder-count="4"><span style="display:flex;flex-direction:column;gap:4px;align-items:center;flex:none"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:72px;height:96px;object-fit:cover;border-radius:12px;display:block;background:#fff"><span style="font-size:10px;font-weight:700;color:var(--color-neutral-700)">{{ p.short }}</span></span></sc-for>
+      <span style="margin-left:auto;font-size:13px;font-weight:800;color:var(--color-accent-700);padding:0 8px;white-space:nowrap">Ver galería ›</span>
+    </button>
+  </sc-if>
+  <input type="file" accept="image/*" multiple="" ref="{{ fileRef }}" onChange="{{ onFiles }}" style="display:none">
+  <sc-if value="{{ errText }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--danger,#c0392b)">{{ errText }}</span></sc-if>
+</section>
+
+<sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
+<div style="position:fixed;inset:0;z-index:1300;background:rgba(18,32,46,.6);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
+  <div style="width:min(1240px,100%);background:#fff;border-radius:clamp(0px,2vw,24px);box-shadow:var(--shadow-md);display:flex;flex-direction:column;overflow:hidden">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:1px solid var(--color-divider)">
+      <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px">Fotos de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ sumText }}</span></div>
+      <div style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px">
+        <sc-for list="{{ modeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:14px;font-weight:700;padding:8px 16px;min-height:38px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+      </div>
+      <button onClick="{{ close }}" aria-label="Cerrar" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--color-neutral-100);border-radius:999px;padding:9px 16px;min-height:40px;cursor:pointer">Cerrar</button>
+    </div>
+
+    <sc-if value="{{ isGallery }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 18px;background:var(--color-surface,#eef4f9)">
+        <span style="font-size:13px;font-weight:700">Fecha de las fotos nuevas</span>
+        <button ref="{{ dateRef }}" onClick="{{ pickDate }}" style="font:inherit;font-size:14px;font-weight:800;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);border-radius:12px;padding:8px 12px;min-height:40px;cursor:pointer">{{ upDayLabel }}<span style="font-size:11px">▾</span></button>
+        <button class="btn btn-primary" onClick="{{ pickFiles }}" style="min-height:40px">{{ upLabel }}</button>
+        <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 220px">Frente, perfil y espalda, con la misma luz y postura.</span>
+      </div>
+    </sc-if>
+
+    <div style="overflow-y:auto;flex:1;padding:18px 18px calc(22px + env(safe-area-inset-bottom))">
+      <sc-if value="{{ isGallery }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ noPhotos }}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:var(--color-neutral-700)">Todavía no hay fotos. Elige la fecha y súbelas.</p></sc-if>
+        <div style="display:flex;flex-direction:column;gap:26px">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">{{ g.label }}</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ g.sub }}</span><sc-if value="{{ g.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ g.del }}" style="font:inherit;font-size:12px;font-weight:800;margin-left:auto;border:0;border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer;background:{{ g.delBg }};color:{{ g.delFg }}">{{ g.delLabel }}</button></sc-if></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,220px),1fr));gap:12px">
+                <sc-for list="{{ g.items }}" as="p" hint-placeholder-count="3">
+                  <div style="position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:var(--color-neutral-100)">
+                    <button onClick="{{ p.view }}" aria-label="Ampliar" style="font:inherit;border:0;padding:0;background:transparent;cursor:zoom-in;position:absolute;inset:0;width:100%;height:100%"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;height:100%;object-fit:cover;display:block"></button>
+                    <sc-if value="{{ p.byClient }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--color-accent-800);pointer-events:none">Subida por el asesorado</span></sc-if>
+                    <sc-if value="{{ p.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.del }}" aria-label="Borrar foto" style="font:inherit;position:absolute;right:8px;top:8px;border:0;border-radius:999px;min-width:36px;height:36px;padding:0 {{ p.delPad }};background:{{ p.delBg }};color:{{ p.delFg }};font-size:{{ p.delFs }};font-weight:800;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.25)">{{ p.delLabel }}</button></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+          <div style="flex:3 1 380px;min-width:0;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+              <span style="font-weight:800;font-size:16px;margin-right:auto">{{ cmpTitle }}</span>
+              <div style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px">
+                <sc-for list="{{ cmpSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 14px;min-height:34px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ isSlider }}" hint-placeholder-val="{{ true }}">
+              <div style="position:relative;width:100%;max-width:min(560px,calc((100vh - 260px) * .75));aspect-ratio:3/4;margin:0 auto;border-radius:18px;overflow:hidden;background:var(--color-neutral-100);touch-action:none;cursor:ew-resize" onPointerDown="{{ slDown }}" onPointerMove="{{ slMove }}" onPointerUp="{{ slUp }}" ref="{{ slRef }}">
+                <img src="{{ bUrl }}" alt="Después" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none">
+                <img src="{{ aUrl }}" alt="Antes" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;clip-path:{{ aClip }};pointer-events:none">
+                <div style="position:absolute;top:0;bottom:0;left:{{ slPos }};width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none"></div>
+                <div style="position:absolute;top:50%;left:{{ slPos }};width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--color-text);pointer-events:none">‹ ›</div>
+                <span style="position:absolute;left:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#1180c2;color:#fff">Antes · {{ aLabel }}</span>
+                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#963a2b;color:#fff">Después · {{ bLabel }}</span>
+              </div>
+              <span style="font-size:12px;color:var(--color-neutral-700);text-align:center">Arrastra la barra blanca a izquierda y derecha.</span>
+            </sc-if>
+            <sc-if value="{{ isSide }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:min(860px,calc((100vh - 260px) * 1.5));margin:0 auto">
+                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ aUrl }}" alt="Antes" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;display:block;box-shadow:0 0 0 3px #1180c2"><span style="font-size:13px;font-weight:800;text-align:center;color:#0e6fa9">Antes · {{ aLabel }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ bUrl }}" alt="Después" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;display:block;box-shadow:0 0 0 3px #963a2b"><span style="font-size:13px;font-weight:800;text-align:center;color:#963a2b">Después · {{ bLabel }}</span></div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="flex:2 1 280px;min-width:0;display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:13px;font-weight:800">1. ¿Qué foto quieres cambiar?</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <sc-for list="{{ slots }}" as="sl" hint-placeholder-count="2">
+                <button onClick="{{ sl.pick }}" style="font:inherit;color:inherit;text-align:left;border:0;border-radius:16px;padding:8px;cursor:pointer;display:flex;align-items:center;gap:10px;background:{{ sl.bg }};box-shadow:{{ sl.ring }}">
+                  <img src="{{ sl.url }}" alt="{{ sl.label }}" style="width:44px;height:58px;object-fit:cover;border-radius:10px;display:block;flex:none;background:#fff">
+                  <span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ sl.ink }}">{{ sl.label }}</span><span style="font-size:13px;font-weight:700">{{ sl.date }}</span></span>
+                </button>
+              </sc-for>
+            </div>
+            <span style="font-size:13px;font-weight:800">{{ pickHint }}</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;max-height:46vh;overflow-y:auto;padding:4px">
+              <sc-for list="{{ thumbs }}" as="p" hint-placeholder-count="6">
+                <button onClick="{{ p.pick }}" style="font:inherit;border:0;padding:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:stretch;position:relative">
+                  <img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;box-shadow:{{ p.ring }};opacity:{{ p.op }}">
+                  <sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:4px;top:4px;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:{{ p.tagBg }};color:#fff">{{ p.tag }}</span></sc-if>
+                  <span style="font-size:11px;font-weight:700;color:var(--color-neutral-700);text-align:center">{{ p.short }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-import>
+</sc-if>
+
+<sc-if value="{{ hasView }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
+<div onClick="{{ closeView }}" style="position:fixed;inset:0;z-index:1320;background:rgba(10,18,26,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));font-family:var(--font-body)">
+  <img src="{{ vUrl }}" alt="{{ vLabel }}" onClick="{{ stop }}" style="max-width:100%;max-height:calc(100% - 76px);object-fit:contain;border-radius:12px;display:block">
+  <div onClick="{{ stop }}" style="display:flex;align-items:center;gap:8px;color:#fff;flex-wrap:wrap;justify-content:center">
+    <button onClick="{{ vPrev }}" aria-label="Anterior" style="font:inherit;font-size:22px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">‹</button>
+    <span style="font-weight:700;min-width:170px;text-align:center">{{ vLabel }}</span>
+    <button onClick="{{ vNext }}" aria-label="Siguiente" style="font:inherit;font-size:22px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">›</button>
+    <sc-if value="{{ vCanDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ vDel }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:transparent;color:#ffb4a8;padding:10px 12px;cursor:pointer">{{ vDelLabel }}</button></sc-if>
+    <button onClick="{{ closeView }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:10px 16px;cursor:pointer">Cerrar</button>
+  </div>
+</div>
+</x-import>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;900px&quot;,&quot;height&quot;:&quot;260px&quot;},&quot;sb&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;coach&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ckey&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;demo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;by&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;coach&quot;,&quot;client&quot;],&quot;default&quot;:&quot;coach&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;localPhotos&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;array&quot;},&quot;onLocal&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;},&quot;onUploaded&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;}}">
+const pad=n=>String(n).padStart(2,'0');
+const todayIso=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+const dLong=s=>new Date(s+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+const dShort=s=>new Date(s+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'2-digit'});
+const days=(a,b)=>Math.round((new Date(b+'T12:00')-new Date(a+'T12:00'))/86400000);
+class Component extends DCLogic {
+  state={delId:null,delDay:null,photos:[],open:false,mode:'gallery',upDay:todayIso(),busy:false,err:null,view:null,a:null,b:null,slot:'a',cmp:'slider',sl:50,delAsk:false};
+  fileRef=React.createRef();slRef=React.createRef();dateRef=React.createRef();
+  componentDidMount(){this.load();}
+  componentDidUpdate(pp,ps){if(pp.ckey!==this.props.ckey||pp.coach!==this.props.coach||pp.sb!==this.props.sb||pp.rev!==this.props.rev||(this.isLocal()&&pp.localPhotos!==this.props.localPhotos))this.load();
+    const lock=this.state.open||this.state.view!=null;if(lock!==this._lock){this._lock=lock;document.body.style.overflow=lock?'hidden':'';}}
+  componentWillUnmount(){document.body.style.overflow='';}
+  isLocal(){return !this.props.sb||!this.props.coach;}
+  async load(){
+    if(!this.props.ckey){this.setState({photos:[]});return;}
+    if(this.isLocal()){this.setState({photos:(this.props.localPhotos||[]).slice().sort((x,y)=>x.day<y.day?-1:1)});return;}
+    try{const ps=await window.CFL.listPhotos(this.props.sb,this.props.coach,this.props.ckey);this.setState({photos:ps,err:null});}
+    catch(e){this.setState({err:'No se pudieron cargar las fotos.'});}
+  }
+  async upload(files){
+    if(!files||!files.length)return;const day=this.state.upDay||todayIso(),by=this.props.by||'coach';this.setState({busy:true,err:null});
+    try{
+      if(this.isLocal()){const add=[];for(const f of files){const b=await window.CFL.compress(f,1000,0.78);add.push({id:window.CFL.rid(),day,by,url:await window.CFL.toDataUrl(b)});}
+        const next=(this.props.localPhotos||[]).concat(add);if(this.props.onLocal)this.props.onLocal(next);else this.setState({photos:next.slice().sort((x,y)=>x.day<y.day?-1:1)});}
+      else{for(const f of files)await window.CFL.uploadPhoto(this.props.sb,this.props.coach,this.props.ckey,day,f,by);await this.load();}
+      this.setState({open:true,mode:'gallery'});
+      if(this.props.onUploaded)this.props.onUploaded(files.length,day);
+    }catch(e){this.setState({err:'No se pudo subir: '+(e.message||e)});}
+    this.setState({busy:false});if(this.fileRef.current)this.fileRef.current.value='';
+  }
+  async removeMany(list){this.setState({busy:true});
+    try{if(this.isLocal()){const ids=list.map(x=>x.id),next=(this.props.localPhotos||[]).filter(x=>!ids.includes(x.id));if(this.props.onLocal)this.props.onLocal(next);else this.setState({photos:next});}
+      else{for(const p of list)await window.CFL.deletePhoto(this.props.sb,p);await this.load();}}
+    catch(e){this.setState({err:'No se pudo borrar: '+(e.message||e)});}
+    this.setState({busy:false,delId:null,delDay:null});}
+  async remove(p){
+    try{if(this.isLocal()){const next=(this.props.localPhotos||[]).filter(x=>x.id!==p.id);if(this.props.onLocal)this.props.onLocal(next);else this.setState({photos:next});}
+      else{await window.CFL.deletePhoto(this.props.sb,p);await this.load();}this.setState({view:null,delAsk:false});}
+    catch(e){this.setState({err:'No se pudo borrar: '+(e.message||e)});}
+  }
+  slide(e){const el=this.slRef.current;if(!el)return;const r=el.getBoundingClientRect();this.setState({sl:Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))});}
+  renderVals(){
+    const s=this.state,P=s.photos,n=P.length,by=this.props.by||'coach';
+    const seg=(opts,cur,fn)=>opts.map(([k,l])=>({label:l,bg:cur===k?'#fff':'transparent',fg:cur===k?'var(--color-text)':'var(--color-neutral-700)',pick:()=>fn(k)}));
+    const dates=[...new Set(P.map(p=>p.day))];
+    const A=P.find(p=>p.id===s.a)||P[0],B=P.find(p=>p.id===s.b)||P[n-1];
+    const v={
+      stop:e=>e.stopPropagation(),fileRef:this.fileRef,slRef:this.slRef,dateRef:this.dateRef,
+      sumText:n?n+(n===1?' foto':' fotos')+' · '+dates.length+(dates.length===1?' fecha':' fechas')+' · última '+dShort(P[n-1].day):'Sin fotos todavía',
+      hasPhotos:n>0,noPhotos:n===0,canCompare:n>1,strip:P.slice(-6).reverse().map(p=>({url:p.url,dayLabel:dShort(p.day),short:dShort(p.day)})),
+      upLabel:s.busy?'Subiendo…':'Subir fotos',
+      pickFiles:()=>{if(!s.busy&&this.fileRef.current)this.fileRef.current.click();},
+      pickFilesToday:()=>{if(s.busy)return;this.setState({upDay:todayIso()});if(this.fileRef.current)this.fileRef.current.click();},
+      onFiles:e=>this.upload([...e.target.files]),errText:s.err||'',
+      isOpen:s.open,close:()=>this.setState({open:false,delId:null,delDay:null}),openGallery:()=>this.setState({open:true,mode:'gallery'}),openCompare:()=>this.setState({open:true,mode:'compare'}),
+      modeSeg:seg([['gallery','Galería'],['compare','Comparar']],s.mode,k=>this.setState({mode:k})),
+      isGallery:s.mode==='gallery',isCompare:s.mode==='compare'&&n>0,
+      upDayLabel:dLong(s.upDay),
+      pickDate:()=>{const el=this.dateRef.current;if(el&&window.CFDate)window.CFDate.open(el,s.upDay,val=>this.setState({upDay:val||todayIso()}),{max:todayIso()});},
+      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'#c0392b':'var(--danger-bg,#fff1ee)',delFg:s.delDay===d?'#fff':'var(--danger,#8f2a14)',
+        del:()=>{if(s.delDay!==d){this.setState({delDay:d,delId:null});return;}this.removeMany(it.filter(p=>by==='coach'||p.by===by));},
+        items:it.map(p=>{const ask=s.delId===p.id;return {url:p.url,dayLabel:dLong(p.day),byClient:p.by==='client'&&by==='coach',view:()=>this.setState({view:p.id,delAsk:false,delId:null}),
+          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'#c0392b':'rgba(255,255,255,.92)',delFg:ask?'#fff':'#8f2a14',
+          del:e=>{e.stopPropagation();if(!ask){this.setState({delId:p.id,delDay:null});return;}this.removeMany([p]);}};})};}),
+      cmpSeg:seg([['slider','Deslizar'],['side','Lado a lado']],s.cmp,k=>this.setState({cmp:k})),isSlider:s.cmp==='slider',isSide:s.cmp==='side',
+      aUrl:A?A.url:'',bUrl:B?B.url:'',aLabel:A?dShort(A.day):'',bLabel:B?dShort(B.day):'',
+      cmpTitle:A&&B?(()=>{const d=Math.abs(days(A.day,B.day));return d===0?'Misma fecha':d+' días entre fotos'+(d>=14?' ('+R(d/7)+' semanas)':'');})():'',
+      slPos:s.sl+'%',aClip:'inset(0 '+(100-s.sl)+'% 0 0)',
+      slDown:e=>{try{e.currentTarget.setPointerCapture(e.pointerId);}catch(x){}this._sd=true;this.slide(e);},
+      slMove:e=>{if(this._sd)this.slide(e);},slUp:()=>{this._sd=false;}
+    };
+    function R(x){return Math.round(x);}
+    const SL={a:['Antes','#1180c2','#0e6fa9','#e3f1fa'],b:['Después','#963a2b','#963a2b','#fde8e3']};
+    v.slots=['a','b'].map(k=>{const p=k==='a'?A:B,on=s.slot===k,c=SL[k];return {label:c[0],ink:c[2],url:p?p.url:'',date:p?dLong(p.day):'—',bg:on?c[3]:'var(--color-neutral-100)',ring:on?'0 0 0 2.5px '+c[1]:'none',pick:()=>this.setState({slot:k})};});
+    v.pickHint='2. Toca la foto que quieres poner como «'+SL[s.slot][0]+'»';
+    v.thumbs=P.map(p=>{const isA=A&&A.id===p.id,isB=B&&B.id===p.id,col=SL[s.slot][1];
+      return {url:p.url,dayLabel:dLong(p.day),short:dShort(p.day),hasTag:isA||isB,tag:isA&&isB?'Antes y después':isA?'Antes':'Después',tagBg:isA?'#1180c2':'#963a2b',
+        ring:isA?'0 0 0 3px #1180c2':isB?'0 0 0 3px #963a2b':'none',op:isA||isB?'1':'.85',
+        pick:()=>this.setState({[s.slot]:p.id,slot:s.slot==='a'?'b':'a'})};});
+    const vi=P.findIndex(p=>p.id===s.view),vp=P[vi];
+    v.hasView=!!vp;v.closeView=()=>this.setState({view:null,delAsk:false});
+    if(vp){v.vUrl=vp.url;v.vLabel=dLong(vp.day)+' · '+(vi+1)+' de '+n;
+      v.vPrev=()=>this.setState({view:P[(vi-1+n)%n].id,delAsk:false});v.vNext=()=>this.setState({view:P[(vi+1)%n].id,delAsk:false});
+      v.vCanDel=by==='coach'||vp.by===by;v.vDelLabel=s.delAsk?'¿Seguro? Borrar':'Borrar';v.vDel=()=>{if(!s.delAsk){this.setState({delAsk:true});return;}this.remove(vp);};}
+    return v;
+  }
+}
+</script>
+</body>
+</html>
