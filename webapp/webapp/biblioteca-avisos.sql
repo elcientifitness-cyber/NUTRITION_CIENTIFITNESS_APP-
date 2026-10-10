@@ -33,6 +33,10 @@ language sql security definer stable set search_path = public, auth as $$
         and coalesce(e->>'status', '') not ilike 'cancel%'
         and (e->>'date') between to_char(now() - interval '1 day', 'YYYY-MM-DD') and to_char(now() + interval '9 day', 'YYYY-MM-DD')), '[]'::jsonb),
     'own', s.data->'nlist',
+    'fauto', s.data->'fauto',
+    'fa', coalesce((select jsonb_object_agg(x->>'id', x->'fa') from jsonb_array_elements(coalesce(s.data->'clients', '[]'::jsonb)) x where x ? 'fa' and jsonb_typeof(x->'fa') = 'array'), '{}'::jsonb),
+    'forms', s.data->'forms',
+    'cforms', (select s3.data->'forms' from public.cf_state s3 join auth.users u3 on u3.id = s3.user_id join public.cf_coaches k3 on lower(k3.email) = lower(u3.email) and k3.role = 'owner' limit 1),
     'common', (select s2.data->'nlist' from public.cf_state s2 join auth.users u2 on u2.id = s2.user_id
                join public.cf_coaches k2 on lower(k2.email) = lower(u2.email) and k2.role = 'owner' limit 1),
     'owner', exists(select 1 from auth.users u join public.cf_coaches k on lower(k.email) = lower(u.email) where u.id = c and k.role = 'owner')

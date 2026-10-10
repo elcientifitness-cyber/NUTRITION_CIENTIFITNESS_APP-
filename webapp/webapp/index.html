@@ -820,9 +820,11 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <sc-for list="{{ vg.meals }}" as="vm" hint-placeholder-count="3">
         <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
           <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--color-text);padding-bottom:4px"><span style="font-weight:800;font-size:18px">{{ vm.name }}</span><span style="font-size:13px;font-variant-numeric:tabular-nums">{{ vm.kcal }}</span></div>
+          <sc-if value="{{ vm.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:8px 12px;border-radius:10px;background:#eef6fc;color:#0e4f78;white-space:pre-wrap;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ vm.note }}</div></sc-if>
           <sc-for list="{{ vm.opts }}" as="vo" hint-placeholder-count="1">
           <div style="display:flex;flex-direction:column;gap:6px;break-inside:avoid">
           <span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">{{ vo.title }}</span>
+          <sc-if value="{{ vo.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:8px 12px;border-radius:10px;background:#eef6fc;color:#0e4f78;white-space:pre-wrap;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ vo.note }}</div></sc-if>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 20px">
             <sc-for list="{{ vo.blocks }}" as="b" hint-placeholder-count="3">
               <div style="display:flex;flex-direction:column;gap:2px">
@@ -1308,6 +1310,14 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <button class="btn btn-primary" onClick="{{ fSend }}" style="min-height:42px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg>Enviar cuestionario</button>
       </div>
     </div>
+    <sc-if value="{{ fcHas }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 20px;display:flex;flex-direction:column;gap:4px">
+        <span style="font-weight:800;font-size:16px">Envío automático</span>
+        <sc-for list="{{ fcAuto }}" as="a" hint-placeholder-count="0">
+          <button onClick="{{ a.toggle }}" style="font:inherit;display:flex;align-items:center;gap:12px;padding:10px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left"><span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:14px;font-weight:700">{{ a.title }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ a.when }}</span></span><span style="width:38px;height:22px;border-radius:999px;background:{{ a.bg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ a.knob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span></button>
+        </sc-for>
+      </section>
+    </sc-if>
     <sc-if value="{{ fNoCloud }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:16px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:14px">Los cuestionarios necesitan la nube: inicia sesión con tu cuenta.</div></sc-if>
     <sc-if value="{{ fErr }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:14px;background:#fff4dc;color:#8a5a00;font-size:14px;text-wrap:pretty">{{ fErrTxt }}</div></sc-if>
     <sc-if value="{{ fEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:28px 24px;text-align:center;font-size:14px;color:var(--color-neutral-700)">Todavía no le has enviado ningún cuestionario.</div></sc-if>
@@ -1820,6 +1830,23 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <sc-if value="{{ t.canProp }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ t.prop }}" style="font-size:13px">Proponer a la común</button></sc-if>
             <sc-if value="{{ t.canDel }}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{ t.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ t.delLabel }}</button></sc-if>
           </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:10px">
+      <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 320px;min-width:0"><h3 style="margin:0;font-size:19px">Envío automático</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ faSub }}</span></div>
+      <button class="btn btn-primary" onClick="{{ faAdd }}">+ Envío automático</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ faRows }}" as="r" hint-placeholder-count="0">
+        <div style="background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center">
+          <select class="input" value="{{ r.form }}" onChange="{{ r.onForm }}" style="flex:1 1 220px;min-width:0"><sc-for list="{{ faForms }}" as="o" hint-placeholder-count="2"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
+          <select class="input" value="{{ r.dow }}" onChange="{{ r.onDow }}" style="width:auto"><sc-for list="{{ faDows }}" as="o" hint-placeholder-count="7"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
+          <input class="input" type="time" value="{{ r.time }}" onChange="{{ r.onTime }}" style="width:110px;text-align:center">
+          <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">Recordar a las 24 h <button onClick="{{ r.togRem }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.rBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.rKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></span>
+          <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">Activo <button onClick="{{ r.togOn }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.onBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.onKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></span>
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">{{ r.nCli }} clientes</span>
+          <button class="btn" onClick="{{ r.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ r.delLabel }}</button>
         </div>
       </sc-for>
     </div>
@@ -2713,7 +2740,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -2735,7 +2762,7 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
@@ -2761,7 +2788,7 @@ class Component extends DCLogic {
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null,fauto:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
@@ -2808,7 +2835,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -2819,9 +2846,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -2834,7 +2861,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2847,10 +2874,10 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist};ps=ps||snap||this._snap;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto};ps=ps||snap||this._snap;
     if(ps.events!==s.events&&this._cloud)this.agendaSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -3058,6 +3085,9 @@ class Component extends DCLogic {
         v.fNoCloud=!this._cloud;v.fErr=!!s.formsErr;v.fErrTxt=/cf_forms|relation|schema cache/i.test(s.formsErr||'')?'Para enviar cuestionarios, ejecuta cuestionarios.sql en Supabase (SQL Editor → New query → Run).':'No se pudieron leer los cuestionarios: '+(s.formsErr||'');
         v.fEmpty=!!this._cloud&&!s.formsErr&&!rows.length;
         const TL=this.formTpls();v.fTplOpts=TL.map(t=>({val:t.id,label:t.name}));v.fTplSel=TL.some(t=>t.id===s.fSendTpl)?s.fSendTpl:(TL[0]||{}).id;v.onFTpl=e=>this.setState({fSendTpl:e.target.value});v.fSend=()=>this.sendForm(cl.id,v.fTplSel,true);
+        {const DW=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];v.fcAuto=(s.fauto||[]).map(x=>{const on=(cl.fa||[]).includes(x.id),tp=this.formTpls().find(q=>q.id===x.formId);
+          return {title:(tp?tp.name:(x.form&&x.form.name)||'Cuestionario'),when:'Cada '+DW[x.dow]+' a las '+(x.time||'10:00')+(x.on===false?' · pausado':''),bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
+            toggle:()=>this.updC(n=>{const a=(n.fa||[]).slice(),i=a.indexOf(x.id);if(i>=0)a.splice(i,1);else a.push(x.id);if(a.length)n.fa=a;else delete n.fa;})};});v.fcHas=v.fcAuto.length>0;}
         v.fRows=rows.map(r=>{const done=r.status==='done',open=s.fOpen===r.id,ap=cl.fApplied&&cl.fApplied[r.id];
           return {title:r.title,done,pend:!done,stLabel:done?'Respondido el '+fd(r.answered_at):'Pendiente · enviado el '+fd(r.created_at),stBg:done?'var(--veg-bg)':'var(--carb-bg)',stFg:done?'var(--veg-ink)':'var(--carb-ink)',
             hasApplied:!!ap,applied:ap?'Pasado a la ficha: '+(ap.done&&ap.done.length?ap.done.join(', '):'nada nuevo'):'',
@@ -3561,7 +3591,7 @@ class Component extends DCLogic {
           rs.forEach((r,i)=>{if(multi)txt.push('Opción '+Lt(i)+':');
             if(open)SLOTS.forEach(([sl,l])=>{const a=r.S[sl];if(a.length)txt.push('• '+l+(a.length>1&&sl!=='veg'?' (elige 1)':'')+': '+a.map(x=>x.food.name+' '+x.g+' g').join(' / '));});
             else SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>txt.push('• '+x.food.name+' '+x.g+' g')));});
-          return {name:ml.name,kcal:R(mt.k)+' kcal',note:ml.note||'',txt,opts:rs.map((r,i)=>({note:(ml.options[i]||{}).note||'',title:multi?'Opción '+Lt(i)+' · '+R(r.tot.k)+' kcal':'',
+          return {name:ml.name,kcal:R(mt.k)+' kcal',note:ml.note||'',hasNote:!!ml.note,txt,opts:rs.map((r,i)=>({note:(ml.options[i]||{}).note||'',hasNote:!!(ml.options[i]||{}).note,title:multi?'Opción '+Lt(i)+' · '+R(r.tot.k)+' kcal':'',
             blocks:open?SLOTS.filter(([sl])=>r.S[sl].length).map(([sl,l])=>({sw:SW[sl],ink:MINK[sl],label:sl==='veg'||r.S[sl].length<2?l:l+' · elige 1',lines:r.S[sl].map(x=>LN(x,sl))}))
               :[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Menú',lines:[].concat(...SLOTS.map(([sl])=>r.S[sl].map(x=>LN(x,sl))))}]}))};};
         const byMenu=!open&&cl.menus&&cl.menus.length;
@@ -3710,6 +3740,18 @@ class Component extends DCLogic {
           canDup:canOwn,dupLabel:base?'Duplicar y editar':'Duplicar',dup:()=>{const c=F.clone(t);delete c._base;delete c.by;delete c.byId;c.id='f-'+uid();c.name=t.name+' (copia)';if(c.kind==='inicial')c.kind='otro';setF(a=>{a.push(c);});if(base)this.setState({fEdit:F.clone(c)});this.toast('Cuestionario duplicado');},
           canProp:!ceo&&canOwn&&!base,prop:()=>this.propose('forms',t),
           canDel:!base&&(!ceo||TP.length>1),delLabel:s.flDel===t.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.flDel!==t.id){this.setState({flDel:t.id});return;}setF(a=>{const i=a.findIndex(x=>x.id===t.id);if(i>=0)a.splice(i,1);});this.setState({flDel:null});}};});
+        {const DW=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],FA=s.fauto||[],setFA=fn=>this.setState(st=>{const a=JSON.parse(JSON.stringify(st.fauto||[]));fn(a);return {fauto:a};});
+          v.faDows=DW.map((l,i)=>({val:String(i),label:l}));v.faForms=TP.map(t=>({val:t.id,label:t.name}));v.faEmpty=!FA.length;
+          v.faAdd=()=>{const t=TP.find(x=>x.kind==='revision')||TP[0];if(!t)return;setFA(a=>{a.push({id:'a-'+uid(),formId:t.id,dow:6,time:'10:00',remind:true,on:true,form:{name:t.name,kind:t.kind||'otro',intro:t.intro||'',qs:t.qs}});});};
+          v.faRows=FA.map(x=>{const set=fn=>setFA(a=>{const q=a.find(y=>y.id===x.id);if(q)fn(q);});
+            return {form:x.formId,dow:String(x.dow),time:x.time||'10:00',
+              onForm:e=>{const id=e.target.value,t=TP.find(q=>q.id===id);if(t)set(q=>{q.formId=id;q.form={name:t.name,kind:t.kind||'otro',intro:t.intro||'',qs:t.qs};});},
+              onDow:e=>{const d=+e.target.value;set(q=>{q.dow=d;});},onTime:e=>{const t=e.target.value;set(q=>{q.time=t||'10:00';});},
+              onBg:x.on!==false?'var(--color-accent)':'var(--color-neutral-300)',onKnob:x.on!==false?'21px':'3px',togOn:()=>set(q=>{q.on=q.on===false;}),
+              rBg:x.remind!==false?'var(--color-accent)':'var(--color-neutral-300)',rKnob:x.remind!==false?'21px':'3px',togRem:()=>set(q=>{q.remind=q.remind===false;}),
+              nCli:s.clients.filter(c=>(c.fa||[]).includes(x.id)).length,
+              delLabel:s.faDel===x.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.faDel!==x.id){this.setState({faDel:x.id});return;}setFA(a=>{const i=a.findIndex(y=>y.id===x.id);if(i>=0)a.splice(i,1);});this.setState(st=>({faDel:null,clients:st.clients.map(c=>(c.fa||[]).includes(x.id)?{...c,fa:c.fa.filter(z=>z!==x.id)}:c)}));}};});
+          v.faSub=FA.length?'Cada envío crea el cuestionario y avisa al asesorado con una notificación (si la tiene activada). Se activa cliente a cliente, en la pestaña Cuestionarios de su ficha.':'Envía un cuestionario solo, cada semana, a los clientes que elijas.';}
         v.flNew=()=>this.setState({fEdit:{id:'f-'+uid(),kind:'otro',name:'Nuevo cuestionario',intro:'',qs:[{id:uid(),type:'sec',label:'Preguntas'},{id:uid(),type:'text',label:'Nueva pregunta'}]}});
         v.flCanReset=ceo&&!!s.forms;v.flResetLabel=s.flReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.flReset=()=>{if(!s.flReset){this.setState({flReset:true});return;}this.setState({forms:null,flReset:false});this.toast('Cuestionarios restaurados');};}
       const BID={foods:{},tpls:{},eqGroups:{},presets:{}};if(ceo)Object.keys(BID).forEach(k=>(k==='presets'?this.ownPresets():(s[k]||[])).forEach(x=>{if(x&&x.id)BID[k][x.id]=x;}));
@@ -4111,7 +4153,7 @@ class Component extends DCLogic {
       v.feCount=qn+(qn===1?' pregunta':' preguntas');
       v.feAddQ=()=>upd(x=>{x.qs.push({id:uid(),type:'text',label:'Nueva pregunta'});});v.feAddS=()=>upd(x=>{x.qs.push({id:uid(),type:'sec',label:'Nueva sección'});});
       v.feClose=()=>this.setState({fEdit:null});
-      v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{delete e._base;const a=F.clone(this.formsOwn(st)),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {forms:a,fEdit:null};});this.toast('Cuestionario guardado');};}
+      v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{delete e._base;const a=F.clone(this.formsOwn(st)),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);const fa=(st.fauto||[]).map(x=>x.formId===e.id?{...x,form:{name:e.name,kind:e.kind||'otro',intro:e.intro||'',qs:e.qs}}:x);return {forms:a,fEdit:null,fauto:st.fauto?fa:st.fauto};});this.toast('Cuestionario guardado');};}
     if(s.nxEdit){const E=s.nxEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.nxEdit));fn(e);return {nxEdit:e};}),fv=k=>e=>{const x=e.target.value;upd(q=>{q[k]=x;});},k=E.kind||'daily';
       v.nxeOn=true;v.nxeTitle=E.title||'';v.onNxeTitle=fv('title');v.nxeBody=E.body||'';v.onNxeBody=fv('body');v.nxeKinds=NXK.map(([val,label])=>({val,label}));v.nxeKind=k;v.onNxeKind=fv('kind');
       v.nxeHasTime=NXT.includes(k);v.nxeTime=E.time||'09:00';v.onNxeTime=fv('time');

@@ -107,6 +107,32 @@ module.exports = async (req, res) => {
       const LK = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; });
       const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id))]) CF[c] = await cfgOf(c);
       let sent = 0;
+      // Cuestionarios automáticos: crea el cuestionario, avisa y recuerda a las 24 h
+      for (const c of Object.keys(CF)) {
+        const cfg = CF[c]; if (!cfg || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
+        const nowM = local('Europe/Madrid'); if (!nowM) continue;
+        for (const it of cfg.fauto) {
+          if (it.on === false) continue;
+          const T = hm(it.time); if (T == null || nowM.dow !== Number(it.dow) || nowM.m < T || nowM.m - T >= 40) continue;
+          const frm = ((cfg.forms || []).find(f => f.id === it.formId)) || ((cfg.cforms || []).find(f => f.id === it.formId)) || it.form; if (!frm || !frm.qs) continue;
+          for (const ck of Object.keys(cfg.fa || {})) {
+            if (!(cfg.fa[ck] || []).includes(it.id)) continue;
+            const ex = await api('cf_forms?select=id&coach_id=eq.' + c + '&client_key=eq.' + encodeURIComponent(ck) + '&form->>auto=eq.' + encodeURIComponent(it.id) + '&created_at=gte.' + encodeURIComponent(new Date(Date.now() - 20 * 3600e3).toISOString())).then(r => r.ok ? r.json() : [{}]);
+            if (ex.length) continue;
+            const ins = await api('cf_forms', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ coach_id: c, client_key: ck, title: frm.name || 'Cuestionario', form: { name: frm.name, kind: frm.kind || 'otro', intro: frm.intro || '', qs: frm.qs, auto: it.id, tpl: it.formId } }) }).then(r => r.ok ? r.json() : null);
+            const row = ins && ins[0]; if (!row) continue;
+            for (const s of subs.filter(x => x.coach_id === c && x.client_key === ck && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: frm.name || 'Cuestionario', body: 'Tu entrenador te ha enviado un cuestionario. Te llevará un par de minutos.', tag: 'form', url: 'cuestionario.html?t=' + row.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
+          }
+        }
+        if (cfg.fauto.some(i => i.remind !== false)) {
+          const pend = await api('cf_forms?select=id,client_key,token,title,form&coach_id=eq.' + c + '&status=eq.sent&form->>auto=not.is.null&form->>reminded=is.null&created_at=lt.' + encodeURIComponent(new Date(Date.now() - 24 * 3600e3).toISOString()) + '&created_at=gt.' + encodeURIComponent(new Date(Date.now() - 48 * 3600e3).toISOString())).then(r => r.ok ? r.json() : []);
+          for (const f of pend) {
+            const it = cfg.fauto.find(i => i.id === f.form.auto); if (!it || it.remind === false) continue;
+            await api('cf_forms?id=eq.' + f.id, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ form: Object.assign({}, f.form, { reminded: true }) }) });
+            for (const s of subs.filter(x => x.coach_id === c && x.client_key === f.client_key && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: 'Te falta el cuestionario', body: (f.title || 'Cuestionario') + ': todavía no lo has respondido.', tag: 'form', url: 'cuestionario.html?t=' + f.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
+          }
+        }
+      }
       for (const s of subs) {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
