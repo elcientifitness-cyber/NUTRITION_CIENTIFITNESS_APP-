@@ -73,6 +73,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ nav5.on }}" onClick="{{ nav5.go }}" title="Equipo"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Equipo</span></button></sc-if>
   </nav>
   <div class="cf-side-foot">
+    <button onClick="{{ openPlans }}" title="Ver planes" style="font:inherit;font-size:12px;font-weight:700;padding:7px 12px;border-radius:12px;border:1px solid var(--color-divider);background:#fff;color:var(--color-accent-800);cursor:pointer;text-align:left">{{ planLbl }}</button>
     <button class="cf-nav-btn cf-side-tog" onClick="{{ toggleSide }}" title="{{ sideTogLabel }}" aria-label="{{ sideTogLabel }}" style="font-size:13px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M9 3v18"></path><path d="m16 15-3-3 3-3"></path></svg><span>{{ sideTogLabel }}</span></button>
     <sc-if value="{{ hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ meLabel }}</span></sc-if>
     <span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:{{ saveFg }};font-variant-numeric:tabular-nums;padding:0 4px"><span style="width:8px;height:8px;border-radius:50%;background:{{ saveDot }};box-shadow:0 0 0 3px rgba(79,180,135,.15)"></span>{{ saveLabel }}</span>
@@ -298,7 +299,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <section style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;gap:12px;align-items:baseline"><span style="font-size:13px;color:var(--color-accent-700)">04</span><h3 style="margin:0;font-size:22px">Objetivo y macros</h3></div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-size:12px;color:var(--color-neutral-700)">Presets de dieta</span>
+          <span style="font-size:12px;color:var(--color-neutral-700);display:flex;gap:6px;align-items:center">Presets de dieta<sc-if value="{{ presetLock }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openPlans }}" style="font:inherit;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:0;background:#fff4dc;color:#8a5a00;cursor:pointer">PREMIUM</button></sc-if></span>
           <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ presetChips }}" as="pc" hint-placeholder-count="6"><button onClick="{{ pc.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid {{ pc.bd }};background:{{ pc.bg }};color:{{ pc.fg }};cursor:pointer">{{ pc.label }}</button></sc-for></div>
           <sc-if value="{{ showPresetOffer }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px"><span style="flex:1 1 260px">{{ presetOfferText }}</span><button class="btn btn-primary" onClick="{{ applyPresetMeals }}" style="font-size:12px;padding:7px 12px">Volcar dieta</button><button class="btn btn-ghost" onClick="{{ dismissPreset }}" style="font-size:12px">Ahora no</button></div></sc-if>
         </div>
@@ -442,7 +443,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <div class="cf-rail" style="display:flex;gap:6px;align-items:center;flex:1 1 auto;min-width:0;padding:2px 0">
       <span style="margin-left:auto"></span>
       <sc-if value="{{ flActive }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 5px 4px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Lista: {{ flActiveName }}<button onClick="{{ flUnset }}" title="Dejar de usar la lista permitida" aria-label="Quitar lista" style="font:inherit;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(17,128,194,.12);color:inherit;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-if>
-      <button class="btn btn-secondary" onClick="{{ lsOpenFn }}" title="Rellena las comidas con una lista de alimentos o limita los alimentos a esa lista" style="font-size:13px;min-height:38px">Lista de alimentos</button>
+      <button class="btn btn-secondary" onClick="{{ lsOpenFn }}" title="Rellena las comidas con una lista de alimentos o limita los alimentos a esa lista" style="font-size:13px;min-height:38px">Lista de alimentos<sc-if value="{{ lsLock }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:#fff4dc;color:#8a5a00">PREMIUM</span></sc-if></button>
       <button class="btn btn-ghost" onClick="{{ toggleLat }}" title="{{ latTitle }}" style="font-size:13px;min-height:38px">{{ latLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ archivePlan }}" title="Guarda una copia de este plan en la pestaña Archivo" style="font-size:13px;min-height:38px"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="5" rx="1.5"></rect><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path><path d="M10 13h4"></path></svg>Archivar plan</button>
       <button class="btn" onClick="{{ clearPlan }}" title="Vacía el plan actual para empezar uno nuevo" style="font-size:13px;min-height:38px;background:{{ clearBg }};color:{{ clearFg }}">{{ clearLabel }}</button>
@@ -783,6 +784,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <span style="font-weight:800;font-size:16px;flex:1;min-width:0">Cambios de alimento</span>
           <span style="width:38px;height:22px;border-radius:999px;background:{{ swBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ swKnob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
         </button>
+        <sc-if value="{{ swLock }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openPlans }}" style="font:inherit;align-self:flex-start;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;border:0;background:#fff4dc;color:#8a5a00;cursor:pointer">Solo Premium · Ver planes</button></sc-if>
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Si un día no tiene un alimento, puede cambiarlo en su app por otro de la misma categoría con gramos ajustados. Tus equivalencias salen marcadas como «Recomendada» y no cuentan para el límite. Cada cambio libre te llega por el chat.</span>
         <sc-if value="{{ swOn }}" hint-placeholder-val="{{ true }}">
           <div style="display:flex;flex-wrap:wrap;gap:8px 14px">
@@ -796,9 +798,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <article style="flex:3 1 560px;min-width:0;background:#fff;border-radius:24px;padding:40px;box-sizing:border-box;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:28px">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;border-bottom:1px solid var(--color-divider);padding-bottom:16px">
         <div style="display:flex;gap:16px;align-items:center">
-          <img src="assets/logo.png" alt="CientiFitness" style="height:72px;width:auto;display:block">
+          <img loading="lazy" src="{{ pdfLogo }}" alt="Logo" style="height:72px;width:auto;max-width:200px;object-fit:contain;display:block">
           <div>
-            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">CientiFitness · Plan nutricional</div>
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ pdfBrand }}</div>
             <h2 style="margin:6px 0 0">{{ cName }}</h2>
           </div>
         </div>
@@ -1676,6 +1678,24 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </div>
     </div>
   </sc-if>
+  <sc-if value="{{ libPremLock }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:28px 24px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;max-width:640px">
+      <span style="width:44px;height:44px;border-radius:14px;background:#fff4dc;color:#8a5a00;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></span>
+      <span style="font-family:var(--font-heading);font-weight:700;font-size:20px">{{ libPremName }} · Premium</span>
+      <span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">{{ libPremTxt }}</span>
+      <button class="btn btn-primary" onClick="{{ openPlans }}">Ver planes</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isBrand }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 24px;display:flex;flex-direction:column;gap:14px;max-width:680px">
+      <div style="display:flex;flex-direction:column;gap:3px"><h3 style="margin:0;font-size:20px">Mi marca en el PDF</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Tu logo y tu nombre sustituyen a los de CientiFitness en el PDF del plan y en la cabecera de la Vista cliente.</span></div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <div style="width:160px;height:100px;border-radius:16px;border:1.5px dashed var(--color-neutral-300);display:flex;align-items:center;justify-content:center;background:var(--color-neutral-100);overflow:hidden;flex:none"><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" src="{{ brLogo }}" alt="Tu logo" style="max-width:90%;max-height:80px;object-fit:contain"></sc-if><sc-if value="{{ brNoLogo }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;color:var(--color-neutral-600)">Sin logo</span></sc-if></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><label class="btn btn-secondary" style="cursor:pointer">Subir logo<input type="file" accept="image/*" onChange="{{ brPick }}" style="display:none"></label><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ brDel }}" style="color:#a8321a">Quitar logo</button></sc-if><span style="font-size:12px;color:var(--color-neutral-700)">PNG o JPG; mejor con fondo transparente.</span></div>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Nombre que aparece en el PDF<input class="input" value="{{ brName }}" onChange="{{ onBrName }}" placeholder="Por ejemplo: Laura Gómez Nutrición" style="max-width:420px"></label>
+    </div>
+  </sc-if>
   <sc-if value="{{ isPresets }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
       <p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:680px;text-wrap:pretty">Cada preset fija el ajuste calórico, el reparto de macros y una dieta de ejemplo. Al volcarlo en un cliente, las cantidades se recalculan solas para sus kcal y macros.</p>
@@ -1821,7 +1841,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px">
       <sc-for list="{{ flCards }}" as="t" hint-placeholder-count="2">
-        <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px;grid-column:{{ t.span }}">
           <div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto;min-width:0;text-wrap:pretty">{{ t.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800);white-space:nowrap">{{ t.kind }}</span><sc-if value="{{ t.isBase }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--veg-bg);color:var(--veg-ink);white-space:nowrap">Común</span></sc-if><sc-if value="{{ t.hasBy }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--color-neutral-100);color:var(--color-neutral-700);white-space:nowrap">{{ t.by }}</span></sc-if></div>
           <span style="font-size:13px;color:var(--color-neutral-700)">{{ t.meta }}</span>
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
@@ -1830,26 +1850,46 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
             <sc-if value="{{ t.canProp }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ t.prop }}" style="font-size:13px">Proponer a la común</button></sc-if>
             <sc-if value="{{ t.canDel }}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{ t.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ t.delLabel }}</button></sc-if>
           </div>
+          <div style="border-top:1px solid var(--color-divider);padding-top:10px;display:flex;flex-direction:column;gap:8px">
+            <sc-if value="{{ t.sch.none }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ t.sch.add }}" style="font:inherit;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;min-height:40px;padding:6px 12px;border-radius:12px;border:1.5px dashed var(--color-accent-300);background:#fff;color:var(--color-accent-800);cursor:pointer;width:100%"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg><span style="margin-right:auto">Programar envío automático</span><sc-if value="{{ t.sch.lock }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:#fff4dc;color:#8a5a00">PREMIUM</span></sc-if></button>
+            </sc-if>
+            <sc-if value="{{ t.sch.has }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center">
+                <span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ t.sch.stBg }};color:{{ t.sch.stFg }}">{{ t.sch.stLbl }}</span>
+                <span style="font-size:13px;font-weight:700;min-width:0">{{ t.sch.sum }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--color-neutral-700)"><span>{{ t.sch.nCli }}</span><span style="font-weight:700;color:var(--color-accent-700)">{{ t.sch.next }}</span><span>{{ t.sch.last }}</span></div>
+              <button class="btn btn-secondary" onClick="{{ t.sch.toggleOpen }}" style="font-size:13px;align-self:flex-start">{{ t.sch.openLbl }}</button>
+              <sc-if value="{{ t.sch.open }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;background:var(--color-neutral-100);border-radius:16px;padding:14px">
+                  <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                    <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Cuándo</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ t.sch.freqs }}" as="o" hint-placeholder-count="0"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:34px;padding:5px 12px;border-radius:999px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.l }}</button></sc-for></div>
+                    <sc-if value="{{ t.sch.isDow }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ t.sch.dows }}" as="o" hint-placeholder-count="0"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:34px;padding:5px 12px;border-radius:999px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.l }}</button></sc-for></div></sc-if>
+                    <sc-if value="{{ t.sch.is2w }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">A partir del<input class="input" type="date" value="{{ t.sch.from }}" onChange="{{ t.sch.onFrom }}" style="width:170px;min-height:34px"></label></sc-if>
+                    <sc-if value="{{ t.sch.isMonth }}" hint-placeholder-val="{{ false }}"><select class="input" value="{{ t.sch.dom }}" onChange="{{ t.sch.onDom }}" style="width:auto;min-height:34px"><sc-for list="{{ t.sch.doms }}" as="o" hint-placeholder-count="0"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></sc-if>
+                    <sc-if value="{{ t.sch.isOnce }}" hint-placeholder-val="{{ false }}"><input class="input" type="date" value="{{ t.sch.date }}" onChange="{{ t.sch.onDate }}" style="width:170px;min-height:34px"></sc-if>
+                    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">Hora<input class="input" type="time" value="{{ t.sch.time }}" onChange="{{ t.sch.onTime }}" style="width:110px;min-height:34px;text-align:center"></label>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="flex:1">Activo</span><button onClick="{{ t.sch.togOn }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ t.sch.onBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ t.sch.onKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="flex:1">Recordar si no responde en 24 h</span><button onClick="{{ t.sch.togRem }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ t.sch.rBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ t.sch.rKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></div>
+                    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap">Pausar hasta<input class="input" type="date" value="{{ t.sch.pause }}" onChange="{{ t.sch.onPause }}" style="width:170px;min-height:34px"><sc-if value="{{ t.sch.hasPause }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ t.sch.unpause }}" style="font-size:12px">Quitar pausa</button></sc-if></label>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600);margin-right:auto">A quién</span><button class="btn btn-ghost" onClick="{{ t.sch.allCli }}" style="font-size:12px">Todos</button><button class="btn btn-ghost" onClick="{{ t.sch.noneCli }}" style="font-size:12px">Ninguno</button></div>
+                    <sc-if value="{{ t.sch.noClients }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Todavía no tienes clientes.</span></sc-if>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;max-height:220px;overflow:auto"><sc-for list="{{ t.sch.clients }}" as="o" hint-placeholder-count="0"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:34px;padding:5px 12px;border-radius:999px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.l }}</button></sc-for></div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="flex:1">Añadir automáticamente a los clientes nuevos</span><button onClick="{{ t.sch.togNew }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ t.sch.nBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ t.sch.nKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></div>
+                    <button class="btn" onClick="{{ t.sch.del }}" style="font-size:13px;background:transparent;color:#a8321a;align-self:flex-start">{{ t.sch.delLabel }}</button>
+                  </div>
+                </div>
+              </sc-if>
+            </sc-if>
+          </div>
         </div>
       </sc-for>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:10px">
-      <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 320px;min-width:0"><h3 style="margin:0;font-size:19px">Envío automático</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ faSub }}</span></div>
-      <button class="btn btn-primary" onClick="{{ faAdd }}">+ Envío automático</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <sc-for list="{{ faRows }}" as="r" hint-placeholder-count="0">
-        <div style="background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center">
-          <select class="input" value="{{ r.form }}" onChange="{{ r.onForm }}" style="flex:1 1 220px;min-width:0"><sc-for list="{{ faForms }}" as="o" hint-placeholder-count="2"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
-          <select class="input" value="{{ r.dow }}" onChange="{{ r.onDow }}" style="width:auto"><sc-for list="{{ faDows }}" as="o" hint-placeholder-count="7"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
-          <input class="input" type="time" value="{{ r.time }}" onChange="{{ r.onTime }}" style="width:110px;text-align:center">
-          <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">Recordar a las 24 h <button onClick="{{ r.togRem }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.rBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.rKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></span>
-          <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700)">Activo <button onClick="{{ r.togOn }}" style="font:inherit;width:44px;height:26px;border-radius:999px;border:0;padding:0;background:{{ r.onBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:3px;left:{{ r.onKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></span>
-          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">{{ r.nCli }} clientes</span>
-          <button class="btn" onClick="{{ r.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ r.delLabel }}</button>
-        </div>
-      </sc-for>
-    </div>
+
   </sc-if>
   <sc-if value="{{ isProps }}" hint-placeholder-val="{{ false }}">
     <p style="margin:0;font-size:14px;color:var(--color-neutral-700);max-width:720px;text-wrap:pretty">Lo que tus entrenadores proponen para la biblioteca común. Al aprobarlo se añade con el nombre de quien lo creó y lo ven tus entrenadores según su plan.</p>
@@ -2138,6 +2178,26 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:10px 12px"><img src="assets/icon-192.png" alt="" style="width:34px;height:34px;border-radius:9px;flex:none"><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;font-weight:800">{{ nxePT }}</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ nxePB }}</span></span></div>
       </div>
     </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ plansOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ plansClose }}" style="position:fixed;inset:0;z-index:80;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(860px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:22px;margin-right:auto">Planes CientiFitness</span><button class="btn btn-ghost" onClick="{{ plansClose }}">Cerrar</button></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
+      <div style="border:2px solid {{ plStdBd }};border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:800;font-size:18px;margin-right:auto">Estándar</span><sc-if value="{{ plStdCur }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Tu plan</span></sc-if></div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-heading);font-weight:800;font-size:34px">19 €</span><span style="font-size:13px;color:var(--color-neutral-700)">/ mes · clientes ilimitados</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13px;line-height:1.4"><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Cálculo automático y plan de comidas (intercambios y menú cerrado)</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Fichas, agenda y chat con el asesorado</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Progreso: mediciones ISAK, gráficas y comparador</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>App del asesorado con notificaciones</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Cuestionarios y avisos comunes</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Recetas y alimentos de la biblioteca</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>PDF del plan con marca CientiFitness</span></li></ul>
+      </div>
+      <div style="border:2px solid {{ plPreBd }};border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#f3f9fd,#fff 40%)">
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:800;font-size:18px;margin-right:auto">Premium</span><sc-if value="{{ plPreCur }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Tu plan</span></sc-if></div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-heading);font-weight:800;font-size:34px">39 €</span><span style="font-size:13px;color:var(--color-neutral-700)">/ mes · clientes ilimitados</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13px;line-height:1.4"><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Todo lo del Estándar</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Cuestionarios automáticos (semanal, quincenal, mensual)</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Presets de dieta y listas de alimentos (vegana, sin gluten…)</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Cambios libres del asesorado con límites</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Biblioteca propia: tus cuestionarios, avisos y recetas</span></li><li style="display:flex;gap:8px;align-items:flex-start"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:var(--veg-ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><span>Tu logo y tu nombre en el PDF</span></li></ul>
+      </div>
+    </div>
+    <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Para cambiar de plan escribe a <a href="mailto:elcientifitness@gmail.com">elcientifitness@gmail.com</a> o llama al +34 627 54 79 83.</span>
   </div>
 </div>
 </sc-if>
@@ -2498,6 +2558,13 @@ function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(
   const bn=hits.filter(q=>norm(q.m.name||'')===norm(mn||''));return bn.length?bn:hits;}
 const stripMk=b=>String(b||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,'');
 const NXK=[['daily','Cada día a una hora'],['week','Ciertos días de la semana'],['train','Solo días de entreno'],['rest','Solo días de descanso'],['pre','Antes o después del entreno'],['rev','Días antes de una revisión'],['once','Una sola vez, en una fecha'],['every','Cada X horas']];
+const FAD=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+const faDue=(x,d)=>{if(x.on===false)return false;if(x.pause&&d<=x.pause)return false;const f=x.freq||'week',dt=new Date(d+'T12:00:00'),dw=(dt.getDay()+6)%7;
+  if(f==='once')return d===x.date;if(f==='month')return dt.getDate()===num(x.dom||1);if(dw!==num(x.dow))return false;
+  if(f==='2w'){const w=Math.floor((dt-new Date((x.from||d)+'T12:00:00'))/864e5/7);return w>=0&&w%2===0;}return true;};
+const faNext=x=>{const now=new Date(),tm=(x.time||'10:00').split(':'),T=num(tm[0])*60+num(tm[1]),nm=now.getHours()*60+now.getMinutes();
+  for(let i=0;i<400;i++){const dt=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,12),d=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');if(i===0&&nm>=T)continue;if(faDue(x,d))return d;}return null;};
+const faSum=x=>{const f=x.freq||'week',t=x.time||'10:00';return (f==='once'?'Una vez, el '+(x.date?new Date(x.date+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long'}):'—'):f==='month'?'Cada mes, el día '+(x.dom||1):f==='2w'?'Cada 2 semanas, el '+FAD[num(x.dow)]:'Cada '+FAD[num(x.dow)])+' a las '+t;};
 const NXT=['daily','week','train','rest','rev','once'],DLW=['L','M','X','J','V','S','D'];
 const nxSum=(x,t)=>{t=t||x.time||'09:00';const o=num(x.offset);switch(x.kind){case 'week':return ((x.days||[]).map(i=>DLW[i]).join(' ')||'Sin días')+' · '+t;case 'train':return 'Días de entreno · '+t;case 'rest':return 'Días de descanso · '+t;
   case 'pre':return o<0?Math.abs(o)+' min antes de entrenar':o>0?o+' min después de entrenar':'A la hora de entrenar';case 'rev':{const d=num(x.dbefore);return (d?d+(d===1?' día':' días')+' antes de la revisión':'El día de la revisión')+' · '+t;}
@@ -2740,7 +2807,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -2762,7 +2829,7 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
@@ -2788,7 +2855,7 @@ class Component extends DCLogic {
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null,fauto:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
@@ -2835,7 +2902,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -2846,9 +2913,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -2861,7 +2928,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2874,10 +2941,10 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto};ps=ps||snap||this._snap;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto,brand:s.brand};ps=ps||snap||this._snap;
     if(ps.events!==s.events&&this._cloud)this.agendaSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto||ps.brand!==s.brand){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -2953,6 +3020,9 @@ class Component extends DCLogic {
     return {val:key in d?d[key]:(cur==null?'':String(cur)),on:e=>{const x=e.target.value;this.setState(st=>({dr:{...(st.dr||{}),[key]:x}}));if(ok(x))commit(parseFloat(String(x).replace(',','.')));},
       bl:()=>{const dd=this.state.dr||{};if(!(key in dd))return;const x=dd[key],n={...dd};delete n[key];this.setState({dr:n});if(!ok(x))commit(def);}};}
   notesAll(){return this.state.mnotes||DEF_NOTES;}
+  isPrem(){return this.myPlan()==='premium';}
+  autoFa(){return this.isPrem()?(this.state.fauto||[]).filter(x=>x.newAuto&&x.on!==false).map(x=>x.id):[];}
+  premToast(what){this.toast((what||'Esta función')+' es del plan Premium. Pulsa «Ver planes» para más información.',true);}
   listsAll(){return this.state.lists||window.CF_LISTS||[];}
   formTpls(){const F=CFF();if(this.isCEO())return this.state.forms||F.DEFS;const own=this.myPlan()==='premium'?(this.state.forms||[]):[],B=this.state.base,com=(B&&B.forms)||F.DEFS,ids=new Set(own.map(x=>x.id));return own.concat(com.filter(x=>x&&!ids.has(x.id)).map(x=>({...x,_base:true})));}
   formsOwn(st){st=st||this.state;return this.isCEO()?(st.forms||CFF().DEFS):(st.forms||[]);}
@@ -3009,8 +3079,8 @@ class Component extends DCLogic {
       v.sortSeg=this.seg([['recent','Recientes'],['az','A–Z']],srt,x=>this.setState({clientSort:x}));
       v.clientCount=s.clients.length+' activos';v.clientQuery=s.clientQuery;v.onClientQuery=e=>this.setState({clientQuery:e.target.value});
       v.noClients=list.length===0;
-      v.altaForm=()=>{if(!this._cloud||!this.sb){this.toast('Los cuestionarios necesitan la nube: inicia sesión',true);return;}const c={...newClient(),alta:true};this.setState(st=>({clients:[c].concat(st.clients),activeId:c.id,view:'client',tab:'forms'}),()=>this.sendForm(c.id,'f-inicial',true));};
-      v.newClient=()=>{const c=newClient();this.setState(st=>({clients:[c].concat(st.clients),activeId:c.id,view:'client',tab:'calc'}));};
+      v.altaForm=()=>{if(!this._cloud||!this.sb){this.toast('Los cuestionarios necesitan la nube: inicia sesión',true);return;}const c={...newClient(),alta:true},fa0=this.autoFa();if(fa0.length)c.fa=fa0;this.setState(st=>({clients:[c].concat(st.clients),activeId:c.id,view:'client',tab:'forms'}),()=>this.sendForm(c.id,'f-inicial',true));};
+      v.newClient=()=>{const c=newClient(),fa=this.autoFa();if(fa.length)c.fa=fa;this.setState(st=>({clients:[c].concat(st.clients),activeId:c.id,view:'client',tab:'calc'}));};
       v.clientCards=list.map(c=>{const cc=computeCalc(c),T=computeTargets(c,cc);
         const goal=c.tg.kcalMode==='manual'?'Kcal manual':c.calc.adj==='deficit'?'Déficit −'+num(c.calc.adjPct)+'%':c.calc.adj==='superavit'?'Superávit +'+num(c.calc.adjPct)+'%':'Mantenimiento';
         const AV=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']],av=AV[Math.abs(h32(c.id))%AV.length];
@@ -3031,7 +3101,7 @@ class Component extends DCLogic {
         v.tiName=inv.name;v.tiEmail=inv.email;v.tiPhone=inv.phone;v.onTiName=setInv('name');v.onTiEmail=setInv('email');v.onTiPhone=setInv('phone');
         v.tiCreateLabel=s.accBusy?'Creando…':'Crear acceso';
         const ip=inv.plan||'standard';v.tiPlanShow=!s.teamNoPlan;v.tiPlanSeg=this.seg([['standard','Estándar'],['premium','Premium']],ip,x=>this.setState(st=>({teamInv:{...(st.teamInv||blank),plan:x}})));
-        v.tiPlanNote=ip==='premium'?'Su biblioteca personal + toda la común: alimentos, recetas, presets y equivalencias.':'Su biblioteca personal + los alimentos de la biblioteca común.';
+        v.tiPlanNote=ip==='premium'?'Premium (39 €/mes): todo lo común, presets, listas, cuestionarios automáticos, cambios libres, biblioteca propia y su logo en el PDF.':'Estándar (19 €/mes): plan, progreso, app del asesorado, cuestionarios y avisos comunes, recetas y alimentos comunes.';
         const setPlan=(em,p)=>{if(p!=='premium'||s.teamNoPlan)return;this.sb.from('cf_coaches').update({plan:p}).eq('email',em).then(()=>this.loadTeam());};
         const em0=inv.email.trim().toLowerCase(),body0=mode=>({kind:'coach',mode,email:em0,name:inv.name.trim(),phone:inv.phone.trim()});
         v.tiCreate=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('create'),j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:inv.name.trim(),phone:inv.phone.trim(),reset:j.mode==='reset'},teamInv:blank});setPlan(em0,ip);this.loadTeam();this.toast(j.mode==='reset'?'Contraseña nueva generada':'Entrenador añadido');});};
@@ -3085,8 +3155,8 @@ class Component extends DCLogic {
         v.fNoCloud=!this._cloud;v.fErr=!!s.formsErr;v.fErrTxt=/cf_forms|relation|schema cache/i.test(s.formsErr||'')?'Para enviar cuestionarios, ejecuta cuestionarios.sql en Supabase (SQL Editor → New query → Run).':'No se pudieron leer los cuestionarios: '+(s.formsErr||'');
         v.fEmpty=!!this._cloud&&!s.formsErr&&!rows.length;
         const TL=this.formTpls();v.fTplOpts=TL.map(t=>({val:t.id,label:t.name}));v.fTplSel=TL.some(t=>t.id===s.fSendTpl)?s.fSendTpl:(TL[0]||{}).id;v.onFTpl=e=>this.setState({fSendTpl:e.target.value});v.fSend=()=>this.sendForm(cl.id,v.fTplSel,true);
-        {const DW=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];v.fcAuto=(s.fauto||[]).map(x=>{const on=(cl.fa||[]).includes(x.id),tp=this.formTpls().find(q=>q.id===x.formId);
-          return {title:(tp?tp.name:(x.form&&x.form.name)||'Cuestionario'),when:'Cada '+DW[x.dow]+' a las '+(x.time||'10:00')+(x.on===false?' · pausado':''),bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
+        {v.fcAuto=(this.isPrem()?(s.fauto||[]):[]).map(x=>{const on=(cl.fa||[]).includes(x.id),tp=this.formTpls().find(q=>q.id===x.formId);
+          return {title:(tp?tp.name:(x.form&&x.form.name)||'Cuestionario'),when:faSum(x)+(x.on===false?' · desactivado':x.pause&&x.pause>=todayISO()?' · pausado':''),bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',
             toggle:()=>this.updC(n=>{const a=(n.fa||[]).slice(),i=a.indexOf(x.id);if(i>=0)a.splice(i,1);else a.push(x.id);if(a.length)n.fa=a;else delete n.fa;})};});v.fcHas=v.fcAuto.length>0;}
         v.fRows=rows.map(r=>{const done=r.status==='done',open=s.fOpen===r.id,ap=cl.fApplied&&cl.fApplied[r.id];
           return {title:r.title,done,pend:!done,stLabel:done?'Respondido el '+fd(r.answered_at):'Pendiente · enviado el '+fd(r.created_at),stBg:done?'var(--veg-bg)':'var(--carb-bg)',stFg:done?'var(--veg-ink)':'var(--carb-ink)',
@@ -3314,7 +3384,7 @@ class Component extends DCLogic {
       v.macroCells=[['Proteína',T.p,pP,'prot'],['Hidratos',T.c,pC,'carb'],['Grasas',T.f,pF,'fat']].map(([l,g,pc,mk])=>({sw:SW[mk],bg:MBG[mk],fg:MINK[mk],label:l,g:g+' g',sub:(T.w?(g/T.w).toFixed(1):'0')+' g/kg · '+R(pc*100)+'%'}));
 
       if(s.tab==='calc'){
-        v.presetChips=this.presetsList().map(P=>({label:P.name,bg:cl.preset===P.id?'var(--color-accent)':'#fff',fg:cl.preset===P.id?'#fff':'var(--color-text)',bd:cl.preset===P.id?'var(--color-accent)':'var(--color-divider)',pick:()=>{this.updC(n=>applyPreset(n,P,false));this.setState({presetOffer:P.meals&&P.meals.length?P.id:null});this.toast('Preset aplicado: '+P.name);}}));
+        v.presetLock=!this.isPrem();v.presetChips=(this.isPrem()?this.presetsList():[]).map(P=>({label:P.name,bg:cl.preset===P.id?'var(--color-accent)':'#fff',fg:cl.preset===P.id?'#fff':'var(--color-text)',bd:cl.preset===P.id?'var(--color-accent)':'var(--color-divider)',pick:()=>{this.updC(n=>applyPreset(n,P,false));this.setState({presetOffer:P.meals&&P.meals.length?P.id:null});this.toast('Preset aplicado: '+P.name);}}));
         {const PO=this.presetsList().find(P=>P.id===s.presetOffer);v.showPresetOffer=!!PO&&cl.preset===s.presetOffer;v.presetOfferText=PO&&PO.meals?'«'+PO.name+'» incluye una dieta de ejemplo ('+PO.meals.map(m=>pmN(m).name+' '+pmN(m).pct+'%').join(' · ')+'). Al volcarla, sustituye las comidas actuales y las cantidades se ajustan solas a las kcal y macros del cliente.':'';
         v.applyPresetMeals=()=>{if(!PO)return;this.updC(n=>applyPreset(n,PO,true));this.setState({presetOffer:null});this.toast('Dieta volcada · cantidades ajustadas');};
         v.dismissPreset=()=>this.setState({presetOffer:null});}
@@ -3548,7 +3618,7 @@ class Component extends DCLogic {
               txt:d.txt||'',onTxt:e=>{const x=e.target.value;updG(g=>{g[k]=g[k]||{};if(x.trim())g[k].txt=x;else delete g[k].txt;});}};});}
         v.toggleLat=()=>{const x=!this.state.latView;try{localStorage.setItem('cf-latview',x?'1':'0');}catch(e){}this.setState({latView:x});};
         {const LL=this.listsAll(),act=cl.foodList&&LL.find(q=>q.id===cl.foodList);v.flActive=!!act;v.flActiveName=act?act.name:'';v.flUnset=()=>this.updC(n=>{delete n.foodList;});
-          v.lsOpenFn=()=>this.setState({lsOpen:true,lsAsk:null});v.lsOn=!!s.lsOpen;v.lsClose=()=>this.setState({lsOpen:false,lsAsk:null});
+          v.lsOpenFn=()=>{if(!this.isPrem()){this.premToast('Las listas de alimentos');return;}this.setState({lsOpen:true,lsAsk:null});};v.lsLock=!this.isPrem();v.lsOn=!!s.lsOpen;v.lsClose=()=>this.setState({lsOpen:false,lsAsk:null});
           v.lsMode=cl.planMode==='closed'?'Menú cerrado: cada comida recibe hasta 3 opciones (A, B, C) con un alimento de cada macro.':'Intercambios: cada comida recibe todos los alimentos de la lista como alternativas.';
           v.lsCards=LL.map(Lst=>{const on=cl.foodList===Lst.id,ask=s.lsAsk===Lst.id,nI=listIds(Lst).size;
             return {name:Lst.name,tag:Lst.tag||'',desc:Lst.desc||'',meta:nI+' alimentos',bd:on?'var(--color-accent)':'var(--color-divider)',
@@ -3652,13 +3722,13 @@ class Component extends DCLogic {
             v.cnDev=!cloudOn?'Sin nube':!D?'Comprobando…':D.err?(D.err==='sql'?'Falta notificaciones.sql':'Error'):D.n?'Activadas · '+D.n+(D.n===1?' dispositivo':' dispositivos'):'No activadas en su móvil';
             v.cnDevBg=D&&D.n?'#e3f4ea':'#fff4dc';v.cnDevFg=D&&D.n?'#1d6b43':'#8a5a00';}
           {const SWc={on:true,max:3,tol:10,...(cl.swap||{})},setS=fn=>this.updC(n=>{n.swap={on:true,max:3,tol:10,...(n.swap||{})};fn(n.swap);});
-            v.swOn=!!SWc.on;v.swBg=SWc.on?'var(--color-accent)':'var(--color-neutral-300)';v.swKnob=SWc.on?'18px':'2px';v.swToggle=()=>setS(x=>{x.on=!x.on;});
+            const PR=this.isPrem();v.swLock=!PR;v.swOn=PR&&!!SWc.on;v.swBg=v.swOn?'var(--color-accent)':'var(--color-neutral-300)';v.swKnob=v.swOn?'18px':'2px';v.swToggle=()=>{if(!PR){this.premToast('Los cambios libres del asesorado');return;}setS(x=>{x.on=!x.on;});};
             {const f=this.numF('swMax-'+cl.id,SWc.max,x=>setS(q=>{q.max=Math.max(0,Math.round(x));}),3);v.swMax=f.val;v.onSwMax=f.on;v.blSwMax=f.bl;}
             {const f=this.numF('swTol-'+cl.id,SWc.tol,x=>setS(q=>{q.tol=Math.max(0,Math.min(50,x));}),10);v.swTol=f.val;v.onSwTol=f.on;v.blSwTol=f.bl;}}
           v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
-            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{})},open,
+            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{}),...(this.isPrem()?{}:{on:false})},open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,note:m.note||'',opts:m.opts.map(o=>({title:o.title,note:o.note||'',blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
@@ -3689,8 +3759,9 @@ class Component extends DCLogic {
       const ceo=this.isCEO(),cloud=!!this._cloud,plan=this.myPlan(),std=!ceo&&plan==='standard',P0=s.props||[],AL=s.allLibs||[];
       const src=ceo?(cloud&&s.libSrc==='coach'?'coach':'base'):(['all','base','own'].includes(s.libSrc)?s.libSrc:'all'),coachV=src==='coach',viewOwn=ceo?!coachV:src!=='base';
       const tab=s.libTab==='props'&&!(ceo&&cloud)?'foods':s.libTab,pc=ceo?P0.filter(p=>p.status==='pending').length:0;
-      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['lists','Listas de alimentos'],['tpls','Recetas'],['notes','Comentarios'],['notif','Notificaciones'],['forms','Cuestionarios']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
-      v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';v.isFormsLib=tab==='forms';v.isListsLib=tab==='lists';v.isNotesLib=tab==='notes';v.isNotifLib=tab==='notif';
+      v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['presets','Presets de dieta'],['lists','Listas de alimentos'],['tpls','Recetas'],['notes','Comentarios'],['notif','Notificaciones'],['forms','Cuestionarios'],['brand','Mi marca']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
+      v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';v.isFormsLib=tab==='forms';v.isListsLib=tab==='lists';v.isBrand=tab==='brand';
+      {const pr=this.isPrem();v.libPremLock=!pr&&(v.isPresets||v.isListsLib||v.isBrand);v.libPremName=v.isPresets?'Presets de dieta':v.isListsLib?'Listas de alimentos':'Mi marca en el PDF';v.libPremTxt=v.isPresets?'Plantillas de objetivo, macros y comidas para hacer dietas en un clic.':v.isListsLib?'Listas de alimentos (vegana, sin gluten, low FODMAP…) para rellenar comidas o limitar el buscador.':'Tu logo y tu nombre en el PDF del plan y en el informe de progreso.';if(v.libPremLock){v.isPresets=false;v.isListsLib=false;v.isBrand=false;}}v.isNotesLib=tab==='notes';v.isNotifLib=tab==='notif';
       v.libSrcShow=cloud&&!v.isProps&&!v.isFormsLib&&!v.isListsLib&&!v.isNotesLib&&!v.isNotifLib;v.libCanAdd=viewOwn;
       v.libSrcSeg=this.seg(ceo?[['base','Biblioteca común'],['coach','De los entrenadores']]:[['all','Todo'],['base','CientiFitness'],['own','Mía']],src,x=>{this.setState({libSrc:x});if(x==='coach')this.loadAllLibs();});
       v.libCoachPick=coachV;v.libCoach=s.libCoach||'';v.onLibCoach=e=>this.setState({libCoach:e.target.value});
@@ -3735,23 +3806,33 @@ class Component extends DCLogic {
       if(v.isFormsLib){const TP=this.formTpls(),F=CFF(),canOwn=ceo||plan==='premium';const setF=fn=>this.setState(st=>{const a=F.clone(this.formsOwn(st));fn(a);return {forms:a};});
         v.flNote=ceo?'Tus cuestionarios son los comunes: los usan todos tus entrenadores y los cambios se aplican a los próximos envíos.':canOwn?'Los marcados «Común» vienen de CientiFitness y se actualizan solos. Puedes crear los tuyos o duplicar uno común para editarlo.':'Tu plan usa los cuestionarios comunes de CientiFitness, que se actualizan solos. Para crear los tuyos necesitas el plan Premium.';
         v.flCanNew=canOwn;
-        v.flCards=TP.map(t=>{const base=!!t._base;return {name:t.name,kind:t.kind==='inicial'?'Inicial':t.kind==='revision'?'Revisión':'Otro',meta:(t.qs||[]).filter(q=>q.type!=='sec').length+' preguntas · '+(t.qs||[]).filter(q=>q.type==='sec').length+' secciones',
+        const FA=s.fauto||[],PRm=this.isPrem(),setFA=fn=>this.setState(st=>{const a=JSON.parse(JSON.stringify(st.fauto||[]));fn(a);return {fauto:a};}),fdl=d=>d?new Date(d+'T12:00:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}):'';
+        const schOf=t=>{const x=FA.find(q=>q.formId===t.id);if(!x)return {has:false,none:true,canAdd:PRm,lock:!PRm,add:()=>{if(!PRm){this.premToast('El envío automático');return;}setFA(a=>{a.push({id:'a-'+uid(),formId:t.id,freq:'week',dow:6,from:todayISO(),dom:1,date:todayISO(),time:'10:00',remind:true,on:true,newAuto:false,form:{name:t.name,kind:t.kind||'otro',intro:t.intro||'',qs:t.qs}});});this.setState({faOpen:t.id});}};
+          const set=fn=>setFA(a=>{const q=a.find(y=>y.id===x.id);if(q)fn(q);}),open=s.faOpen===t.id,f=x.freq||'week',paused=!!x.pause&&x.pause>=todayISO(),off=x.on===false,nx=faNext(x),cls=s.clients.filter(c=>(c.fa||[]).includes(x.id));
+          const rows=(s.formsDb||[]).filter(r=>r.form&&r.form.auto===x.id),done=rows.filter(r=>r.status==='done').sort((a,b)=>(a.answered_at||'')<(b.answered_at||'')?1:-1)[0],last=rows.slice().sort((a,b)=>a.created_at<b.created_at?1:-1)[0];
+          const chip=(on,lb,fn)=>({l:lb,bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)',pick:fn});
+          return {has:true,none:false,lock:!PRm,open,toggleOpen:()=>this.setState({faOpen:open?null:t.id}),openLbl:open?'Cerrar programación':'Editar programación',
+            sum:faSum(x),stLbl:off?'Desactivado':paused?'Pausado hasta el '+new Date(x.pause+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'Activo',stBg:off?'var(--color-neutral-200)':paused?'#fff4dc':'var(--veg-bg)',stFg:off?'var(--color-neutral-700)':paused?'#8a5a00':'var(--veg-ink)',
+            nCli:cls.length+(cls.length===1?' cliente':' clientes')+(x.newAuto?' · y los nuevos':''),
+            next:off?'Sin próximo envío':nx?'Próximo envío: '+fdl(nx)+' · '+(x.time||'10:00'):'Sin próximo envío',
+            last:done?'Último respondido: '+new Date(done.answered_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):last?'Último enviado: '+new Date(last.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' · sin responder':'Aún no se ha enviado',
+            freqs:[['week','Semanal'],['2w','Cada 2 semanas'],['month','Mensual'],['once','Una vez']].map(([k,l])=>chip(f===k,l,()=>set(q=>{q.freq=k;}))),
+            isDow:f==='week'||f==='2w',dows:DLW.map((l,i)=>chip(num(x.dow)===i,l,()=>set(q=>{q.dow=i;}))),is2w:f==='2w',from:x.from||todayISO(),onFrom:e=>{const v2=e.target.value;set(q=>{q.from=v2||todayISO();});},
+            isMonth:f==='month',doms:Array.from({length:28},(_,i)=>({val:String(i+1),label:'Día '+(i+1)})),dom:String(x.dom||1),onDom:e=>{const v2=+e.target.value;set(q=>{q.dom=v2;});},
+            isOnce:f==='once',date:x.date||todayISO(),onDate:e=>{const v2=e.target.value;set(q=>{q.date=v2;});},
+            time:x.time||'10:00',onTime:e=>{const v2=e.target.value;set(q=>{q.time=v2||'10:00';});},
+            onBg:off?'var(--color-neutral-300)':'var(--color-accent)',onKnob:off?'3px':'21px',togOn:()=>set(q=>{q.on=q.on===false;}),
+            rBg:x.remind!==false?'var(--color-accent)':'var(--color-neutral-300)',rKnob:x.remind!==false?'21px':'3px',togRem:()=>set(q=>{q.remind=q.remind===false;}),
+            nBg:x.newAuto?'var(--color-accent)':'var(--color-neutral-300)',nKnob:x.newAuto?'21px':'3px',togNew:()=>set(q=>{q.newAuto=!q.newAuto;}),
+            pause:x.pause||'',onPause:e=>{const v2=e.target.value;set(q=>{if(v2)q.pause=v2;else delete q.pause;});},hasPause:paused,unpause:()=>set(q=>{delete q.pause;}),
+            clients:s.clients.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(c=>{const on=(c.fa||[]).includes(x.id);return {...chip(on,c.name||'Sin nombre',()=>this.setState(st=>({clients:st.clients.map(q=>{if(q.id!==c.id)return q;const fa=(q.fa||[]).filter(z=>z!==x.id);if(!on)fa.push(x.id);const n2={...q,fa,updated:Date.now()};if(!fa.length)delete n2.fa;return n2;})})))};}),
+            noClients:!s.clients.length,allCli:()=>this.setState(st=>({clients:st.clients.map(q=>(q.fa||[]).includes(x.id)?q:{...q,fa:(q.fa||[]).concat([x.id]),updated:Date.now()})})),noneCli:()=>this.setState(st=>({clients:st.clients.map(q=>{if(!(q.fa||[]).includes(x.id))return q;const fa=q.fa.filter(z=>z!==x.id),n2={...q,fa,updated:Date.now()};if(!fa.length)delete n2.fa;return n2;})})),
+            delLabel:s.faDel===x.id?'¿Quitar? Pulsa otra vez':'Quitar programación',del:()=>{if(s.faDel!==x.id){this.setState({faDel:x.id});return;}setFA(a=>{const i=a.findIndex(y=>y.id===x.id);if(i>=0)a.splice(i,1);});this.setState(st=>({faDel:null,faOpen:null,clients:st.clients.map(c=>(c.fa||[]).includes(x.id)?{...c,fa:c.fa.filter(z=>z!==x.id)}:c)}));}};};
+        v.flCards=TP.map(t=>{const base=!!t._base,sch=schOf(t);return {sch,span:sch.open?'1 / -1':'auto',name:t.name,kind:t.kind==='inicial'?'Inicial':t.kind==='revision'?'Revisión':'Otro',meta:(t.qs||[]).filter(q=>q.type!=='sec').length+' preguntas · '+(t.qs||[]).filter(q=>q.type==='sec').length+' secciones',
           isBase:base,hasBy:!!t.by&&!base,by:'De '+(t.by||''),canEdit:!base,edit:()=>this.setState({fEdit:F.clone(t)}),
           canDup:canOwn,dupLabel:base?'Duplicar y editar':'Duplicar',dup:()=>{const c=F.clone(t);delete c._base;delete c.by;delete c.byId;c.id='f-'+uid();c.name=t.name+' (copia)';if(c.kind==='inicial')c.kind='otro';setF(a=>{a.push(c);});if(base)this.setState({fEdit:F.clone(c)});this.toast('Cuestionario duplicado');},
           canProp:!ceo&&canOwn&&!base,prop:()=>this.propose('forms',t),
           canDel:!base&&(!ceo||TP.length>1),delLabel:s.flDel===t.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.flDel!==t.id){this.setState({flDel:t.id});return;}setF(a=>{const i=a.findIndex(x=>x.id===t.id);if(i>=0)a.splice(i,1);});this.setState({flDel:null});}};});
-        {const DW=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],FA=s.fauto||[],setFA=fn=>this.setState(st=>{const a=JSON.parse(JSON.stringify(st.fauto||[]));fn(a);return {fauto:a};});
-          v.faDows=DW.map((l,i)=>({val:String(i),label:l}));v.faForms=TP.map(t=>({val:t.id,label:t.name}));v.faEmpty=!FA.length;
-          v.faAdd=()=>{const t=TP.find(x=>x.kind==='revision')||TP[0];if(!t)return;setFA(a=>{a.push({id:'a-'+uid(),formId:t.id,dow:6,time:'10:00',remind:true,on:true,form:{name:t.name,kind:t.kind||'otro',intro:t.intro||'',qs:t.qs}});});};
-          v.faRows=FA.map(x=>{const set=fn=>setFA(a=>{const q=a.find(y=>y.id===x.id);if(q)fn(q);});
-            return {form:x.formId,dow:String(x.dow),time:x.time||'10:00',
-              onForm:e=>{const id=e.target.value,t=TP.find(q=>q.id===id);if(t)set(q=>{q.formId=id;q.form={name:t.name,kind:t.kind||'otro',intro:t.intro||'',qs:t.qs};});},
-              onDow:e=>{const d=+e.target.value;set(q=>{q.dow=d;});},onTime:e=>{const t=e.target.value;set(q=>{q.time=t||'10:00';});},
-              onBg:x.on!==false?'var(--color-accent)':'var(--color-neutral-300)',onKnob:x.on!==false?'21px':'3px',togOn:()=>set(q=>{q.on=q.on===false;}),
-              rBg:x.remind!==false?'var(--color-accent)':'var(--color-neutral-300)',rKnob:x.remind!==false?'21px':'3px',togRem:()=>set(q=>{q.remind=q.remind===false;}),
-              nCli:s.clients.filter(c=>(c.fa||[]).includes(x.id)).length,
-              delLabel:s.faDel===x.id?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.faDel!==x.id){this.setState({faDel:x.id});return;}setFA(a=>{const i=a.findIndex(y=>y.id===x.id);if(i>=0)a.splice(i,1);});this.setState(st=>({faDel:null,clients:st.clients.map(c=>(c.fa||[]).includes(x.id)?{...c,fa:c.fa.filter(z=>z!==x.id)}:c)}));}};});
-          v.faSub=FA.length?'Cada envío crea el cuestionario y avisa al asesorado con una notificación (si la tiene activada). Se activa cliente a cliente, en la pestaña Cuestionarios de su ficha.':'Envía un cuestionario solo, cada semana, a los clientes que elijas.';}
         v.flNew=()=>this.setState({fEdit:{id:'f-'+uid(),kind:'otro',name:'Nuevo cuestionario',intro:'',qs:[{id:uid(),type:'sec',label:'Preguntas'},{id:uid(),type:'text',label:'Nueva pregunta'}]}});
         v.flCanReset=ceo&&!!s.forms;v.flResetLabel=s.flReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.flReset=()=>{if(!s.flReset){this.setState({flReset:true});return;}this.setState({forms:null,flReset:false});this.toast('Cuestionarios restaurados');};}
       const BID={foods:{},tpls:{},eqGroups:{},presets:{}};if(ceo)Object.keys(BID).forEach(k=>(k==='presets'?this.ownPresets():(s[k]||[])).forEach(x=>{if(x&&x.id)BID[k][x.id]=x;}));
@@ -4154,6 +4235,13 @@ class Component extends DCLogic {
       v.feAddQ=()=>upd(x=>{x.qs.push({id:uid(),type:'text',label:'Nueva pregunta'});});v.feAddS=()=>upd(x=>{x.qs.push({id:uid(),type:'sec',label:'Nueva sección'});});
       v.feClose=()=>this.setState({fEdit:null});
       v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{delete e._base;const a=F.clone(this.formsOwn(st)),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);const fa=(st.fauto||[]).map(x=>x.formId===e.id?{...x,form:{name:e.name,kind:e.kind||'otro',intro:e.intro||'',qs:e.qs}}:x);return {forms:a,fEdit:null,fauto:st.fauto?fa:st.fauto};});this.toast('Cuestionario guardado');};}
+    v.openPlans=()=>this.setState({plansOpen:true});v.plansOn=!!s.plansOpen;v.plansClose=()=>this.setState({plansOpen:false});
+    {const pl=this.myPlan(),pr=pl==='premium';v.planLbl=this.isCEO()?'Plan Premium · CEO':pr?'Plan Premium':'Plan Estándar';v.planCur=pr?'premium':'standard';
+      v.plStdBd=pr?'var(--color-divider)':'var(--color-accent)';v.plPreBd=pr?'var(--color-accent)':'var(--color-divider)';v.plStdCur=!pr;v.plPreCur=pr;}
+    if(v.isBrand){const B=s.brand||{};v.brLogo=B.logo||'';v.brHasLogo=!!B.logo;v.brNoLogo=!B.logo;v.brName=B.name||'';v.onBrName=e=>{const x=e.target.value;this.setState(st=>({brand:{...(st.brand||{}),name:x}}));};
+      v.brPick=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);this.setState(st=>({brand:{...(st.brand||{}),logo:c.toDataURL('image/png')}}));this.toast('Logo guardado');};im.src=rd.result;};rd.readAsDataURL(f);};
+      v.brDel=()=>this.setState(st=>{const b={...(st.brand||{})};delete b.logo;return {brand:b};});}
+    {const B=s.brand||{},use=this.isPrem()&&!!B.logo;v.pdfLogo=use?B.logo:'assets/logo.png';v.pdfBrand=(this.isPrem()&&(B.name||'').trim())?B.name.trim()+' · Plan nutricional':'CientiFitness · Plan nutricional';}
     if(s.nxEdit){const E=s.nxEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.nxEdit));fn(e);return {nxEdit:e};}),fv=k=>e=>{const x=e.target.value;upd(q=>{q[k]=x;});},k=E.kind||'daily';
       v.nxeOn=true;v.nxeTitle=E.title||'';v.onNxeTitle=fv('title');v.nxeBody=E.body||'';v.onNxeBody=fv('body');v.nxeKinds=NXK.map(([val,label])=>({val,label}));v.nxeKind=k;v.onNxeKind=fv('kind');
       v.nxeHasTime=NXT.includes(k);v.nxeTime=E.time||'09:00';v.onNxeTime=fv('time');

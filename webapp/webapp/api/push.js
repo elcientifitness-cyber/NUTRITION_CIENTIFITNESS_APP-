@@ -85,6 +85,7 @@ function dueList(now, eff, pr, G, evs, C) {
   }
   return out;
 }
+const faDue = (it, n) => { if (it.pause && n.d <= it.pause) return false; const f = it.freq || 'week'; if (f === 'once') return n.d === it.date; if (f === 'month') return Number(n.d.slice(8, 10)) === Number(it.dom || 1); if (Number(it.dow) !== n.dow) return false; if (f === '2w') { const w = Math.floor((Date.parse(n.d + 'T12:00:00Z') - Date.parse((it.from || n.d) + 'T12:00:00Z')) / 864e5 / 7); return w >= 0 && w % 2 === 0; } return true; };
 const customOf = cfg => { if (!cfg) return []; const own = cfg.own || [], com = cfg.common || []; if (cfg.owner) return own; const mine = cfg.prem ? own : [], ids = new Set(mine.map(x => x.id)); return mine.concat(com.filter(x => x && !ids.has(x.id))); };
 
 module.exports = async (req, res) => {
@@ -109,11 +110,11 @@ module.exports = async (req, res) => {
       let sent = 0;
       // Cuestionarios automáticos: crea el cuestionario, avisa y recuerda a las 24 h
       for (const c of Object.keys(CF)) {
-        const cfg = CF[c]; if (!cfg || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
+        const cfg = CF[c]; if (!cfg || !cfg.prem || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
         const nowM = local('Europe/Madrid'); if (!nowM) continue;
         for (const it of cfg.fauto) {
           if (it.on === false) continue;
-          const T = hm(it.time); if (T == null || nowM.dow !== Number(it.dow) || nowM.m < T || nowM.m - T >= 40) continue;
+          const T = hm(it.time); if (T == null || !faDue(it, nowM) || nowM.m < T || nowM.m - T >= 40) continue;
           const frm = ((cfg.forms || []).find(f => f.id === it.formId)) || ((cfg.cforms || []).find(f => f.id === it.formId)) || it.form; if (!frm || !frm.qs) continue;
           for (const ck of Object.keys(cfg.fa || {})) {
             if (!(cfg.fa[ck] || []).includes(it.id)) continue;
