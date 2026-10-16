@@ -73,6 +73,86 @@ button{-webkit-user-select:none;user-select:none}
   <div style="max-width:560px;margin:0 auto;padding:14px 16px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
 
   <sc-if value="{{ isHoy }}" hint-placeholder-val="{{ true }}">
+
+    <sc-if value="{{ cpSoon }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ cpSoonOpen }}" style="font:inherit;border:0;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border-radius:20px;padding:14px 16px;min-height:64px;background:#10283a;color:#fff;box-shadow:var(--shadow-sm)">
+        <span style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3"></path><path d="M7 5H4v2a3 3 0 0 0 3 3"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span style="font-size:15px;font-weight:800">Protocolo de competición</span><span style="font-size:12px;opacity:.85;text-wrap:pretty">{{ cpSoonTxt }} Tócalo para verlo.</span></span>
+      </button>
+    </sc-if>
+    <sc-if value="{{ cpOn }}" hint-placeholder-val="{{ false }}">
+      <section style="background:#10283a;color:#fff;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow-sm)">
+        <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:3px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#8fc9ec">{{ cpPhase }}</span><span style="font-family:var(--font-heading);font-weight:700;font-size:19px;text-wrap:pretty">{{ cpName }}</span></div><sc-if value="{{ cpCanClose }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cpPeekClose }}" style="font:inherit;border:0;cursor:pointer;font-size:13px;font-weight:700;background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:8px 14px;min-height:36px">Volver a Hoy</button></sc-if></div>
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#a9c4d6">{{ cpCdLbl }}</span><span style="font-family:var(--font-heading);font-weight:800;font-size:34px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1">{{ cpCd }}</span><span style="font-size:12px;color:#a9c4d6;text-wrap:pretty">{{ cpWhen }}</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+          <div style="background:rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a9c4d6">{{ cpNowLbl }}</span><span style="font-weight:800;font-size:17px;font-variant-numeric:tabular-nums">{{ cpNow }}</span></div>
+          <div style="background:rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a9c4d6">Categoría</span><span style="font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;color:#f6b3a5">{{ cpCat }}</span></div>
+          <div style="background:rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a9c4d6">Falta</span><span style="font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;color:{{ cpLeftFg }}">{{ cpLeft }}</span></div>
+        </div>
+      </section>
+      <sc-if value="{{ cpNeedAcc }}" hint-placeholder-val="{{ false }}">
+        <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px;background:#fff8e6;border:1px solid #f3dfa6">
+          <span style="font-weight:800;font-size:16px;color:#5a3d00">Antes de empezar</span>
+          <span style="font-size:14px;line-height:1.5;color:#5a3d00;text-wrap:pretty">{{ cpDisc }}</span>
+          <button onClick="{{ cpAccept }}" style="font:inherit;border:0;cursor:pointer;font-size:15px;font-weight:800;min-height:50px;border-radius:999px;background:#10283a;color:#fff">He leído y acepto</button>
+        </section>
+      </sc-if>
+      <sc-if value="{{ cpAccOk }}" hint-placeholder-val="{{ false }}">
+        <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:3px;background:#34506a"></span><span style="font-weight:800;font-size:16px">Registrar peso</span></div>
+          <div class="cf-rail" style="display:flex;gap:6px;padding-bottom:2px"><sc-for list="{{ cpKinds }}" as="k" hint-placeholder-count="4"><button onClick="{{ k.pick }}" style="font:inherit;border:0;cursor:pointer;flex:none;font-size:13px;font-weight:700;padding:8px 13px;min-height:38px;border-radius:999px;border:1.5px solid #34506a;background:{{ k.bg }};color:{{ k.fg }};white-space:nowrap">{{ k.l }}</button></sc-for></div>
+          <div style="display:flex;gap:8px;align-items:center"><input class="input" type="text" inputmode="decimal" value="{{ cpKg }}" onChange="{{ onCpKg }}" placeholder="kg" style="flex:1;min-width:0;font-size:20px;font-weight:800;min-height:52px;text-align:center;font-variant-numeric:tabular-nums"><button onClick="{{ cpSave }}" style="font:inherit;border:0;cursor:pointer;font-size:15px;font-weight:800;min-height:52px;padding:0 20px;border-radius:16px;background:#34506a;color:#fff">{{ cpSaveLbl }}</button></div>
+          <sc-if value="{{ cpHasTodayW }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider)"><sc-for list="{{ cpTodayW }}" as="w" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ w.when }}</span><span style="flex:1;min-width:0;color:var(--color-neutral-700)">{{ w.kind }}</span><span style="font-weight:800;font-variant-numeric:tabular-nums">{{ w.kg }}</span><span style="width:40px;text-align:right;font-size:12px;color:var(--color-neutral-700)">{{ w.d }}</span><button onClick="{{ w.rm }}" aria-label="Borrar" style="font:inherit;border:0;cursor:pointer;width:32px;height:32px;border-radius:10px;background:var(--color-neutral-100);color:#a8321a;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></sc-for></div></sc-if>
+        </section>
+        <div class="cf-rail" style="display:flex;gap:6px;padding:2px 0 4px"><sc-for list="{{ cpDays }}" as="d" hint-placeholder-count="4"><button onClick="{{ d.pick }}" style="font:inherit;border:0;cursor:pointer;flex:none;min-width:70px;padding:8px 12px;border-radius:14px;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left"><span style="font-weight:800;font-size:15px">{{ d.l }}</span><span style="font-size:11px;opacity:.85;white-space:nowrap">{{ d.sub }}</span></button></sc-for></div>
+        <sc-if value="{{ cpIsD }}" hint-placeholder-val="{{ true }}">
+          <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-heading);font-weight:800;font-size:20px">{{ cpDTitle }}</span><span style="font-size:13px;color:var(--color-neutral-700);text-transform:capitalize">{{ cpDDate }}</span></div>
+            <sc-if value="{{ cpHasTg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ cpTg }}" as="t" hint-placeholder-count="0"><span style="font-size:12px;padding:5px 10px;border-radius:999px;background:#f1f5f8"><strong>{{ t.l }}</strong> {{ t.x }}</span></sc-for></div></sc-if>
+            <sc-if value="{{ cpHasWater }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:13px;font-weight:800;color:#0d5a8a">{{ cpWater }}</span><div style="height:8px;border-radius:999px;background:#dcebf6;overflow:hidden"><div style="height:100%;width:{{ cpWaterW }};background:#1180c2;border-radius:999px;transition:width .3s"></div></div></div></sc-if>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ cpItems }}" as="x" hint-placeholder-count="4">
+                <button onClick="{{ x.tog }}" style="font:inherit;border:0;cursor:pointer;display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:12px 14px;border-radius:16px;background:{{ x.bg }};color:{{ x.fg }};opacity:{{ x.op }};transition:opacity .2s">
+                  <span style="width:24px;height:24px;flex:none;border-radius:50%;border:2px solid {{ x.ckBd }};background:{{ x.ckBg }};color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                  <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+                    <span style="display:flex;align-items:baseline;gap:8px"><sc-if value="{{ x.hasTime }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:{{ x.dot }}">{{ x.time }}</span></sc-if><span style="font-size:15px;font-weight:800;text-decoration:{{ x.deco }};min-width:0;text-wrap:pretty">{{ x.title }}</span><sc-if value="{{ x.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:12px;font-weight:700;color:{{ x.sfg }};white-space:nowrap">{{ x.meta }}</span></sc-if></span>
+                    <sc-if value="{{ x.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:1.45;color:{{ x.sfg }};text-wrap:pretty">{{ x.sub }}</span></sc-if>
+                    <sc-if value="{{ x.hasWeigh }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;color:#34506a;background:rgba(255,255,255,.7);border-radius:999px;padding:2px 9px;width:fit-content">Pésate antes y después</span></sc-if>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ cpHasAllow }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:10px 12px;border-radius:14px;background:#eff8f3;color:#174f33;text-wrap:pretty"><strong>Puedes comer:</strong> {{ cpAllow }}</div></sc-if>
+            <sc-if value="{{ cpHasDeny }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:10px 12px;border-radius:14px;background:#fff1ee;color:#7a2512;text-wrap:pretty"><strong>Evita:</strong> {{ cpDeny }}</div></sc-if>
+            <sc-if value="{{ cpHasTxt }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.5;padding:10px 12px;border-radius:14px;background:#f1f5f8;white-space:pre-wrap;text-wrap:pretty">{{ cpTxt }}</div></sc-if>
+          </section>
+        </sc-if>
+        <sc-if value="{{ cpIsR }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-heading);font-weight:800;font-size:20px;color:#1d6b43">Reposición</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ cpRWhen }}</span></div>
+            <sc-for list="{{ cpRefill }}" as="r" hint-placeholder-count="2">
+              <div style="background:#eff8f3;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;border:2px solid {{ r.bd }}">
+                <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:15px;font-weight:800;color:#1d6b43;font-variant-numeric:tabular-nums">{{ r.when }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ r.hrs }}</span><sc-if value="{{ r.now }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:#1d6b43;color:#fff">Ahora</span></sc-if></div>
+                <sc-if value="{{ r.hasFl }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px"><strong style="color:#0d5a8a">Líquidos:</strong> {{ r.fl }}</span></sc-if>
+                <sc-if value="{{ r.hasSod }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px"><strong>Sodio / electrolitos:</strong> {{ r.sod }}</span></sc-if>
+                <sc-if value="{{ r.hasCh }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px"><strong style="color:#7a5600">Hidratos:</strong> {{ r.ch }}</span></sc-if>
+                <sc-if value="{{ r.hasFood }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px"><strong style="color:#9a3b25">Comida:</strong> {{ r.food }}</span></sc-if>
+                <sc-if value="{{ r.hasTxt }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ r.txt }}</span></sc-if>
+              </div>
+            </sc-for>
+          </section>
+        </sc-if>
+        <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:3px;background:#c0392b"></span><span style="font-weight:800;font-size:16px">¿Cómo te encuentras?</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ cpSyms }}" as="y" hint-placeholder-count="6"><button onClick="{{ y.pick }}" style="font:inherit;border:0;cursor:pointer;font-size:13px;font-weight:700;padding:8px 13px;min-height:38px;border-radius:999px;border:1.5px solid #e9a99a;background:{{ y.bg }};color:{{ y.fg }}">{{ y.l }}</button></sc-for></div>
+          <textarea class="input" rows="2" value="{{ cpSyNote }}" onChange="{{ onCpSyNote }}" placeholder="Cuéntale a tu entrenador (opcional)" style="font-size:15px;resize:vertical"></textarea>
+          <button onClick="{{ cpSySend }}" style="font:inherit;border:0;cursor:pointer;font-size:15px;font-weight:800;min-height:48px;border-radius:999px;background:#c0392b;color:#fff">Enviar a mi entrenador</button>
+          <span style="font-size:12px;line-height:1.45;color:#8f2a14;text-wrap:pretty">Si notas mareo fuerte, palpitaciones, confusión o calambres que no paran: para el protocolo, bebe y avisa a tu entrenador.</span>
+          <sc-if value="{{ cpHasLastSy }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--color-divider);padding-top:8px"><sc-for list="{{ cpLastSy }}" as="y" hint-placeholder-count="0"><span style="font-size:12px;color:var(--color-neutral-700)"><strong>{{ y.when }}</strong> · {{ y.txt }}</span></sc-for></div></sc-if>
+        </section>
+      </sc-if>
+    </sc-if>
+    <sc-if value="{{ hoyNormal }}" hint-placeholder-val="{{ true }}">
     <sc-if value="{{ ntBanner }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:12px 14px">
         <span style="width:40px;height:40px;border-radius:50%;background:#e3f1fa;color:#0e5a8a;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
@@ -211,6 +291,7 @@ button{-webkit-user-select:none;user-select:none}
       </section>
     </sc-for>
     <sc-if value="{{ noMeals }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:16px;border-radius:18px;background:#fff;color:var(--color-neutral-700);font-size:14px">Tu plan aún no tiene comidas para este día.</p></sc-if>
+    </sc-if>
   </sc-if>
 
   <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
@@ -522,6 +603,9 @@ const QS=[['cump','¿Cuánto has seguido el plan?','Nada','Al 100 %',['Nada','Po
 const SCALE=[['#e5604a','#fff'],['#f29b62','#3b1d0c'],['#efc95e','#3b2c05'],['#9bd08a','#163d1f'],['#2f9e62','#fff']];
 const SCALE_T=['#fbe3dd','#fdeadb','#fdf3d4','#e7f4e2','#dcf0e4'];
 const BAND=p=>p==null?{bg:'#eef2f6',fg:'#536273',sw:'#d3dde7',l:'Sin datos'}:p>=80?{bg:'#dcf0e4',fg:'#1d6b43',sw:'#2f9e62',l:'¡Muy bien!'}:p>=60?{bg:'#fdf3d4',fg:'#77560a',sw:'#efc95e',l:'Bien, se puede mejorar'}:{bg:'#fde8e3',fg:'#963a2b',sw:'#e5604a',l:'Vamos a por ello'};
+const CPK=[['am','Al despertar'],['pm','Antes de dormir'],['pre','Antes de comer'],['post','Después de comer'],['xpre','Antes de baño/sauna'],['xpost','Después de baño/sauna'],['of','Pesaje oficial'],['otro','Otro']];
+const CPSY=['Mareo','Calambres','Orina oscura','Dolor de cabeza','Palpitaciones','Náuseas','Mucha sed','Debilidad'];
+const CPKS={w:['#eef1f6','#34506a'],water:['#edf6fc','#1180c2'],cut:['#fff1ee','#c0392b'],meal:['#fdf4f0','#e0664f'],supp:['#f5f2fd','#8b74d6'],extra:['#fff8ea','#d9a21b'],of:['#10283a','#4fb0e8']};
 const TH={hoy:['Hoy','#e3f1fa','#1180c2','#fff','#0e6fa9'],plan:['Mi plan','#e0f4e8','#8ed2aa','#21633d','#21633d'],chat:['Chat','#eee9fc','#b3a2ea','#51408d','#51408d'],prog:['Progreso','#fde8e3','#f2a497','#963a2b','#963a2b']};
 const ic=d=>React.createElement('svg',{width:20,height:20,viewBox:'0 0 24 24',style:{stroke:'currentColor',strokeWidth:2,fill:'none',strokeLinecap:'round',strokeLinejoin:'round'}},d.map((p,i)=>React.createElement('path',{key:i,d:p})));
 const ICONS={hoy:ic(['M9 11l3 3L22 4','M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11']),plan:ic(['M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20','M8 7h8','M8 11h6']),chat:ic(['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z']),prog:ic(['M3 3v18h18','M7 15l4-4 3 3 5-6']),surv:ic(['M12 20h9','M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'])};
@@ -535,9 +619,9 @@ class Component extends DCLogic {
     day:isoD(new Date()),logs:{},saving:false,msgs:[],draft:'',add:null,shopOpen:false,toast:null,toastBad:false,survOpen:false,
     metric:(()=>{try{return localStorage.getItem('cf-as-metric')||'cump';}catch(e){return 'cump';}})(),range:'3m'};
   thrRef=React.createRef();
-  componentDidMount(){this.init(0);this.loadInbox();document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))this.fixVV();});if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>this.fixVV());
+  componentDidMount(){this.init(0);try{this.setState({cpDone:JSON.parse(localStorage.getItem('cf-cut-done')||'{}')||{}});}catch(e){}this._cpTick=setInterval(()=>{if(this.state.link&&this.state.link.comp&&document.visibilityState==='visible')this.forceUpdate();},30000);this.loadInbox();document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))this.fixVV();});if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>this.fixVV());
     if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update();}catch(x){}}).catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.cfPush)this.onPush(e.data.cfPush);});}
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')this.loadInbox();if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadForms();this.loadLogs();this.loadLink(false);}});}
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')this.loadInbox();if(document.visibilityState==='visible'&&this.state.link&&this.sb){this.loadMsgs();this.loadForms();setTimeout(()=>this.loadCut(),80);this.loadLogs();this.loadLink(false);}});}
   componentDidUpdate(){this.lockScroll();const el=this.thrRef.current,n=this.state.msgs.length,tab=this.state.tab,prev=this._pTab;this._pTab=tab;
     if(tab==='chat'&&prev!==undefined&&prev!=='chat'&&this.sb&&this.user)this.loadLink(false);
     if(tab==='chat'){if(el&&(this._n!==n||prev!=='chat')){this._n=n;el.scrollTop=el.scrollHeight;}this.markRead();}
@@ -570,11 +654,11 @@ class Component extends DCLogic {
     this.user=sess.user;this.setState({auth:'loading'});
     this.sb.from('cf_coaches').select('active').eq('email',em).maybeSingle().then(({data:co})=>{if(co&&co.active){location.replace('./');return;}this.loadLink(true);},()=>this.loadLink(true));}
   loadLink(first){if(!this.sb||!this.user)return;const em=String(this.user.email||'').toLowerCase(),cols='coach_id,client_key,name,plan,plan_at';
-    const q=ag=>this.sb.from('cf_links').select(cols+(ag?',agenda':'')).ilike('email',em).limit(1).then(r=>(r.error&&ag&&/agenda/i.test(r.error.message||''))?q(false):r);
-    q(true).then(({data,error})=>{
+    const q=(ag,cp)=>this.sb.from('cf_links').select(cols+(ag?',agenda':'')+(cp?',comp':'')).ilike('email',em).limit(1).then(r=>{if(r.error&&cp&&/comp/i.test(r.error.message||''))return q(ag,false);if(r.error&&ag&&/agenda/i.test(r.error.message||''))return q(false,cp);return r;});
+    q(true,true).then(({data,error})=>{
       if(!first){if(data&&data.length)this.setState({link:data[0]});return;}
       if(error||!data||!data.length){this.setState({auth:'nolink',authMsg:error?'Error: '+error.message:'Tu cuenta ('+sess.user.email+') aún no tiene un plan publicado. Avisa a tu nutricionista.'});return;}
-      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.loadForms();this.ntCheck();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>{this.loadMsgs();this._plN=(this._plN||0)+1;if(this._plN%3===0){this.loadLink(false);this.loadForms();}},20000);});}
+      this.setState({auth:'in',link:data[0]});this.loadLogs();this.loadMsgs();this.loadForms();setTimeout(()=>this.loadCut(),80);this.ntCheck();this.sub();clearInterval(this._pl);this._pl=setInterval(()=>{this.loadMsgs();this._plN=(this._plN||0)+1;if(this._plN%3===0){this.loadLink(false);this.loadForms();setTimeout(()=>this.loadCut(),80);}},20000);});}
   ntSup(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;}
   ntIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
   ntStand(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
@@ -596,6 +680,11 @@ class Component extends DCLogic {
     .then(r=>r.json()).then(j=>{if(j&&j.error)this.toastMsg(j.error,true);else if(!j||!j.sent)this.toastMsg('No se pudo enviar la prueba',true);else this.toastMsg('Prueba enviada');}).catch(()=>this.toastMsg('No se pudo conectar con el servidor',true));}
   ntSetPref(fn){this.setState(st=>{const p=JSON.parse(JSON.stringify(st.ntPrefs||{}));fn(p);try{localStorage.setItem('cf-nt-prefs',JSON.stringify(p));}catch(e){}return {ntPrefs:p};},
     ()=>{if(this.state.ntOn&&this.sb&&this.user){clearTimeout(this._ntT);this._ntT=setTimeout(()=>{this.sb.from('cf_push_subs').update({prefs:this.state.ntPrefs||{},updated_at:new Date().toISOString()}).eq('user_id',this.user.id).then(()=>{});},600);}});}
+  loadCut(){const L=this.state.link;if(!this.sb||!L||!L.comp)return;this.sb.from('cf_cutlogs').select('id,t,kind,kg,sym,note').eq('coach_id',L.coach_id).eq('client_key',L.client_key).order('t',{ascending:true}).limit(800).then(({data,error})=>{if(!error)this.setState({cutL:data||[]});});}
+  cutAdd(o){const L=this.state.link;if(!this.sb||!L)return Promise.resolve(false);this.setState({cpBusy:true});
+    return this.sb.from('cf_cutlogs').insert({coach_id:L.coach_id,client_key:L.client_key,t:o.t||new Date().toISOString(),kind:o.kind,kg:o.kg==null?null:o.kg,sym:o.sym||null,note:o.note||null}).then(({error})=>{this.setState({cpBusy:false});
+      if(error){this.toastMsg(/cf_cutlogs|relation|schema/i.test(error.message||'')?'Tu entrenador aún no ha activado el registro de competición':'No se pudo guardar: '+error.message,true);return false;}this.loadCut();return true;});}
+  cpToggle(k){this.setState(s=>{const d={...(s.cpDone||{})};if(d[k])delete d[k];else d[k]=1;try{localStorage.setItem('cf-cut-done',JSON.stringify(d));}catch(e){}return {cpDone:d};});}
   loadForms(){if(!this.sb||!this.user)return;this.sb.from('cf_forms').select('id,title,token,status,created_at').eq('status','sent').order('created_at',{ascending:true}).then(({data,error})=>{if(error)return;this.setState({pendForms:data||[]});});}
   doLogin(){const s=this.state;if(!this.sb)return;this.setState({authMsg:'Entrando…'});
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({authMsg:'Email o contraseña incorrectos.'});return;}this.setState({authMsg:''});this.afterLogin(data.session);});}
@@ -643,7 +732,7 @@ class Component extends DCLogic {
   renderVals(){
     const s=this.state,au=s.auth;
     const v={stop:e=>e.stopPropagation(),toast:s.toast,
-      pendForms:(s.pendForms||[]).map(f=>({title:f.title,open:()=>this.setState({formTok:f.token})})),formOn:!!s.formTok,formTok:s.formTok||'',sbc:this.sb||null,formDone:()=>this.loadForms(),formClose:()=>{this.setState({formTok:null});this.loadForms();},toastBg:s.toastBad?'#c0392b':'#1f2630',icSurv:ICONS.surv};
+      pendForms:(s.pendForms||[]).map(f=>({title:f.title,open:()=>this.setState({formTok:f.token})})),formOn:!!s.formTok,formTok:s.formTok||'',sbc:this.sb||null,formDone:()=>this.loadForms(),formClose:()=>{this.setState({formTok:null});this.loadForms();setTimeout(()=>this.loadCut(),80);},toastBg:s.toastBad?'#c0392b':'#1f2630',icSurv:ICONS.surv};
     v.showAuth=au!=='in';v.showApp=au==='in';v.isLoginForm=au==='out';v.isSetPass=au==='setpass';v.isNoLink=au==='nolink';
     v.authSub=au==='setpass'?'Crea tu contraseña para entrar en tu plan':au==='checking'||au==='loading'?'Cargando…':'Tu plan nutricional, tu registro diario y el chat con tu nutricionista';
     v.authMsg=s.authMsg;v.authMsgFg=/incorrect|No se|Error|debe/.test(s.authMsg)?'#c0392b':'var(--color-neutral-700)';
@@ -652,7 +741,7 @@ class Component extends DCLogic {
     v.newPass=s.newPass;v.onNewPass=e=>this.setState({newPass:e.target.value});v.onNewPassKey=e=>{if(e.key==='Enter')this.doSetPass();};v.doSetPass=()=>this.doSetPass();v.doLogout=()=>this.doLogout();
     if(au!=='in'||!s.link)return v;
     const L0=s.link,P=L0.plan||{groups:[],T:{k:0,p:0,c:0,f:0}},T=P.T||{k:0,p:0,c:0,f:0},today=isoD(new Date()),Tk=num(T.k);const tkOf=d=>num((this.group(P,d).T||T).k);
-    const th=TH[s.tab]||TH.hoy;v.thTitle=th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
+    const th=TH[s.tab]||TH.hoy;v.thTitle=s.tab==='hoy'&&L0.comp&&L0.comp.days?(()=>{try{const C=L0.comp,mo=Math.min(0,...C.days.map(d=>num(d.off))),st=parseD(addDays(C.wDate,mo)).getTime(),end=new Date(C.wDate+'T'+(C.wTime||'09:00')).getTime()+Math.max(2,num(C.gapH),...(C.refill||[]).map(r=>num(r.to)))*36e5;return (Date.now()>=st&&Date.now()<end+12*36e5)||s.cpPeek?'Competición':th[0];}catch(e){return th[0];}})():th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
     {const sup=this.ntSup(),ios=this.ntIOS(),sa=this.ntStand(),perm=sup?Notification.permission:'default',NP=s.ntPrefs||{},off=NP.off||{},PN=(s.link&&s.link.plan&&s.link.plan.notif)||null;
       v.ntBell=()=>this.setState({ntOpen:true});v.ntOpenOn=!!s.ntOpen;v.ntClose=()=>this.setState({ntOpen:false});
       v.ntNeedInstall=ios&&!sa&&!sup;v.ntUnsup=!sup&&!v.ntNeedInstall;v.ntBlocked=sup&&perm==='denied';v.ntIsOn=!!s.ntOn;v.ntCanOn=sup&&!s.ntOn&&perm!=='denied';v.ntBellDot=!s.ntOn&&(sup||v.ntNeedInstall)&&perm!=='denied'&&!(s.inbox||[]).some(x=>(x.t||0)>(s.ibSeen!=null?s.ibSeen:(()=>{try{return +localStorage.getItem('cf-nt-seen')||0;}catch(e){return 0;}})()));
@@ -677,8 +766,53 @@ class Component extends DCLogic {
       v.ibNoNt=s.ntOn===false;}
     v.hello='Hola, '+((P.name||L0.name||'').split(' ')[0]||'bienvenido/a');
     const unread=s.msgs.filter(m=>m.sender==='coach'&&!m.read_at).length;
+    {const C=L0.comp&&L0.comp.days&&L0.comp.wDate?L0.comp:null,now=Date.now();v.cpOn=false;v.cpSoon=false;v.cpPeek=!!s.cpPeek;v.cpPeekClose=()=>this.setState({cpPeek:false});
+      if(C){const tm=t=>{const p=String(t||'').split(':').map(Number);return p.length<2||isNaN(p[0])?0:(p[0]||0)*60+(p[1]||0);},f1=x=>(Math.round(x*10)/10).toLocaleString('es-ES'),clk=ms=>{const d=new Date(ms);return pad2(d.getHours())+':'+pad2(d.getMinutes());},fdl=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+        const W=new Date(C.wDate+'T'+(C.wTime||'09:00')).getTime(),mo=Math.min(0,...C.days.map(d=>num(d.off))),st=parseD(addDays(C.wDate,mo)).getTime(),CMP=W+num(C.gapH)*36e5,end=W+Math.max(2,num(C.gapH),...(C.refill||[]).map(r=>num(r.to)))*36e5;
+        const R=s.cutL||[],acc=R.find(x=>x.kind==='accept'),WL=R.filter(x=>x.kg!=null&&x.kind!=='accept'&&x.kind!=='sym'),last=WL[WL.length-1];
+        const act=now>=st&&now<end+12*36e5;v.cpSoon=!act&&!s.cpPeek&&now<st&&st-now<21*864e5;v.cpSoonTxt='Tu protocolo «'+(C.name||'de competición')+'» empieza el '+new Date(st).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+'.';v.cpSoonOpen=()=>this.setState({cpPeek:true,cpDay:null});
+        v.cpOn=act||!!s.cpPeek;v.cpCanClose=!act;
+        if(v.cpOn){v.cpName=C.name||'Protocolo de competición';const pre=now<W,cmpd=now>=CMP;
+          v.cpPhase=now<st?'Empieza el '+new Date(st).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):pre?'Recorte':cmpd?(now<end?'Reposición · ya compites':'Terminado'):'Reposición';
+          const tgt=pre?W:CMP,dt=Math.max(0,tgt-now),dd=Math.floor(dt/864e5),hh=Math.floor(dt%864e5/36e5),mi=Math.floor(dt%36e5/6e4);
+          v.cpCdLbl=pre?'Para el pesaje oficial':!cmpd?'Para competir':'¡A por ello!';v.cpCd=cmpd?'Mucha suerte':(dd?dd+' d ':'')+hh+' h '+pad2(mi)+' min';
+          v.cpWhen='Pesaje '+fdl(C.wDate)+' a las '+(C.wTime||'09:00')+(num(C.gapH)?' · compites '+num(C.gapH)+' h después':'');
+          const cur=last?num(last.kg):num(C.startKg),cat=num(C.catKg);v.cpNow=cur?f1(cur)+' kg':'—';v.cpNowLbl=last?'Último pesaje':'Peso inicial';v.cpCat=cat?f1(cat)+' kg':'—';v.cpLeft=cat&&cur?(cur>cat?f1(cur-cat)+' kg':'En peso'):'—';v.cpLeftFg=cat&&cur&&cur<=cat?'#8fe0b8':'#fff';
+          v.cpNeedAcc=!acc;v.cpDisc=C.disc||'';v.cpAccOk=!!acc;v.cpAccept=()=>this.cutAdd({kind:'accept'}).then(ok=>{if(ok)this.toastMsg('Aceptado. ¡Vamos a por ello!');});
+          const offT=Math.round((parseD(isoD(new Date()))-parseD(C.wDate))/864e5),hasR=(C.refill||[]).length>0,defD=now>=W&&hasR?'r':Math.max(mo,Math.min(0,offT)),sel=s.cpDay!=null?s.cpDay:defD;
+          v.cpDays=C.days.map(d=>{const o=num(d.off),on=sel===o;return {l:o===0?'D0':'D'+o,sub:o===offT?'Hoy':new Date(addDays(C.wDate,o)+'T12:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric'}),bg:on?'#10283a':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'#10283a':'var(--color-divider)',pick:()=>this.setState({cpDay:o})};});
+          if(hasR){const on=sel==='r';v.cpDays.push({l:'Reposición',sub:'Tras el pesaje',bg:on?'#1d6b43':'#fff',fg:on?'#fff':'#1d6b43',bd:'#1d6b43',pick:()=>this.setState({cpDay:'r'})});}
+          v.cpIsR=sel==='r';const d=sel==='r'?null:C.days.find(x=>num(x.off)===sel);v.cpIsD=!!d;
+          if(d){const date=addDays(C.wDate,num(d.off)),DN=s.cpDone||{},dk=k=>date+'|'+k;v.cpDTitle=(num(d.off)===0?'D0':'D'+num(d.off))+(d.label?' · '+d.label:'');v.cpDDate=fdl(date);
+            v.cpTg=d.tg||[];v.cpHasTg=v.cpTg.length>0;const wm=C.mealFrom!=null&&num(d.off)>=-num(C.mealFrom),I=[];
+            I.push({s:-1,time:'',k:'w',title:'Pésate al despertar',sub:'Después de orinar, antes de beber o comer.',id:'wam'});
+            (d.takes||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'water',title:'Bebe '+x.ml+' ml',id:'t'+i,ml:num(x.ml)}));
+            if(d.cut)I.push({s:tm(d.cut),time:d.cut,k:'cut',title:'Corte de agua',sub:'A partir de ahora no bebas, salvo lo que te indique tu entrenador.',id:'cut'});
+            (d.meals||[]).forEach((m,i)=>I.push({s:tm(m.time),time:m.time,k:'meal',title:m.name,sub:(m.lines||[]).join(' · '),meta:m.kcal?m.kcal+' kcal':'',id:'m'+i,weigh:wm}));
+            (d.supps||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'supp',title:x.txt,id:'s'+i}));
+            (d.extras||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'extra',title:x.name+(x.dur?' · '+x.dur+' min':''),sub:x.txt,id:'x'+i,weigh:x.weigh}));
+            if(num(d.off)===0)I.push({s:tm(C.wTime),time:C.wTime||'',k:'of',title:'Pesaje oficial',sub:'No comas ni bebas hasta pesarte.',id:'of'});else I.push({s:1e4,time:'',k:'w',title:'Pésate antes de dormir',sub:'',id:'wpm'});
+            I.sort((a,b)=>a.s-b.s);let wT=0,wD=0;
+            v.cpItems=I.map(x=>{const dn=!!DN[dk(x.id)],ks=CPKS[x.k],dark=x.k==='of';if(x.k==='water'){wT+=x.ml;if(dn)wD+=x.ml;}
+              return {time:x.time||'',hasTime:!!x.time,noTime:!x.time,title:x.title,sub:x.sub||'',hasSub:!!x.sub,meta:x.meta||'',hasMeta:!!x.meta,hasWeigh:!!x.weigh,bg:ks[0],fg:dark?'#fff':'var(--color-text)',sfg:dark?'#c9dbe7':'var(--color-neutral-700)',dot:ks[1],ckBg:dn?ks[1]:'transparent',ckBd:ks[1],op:dn?'.6':'1',deco:dn?'line-through':'none',tog:()=>this.cpToggle(dk(x.id))};});
+            v.cpWater=wT?'Agua: '+f1(wD/1000)+' de '+f1(wT/1000)+' L':'';v.cpHasWater=!!wT;v.cpWaterW=wT?Math.round(wD/wT*100)+'%':'0%';
+            v.cpAllow=d.allow||'';v.cpHasAllow=!!d.allow;v.cpDeny=d.deny||'';v.cpHasDeny=!!d.deny;v.cpTxt=d.txt||'';v.cpHasTxt=!!d.txt;}
+          if(v.cpIsR){v.cpRWhen='Desde el pesaje ('+clk(W)+')'+(num(C.gapH)?' hasta competir ('+new Date(CMP).toLocaleDateString('es-ES',{weekday:'short',day:'numeric'})+' a las '+clk(CMP)+')':'');
+            v.cpRefill=(C.refill||[]).map(r=>{const a2=W+num(r.from)*36e5,b2=W+num(r.to)*36e5,on=now>=a2&&now<b2;return {when:clk(a2)+' – '+clk(b2),hrs:num(r.from)+'–'+num(r.to)+' h',fl:r.fl||'',hasFl:!!r.fl,sod:r.sod||'',hasSod:!!r.sod,ch:r.ch||'',hasCh:!!r.ch,food:r.food||'',hasFood:!!r.food,txt:r.txt||'',hasTxt:!!r.txt,bd:on?'#1d6b43':'transparent',now:on};});}
+          const hr=new Date().getHours(),defK=hr<11?'am':hr>=21?'pm':'pre',K=s.cpK||defK;
+          v.cpKinds=CPK.filter(k=>k[0]!=='otro').map(([k,l])=>({l,bg:K===k?'#34506a':'#fff',fg:K===k?'#fff':'var(--color-text)',pick:()=>this.setState({cpK:k})}));
+          v.cpKg=s.cpKg||'';v.onCpKg=e=>this.setState({cpKg:e.target.value});v.cpBusy=!!s.cpBusy;v.cpSaveLbl=s.cpBusy?'Guardando…':'Guardar peso';
+          v.cpSave=()=>{const k=num(String(s.cpKg||'').replace(',','.'));if(!(k>20&&k<300)){this.toastMsg('Escribe tu peso en kg',true);return;}this.cutAdd({kind:K,kg:k}).then(ok=>{if(ok){this.setState({cpKg:''});this.toastMsg('Peso guardado: '+f1(k)+' kg');}});};
+          const td=isoD(new Date()),TW=WL.filter(x=>isoD(new Date(x.t))===td);
+          v.cpTodayW=TW.slice().reverse().map((x,i,arr)=>{const nx=arr[i+1],df=nx?num(x.kg)-num(nx.kg):null;return {when:clk(new Date(x.t).getTime()),kind:(CPK.find(k=>k[0]===x.kind)||CPK[7])[1],kg:f1(num(x.kg))+' kg',d:df==null?'':(df>0?'+':'')+f1(df),rm:()=>{if(this.sb)this.sb.from('cf_cutlogs').delete().eq('id',x.id).then(()=>this.loadCut());}};});v.cpHasTodayW=TW.length>0;
+          const SY=s.cpSy||[];v.cpSyms=CPSY.map(n=>{const on=SY.includes(n);return {l:n,bg:on?'#c0392b':'#fff',fg:on?'#fff':'#8f2a14',pick:()=>this.setState(st=>{const a3=(st.cpSy||[]).slice(),i=a3.indexOf(n);if(i>=0)a3.splice(i,1);else a3.push(n);return {cpSy:a3};})};});
+          v.cpSyNote=s.cpSyNote||'';v.onCpSyNote=e=>this.setState({cpSyNote:e.target.value});
+          v.cpSySend=()=>{if(!SY.length&&!(s.cpSyNote||'').trim()){this.toastMsg('Marca cómo te encuentras',true);return;}this.cutAdd({kind:'sym',sym:SY,note:(s.cpSyNote||'').trim()}).then(ok=>{if(ok){this.setState({cpSy:[],cpSyNote:''});this.toastMsg('Enviado a tu entrenador');}});};
+          const LS=R.filter(x=>x.kind==='sym').slice(-3).reverse();v.cpLastSy=LS.map(x=>({when:new Date(x.t).toLocaleDateString('es-ES',{weekday:'short',day:'numeric'})+' '+clk(new Date(x.t).getTime()),txt:(x.sym||[]).join(', ')+(x.note?' · '+x.note:'')}));v.cpHasLastSy=LS.length>0;}}}
     const go=k=>{try{localStorage.setItem('cf-as-tab',k);}catch(e){}this.setState({tab:k});};
-    v.tabs=['hoy','plan','chat','prog'].map(k=>{const t=TH[k],on=s.tab===k;return {label:t[0],icon:ICONS[k],go:()=>go(k),fg:on?t[4]:'var(--color-neutral-600)',bg:on?t[1]:'transparent',fw:on?'800':'600',hasBadge:k==='chat'&&unread>0,badge:String(unread)};});
+    v.tabs=['hoy','plan','chat','prog'].map(k=>{const t=TH[k],on=s.tab===k;return {label:k==='hoy'&&v.cpOn?'Competición':t[0],icon:ICONS[k],go:()=>go(k),fg:on?t[4]:'var(--color-neutral-600)',bg:on?t[1]:'transparent',fw:on?'800':'600',hasBadge:k==='chat'&&unread>0,badge:String(unread)};});
+
+    v.hoyNormal=!v.cpOn;
     v.isHoy=s.tab==='hoy';v.isPlan=s.tab==='plan';v.isChat=s.tab==='chat';v.isProg=s.tab==='prog';
     v.sbc=this.sb;v.coachId=L0.coach_id;v.clientKey=L0.client_key;
     const AG=L0.agenda||{},CO=AG.coach||{},coFirst=(CO.name||'').trim().split(/\s+/)[0]||'';

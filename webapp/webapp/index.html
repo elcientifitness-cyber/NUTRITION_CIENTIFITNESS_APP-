@@ -23,6 +23,7 @@
 <script src="data/alimentos.js"></script>
 <script src="data/recetas.js"></script>
 <script src="data/listas.js"></script>
+<script src="data/protocolos.js"></script>
 <script src="config.js"></script>
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
@@ -69,6 +70,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <button class="cf-nav-btn" data-on="{{ nav1.on }}" onClick="{{ nav1.go }}" title="Clientes"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Clientes</span><span class="cf-nav-count">{{ nav1.count }}</span></button>
     <button class="cf-nav-btn" data-on="{{ nav3.on }}" onClick="{{ nav3.go }}" title="Agenda"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg><span>Agenda</span><sc-if value="{{ nav3.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Citas de hoy">{{ nav3.count }}</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav4.on }}" onClick="{{ nav4.go }}" title="Mensajes"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>Mensajes</span><sc-if value="{{ nav4.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Sin leer">{{ nav4.count }}</span></sc-if></button>
+    <button class="cf-nav-btn" data-on="{{ navC.on }}" onClick="{{ navC.go }}" title="Competición"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3"></path><path d="M7 5H4v2a3 3 0 0 0 3 3"></path></svg><span>Competición</span><sc-if value="{{ navC.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count">{{ navC.count }}</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav2.on }}" onClick="{{ nav2.go }}" title="Biblioteca"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h8"></path><path d="M8 11h6"></path></svg><span>Biblioteca</span></button>
     <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ nav5.on }}" onClick="{{ nav5.go }}" title="Equipo"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Equipo</span></button></sc-if>
   </nav>
@@ -1355,6 +1357,227 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 
+<sc-if value="{{ isComp }}" hint-placeholder-val="{{ false }}">
+<main class="cf-fade" style="padding:32px 28px 96px;max-width:1320px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px">
+    <div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Pérdida rápida de peso y reposición</span><h2 style="margin:0;font-size:30px">Competición</h2></div>
+    <sc-if value="{{ cOpen }}" hint-placeholder-val="{{ true }}">
+      <div class="cf-rail" style="display:flex;gap:4px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ cTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};cursor:pointer;white-space:nowrap">{{ t.l }}</button></sc-for></div>
+      <button class="btn btn-primary" onClick="{{ cAssign }}" style="min-height:40px">+ Asignar protocolo</button>
+    </sc-if>
+  </div>
+  <sc-if value="{{ cLock }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0;max-width:640px;padding:28px 24px;align-items:flex-start">
+      <span style="font-family:var(--font-heading);font-weight:700;font-size:20px">Competición · Premium</span>
+      <span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">Protocolos de pérdida rápida de peso para entrar en categoría (carga y corte de agua, bajo residuo, sodio, glucógeno, peak week), extras como baño caliente o sauna, reposición por tramos y gráfica de pesajes.</span>
+      <button class="btn btn-primary" onClick="{{ openPlans }}">Ver planes</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ cIsList }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ cEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0;align-items:center;text-align:center;padding:32px 24px"><span style="font-size:15px;font-weight:700">Ningún cliente tiene protocolo de competición</span><span style="font-size:13px;color:var(--color-neutral-700);max-width:520px;text-wrap:pretty">Pulsa «Asignar protocolo», elige una plantilla y la fecha del pesaje: los días se colocan solos en el calendario.</span></div></sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px">
+      <sc-for list="{{ cList }}" as="c" hint-placeholder-count="0">
+        <button onClick="{{ c.open }}" style="font:inherit;text-align:left;color:var(--color-text);border:0;cursor:pointer;background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;gap:8px;align-items:flex-start"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:18px">{{ c.name }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ c.proto }}</span></div><span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;background:{{ c.stBg }};color:{{ c.stFg }};white-space:nowrap">{{ c.stL }}</span></div>
+          <span style="font-size:13px;font-weight:600">{{ c.when }}</span>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+            <div style="background:var(--color-neutral-100);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">{{ c.nowLbl }}</span><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums">{{ c.now }}</span></div>
+            <div style="background:#fdf1ee;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Categoría</span><span style="font-family:var(--font-heading);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;color:#c0492f">{{ c.cat }}</span></div>
+          </div>
+          <span style="font-size:13px;font-weight:700;color:{{ c.leftFg }}">{{ c.left }}</span>
+          <sc-if value="{{ c.warn }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:600;padding:7px 10px;border-radius:10px;background:{{ c.warnBg }};color:{{ c.warnFg }};text-wrap:pretty">{{ c.warnTxt }}</span></sc-if>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ cIsTpls }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><p style="margin:0;font-size:14px;color:var(--color-neutral-700);flex:1 1 360px;max-width:720px;text-wrap:pretty">Plantillas por días respecto al pesaje (D-7 … D0) y reposición por tramos. Al asignar una a un cliente se coloca en sus fechas y puedes ajustarla solo para él. Los valores de las plantillas incluidas son orientativos y citan su fuente.</p><sc-if value="{{ ctCanReset }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ ctReset }}">{{ ctResetLbl }}</button></sc-if><button class="btn btn-primary" onClick="{{ ctNew }}">+ Nueva plantilla</button></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">
+      <sc-for list="{{ ctCards }}" as="t" hint-placeholder-count="4">
+        <div style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px">{{ t.name }}</span><span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">{{ t.sport }}</span></div>
+          <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ t.desc }}</span>
+          <span style="font-size:12px;color:var(--color-neutral-600)">{{ t.meta }}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:auto"><button class="btn btn-secondary" onClick="{{ t.edit }}" style="font-size:13px">Editar</button><button class="btn btn-ghost" onClick="{{ t.dup }}" style="font-size:13px">Duplicar</button><sc-if value="{{ t.canDel }}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{ t.del }}" style="font-size:13px;background:transparent;color:#a8321a">{{ t.delLabel }}</button></sc-if></div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ cIsEd }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center">
+      <button class="btn btn-ghost" onClick="{{ ceBack }}">{{ ceBackLbl }}</button>
+      <div style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ ceTitle }}</span><input value="{{ ceName }}" onChange="{{ onCeName }}" placeholder="Nombre del protocolo" style="font:inherit;font-family:var(--font-heading);font-weight:700;font-size:22px;border:0;border-bottom:2px solid transparent;padding:0;background:transparent;color:var(--color-text);min-width:0;width:min(520px,70vw)" style-focus="border-bottom-color:var(--color-accent);outline:none"></div>
+      <div class="cf-rail" style="display:flex;gap:6px;align-items:center;max-width:100%">
+        <sc-if value="{{ ceCli }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ cePrint }}">PDF del protocolo</button><button class="btn btn-secondary" onClick="{{ ceRep }}">Informe</button></sc-if>
+        <button class="btn btn-secondary" onClick="{{ ceSaveTpl }}">{{ ceSaveLbl }}</button>
+        <sc-if value="{{ ceCli }}" hint-placeholder-val="{{ false }}"><button class="btn" onClick="{{ ceDel }}" style="background:transparent;color:#a8321a">{{ ceDelLbl }}</button></sc-if>
+      </div>
+    </div>
+    <sc-if value="{{ ceCli }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;align-items:start">
+        <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;margin-right:auto"><span style="width:10px;height:10px;border-radius:3px;background:#e0664f"></span>Pesaje y categoría</span><span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;background:{{ ceStBg }};color:{{ ceStFg }}">{{ ceSt }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Fecha del pesaje<input class="input" type="date" value="{{ ceWDate }}" onChange="{{ onCeWDate }}"></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Hora<input class="input" type="time" value="{{ ceWTime }}" onChange="{{ onCeWTime }}"></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Horas hasta competir<input class="input" inputmode="decimal" value="{{ ceGap }}" onChange="{{ onCeGap }}"></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Peso inicial (kg)<input class="input" inputmode="decimal" value="{{ ceStart }}" onChange="{{ onCeStart }}"></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Peso de categoría (kg)<input class="input" inputmode="decimal" value="{{ ceCat }}" onChange="{{ onCeCat }}"></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Pesarse en las comidas<select class="input" value="{{ ceMF }}" onChange="{{ onCeMF }}"><sc-for list="{{ ceMFOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px"><sc-for list="{{ ceStats }}" as="x" hint-placeholder-count="5"><div style="background:var(--color-neutral-100);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">{{ x.l }}</span><span style="font-weight:800;font-size:14px;font-variant-numeric:tabular-nums">{{ x.x }}</span></div></sc-for></div>
+          <sc-if value="{{ ceHasSafety }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ ceSafety }}" as="x" hint-placeholder-count="0"><div style="font-size:13px;font-weight:600;padding:9px 12px;border-radius:12px;background:{{ x.bg }};border:1px solid {{ x.bd }};color:{{ x.fg }};text-wrap:pretty">{{ x.t }}</div></sc-for></sc-if>
+          <span style="font-size:12px;font-weight:700;padding:6px 10px;border-radius:10px;background:{{ ceAccBg }};color:{{ ceAccFg }};align-self:flex-start">{{ ceAcc }}</span>
+          <span style="font-size:12px;font-weight:600;padding:6px 10px;border-radius:10px;background:{{ ceAppBg }};color:{{ ceAppFg }};text-wrap:pretty">{{ ceApp }}</span>
+          <details><summary style="font-size:13px;font-weight:700;cursor:pointer;color:var(--color-accent-800)">Texto de responsabilidad que acepta el asesorado</summary><textarea class="input" rows="4" value="{{ ceDisc }}" onChange="{{ onCeDisc }}" style="margin-top:8px;resize:vertical;font-size:13px;line-height:1.45"></textarea></details>
+        </section>
+        <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <span style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px"><span style="width:10px;height:10px;border-radius:3px;background:#34506a"></span>Pesajes</span>
+          <sc-if value="{{ cgOn }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 760 280" style="width:100%;height:auto;display:block;font-family:var(--font-body)">
+            <sc-for list="{{ cg.bands }}" as="b" hint-placeholder-count="0"><rect x="{{ b.x }}" y="14" width="{{ b.w }}" height="232" fill="#eef2f7"></rect></sc-for>
+            <sc-for list="{{ cg.yt }}" as="t" hint-placeholder-count="0"><line x1="{{ cg.x0 }}" x2="{{ cg.x1 }}" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#dde5ec" stroke-width="1"></line><text x="40" y="{{ t.ly }}" text-anchor="end" font-size="11" fill="#5b7080">{{ t.lbl }}</text><text x="{{ cg.rx }}" y="{{ t.ly }}" font-size="10" fill="#8a99a6">{{ t.pct }}</text></sc-for>
+            <sc-for list="{{ cg.xt }}" as="t" hint-placeholder-count="0"><line x1="{{ t.x }}" x2="{{ t.x }}" y1="14" y2="246" stroke="#d3dde6" stroke-width="1" stroke-dasharray="2 3"></line><text x="{{ t.x }}" y="262" text-anchor="middle" font-size="10.5" fill="#5b7080">{{ t.lbl }}</text></sc-for>
+            <sc-if value="{{ cg.catOn }}" hint-placeholder-val="{{ false }}"><line x1="{{ cg.x0 }}" x2="{{ cg.x1 }}" y1="{{ cg.catY }}" y2="{{ cg.catY }}" stroke="#e0664f" stroke-width="1.6" stroke-dasharray="6 4"></line><text x="{{ cg.x1 }}" y="{{ cg.catLy }}" text-anchor="end" font-size="11" font-weight="700" fill="#c0492f">{{ cg.catLbl }}</text></sc-if>
+            <sc-if value="{{ cg.wOn }}" hint-placeholder-val="{{ false }}"><line x1="{{ cg.wX }}" x2="{{ cg.wX }}" y1="14" y2="246" stroke="#10283a" stroke-width="1.4"></line><text x="{{ cg.wX }}" y="10" text-anchor="middle" font-size="10.5" font-weight="800" fill="#10283a">Pesaje</text></sc-if>
+            <path d="{{ cg.path }}" fill="none" stroke="#1180c2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+            <sc-for list="{{ cg.pts }}" as="p" hint-placeholder-count="0"><circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="4.5" fill="{{ p.fill }}" stroke="#fff" stroke-width="1.5"><title>{{ p.tip }}</title></circle></sc-for>
+          </svg>
+          <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--color-neutral-700)"><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:10px;background:#eef2f7;border-radius:3px"></span>Noche (22:00–7:00)</span><sc-for list="{{ cg.legend }}" as="l" hint-placeholder-count="0"><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:{{ l.c }}"></span>{{ l.l }}</span></sc-for></div></sc-if>
+          <sc-if value="{{ cgEmpty }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:var(--color-neutral-700)">Pon la fecha del pesaje y el peso inicial para ver la gráfica.</span></sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--color-neutral-100);border-radius:14px;padding:10px">
+            <input class="input" type="datetime-local" value="{{ clT }}" onChange="{{ onClT }}" style="width:auto;flex:1 1 190px">
+            <select class="input" value="{{ clK }}" onChange="{{ onClK }}" style="width:auto;flex:1 1 160px"><sc-for list="{{ clKOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
+            <input class="input" inputmode="decimal" value="{{ clKg }}" onChange="{{ onClKg }}" placeholder="kg" style="width:90px;text-align:center">
+            <button class="btn btn-primary" onClick="{{ clAdd }}">Añadir pesaje</button>
+          </div>
+          <span style="font-size:12px;color:var(--color-neutral-700)">Los pesajes que registre el asesorado desde su app aparecen aquí solos (se actualiza cada 30 s).</span>
+          <sc-if value="{{ ceHasSyms }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;background:#fff1ee;border:1px solid #f4c9bf;border-radius:14px;padding:10px 12px"><span style="font-size:12px;font-weight:800;color:#8f2a14">Síntomas que ha marcado</span><sc-for list="{{ ceSyms }}" as="x" hint-placeholder-count="0"><span style="font-size:13px;color:#5a1d0e;text-wrap:pretty"><strong>{{ x.when }}</strong> · {{ x.txt }}</span></sc-for></div></sc-if>
+          <sc-if value="{{ clHas }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;max-height:240px;overflow:auto;border-top:1px solid var(--color-divider)"><sc-for list="{{ clRows }}" as="r" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="width:9px;height:9px;border-radius:50%;background:{{ r.c }};flex:none"></span><span style="flex:1;min-width:0">{{ r.when }} · {{ r.kind }}</span><span style="font-weight:800;font-variant-numeric:tabular-nums">{{ r.kg }}</span><span style="width:44px;text-align:right;font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ r.d }}</span><button onClick="{{ r.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:30px;height:30px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:var(--color-neutral-100);color:#a8321a;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></sc-for></div></sc-if>
+        </section>
+      </div>
+    </sc-if>
+    <sc-if value="{{ ceTpl }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px">
+          <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Deporte<input class="input" value="{{ ceSport }}" onChange="{{ onCeSport }}"></label>
+          <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Horas entre pesaje y competición<input class="input" inputmode="decimal" value="{{ ceGap }}" onChange="{{ onCeGap }}"></label>
+          <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Pesarse en las comidas<select class="input" value="{{ ceMF }}" onChange="{{ onCeMF }}"><sc-for list="{{ ceMFOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Descripción<input class="input" value="{{ ceDesc }}" onChange="{{ onCeDesc }}"></label>
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Fuentes<textarea class="input" rows="2" value="{{ ceRefs }}" onChange="{{ onCeRefs }}" style="resize:vertical;font-size:12px"></textarea></label>
+      </section>
+    </sc-if>
+    <section style="background:var(--color-bg);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-weight:800;font-size:17px;margin-right:auto">Días del protocolo</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ ceKgNote }}</span></div>
+      <div class="cf-rail" style="display:flex;gap:6px;align-items:stretch;padding:2px 2px 6px">
+        <sc-if value="{{ ceCanAddDay }}" hint-placeholder-val="{{ true }}"><button onClick="{{ ceAddDay }}" title="Añadir un día antes" style="font:inherit;flex:none;min-width:60px;padding:8px 10px;border-radius:14px;border:1.5px dashed var(--color-accent-300);background:#fff;color:var(--color-accent-800);font-size:12px;font-weight:800;cursor:pointer">+ Día</button></sc-if>
+        <sc-for list="{{ ceDays }}" as="d" hint-placeholder-count="5"><button onClick="{{ d.pick }}" style="font:inherit;flex:none;min-width:88px;padding:8px 12px;border-radius:14px;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;transition:background .15s"><span style="font-weight:800;font-size:15px">{{ d.l }}</span><span style="font-size:11px;opacity:.85;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis">{{ d.sub }}</span></button></sc-for>
+        <button onClick="{{ ceRPick }}" style="font:inherit;flex:none;min-width:110px;padding:8px 12px;border-radius:14px;border:1.5px solid var(--veg-ink);background:{{ ceRBg }};color:{{ ceRFg }};cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left"><span style="font-weight:800;font-size:15px">Reposición</span><span style="font-size:11px;opacity:.85">{{ ceRN }}</span></button>
+      </div>
+      <sc-if value="{{ ceIsD }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;border-top:1px solid var(--color-divider);padding-top:14px">
+          <span style="font-family:var(--font-heading);font-weight:800;font-size:26px;color:var(--color-accent-700);line-height:1">{{ cdTag }}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--color-neutral-700);text-transform:capitalize">{{ cdDate }}</span>
+          <input class="input" value="{{ cdLabel }}" onChange="{{ onCdLabel }}" placeholder="Nombre del día (p. ej. Corte de agua)" style="flex:1 1 220px;min-width:0;font-weight:700">
+          <sc-if value="{{ cdCanDel }}" hint-placeholder-val="{{ false }}"><button class="btn" onClick="{{ cdDel }}" style="font-size:13px;background:transparent;color:#a8321a">{{ cdDelLbl }}</button></sc-if>
+        </div>
+        <div style="background:#f4f6f9;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#34506a;flex:none"></span><span style="font-weight:800;font-size:14px;color:#10283a">Objetivos del día</span><span style="font-size:12px;color:var(--color-neutral-700);margin-right:auto">Cantidad total o por kg en cada campo</span></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:8px">
+              <sc-for list="{{ cdMac }}" as="m" hint-placeholder-count="6">
+                <div style="background:#fff;border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;box-shadow:inset 3px 0 0 {{ m.c }}">
+                  <div style="display:flex;align-items:center;gap:6px"><span style="font-weight:800;font-size:13px;margin-right:auto">{{ m.l }}</span><div style="display:flex;gap:2px;padding:2px;background:var(--color-neutral-100);border-radius:999px;flex:none"><sc-for list="{{ m.units }}" as="u" hint-placeholder-count="2"><button onClick="{{ u.pick }}" style="font:inherit;font-size:11px;font-weight:800;padding:3px 9px;border:0;border-radius:999px;background:{{ u.bg }};color:{{ u.fg }};cursor:pointer;white-space:nowrap">{{ u.l }}</button></sc-for></div></div>
+                  <div style="display:flex;align-items:center;gap:8px"><input class="input" inputmode="decimal" value="{{ m.v }}" onChange="{{ m.onV }}" style="width:84px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;min-height:36px"><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ m.abs }}</span></div>
+                </div>
+              </sc-for>
+              <div style="background:#fff;border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;box-shadow:inset 3px 0 0 #8a99a6"><span style="font-weight:800;font-size:13px">Kcal</span><div style="display:flex;align-items:center;gap:8px"><input class="input" inputmode="numeric" value="{{ cdKcal }}" onChange="{{ onCdKcal }}" style="width:84px;text-align:center;font-weight:700;min-height:36px"><span style="font-size:12px;color:var(--color-neutral-700)">{{ cdKcalEst }}</span></div></div>
+            </div>
+          </div>
+        <div style="background:#edf6fc;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#1180c2;flex:none"></span><span style="font-weight:800;font-size:14px;color:#0d5a8a">Agua</span><span style="font-size:12px;color:var(--color-neutral-700);margin-right:auto">{{ cdTkSum }}</span><sc-if value="{{ cdTkAuto }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ cdTkHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cdToMan }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap">Editar tomas a mano</button></sc-if></sc-if><sc-if value="{{ cdTkMan }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cdAddTake }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap">+ Toma</button><button onClick="{{ cdToAuto }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap">Reparto automático</button></sc-if></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#0d5a8a">Beber de<input class="input" type="time" value="{{ cdWFrom }}" onChange="{{ onCdWFrom }}" style="width:104px;min-height:34px"></label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#0d5a8a">a<input class="input" type="time" value="{{ cdWTo }}" onChange="{{ onCdWTo }}" style="width:104px;min-height:34px"></label>
+              <select class="input" value="{{ cdWEvery }}" onChange="{{ onCdWEvery }}" style="width:auto;min-height:34px"><sc-for list="{{ cdEveryOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select>
+              <span style="display:inline-flex;align-items:center;gap:6px;padding:3px 4px 3px 10px;border-radius:12px;background:#fff;border:1px solid #f4c9bf"><span style="font-size:12px;font-weight:800;color:#a8321a">Corte de agua</span><input class="input" type="time" value="{{ cdCut }}" onChange="{{ onCdCut }}" style="width:104px;min-height:30px;border:0"><sc-if value="{{ cdCutHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cdCutClear }}" title="Quitar el corte de agua" style="font:inherit;font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;border:0;background:#fff1ee;color:#a8321a;cursor:pointer">Quitar</button></sc-if></span>
+            </div>
+            <div class="cf-rail" style="display:flex;gap:6px;padding-bottom:2px">
+              <sc-for list="{{ cdTakes }}" as="t" hint-placeholder-count="0">
+                <sc-if value="{{ cdTkAuto }}" hint-placeholder-val="{{ true }}"><span style="flex:none;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:#fff;color:#0d5a8a;white-space:nowrap;font-variant-numeric:tabular-nums">{{ t.time }} · {{ t.ml }} ml</span></sc-if>
+                <sc-if value="{{ cdTkMan }}" hint-placeholder-val="{{ false }}"><span style="flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px;border-radius:12px;background:#fff"><input class="input" type="time" value="{{ t.time }}" onChange="{{ t.onTime }}" style="width:94px;min-height:30px;font-size:12px"><input class="input" inputmode="numeric" value="{{ t.ml }}" onChange="{{ t.onMl }}" style="width:58px;min-height:30px;font-size:12px;text-align:center"><span style="font-size:11px;color:var(--color-neutral-700)">ml</span><button onClick="{{ t.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(16,40,58,.06);color:#a8321a;cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-if>
+              </sc-for>
+            </div>
+          </div>
+        <div style="background:#fdf4f0;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#e0664f;flex:none"></span><span style="font-weight:800;font-size:14px;color:#9a3b25">Menú del día</span><span style="font-size:12px;color:var(--color-neutral-700);margin-right:auto">{{ cdMenuSum }}</span><sc-if value="{{ cdHasCopy }}" hint-placeholder-val="{{ false }}"><select class="input" value="" onChange="{{ onCdCopy }}" style="width:auto;min-height:32px;font-size:12px;font-weight:700;border-radius:999px;padding:4px 26px 4px 11px"><sc-for list="{{ cdCopyOpts }}" as="o" hint-placeholder-count="0"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></sc-if><sc-if value="{{ cdNoMeals }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cdLowRes }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap">Menú bajo residuo</button></sc-if><button onClick="{{ cdAddMeal }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap;background:#e0664f;color:#fff;border-color:#e0664f">+ Comida</button></div>
+            <sc-if value="{{ cdNoMeals }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:#7a4a3c;text-wrap:pretty">Esos días este menú sustituye al plan normal. Añade comidas con alimentos de la biblioteca o carga una receta: los gramos se calculan con los macros del día y luego puedes fijarlos a mano.</span></sc-if>
+            <sc-if value="{{ cdMenuHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#7a5200;background:#fff8e6;border-radius:10px;padding:6px 10px">Pon proteína, hidratos y grasa en «Objetivos del día» para calcular los gramos.</span></sc-if>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:10px">
+              <sc-for list="{{ cdMeals }}" as="m" hint-placeholder-count="0">
+                <div style="background:#fff;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;border:1px solid #f6ddd3">
+                  <div style="display:flex;gap:6px;align-items:center"><input class="input" type="time" value="{{ m.time }}" onChange="{{ m.onTime }}" style="width:92px;min-height:34px;font-size:13px"><input class="input" value="{{ m.name }}" onChange="{{ m.onName }}" placeholder="Nombre" style="flex:1;min-width:0;min-height:34px;font-weight:800"><button onClick="{{ m.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(16,40,58,.06);color:#a8321a;cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--color-neutral-700)"><label style="display:inline-flex;align-items:center;gap:5px;font-weight:700"><input class="input" inputmode="decimal" value="{{ m.pct }}" placeholder="{{ m.pctPh }}" onChange="{{ m.onPct }}" style="width:52px;min-height:28px;font-size:12px;text-align:center;padding:2px 4px">% del día</label><span style="font-weight:800;color:#9a3b25;margin-left:auto;font-variant-numeric:tabular-nums">{{ m.kcal }}</span><span style="font-variant-numeric:tabular-nums">{{ m.mac }}</span></div>
+                  <sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:5px"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="0"><span title="{{ c.title }}" style="display:inline-flex;align-items:center;gap:5px;padding:3px 3px 3px 9px;border-radius:999px;background:{{ c.bg }};color:{{ c.ink }};border:1.5px solid {{ c.bd }};max-width:100%;min-width:0"><span style="width:7px;height:7px;border-radius:50%;background:{{ c.sw }};flex:none"></span><span style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ c.name }}</span><input inputmode="numeric" value="{{ c.g }}" onChange="{{ c.onG }}" aria-label="Gramos" style="font:inherit;font-size:12px;font-weight:{{ c.fw }};width:42px;padding:2px 3px;border:0;border-radius:8px;background:rgba(255,255,255,.75);color:inherit;text-align:right;font-variant-numeric:tabular-nums"><span style="font-size:11px">g</span><sc-if value="{{ c.isMan }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.reset }}" title="Volver a gramos automáticos" style="font:inherit;font-size:10px;font-weight:800;padding:2px 6px;border:0;border-radius:999px;background:#fff;color:inherit;cursor:pointer">auto</button></sc-if><button onClick="{{ c.rm }}" aria-label="Quitar" style="font:inherit;width:20px;height:20px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(255,255,255,.75);color:inherit;cursor:pointer"><svg width="9" height="9" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-for></div></sc-if>
+                  <sc-if value="{{ m.zero }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#a8321a">{{ m.zeroTxt }}</span></sc-if>
+                  <sc-if value="{{ m.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#7a5200">{{ m.note }}</span></sc-if>
+                  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input class="input cf-search" value="{{ m.q }}" onChange="{{ m.onQ }}" placeholder="Buscar alimento…" style="flex:1 1 160px;min-width:0;min-height:34px;font-size:13px"><select class="input" value="" onChange="{{ m.onRec }}" style="flex:0 1 150px;min-width:0;min-height:34px;font-size:12px;font-weight:700"><sc-for list="{{ cdRecOpts }}" as="o" hint-placeholder-count="0"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></div>
+                  <sc-if value="{{ m.hasRes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto"><sc-for list="{{ m.results }}" as="r" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:4px;padding:3px 4px 3px 10px;border-radius:12px;background:var(--color-neutral-100)"><span style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><sc-for list="{{ r.slots }}" as="b" hint-placeholder-count="4"><button onClick="{{ b.add }}" title="{{ b.title }}" aria-label="{{ b.title }}" style="font:inherit;font-size:10px;font-weight:800;min-width:24px;height:24px;padding:0 6px;flex:none;border-radius:999px;border:1.5px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.ink }};cursor:pointer">{{ b.l }}</button></sc-for></div></sc-for></div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px;align-items:start">
+          <div style="background:#f5f2fd;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#8b74d6;flex:none"></span><span style="font-weight:800;font-size:14px;color:#4b3a8f">Suplementos</span><span style="margin-right:auto"></span><button onClick="{{ cdAddSupp }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap">+ Suplemento</button></div>
+            <sc-for list="{{ cdSupps }}" as="x" hint-placeholder-count="0"><div style="display:flex;gap:6px;align-items:center"><input class="input" type="time" value="{{ x.time }}" onChange="{{ x.onTime }}" style="width:96px;min-height:34px"><input class="input" value="{{ x.txt }}" onChange="{{ x.onTxt }}" placeholder="Qué y cuánto" style="flex:1;min-width:0;min-height:34px"><button onClick="{{ x.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(16,40,58,.06);color:#a8321a;cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></sc-for>
+          </div>
+          <div style="background:#fff8ea;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#d9a21b;flex:none"></span><span style="font-weight:800;font-size:14px;color:#7a5600">Protocolos extra</span><span style="margin-right:auto"></span></div>
+            <div class="cf-rail" style="display:flex;gap:6px"><sc-for list="{{ cdXP }}" as="p" hint-placeholder-count="4"><button onClick="{{ p.add }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap;flex:none;border-style:dashed">+ {{ p.l }}</button></sc-for></div>
+            <sc-for list="{{ cdExtras }}" as="x" hint-placeholder-count="0">
+              <div style="background:#fff;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input class="input" value="{{ x.name }}" onChange="{{ x.onName }}" placeholder="Nombre" style="flex:1 1 170px;min-width:0;min-height:34px;font-weight:700"><input class="input" type="time" value="{{ x.time }}" onChange="{{ x.onTime }}" style="width:96px;min-height:34px"><input class="input" inputmode="numeric" value="{{ x.dur }}" onChange="{{ x.onDur }}" placeholder="min" style="width:56px;min-height:34px;text-align:center"><span style="font-size:12px;color:var(--color-neutral-700)">min</span><button onClick="{{ x.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(16,40,58,.06);color:#a8321a;cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+                <textarea class="input" rows="2" value="{{ x.txt }}" onChange="{{ x.onTxt }}" placeholder="Indicaciones" style="resize:vertical;font-size:13px"></textarea>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700)"><span style="flex:1">Pesaje antes y después</span><button onClick="{{ x.togW }}" style="font:inherit;width:40px;height:22px;border-radius:999px;border:0;padding:0;background:{{ x.wBg }};position:relative;flex:none;cursor:pointer"><span style="position:absolute;top:2px;left:{{ x.wKn }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></button></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#eff8f3;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:10px;height:10px;border-radius:3px;background:#4fb487;flex:none"></span><span style="font-weight:800;font-size:14px;color:#1d6b43">Alimentos e indicaciones</span><span style="margin-right:auto"></span></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px">
+              <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:#1d6b43">Permitidos<textarea class="input" rows="3" value="{{ cdAllow }}" onChange="{{ onCdAllow }}" style="resize:vertical;font-size:13px;font-weight:500"></textarea></label>
+              <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:#a8321a">A evitar<textarea class="input" rows="3" value="{{ cdDeny }}" onChange="{{ onCdDeny }}" style="resize:vertical;font-size:13px;font-weight:500"></textarea></label>
+              <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:var(--color-neutral-800)">Indicaciones del día<textarea class="input" rows="3" value="{{ cdTxt }}" onChange="{{ onCdTxt }}" style="resize:vertical;font-size:13px;font-weight:500"></textarea></label>
+            </div>
+          </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;background:#eef1f6;border-radius:14px;padding:10px 14px"><span style="width:10px;height:10px;border-radius:3px;background:#34506a;flex:none;margin-top:4px"></span><span style="font-size:12.5px;line-height:1.45;color:#22384a;text-wrap:pretty"><strong>Pesajes de este día:</strong> {{ cdWeighs }}</span></div>
+      </sc-if>
+      <sc-if value="{{ ceIsR }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-top:1px solid var(--color-divider);padding-top:14px"><span style="font-family:var(--font-heading);font-weight:800;font-size:24px;color:var(--veg-ink);margin-right:auto">Reposición</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ crNote }}</span><button onClick="{{ crAdd }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(16,40,58,.12);background:#fff;color:var(--color-text);cursor:pointer;white-space:nowrap;background:var(--veg-ink);color:#fff;border-color:var(--veg-ink)">+ Tramo</button></div>
+        <sc-if value="{{ crEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Sin tramos de reposición.</span></sc-if>
+        <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ crRows }}" as="r" hint-placeholder-count="0">
+          <div style="background:#eff8f3;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:12px;font-weight:800;color:var(--veg-ink)">De</span><input class="input" inputmode="decimal" value="{{ r.from }}" onChange="{{ r.onFrom }}" style="width:58px;min-height:32px;text-align:center"><span style="font-size:12px;font-weight:800;color:var(--veg-ink)">a</span><input class="input" inputmode="decimal" value="{{ r.to }}" onChange="{{ r.onTo }}" style="width:58px;min-height:32px;text-align:center"><span style="font-size:12px;font-weight:800;color:var(--veg-ink);margin-right:auto">h tras el pesaje</span><button onClick="{{ r.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(16,40,58,.06);color:#a8321a;cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:8px">
+              <div style="background:#fff;border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:5px;box-shadow:inset 3px 0 0 #1180c2"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;font-weight:800;margin-right:auto">Líquidos</span><div style="display:flex;gap:2px;padding:2px;background:var(--color-neutral-100);border-radius:999px;flex:none"><sc-for list="{{ r.fu }}" as="u" hint-placeholder-count="2"><button onClick="{{ u.pick }}" style="font:inherit;font-size:11px;font-weight:800;padding:3px 9px;border:0;border-radius:999px;background:{{ u.bg }};color:{{ u.fg }};cursor:pointer;white-space:nowrap">{{ u.l }}</button></sc-for></div></div><input class="input" inputmode="decimal" value="{{ r.fv }}" onChange="{{ r.onFv }}" style="min-height:34px"><span style="font-size:11px;color:var(--color-neutral-700)">{{ r.fabs }}</span></div>
+              <div style="background:#fff;border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:5px;box-shadow:inset 3px 0 0 #e9b23f"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;font-weight:800;margin-right:auto">Hidratos</span><div style="display:flex;gap:2px;padding:2px;background:var(--color-neutral-100);border-radius:999px;flex:none"><sc-for list="{{ r.cu }}" as="u" hint-placeholder-count="2"><button onClick="{{ u.pick }}" style="font:inherit;font-size:11px;font-weight:800;padding:3px 9px;border:0;border-radius:999px;background:{{ u.bg }};color:{{ u.fg }};cursor:pointer;white-space:nowrap">{{ u.l }}</button></sc-for></div></div><input class="input" inputmode="decimal" value="{{ r.cv }}" onChange="{{ r.onCv }}" style="min-height:34px"><span style="font-size:11px;color:var(--color-neutral-700)">{{ r.cabs }}</span></div>
+              <label style="background:#fff;border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:800;box-shadow:inset 3px 0 0 #8a99a6">Sodio / electrolitos<input class="input" value="{{ r.sod }}" onChange="{{ r.onSod }}" style="min-height:34px;font-weight:500"></label>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:8px">
+              <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:#9a3b25">Comida<input class="input" value="{{ r.food }}" onChange="{{ r.onFood }}" style="min-height:34px;font-weight:500"></label>
+              <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:var(--color-neutral-800)">Indicaciones<input class="input" value="{{ r.txt }}" onChange="{{ r.onTxt }}" style="min-height:34px;font-weight:500"></label>
+            </div>
+          </div>
+        </sc-for>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+</main>
+</sc-if>
+
 <sc-if value="{{ isCal }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 80px;max-width:1440px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
   <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px">
@@ -2201,6 +2424,81 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   </div>
 </div>
 </sc-if>
+<sc-if value="{{ caOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ caClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:700;font-size:21px;margin-right:auto">Asignar protocolo</span><button class="btn btn-ghost" onClick="{{ caClose }}">Cancelar</button></div>
+    <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Cliente<select class="input" value="{{ caCli }}" onChange="{{ onCaCli }}"><sc-for list="{{ caCliOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
+    <sc-if value="{{ caWarnExist }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#8a5a00">Ya tiene un protocolo: el actual se guardará en su historial.</span></sc-if>
+    <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Plantilla<select class="input" value="{{ caTpl }}" onChange="{{ onCaTpl }}"><sc-for list="{{ caTplOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
+    <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty;margin-top:-6px">{{ caDesc }}</span>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Fecha del pesaje<input class="input" type="date" value="{{ caDate }}" onChange="{{ onCaDate }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Hora del pesaje<input class="input" type="time" value="{{ caTime }}" onChange="{{ onCaTime }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Peso actual (kg)<input class="input" inputmode="decimal" value="{{ caStart }}" onChange="{{ onCaStart }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Peso de categoría (kg)<input class="input" inputmode="decimal" value="{{ caCat }}" onChange="{{ onCaCat }}"></label>
+    </div>
+    <sc-if value="{{ caHasPct }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;padding:8px 12px;border-radius:12px;background:{{ caPctBg }};color:{{ caPctFg }}">{{ caPct }}</span></sc-if>
+    <button class="btn btn-primary" onClick="{{ caGo }}" style="min-height:46px">Asignar y colocar en el calendario</button>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ cpOn }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
+<div class="cf-rep" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
+  <div class="cf-rep-bar" style="background:#fff;border-bottom:1px solid var(--color-divider);padding:calc(12px + env(safe-area-inset-top)) 20px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
+    <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px">{{ cpBarT }}</span><span style="font-size:12px;color:var(--color-neutral-700)">Al imprimir, elige «Guardar como PDF».</span></div>
+    <button onClick="{{ cpPrintFn }}" style="font:inherit;font-size:14px;font-weight:800;border:0;background:var(--color-accent);color:#fff;border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer">Imprimir / PDF</button>
+    <button onClick="{{ cpClose }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--color-neutral-100);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer">Cerrar</button>
+  </div>
+  <div class="cf-rep-scroll" style="flex:1;overflow:auto;padding:24px 16px 60px">
+    <div class="cf-rep-sheet" style="width:min(794px,100%);margin:0 auto;background:#fff;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:40px 44px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:center;gap:16px;border-bottom:2px solid #10283a;padding-bottom:14px">
+        <img loading="lazy" src="{{ cpLogo }}" alt="Logo" style="height:56px;width:auto;max-width:180px;object-fit:contain">
+        <div style="display:flex;flex-direction:column;gap:2px;margin-left:auto;text-align:right;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:22px">{{ cpTitle }}</span><span style="font-size:14px;font-weight:700">{{ cpWho }}</span><span style="font-size:12px;color:#4a6476">{{ cpWhen }}</span><span style="font-size:12px;color:#4a6476">{{ cpKg }}</span></div>
+      </div>
+      <sc-if value="{{ cpPlan }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ cpHasDisc }}" hint-placeholder-val="{{ false }}"><div class="cf-rep-avoid" style="font-size:12px;line-height:1.5;padding:10px 12px;border-radius:10px;background:#fff8e6;border:1px solid #f3dfa6;color:#5a3d00">{{ cpDisc }}</div></sc-if>
+        <div class="cf-rep-avoid" style="font-size:12.5px;line-height:1.5;padding:10px 12px;border-radius:10px;background:#eaf4fb;color:#0d4a72"><strong>Pesajes.</strong> {{ cpWeighRule }}</div>
+        <sc-for list="{{ cpDays }}" as="d" hint-placeholder-count="0">
+          <div class="cf-rep-avoid" style="border:1px solid #dbe6ee;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-family:var(--font-heading);font-weight:800;font-size:18px;color:#1180c2">{{ d.tag }}</span><span style="font-size:13px;font-weight:700;text-transform:capitalize">{{ d.date }}</span><span style="font-size:13px;color:#4a6476">{{ d.label }}</span></div>
+            <sc-if value="{{ d.isW }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:800;color:#10283a">{{ d.wTxt }}</span></sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ d.tg }}" as="t" hint-placeholder-count="0"><span style="font-size:12px;padding:3px 9px;border-radius:999px;background:#f1f5f8"><strong>{{ t.l }}</strong> {{ t.x }}</span></sc-for></div>
+            <sc-if value="{{ d.hasTakes }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.5;color:#0d4a72">{{ d.takes }}</span></sc-if>
+            <sc-if value="{{ d.hasMeals }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#5b7080">Menú</span><sc-for list="{{ d.meals }}" as="m" hint-placeholder-count="0"><span style="font-size:12.5px;line-height:1.45"><strong>{{ m.t }}</strong> — {{ m.x }}</span></sc-for></div></sc-if>
+            <sc-if value="{{ d.hasSupps }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#5b7080">Suplementos</span><sc-for list="{{ d.supps }}" as="m" hint-placeholder-count="0"><span style="font-size:12.5px"><strong>{{ m.t }}</strong> {{ m.x }}</span></sc-for></div></sc-if>
+            <sc-if value="{{ d.hasExtras }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#5b7080">Protocolos extra</span><sc-for list="{{ d.extras }}" as="m" hint-placeholder-count="0"><span style="font-size:12.5px;line-height:1.45"><strong>{{ m.t }}</strong> {{ m.x }}</span></sc-for></div></sc-if>
+            <sc-if value="{{ d.hasAllow }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;line-height:1.45"><strong style="color:#1d6b43">Permitidos:</strong> {{ d.allow }}</span></sc-if>
+            <sc-if value="{{ d.hasDeny }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;line-height:1.45"><strong style="color:#a8321a">Evitar:</strong> {{ d.deny }}</span></sc-if>
+            <sc-if value="{{ d.hasTxt }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;line-height:1.45;white-space:pre-wrap">{{ d.txt }}</span></sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ cpHasRefill }}" hint-placeholder-val="{{ false }}">
+          <div class="cf-rep-avoid" style="display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--font-heading);font-weight:800;font-size:18px;color:#1d6b43">Reposición tras el pesaje</span>
+            <sc-for list="{{ cpRefill }}" as="r" hint-placeholder-count="0"><div style="display:grid;grid-template-columns:70px repeat(3,minmax(0,1fr));gap:8px;font-size:12px;line-height:1.4;padding:8px 0;border-top:1px solid #dbe6ee"><strong>{{ r.t }}</strong><span><strong>Líquidos</strong><br>{{ r.fl }}<br>{{ r.sod }}</span><span><strong>Hidratos</strong><br>{{ r.ch }}</span><span><strong>Comida</strong><br>{{ r.food }}<br><em>{{ r.txt }}</em></span></div></sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+      <sc-if value="{{ cpRep }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px"><sc-for list="{{ cpStats }}" as="x" hint-placeholder-count="5"><div style="background:#f1f5f8;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#5b7080;font-size:10px">{{ x.l }}</span><span style="font-weight:800;font-size:14px">{{ x.x }}</span></div></sc-for></div>
+        <sc-if value="{{ cpgOn }}" hint-placeholder-val="{{ false }}"><div class="cf-rep-avoid"><svg viewBox="0 0 720 280" style="width:100%;height:auto;display:block;font-family:var(--font-body)">
+              <sc-for list="{{ cpg.bands }}" as="b" hint-placeholder-count="0"><rect x="{{ b.x }}" y="14" width="{{ b.w }}" height="232" fill="#eef2f7"></rect></sc-for>
+              <sc-for list="{{ cpg.yt }}" as="t" hint-placeholder-count="0"><line x1="{{ cpg.x0 }}" x2="{{ cpg.x1 }}" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#dde5ec"></line><text x="40" y="{{ t.ly }}" text-anchor="end" font-size="11" fill="#5b7080">{{ t.lbl }}</text><text x="{{ cpg.rx }}" y="{{ t.ly }}" font-size="10" fill="#8a99a6">{{ t.pct }}</text></sc-for>
+              <sc-for list="{{ cpg.xt }}" as="t" hint-placeholder-count="0"><text x="{{ t.x }}" y="262" text-anchor="middle" font-size="10.5" fill="#5b7080">{{ t.lbl }}</text></sc-for>
+              <sc-if value="{{ cpg.catOn }}" hint-placeholder-val="{{ false }}"><line x1="{{ cpg.x0 }}" x2="{{ cpg.x1 }}" y1="{{ cpg.catY }}" y2="{{ cpg.catY }}" stroke="#e0664f" stroke-width="1.6" stroke-dasharray="6 4"></line><text x="{{ cpg.x1 }}" y="{{ cpg.catLy }}" text-anchor="end" font-size="11" font-weight="700" fill="#c0492f">{{ cpg.catLbl }}</text></sc-if>
+              <sc-if value="{{ cpg.wOn }}" hint-placeholder-val="{{ false }}"><line x1="{{ cpg.wX }}" x2="{{ cpg.wX }}" y1="14" y2="246" stroke="#10283a" stroke-width="1.4"></line><text x="{{ cpg.wX }}" y="10" text-anchor="middle" font-size="10.5" font-weight="800" fill="#10283a">Pesaje</text></sc-if>
+              <path d="{{ cpg.path }}" fill="none" stroke="#1180c2" stroke-width="2"></path>
+              <sc-for list="{{ cpg.pts }}" as="p" hint-placeholder-count="0"><circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="4" fill="{{ p.fill }}" stroke="#fff" stroke-width="1.5"></circle></sc-for>
+            </svg></div></sc-if>
+        <sc-if value="{{ cpHasSafety }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ cpSafety }}" as="x" hint-placeholder-count="0"><div style="font-size:12px;padding:8px 10px;border-radius:10px;background:#fff1ee;color:#8f2a14">{{ x.t }}</div></sc-for></sc-if>
+        <sc-if value="{{ cpHasRows }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column"><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#5b7080">Pesajes registrados</span><sc-for list="{{ cpRows }}" as="r" hint-placeholder-count="0"><div style="display:flex;gap:10px;font-size:12px;padding:4px 0;border-bottom:1px solid #eef2f5"><span style="flex:1">{{ r.when }} · {{ r.kind }}</span><strong>{{ r.kg }}</strong></div></sc-for></div></sc-if>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-import>
+</sc-if>
 <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" class="cf-toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:160;background:{{ toastBg }};color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px)"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastMsg }}</div>
 </sc-if>
@@ -2558,6 +2856,48 @@ function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(
   const bn=hits.filter(q=>norm(q.m.name||'')===norm(mn||''));return bn.length?bn:hits;}
 const stripMk=b=>String(b||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,'');
 const NXK=[['daily','Cada día a una hora'],['week','Ciertos días de la semana'],['train','Solo días de entreno'],['rest','Solo días de descanso'],['pre','Antes o después del entreno'],['rev','Días antes de una revisión'],['once','Una sola vez, en una fecha'],['every','Cada X horas']];
+const CUTX=[['Baño caliente con sales Epsom',20,'Agua a 37–40 °C con 2 tazas de sales de Epsom. Siempre acompañado; salir si hay mareo, palpitaciones o calambres.'],['Sauna',15,'Tandas de 10–15 min con descanso entre ellas. Siempre acompañado; parar ante mareo o calambres.'],['Sudoración con ropa / chándal',30,'Reposo o actividad muy suave con ropa de abrigo. Parar si hay mareo.'],['Ejercicio ligero para sudar',30,'Bicicleta o caminata suave, sin fatiga.'],['Escupir (último recurso)',0,'Solo si faltan pocos gramos en los minutos previos al pesaje.']];
+const CUTK=[['am','Al despertar'],['pm','Antes de dormir'],['pre','Antes de comer'],['post','Después de comer'],['xpre','Antes de baño/sauna'],['xpost','Después de baño/sauna'],['of','Pesaje oficial'],['otro','Otro']];
+const CUTKC={am:'#1180c2',pm:'#4b3a8f',pre:'#c98a00',post:'#e0664f',xpre:'#1d6b43',xpost:'#4fb487',of:'#10283a',otro:'#8a99a6'};
+const CUTM=[['water','Agua',[['L','L'],['mlkg','ml/kg']],'#1180c2'],['fiber','Fibra',[['g','g'],['gkg','g/kg']],'#4fb487'],['sodium','Sodio',[['mg','mg'],['mgkg','mg/kg']],'#8a99a6'],['carb','Hidratos',[['g','g'],['gkg','g/kg']],'#e9b23f'],['prot','Proteína',[['g','g'],['gkg','g/kg']],'#e0664f'],['fat','Grasa',[['g','g'],['gkg','g/kg']],'#9b87d8']];
+const CUT_DISC='Este protocolo implica una pérdida rápida de peso con riesgos para la salud (deshidratación, mareo, calambres, alteraciones del ritmo cardiaco). Se sigue bajo la supervisión de un profesional, se interrumpe ante cualquier síntoma y nunca se realiza en solitario. El asesorado confirma que no tiene contraindicaciones médicas conocidas.';
+const f1=x=>(Math.round(x*10)/10).toLocaleString('es-ES');
+const cutTag=o=>o===0?'D0':'D'+o;
+const cutKg=(C,cl)=>num(C&&C.startKg)||num(cl&&cl.calc&&cl.calc.peso)||75;
+const cutTot=(f,kg)=>{if(!f||f.v===''||f.v==null)return null;const v=num(f.v);return /kg$/.test(f.u)?v*kg:(f.u==='L'?v*1000:v);};
+const cutVal=(k,f,kg)=>{const t=cutTot(f,kg);if(t==null)return '';if(k==='water')return f1(t/1000)+' L'+(f.u==='mlkg'?' ('+f1(num(f.v))+' ml/kg)':'');const u=k==='sodium'?'mg':'g';return f1(t)+' '+u+(/kg$/.test(f.u)?' ('+f1(num(f.v))+' '+u+'/kg)':'');};
+const cutTakes=(d,kg)=>{if(d.takes)return d.takes;const tot=cutTot(d.water,kg);if(!tot)return [];const a=toMin(d.wFrom||'08:00'),b0=toMin(d.wTo||'22:00'),b=d.cut?Math.min(b0,toMin(d.cut)):b0,st=Math.max(15,num(d.wEvery)||60),ts=[];for(let m=a;m<=b;m+=st)ts.push(m);if(!ts.length)return [];const each=Math.round(tot/ts.length/10)*10;return ts.map(m=>({time:fromMin(m),ml:each}));};
+const cutMOpt=(m,foods)=>{if(m.opt)return m.opt;const o={id:'lgo',prot:[],carb:[],fat:[],veg:[]};(m.items||[]).forEach((x,ii)=>{const n=norm(x.name);if(!n)return;const f=foods.find(q=>norm(q.name)===n)||foods.find(q=>norm(q.name).startsWith(n));if(!f){o.note=(o.note?o.note+' · ':'')+x.name+(x.g?' '+x.g+' g':'');return;}const sl=f.cat==='Frutas'?'veg':mainMacro(f);if(sl==='veg')o.veg.push({id:'lg'+ii,fid:f.id,g:num(x.g)||100});else o[sl].push({id:'lg'+ii,fid:f.id,pct:100,man:!!x.g,mg:num(x.g)||0});});return o;};
+const cutMeals=(d,kg,FM,foods)=>{const MS=d.meals||[],pe=MS.map(x=>x.pct===''||x.pct==null?100/MS.length:num(x.pct)),se=pe.reduce((a,b)=>a+b,0)||1,P=cutTot(d.prot,kg)||0,C=cutTot(d.carb,kg)||0,F=cutTot(d.fat,kg)||0;
+  return MS.map((m,i)=>{const o=cutMOpt(m,foods),mt={p:P*pe[i]/se,c:C*pe[i]/se,f:F*pe[i]/se};mt.k=mt.p*4+mt.c*4+mt.f*9;return {m,o,mt,pct:pe[i]/se*100,r:solve(o,mt,'closed',FM)};});};
+const CUT_LR=()=>[{id:uid(),time:'08:30',name:'Desayuno',pct:'',opt:opt([it('db145',100)],[it('db1222',100),{...it('db812',100),man:true,mg:15}],[],[])},{id:uid(),time:'13:30',name:'Comida',pct:'',opt:opt([it('db936',100)],[it('db69',100)],[it('db311',100)],[])},{id:uid(),time:'20:30',name:'Cena',pct:'',opt:opt([it('db229',100)],[it('db292',100)],[it('db311',100)],[])}];
+const cutW=C=>C&&C.wDate?new Date(C.wDate+'T'+(C.wTime||'09:00')).getTime():null;
+const cutEnd=C=>{const w=cutW(C);return w==null?null:w+Math.max(2,num(C.gapH),...(C.refill||[]).map(r=>num(r.to)))*3600e3;};
+const cutSt=C=>{if(!C.wDate)return {l:'Sin fecha de pesaje',k:'na'};const now=Date.now(),w=cutW(C),mo=Math.min(0,...(C.days||[]).map(d=>num(d.off))),st=parseD(addDays(C.wDate,mo)).getTime();
+  if(now<st)return {l:'Empieza el '+new Date(st).toLocaleDateString('es-ES',{day:'numeric',month:'short'}),k:'pre'};if(now<w){const o=Math.round((parseD(todayISO())-parseD(C.wDate))/864e5);return {l:'Recorte · '+cutTag(o),k:'cut'};}
+  if(now<cutEnd(C))return {l:'Reposición',k:'ref'};return {l:'Terminado',k:'end'};};
+const cutStC={na:['var(--color-neutral-200)','var(--color-neutral-700)'],pre:['var(--color-accent-100)','var(--color-accent-800)'],cut:['#fff4dc','#8a5a00'],ref:['var(--veg-bg)','var(--veg-ink)'],end:['var(--color-neutral-200)','var(--color-neutral-700)']};
+const cutLogs=C=>(C.logs||[]).map(x=>({...x,ms:new Date(x.t).getTime()})).filter(x=>!isNaN(x.ms)&&num(x.kg)>0).sort((a,b)=>a.ms-b.ms);
+const cutFT=ms=>{const d=new Date(ms);return d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric'})+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());};
+const cutSafety=(C)=>{const out=[],s=num(C.startKg),c=num(C.catKg);if(s>0&&c>0&&c<s){const p=(s-c)/s*100;if(p>8)out.push({hi:true,t:'Pérdida prevista del '+f1(p)+' % del peso ('+f1(s-c)+' kg): por encima del 8 %, riesgo alto. Valora otra categoría o un recorte más largo.'});else if(p>5)out.push({hi:false,t:'Pérdida prevista del '+f1(p)+' % ('+f1(s-c)+' kg): por encima del 5 %. Requiere reposición larga y supervisión estrecha.'});}
+  const L=cutLogs(C);let wo=null;for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length&&L[j].ms-L[i].ms<=864e5;j++){const d=(num(L[i].kg)-num(L[j].kg))/num(L[i].kg)*100;if(d>3&&(!wo||d>wo.d))wo={d,a:L[i],b:L[j]};}
+  if(wo)out.push({hi:true,t:'Ha perdido un '+f1(wo.d)+' % en menos de 24 h ('+cutFT(wo.a.ms)+' → '+cutFT(wo.b.ms)+'). Revisa cómo se encuentra.'});return out;};
+const cutGraph=(C,W,H)=>{const P={l:46,r:56,t:14,b:34},L=cutLogs(C),w=cutW(C);let t0=null,t1=null;
+  if(C.wDate){const mo=Math.min(0,...(C.days||[]).map(d=>num(d.off)));t0=parseD(addDays(C.wDate,mo)).getTime();t1=cutEnd(C);}
+  if(L.length){t0=t0==null?L[0].ms:Math.min(t0,L[0].ms);t1=t1==null?L[L.length-1].ms:Math.max(t1,L[L.length-1].ms);}
+  const sK=num(C.startKg),cK=num(C.catKg),ks=L.map(x=>num(x.kg)).concat([sK,cK].filter(x=>x>0));if(t0==null||!ks.length)return {empty:true};if(t1-t0<6*3600e3)t1=t0+6*3600e3;
+  let y0=Math.min(...ks),y1=Math.max(...ks);const py=Math.max(0.3,(y1-y0)*0.12);y0-=py;y1+=py;
+  const X=ms=>P.l+(ms-t0)/(t1-t0)*(W-P.l-P.r),Y=k=>P.t+(y1-k)/(y1-y0)*(H-P.t-P.b),bands=[],xt=[];
+  const d0=new Date(t0);d0.setHours(0,0,0,0);d0.setDate(d0.getDate()-1);
+  for(let d=new Date(d0);d.getTime()<t1;d.setDate(d.getDate()+1)){const a=new Date(d);a.setHours(22,0,0,0);const b=new Date(d);b.setDate(b.getDate()+1);b.setHours(7,0,0,0);const xa=Math.max(P.l,X(a.getTime())),xb=Math.min(W-P.r,X(b.getTime()));if(xb>xa)bands.push({x:xa.toFixed(1),w:(xb-xa).toFixed(1)});
+    const m=new Date(d);m.setDate(m.getDate()+1);const mx=m.getTime();if(mx>=t0&&mx<=t1){const o=C.wDate?Math.round((m-parseD(C.wDate))/864e5):null;xt.push({x:X(mx).toFixed(1),lbl:(o!=null?cutTag(o)+' · ':'')+m.getDate()+'/'+(m.getMonth()+1)});}}
+  const sp=y1-y0,stp=sp>6?2:sp>3?1:sp>1.5?0.5:0.2,yt=[];for(let k=Math.ceil(y0/stp)*stp;k<=y1+1e-9;k+=stp)yt.push({y:Y(k).toFixed(1),ly:(Y(k)+4).toFixed(1),lbl:f1(k),pct:sK>0?(k<=sK?'−':'+')+f1(Math.abs(sK-k)/sK*100)+' %':''});
+  return {empty:false,bands,xt,yt,x0:P.l,x1:W-P.r,yB:H-P.b,rx:W-P.r+6,
+    path:L.map((x,i)=>(i?'L':'M')+X(x.ms).toFixed(1)+' '+Y(num(x.kg)).toFixed(1)).join(' '),
+    pts:L.map(x=>({cx:X(x.ms).toFixed(1),cy:Y(num(x.kg)).toFixed(1),fill:CUTKC[x.kind]||'#8a99a6',tip:((CUTK.find(k=>k[0]===x.kind)||CUTK[7])[1])+' · '+cutFT(x.ms)+' · '+f1(num(x.kg))+' kg'})),
+    catOn:cK>0,catY:cK>0?Y(cK).toFixed(1):'0',catLy:cK>0?(Y(cK)-5).toFixed(1):'0',catLbl:'Categoría '+f1(cK)+' kg',
+    wOn:w!=null&&w>=t0&&w<=t1,wX:w!=null?X(w).toFixed(1):'0',
+    legend:CUTK.filter(k=>L.some(x=>x.kind===k[0])).map(k=>({l:k[1],c:CUTKC[k[0]]}))};};
 const FAD=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 const faDue=(x,d)=>{if(x.on===false)return false;if(x.pause&&d<=x.pause)return false;const f=x.freq||'week',dt=new Date(d+'T12:00:00'),dw=(dt.getDay()+6)%7;
   if(f==='once')return d===x.date;if(f==='month')return dt.getDate()===num(x.dom||1);if(dw!==num(x.dow))return false;
@@ -2807,7 +3147,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -2829,11 +3169,11 @@ class Component extends DCLogic {
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
         this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
-        this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>{this.loadChats();this.pollForms();},30000);this.loadForms();};
+        this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>{this.loadChats();this.pollForms();if(this.state.view==='comp')this.loadCut();},30000);this.loadForms();};
       if(data){go();return;}
       this.sb.from('cf_links').select('client_key').ilike('email',(sess.user.email||'').toLowerCase()).limit(1).then(({data:lk})=>{if(lk&&lk.length){location.replace('asesorado.html');return;}go();});
     });
@@ -2842,7 +3182,7 @@ class Component extends DCLogic {
     const lq=()=>this.sb.from('cf_links').select('client_key,email,name,plan_at'+(this._noAg?'':',agenda')).eq('coach_id',this.uid).then(r=>{if(r.error&&!this._noAg&&/agenda/i.test(r.error.message||'')){this._noAg=true;return lq();}return r;});
     Promise.all([lq(),
       this.sb.from('cf_messages').select('id,client_key,sender,body,created_at,read_at').eq('coach_id',this.uid).order('created_at',{ascending:false}).limit(800)])
-    .then(([l,m])=>{if(l.error||m.error){this.setState({chatErr:true});return;}this.setState({links:l.data||[],msgs:(m.data||[]).reverse(),chatErr:false},()=>{if(this.state.view==='msgs'&&this._selKey)this.markRead(this._selKey);this.agendaSoon();});});}
+    .then(([l,m])=>{if(l.error||m.error){this.setState({chatErr:true});return;}this.setState({links:l.data||[],msgs:(m.data||[]).reverse(),chatErr:false},()=>{if(this.state.view==='msgs'&&this._selKey)this.markRead(this._selKey);this.agendaSoon();this.compSoon();});});}
   agendaSoon(){clearTimeout(this._agT);this._agT=setTimeout(()=>this.syncAgenda(),1500);}
   syncAgenda(){if(!this._cloud||!this.sb||this._noAg)return;const LK=this.state.links||[],t=todayISO(),coach={name:this.myName(),phone:this.myPhone()};this._ag=this._ag||{};
     const key=e=>e.date+(e.allDay?'00:00':(e.start||''));
@@ -2855,7 +3195,7 @@ class Component extends DCLogic {
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null,cutTpls:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
@@ -2902,7 +3242,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -2913,9 +3253,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand||this.state.cutTpls!==s.cutTpls;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
@@ -2928,7 +3268,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -2941,10 +3281,10 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto,brand:s.brand};ps=ps||snap||this._snap;
-    if(ps.events!==s.events&&this._cloud)this.agendaSoon();
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto,brand:s.brand,cutTpls:s.cutTpls};ps=ps||snap||this._snap;
+    if(ps.events!==s.events&&this._cloud)this.agendaSoon();if(ps.clients!==s.clients&&this._cloud)this.compSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto||ps.brand!==s.brand){
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto||ps.brand!==s.brand||ps.cutTpls!==s.cutTpls){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -3023,6 +3363,25 @@ class Component extends DCLogic {
   isPrem(){return this.myPlan()==='premium';}
   autoFa(){return this.isPrem()?(this.state.fauto||[]).filter(x=>x.newAuto&&x.on!==false).map(x=>x.id):[];}
   premToast(what){this.toast((what||'Esta función')+' es del plan Premium. Pulsa «Ver planes» para más información.',true);}
+  cutTpls(){return this.state.cutTpls||window.CF_CUTS||[];}
+  cutSnap(c){const C=c.comp,kg=cutKg(C,c),FM=this.foodMap(),AF=this.allFoodsN(),cl1=x=>Math.round(x);
+    return {v:2,name:C.name||'Protocolo',wDate:C.wDate||'',wTime:C.wTime||'09:00',gapH:num(C.gapH),mealFrom:C.mealFrom==null||C.mealFrom===''?null:num(C.mealFrom),startKg:num(C.startKg)||null,catKg:num(C.catKg)||null,disc:C.disc==null?CUT_DISC:C.disc,coach:this.myName(),
+      days:(C.days||[]).slice().sort((a,b)=>num(a.off)-num(b.off)).map(d=>{const tg=CUTM.map(([k,l])=>{const x=cutVal(k,d[k],kg);return x?{l,x}:null;}).filter(Boolean);if(d.kcal)tg.push({l:'Kcal',x:d.kcal+' kcal'});
+        return {off:num(d.off),label:d.label||'',tg,takes:cutTakes(d,kg).map(x=>({time:x.time,ml:num(x.ml)})),cut:d.cut||'',
+          meals:cutMeals(d,kg,FM,AF).map(({m,o,r})=>({time:m.time||'',name:m.name||'Comida',kcal:cl1(r.tot.k),lines:SLOTS.map(([sl])=>r.S[sl].filter(x=>x.g>0).map(x=>x.food.name+' '+cl1(x.g)+' g')).flat().concat(o.note?[o.note]:[])})),
+          supps:(d.supps||[]).filter(x=>x.txt).map(x=>({time:x.time||'',txt:x.txt})),extras:(d.extras||[]).filter(x=>x.name).map(x=>({time:x.time||'',name:x.name,dur:num(x.dur)||0,weigh:x.weigh!==false,txt:x.txt||''})),
+          allow:d.allow||'',deny:d.deny||'',txt:d.txt||''};}),
+      refill:(C.refill||[]).map(r=>{const hrs=Math.max(0,num(r.to)-num(r.from)),fT=num(r.fluid&&r.fluid.v)*(r.fluid&&r.fluid.u==='mlkgh'?kg:1),cT=num(r.carb&&r.carb.v)*(r.carb&&r.carb.u==='gkg'?kg:1);
+        return {from:num(r.from),to:num(r.to),fl:fT?cl1(fT)+' ml/h (≈ '+f1(fT*hrs/1000)+' L en total)':'',sod:r.sodium||'',ch:cT?cl1(cT)+' g de hidratos':'',food:r.food||'',txt:r.txt||''};})};}
+  compSoon(){clearTimeout(this._cpT);this._cpT=setTimeout(()=>this.syncComp(),2000);}
+  syncComp(){if(!this._cloud||!this.sb||this._noComp)return;const LK=this.state.links||[];if(!LK.length)return;
+    const run=()=>{LK.forEach(l=>{const c=this.state.clients.find(q=>q.id===l.client_key),sn=c&&c.comp&&c.comp.days&&c.comp.wDate&&this.isPrem()?this.cutSnap(c):null,sg=JSON.stringify(sn);if(this._csR[l.client_key]===sg)return;this._csR[l.client_key]=sg;
+      this.sb.from('cf_links').update({comp:sn}).eq('coach_id',this.uid).eq('client_key',l.client_key).then(({error})=>{if(error){delete this._csR[l.client_key];if(/comp/i.test(error.message||'')){this._noComp=true;this.forceUpdate();}}});});};
+    if(this._csR){run();return;}
+    this.sb.from('cf_links').select('client_key,comp').eq('coach_id',this.uid).then(({data,error})=>{if(error){if(/comp/i.test(error.message||'')){this._noComp=true;this.forceUpdate();}return;}this._csR={};(data||[]).forEach(r=>{this._csR[r.client_key]=JSON.stringify(r.comp==null?null:r.comp);});run();});}
+  loadCut(){if(!this._cloud||!this.sb)return;const ks=this.state.clients.filter(c=>c.comp&&c.comp.days).map(c=>c.id);if(!ks.length)return;
+    this.sb.from('cf_cutlogs').select('id,client_key,t,kind,kg,sym,note').eq('coach_id',this.uid).in('client_key',ks).order('t',{ascending:true}).limit(3000).then(({data,error})=>{if(error){this.setState({cutRErr:error.message});return;}const m={};(data||[]).forEach(r=>{(m[r.client_key]=m[r.client_key]||[]).push(r);});this.setState({cutR:m,cutRErr:null});});}
+  updCut(cid,fn){this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==cid)return c;const n=JSON.parse(JSON.stringify(c));n.comp=n.comp||{};fn(n.comp,n);n.updated=Date.now();return n;})}));}
   listsAll(){return this.state.lists||window.CF_LISTS||[];}
   formTpls(){const F=CFF();if(this.isCEO())return this.state.forms||F.DEFS;const own=this.myPlan()==='premium'?(this.state.forms||[]):[],B=this.state.base,com=(B&&B.forms)||F.DEFS,ids=new Set(own.map(x=>x.id));return own.concat(com.filter(x=>x&&!ids.has(x.id)).map(x=>({...x,_base:true})));}
   formsOwn(st){st=st||this.state;return this.isCEO()?(st.forms||CFF().DEFS):(st.forms||[]);}
@@ -4235,6 +4594,151 @@ class Component extends DCLogic {
       v.feAddQ=()=>upd(x=>{x.qs.push({id:uid(),type:'text',label:'Nueva pregunta'});});v.feAddS=()=>upd(x=>{x.qs.push({id:uid(),type:'sec',label:'Nueva sección'});});
       v.feClose=()=>this.setState({fEdit:null});
       v.feSave=()=>{const e=JSON.parse(JSON.stringify(E));e.name=(e.name||'').trim()||'Cuestionario';e.qs.forEach(q=>{delete q._ot;});this.setState(st=>{delete e._base;const a=F.clone(this.formsOwn(st)),i=a.findIndex(t=>t.id===e.id);if(i>=0)a[i]=e;else a.push(e);const fa=(st.fauto||[]).map(x=>x.formId===e.id?{...x,form:{name:e.name,kind:e.kind||'otro',intro:e.intro||'',qs:e.qs}}:x);return {forms:a,fEdit:null,fauto:st.fauto?fa:st.fauto};});this.toast('Cuestionario guardado');};}
+    {const PRc=this.isPrem(),TPL=this.cutTpls(),CC=s.clients.filter(c=>c.comp&&c.comp.days),CR=s.cutR||{};
+      const withR=c=>{const R=CR[c.id]||[],ac=R.find(x=>x.kind==='accept');return {...c.comp,logs:(c.comp.logs||[]).concat(R.filter(x=>x.kg!=null&&CUTKC[x.kind]).map(x=>({id:'r'+x.id,rid:x.id,t:x.t,kg:num(x.kg),kind:x.kind,by:'client'}))),accepted:c.comp.accepted||(ac?new Date(ac.t).getTime():null),syms:R.filter(x=>x.kind==='sym')};};
+      v.navC={on:s.view==='comp'?'1':'0',count:String(CC.length),showCount:CC.length>0,go:()=>{this.setState({view:'comp',confirmDel:null});this.loadCut();}};
+      v.isComp=s.view==='comp';
+      const nowL=()=>{const d=new Date();return isoD(d)+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes());};
+      const mkComp=(T,o)=>({tplId:T.id,name:T.name,gapH:T.gapH,mealFrom:T.mealFrom,days:JSON.parse(JSON.stringify(T.days||[])),refill:JSON.parse(JSON.stringify(T.refill||[])),disc:CUT_DISC,logs:[],created:Date.now(),...o});
+      if(v.isComp){v.cLock=!PRc;v.cOpen=PRc;const sub=s.cutTab||'cli',selC=s.cutSel&&CC.find(c=>c.id===s.cutSel);
+        v.cTabs=[['cli','Clientes'],['tpl','Plantillas']].map(([k,l])=>({l,bg:sub===k?'#fff':'transparent',fg:sub===k?'var(--color-text)':'var(--color-neutral-700)',sh:sub===k?'var(--shadow-sm)':'none',pick:()=>this.setState({cutTab:k,cutSel:null,ctEdit:null,cutDay:0})}));
+        v.cIsEd=!!s.ctEdit||(sub==='cli'&&!!selC);v.cIsList=!v.cIsEd&&sub==='cli';v.cIsTpls=!v.cIsEd&&sub==='tpl';
+        v.cAssign=()=>{const c0=s.clients.find(c=>!c.comp)||s.clients[0];this.setState({cutAs:{cid:c0?c0.id:'',tpl:(TPL[0]||{}).id,date:addDays(todayISO(),7),time:'09:00',start:c0?String(num(c0.calc&&c0.calc.peso)||''):'',cat:''}});};
+        v.cEmpty=!CC.length;
+        v.cList=CC.slice().sort((a,b)=>(a.comp.wDate||'9')<(b.comp.wDate||'9')?-1:1).map(c=>{const C=withR(c),st=cutSt(C),Lg=cutLogs(C),last=Lg[Lg.length-1],cat=num(C.catKg),cur=last?num(last.kg):num(C.startKg),sf=cutSafety(C);
+          return {name:c.name||'Sin nombre',proto:C.name||'Protocolo',when:C.wDate?'Pesaje '+new Date(C.wDate+'T12:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'})+' · '+(C.wTime||'09:00')+(num(C.gapH)?' · compite '+num(C.gapH)+' h después':''):'Sin fecha de pesaje',
+            stL:st.l,stBg:cutStC[st.k][0],stFg:cutStC[st.k][1],now:cur?f1(cur)+' kg':'—',nowLbl:last?'Último pesaje':'Peso inicial',cat:cat?f1(cat)+' kg':'—',
+            left:cat&&cur?(cur>cat?'Faltan '+f1(cur-cat)+' kg ('+f1((cur-cat)/cur*100)+' %)':'En peso'):'',leftFg:cat&&cur&&cur<=cat?'var(--veg-ink)':'var(--color-text)',
+            ...(()=>{const sy=(C.syms||[]).filter(x=>Date.now()-new Date(x.t).getTime()<864e5).pop();if(sy)sf.unshift({hi:true,t:'Síntomas '+cutFT(new Date(sy.t).getTime())+': '+(sy.sym||[]).join(', ')+(sy.note?' · '+sy.note:'')});return {};})(),warn:sf.length>0,warnTxt:sf.length?sf[0].t:'',warnBg:sf.some(x=>x.hi)?'#fff1ee':'#fff8e6',warnFg:sf.some(x=>x.hi)?'#8f2a14':'#7a5200',
+            open:()=>this.setState({cutSel:c.id,cutDay:0,cutTab:'cli',clT:nowL(),clKg:'',clK:'am'})};});
+        v.ctCards=TPL.map(T=>({name:T.name,sport:T.sport||'',desc:T.desc||'',meta:(T.days||[]).length+' días'+((T.refill||[]).length?' · reposición en '+T.refill.length+' tramos':'')+(num(T.gapH)?' · pesaje '+num(T.gapH)+' h antes':''),
+          edit:()=>this.setState({ctEdit:JSON.parse(JSON.stringify(T)),cutDay:0}),dup:()=>{this.setState(st=>{const a=JSON.parse(JSON.stringify(st.cutTpls||window.CF_CUTS||[])),c=JSON.parse(JSON.stringify(T));c.id='c-'+uid();c.name=T.name+' (copia)';a.push(c);return {cutTpls:a};});this.toast('Plantilla duplicada');},
+          delLabel:s.ctDel===T.id?'¿Eliminar? Pulsa otra vez':'Eliminar',canDel:TPL.length>1,del:()=>{if(s.ctDel!==T.id){this.setState({ctDel:T.id});return;}this.setState(st=>({cutTpls:(st.cutTpls||window.CF_CUTS||[]).filter(x=>x.id!==T.id),ctDel:null}));}}));
+        v.ctNew=()=>this.setState({cutDay:0,ctEdit:{id:'c-'+uid(),name:'Nuevo protocolo',sport:'',desc:'',refs:'',gapH:24,mealFrom:1,days:[{off:-1,label:'Víspera',water:{v:'',u:'mlkg'},wFrom:'08:00',wTo:'22:00',wEvery:60,cut:'',fiber:{v:'',u:'g'},sodium:{v:'',u:'mg'},carb:{v:'',u:'gkg'},prot:{v:'',u:'gkg'},fat:{v:'',u:'g'},kcal:'',meals:[],supps:[],extras:[],allow:'',deny:'',txt:''},{off:0,label:'Pesaje',water:{v:'',u:'L'},wFrom:'08:00',wTo:'22:00',wEvery:60,cut:'',fiber:{v:'',u:'g'},sodium:{v:'',u:'mg'},carb:{v:'',u:'g'},prot:{v:'',u:'g'},fat:{v:'',u:'g'},kcal:'',meals:[],supps:[],extras:[],allow:'',deny:'',txt:''}],refill:[]}});
+        v.ctCanReset=!!s.cutTpls;v.ctResetLbl=s.ctReset?'¿Seguro? Se pierden tus cambios':'Restaurar originales';v.ctReset=()=>{if(!s.ctReset){this.setState({ctReset:true});return;}this.setState({cutTpls:null,ctReset:false});};
+        if(v.cIsEd){const isT=!!s.ctEdit,T=isT?s.ctEdit:selC.comp,cl2=isT?null:selC,kg=isT?75:cutKg(T,cl2);
+          const upd=isT?fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.ctEdit));fn(e);return {ctEdit:e};}):fn=>this.updCut(selC.id,fn);
+          const sortD=t=>{t.days.sort((a,b)=>num(a.off)-num(b.off));};const DS=(T.days||[]).slice().sort((a,b)=>num(a.off)-num(b.off));
+          v.ceTpl=isT;v.ceCli=!isT;v.ceBack=()=>this.setState({ctEdit:null,cutSel:null,cutDay:0});v.ceBackLbl=isT?'← Plantillas':'← Clientes';
+          v.ceTitle=isT?'Plantilla':(cl2.name||'Cliente');v.ceName=T.name||'';v.onCeName=e=>{const x=e.target.value;upd(t=>{t.name=x;});};
+          v.ceSport=T.sport||'';v.onCeSport=e=>{const x=e.target.value;upd(t=>{t.sport=x;});};v.ceDesc=T.desc||'';v.onCeDesc=e=>{const x=e.target.value;upd(t=>{t.desc=x;});};v.ceRefs=T.refs||'';v.onCeRefs=e=>{const x=e.target.value;upd(t=>{t.refs=x;});};
+          v.ceGap=T.gapH==null?'':String(T.gapH);v.onCeGap=e=>{const x=e.target.value;upd(t=>{t.gapH=x===''?'':num(x);});};
+          v.ceMF=T.mealFrom==null?'':String(T.mealFrom);v.ceMFOpts=[['','No'],['0','Solo el día del pesaje'],['1','Desde D-1'],['2','Desde D-2'],['3','Desde D-3'],['7','Toda la semana']].map(([val,label])=>({val,label}));v.onCeMF=e=>{const x=e.target.value;upd(t=>{t.mealFrom=x===''?null:num(x);});};
+          v.ceKgNote=isT?'Las cantidades por kg se muestran para 75 kg de ejemplo.':'Las cantidades por kg se calculan con '+f1(kg)+' kg.';
+          v.ceSaveTpl=()=>{if(isT){const e=JSON.parse(JSON.stringify(T));e.name=(e.name||'').trim()||'Protocolo';this.setState(st=>{const a=JSON.parse(JSON.stringify(st.cutTpls||window.CF_CUTS||[])),i=a.findIndex(x=>x.id===e.id);if(i>=0)a[i]=e;else a.push(e);return {cutTpls:a,ctEdit:null,cutDay:0};});this.toast('Plantilla guardada');}
+            else{const e={id:'c-'+uid(),name:(T.name||'Protocolo')+' (de '+(cl2.name||'cliente')+')',sport:'',desc:'',refs:'',gapH:T.gapH,mealFrom:T.mealFrom,days:JSON.parse(JSON.stringify(T.days||[])),refill:JSON.parse(JSON.stringify(T.refill||[]))};this.setState(st=>({cutTpls:JSON.parse(JSON.stringify(st.cutTpls||window.CF_CUTS||[])).concat([e])}));this.toast('Guardado como plantilla');}};
+          v.ceSaveLbl=isT?'Guardar plantilla':'Guardar como plantilla';
+          if(!isT){const C=withR(selC);{const lk=(s.links||[]).some(l=>l.client_key===selC.id);v.ceApp=this._noComp||/cf_cutlogs|relation|schema/i.test(s.cutRErr||'')?'Para enviarlo a su app y recibir sus pesajes, ejecuta competicion.sql en Supabase.':lk?'Se envía solo a su app de asesorado. Sus pesajes y síntomas aparecen aquí.':'No tiene la app de asesorado vinculada: dale acceso para que lo vea en el móvil.';v.ceAppBg=lk&&!this._noComp?'var(--color-accent-100)':'#fff4dc';v.ceAppFg=lk&&!this._noComp?'var(--color-accent-800)':'#8a5a00';}
+            v.ceSyms=(C.syms||[]).slice().reverse().slice(0,10).map(x=>({when:cutFT(new Date(x.t).getTime()),txt:(x.sym||[]).join(', ')+(x.note?' · '+x.note:'')}));v.ceHasSyms=v.ceSyms.length>0;
+            v.ceWDate=C.wDate||'';v.onCeWDate=e=>{const x=e.target.value;upd(t=>{t.wDate=x;});};v.ceWTime=C.wTime||'09:00';v.onCeWTime=e=>{const x=e.target.value;upd(t=>{t.wTime=x||'09:00';});};
+            v.ceStart=C.startKg==null?'':String(C.startKg);v.onCeStart=e=>{const x=e.target.value;upd(t=>{t.startKg=x===''?'':num(x);});};v.ceCat=C.catKg==null?'':String(C.catKg);v.onCeCat=e=>{const x=e.target.value;upd(t=>{t.catKg=x===''?'':num(x);});};
+            const st=cutSt(C);v.ceSt=st.l;v.ceStBg=cutStC[st.k][0];v.ceStFg=cutStC[st.k][1];
+            v.ceAcc=C.accepted?'Aceptado por el asesorado el '+new Date(C.accepted).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'Pendiente de aceptación en la app del asesorado';v.ceAccBg=C.accepted?'var(--veg-bg)':'#fff4dc';v.ceAccFg=C.accepted?'var(--veg-ink)':'#8a5a00';
+            v.ceDisc=C.disc==null?CUT_DISC:C.disc;v.onCeDisc=e=>{const x=e.target.value;upd(t=>{t.disc=x;});};
+            v.ceSafety=cutSafety(C).map(x=>({t:x.t,bg:x.hi?'#fff1ee':'#fff8e6',bd:x.hi?'#f4c9bf':'#f3dfa6',fg:x.hi?'#8f2a14':'#7a5200'}));v.ceHasSafety=v.ceSafety.length>0;
+            const Lg=cutLogs(C),last=Lg[Lg.length-1],cat=num(C.catKg),sK=num(C.startKg);
+            v.ceStats=[['Peso inicial',sK?f1(sK)+' kg':'—'],['Último pesaje',last?f1(num(last.kg))+' kg':'—'],['Categoría',cat?f1(cat)+' kg':'—'],['Perdido',sK&&last?f1(sK-num(last.kg))+' kg · '+f1((sK-num(last.kg))/sK*100)+' %':'—'],['Falta',cat&&last?(num(last.kg)>cat?f1(num(last.kg)-cat)+' kg':'En peso'):'—']].map(([l,x])=>({l,x}));
+            const G=cutGraph(C,760,280);v.cg=G;v.cgEmpty=!!G.empty;v.cgOn=!G.empty;
+            v.clT=s.clT||nowL();v.onClT=e=>this.setState({clT:e.target.value});v.clKg=s.clKg||'';v.onClKg=e=>this.setState({clKg:e.target.value});v.clK=s.clK||'am';v.onClK=e=>this.setState({clK:e.target.value});v.clKOpts=CUTK.map(([val,label])=>({val,label}));
+            v.clAdd=()=>{const k=num(String(s.clKg||'').replace(',','.'));if(!(k>0)){this.toast('Escribe el peso en kg',true);return;}upd(t=>{t.logs=(t.logs||[]).concat([{id:uid(),t:s.clT||nowL(),kg:k,kind:s.clK||'am',by:'coach'}]);});this.setState({clKg:''});};
+            v.clRows=Lg.slice().reverse().slice(0,40).map((x,i,arr)=>{const nx=arr[i+1];return {when:cutFT(x.ms),kind:(CUTK.find(k=>k[0]===x.kind)||CUTK[7])[1],c:CUTKC[x.kind]||'#8a99a6',kg:f1(num(x.kg))+' kg',d:nx?((num(x.kg)-num(nx.kg))>0?'+':'')+f1(num(x.kg)-num(nx.kg)):'',by:x.by==='coach'?'Entrenador':'Asesorado',rm:()=>{if(x.rid){this.sb&&this.sb.from('cf_cutlogs').delete().eq('id',x.rid).then(()=>this.loadCut());return;}upd(t=>{t.logs=(t.logs||[]).filter(q=>q.id!==x.id);});}};});v.clHas=Lg.length>0;
+            v.cePrint=()=>{document.body.style.overflow='hidden';document.body.classList.add('cf-rep-on');this.setState({cutPrint:{cid:selC.id,mode:'plan'}});};
+            v.ceRep=()=>{document.body.style.overflow='hidden';document.body.classList.add('cf-rep-on');this.setState({cutPrint:{cid:selC.id,mode:'rep'}});};
+            v.ceDelLbl=s.ceDel?'¿Quitar? Pulsa otra vez':'Quitar protocolo';v.ceDel=()=>{if(!s.ceDel){this.setState({ceDel:true});clearTimeout(this._ceD);this._ceD=setTimeout(()=>this.setState({ceDel:false}),4000);return;}
+              this.setState(st=>({ceDel:false,cutSel:null,clients:st.clients.map(c=>{if(c.id!==selC.id)return c;const n=JSON.parse(JSON.stringify(c));n.compArch=(n.compArch||[]).concat([{...n.comp,ended:Date.now()}]);delete n.comp;n.updated=Date.now();return n;})}));this.toast('Protocolo quitado · queda guardado en su historial');};}
+          const di=Math.max(0,Math.min(typeof s.cutDay==='number'?s.cutDay:0,DS.length-1)),isR=s.cutDay==='r';
+          v.ceDays=DS.map((d,i)=>{const on=!isR&&i===di;return {l:cutTag(num(d.off)),sub:!isT&&T.wDate?new Date(addDays(T.wDate,num(d.off))+'T12:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric'}):(d.label||''),bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)',pick:()=>this.setState({cutDay:i})};});
+          v.ceRBg=isR?'var(--veg-ink)':'#fff';v.ceRFg=isR?'#fff':'var(--veg-ink)';v.ceRPick=()=>this.setState({cutDay:'r'});v.ceRN=(T.refill||[]).length?(T.refill.length+' tramos'):'Sin tramos';
+          const mo=DS.length?num(DS[0].off):0;v.ceCanAddDay=mo>-7;v.ceAddDay=()=>{upd(t=>{const src=t.days.slice().sort((a,b)=>num(a.off)-num(b.off))[0];const nd=src?JSON.parse(JSON.stringify(src)):{};nd.off=mo-1;nd.label='';nd.meals=(nd.meals||[]).map(m=>({...m,id:uid()}));nd.extras=(nd.extras||[]).map(x=>({...x,id:uid()}));delete nd.takes;t.days.push(nd);sortD(t);});this.setState({cutDay:0});};
+          v.ceIsR=isR;v.ceIsD=!isR&&DS.length>0;
+          if(v.ceIsD){const d=DS[di],off=num(d.off),updD=fn=>upd(t=>{sortD(t);fn(t.days[di]);});
+            v.cdTag=cutTag(off);v.cdDate=!isT&&T.wDate?new Date(addDays(T.wDate,off)+'T12:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}):(off===0?'Día del pesaje':Math.abs(off)+(off===-1?' día':' días')+' antes del pesaje');
+            v.cdLabel=d.label||'';v.onCdLabel=e=>{const x=e.target.value;updD(q=>{q.label=x;});};
+            v.cdCanDel=DS.length>1&&off!==0;v.cdDelLbl=s.cdDel?'¿Quitar día? Pulsa otra vez':'Quitar día';v.cdDel=()=>{if(!s.cdDel){this.setState({cdDel:true});return;}upd(t=>{sortD(t);t.days.splice(di,1);});this.setState({cdDel:false,cutDay:0});};
+            v.cdMac=CUTM.map(([k,l,us,c])=>{const f=d[k]||{v:'',u:us[0][0]};const t=cutTot(f,kg);
+              return {l,c,v:f.v==null?'':String(f.v),onV:e=>{const x=e.target.value;updD(q=>{q[k]={...(q[k]||{u:us[0][0]}),v:x===''?'':x};if(k==='water')delete q.takes;});},
+                units:us.map(([u,ul])=>({l:ul,bg:f.u===u?c:'#fff',fg:f.u===u?'#fff':'var(--color-neutral-700)',pick:()=>updD(q=>{const o=q[k]||{v:'',u};if(o.u===u)return;const tt=cutTot(o,kg);let nv=o.v;if(o.v!==''&&tt!=null){nv=/kg$/.test(u)?(k==='water'?tt/kg:tt/kg):(u==='L'?tt/1000:tt);nv=Math.round(nv*100)/100;}q[k]={v:nv,u};if(k==='water')delete q.takes;})})),
+                abs:t==null?'':(/kg$/.test(f.u)?'= '+(k==='water'?f1(t/1000)+' L':f1(t)+(k==='sodium'?' mg':' g')):(k==='water'?'= '+f1(t/kg)+' ml/kg':'= '+f1(t/kg)+(k==='sodium'?' mg/kg':' g/kg')))};});
+            {const P=cutTot(d.prot,kg)||0,Cb=cutTot(d.carb,kg)||0,F=cutTot(d.fat,kg)||0,ek=P*4+Cb*4+F*9;v.cdKcal=d.kcal==null?'':String(d.kcal);v.onCdKcal=e=>{const x=e.target.value;updD(q=>{q.kcal=x;});};v.cdKcalEst=ek?'≈ '+Math.round(ek)+' kcal por macros':'';}
+            v.cdWFrom=d.wFrom||'08:00';v.onCdWFrom=e=>{const x=e.target.value;updD(q=>{q.wFrom=x;delete q.takes;});};v.cdWTo=d.wTo||'22:00';v.onCdWTo=e=>{const x=e.target.value;updD(q=>{q.wTo=x;delete q.takes;});};
+            v.cdWEvery=String(d.wEvery||60);v.cdEveryOpts=[15,20,30,45,60,90,120].map(m=>({val:String(m),label:'Cada '+m+' min'}));v.onCdWEvery=e=>{const x=+e.target.value;updD(q=>{q.wEvery=x;delete q.takes;});};
+            v.cdCut=d.cut||'';v.cdCutHas=!!d.cut;v.cdCutClear=()=>updD(q=>{q.cut='';delete q.takes;});v.onCdCut=e=>{const x=e.target.value;updD(q=>{q.cut=x;delete q.takes;});};
+            const TK=cutTakes(d,kg),man=!!d.takes,tot=TK.reduce((a,x)=>a+num(x.ml),0);v.cdTkMan=man;v.cdTkAuto=!man;v.cdTkHas=TK.length>0;
+            v.cdTkSum=TK.length?TK.length+' tomas · '+f1(tot/1000)+' L'+(man?' · editado a mano':' · reparto automático'):'Sin agua pautada o fuera de horario';
+            v.cdTakes=TK.map((x,i)=>({time:x.time,ml:String(x.ml),onTime:e=>{const y=e.target.value;updD(q=>{q.takes=q.takes||cutTakes(q,kg);q.takes[i].time=y;q.takes.sort((a,b)=>toMin(a.time)-toMin(b.time));});},onMl:e=>{const y=e.target.value;updD(q=>{q.takes=q.takes||cutTakes(q,kg);q.takes[i].ml=y===''?'':num(y);});},rm:()=>updD(q=>{q.takes=(q.takes||cutTakes(q,kg)).filter((_,j)=>j!==i);})}));
+            v.cdToMan=()=>updD(q=>{q.takes=cutTakes(q,kg);});v.cdToAuto=()=>updD(q=>{delete q.takes;});v.cdAddTake=()=>updD(q=>{q.takes=q.takes||cutTakes(q,kg);const lt=q.takes[q.takes.length-1];q.takes.push({time:lt?fromMin(Math.min(1439,toMin(lt.time)+60)):'08:00',ml:250});});
+            {const RECS=((typeof this.libAll==='function'?this.libAll('tpls'):s.tpls)||[]).filter(t=>t.opts&&t.opts[0]),CM=cutMeals(d,kg,FM,allFoods),hasMac=['prot','carb','fat'].some(k=>cutTot(d[k],kg)!=null);
+              const updM=(mi,fn)=>updD(q=>{const m=q.meals[mi];if(!m.opt){m.opt=cutMOpt(m,allFoods);delete m.items;}fn(m,q);});const findI=(o,id)=>{for(const [sl] of SLOTS){const j=(o[sl]||[]).findIndex(x=>x.id===id);if(j>=0)return [sl,j];}return null;};
+              v.cdRecOpts=[{val:'',label:'Usar receta…'}].concat(RECS.map(t=>({val:t.id,label:t.name})));const tot={k:0,p:0,c:0,f:0};
+              v.cdMeals=CM.map(({m,o,mt,pct,r},mi)=>{['k','p','c','f'].forEach(q=>{tot[q]+=r.tot[q]||0;});const q0=((s.cmQ||{})[m.id]||''),qq=norm(q0);let zero=0;
+                const chips=[];SLOTS.forEach(([sl,sll,tag])=>r.S[sl].forEach(x=>{const isV=sl==='veg',auto=!isV&&!x.man;if(auto&&x.g<=0)zero++;
+                  chips.push({tag,name:x.food.name,g:String(Math.round(x.g)),bg:MBG[sl],ink:MINK[sl],sw:SW[sl],bd:auto&&x.g<=0?'#e0664f':'transparent',isMan:!isV&&!!x.man,title:isV?'Gramos fijos':x.man?'Gramos fijados a mano':'Gramos automáticos: escribe para fijarlos',fw:auto?'600':'800',
+                    onG:e=>{const y=e.target.value;updM(mi,mm=>{const p=findI(mm.opt,x.id);if(!p)return;const z=mm.opt[p[0]][p[1]];if(p[0]==='veg')z.g=y===''?0:num(y);else if(y===''){delete z.man;delete z.mg;}else{z.man=true;z.mg=num(y);}});},
+                    reset:()=>updM(mi,mm=>{const p=findI(mm.opt,x.id);if(p){delete mm.opt[p[0]][p[1]].man;delete mm.opt[p[0]][p[1]].mg;}}),rm:()=>updM(mi,mm=>{const p=findI(mm.opt,x.id);if(p)mm.opt[p[0]].splice(p[1],1);})});}));
+                return {time:m.time||'',name:m.name||'',pct:m.pct==null?'':String(m.pct),pctPh:String(Math.round(pct)),onTime:e=>{const y=e.target.value;updD(q=>{q.meals[mi].time=y;});},onName:e=>{const y=e.target.value;updD(q=>{q.meals[mi].name=y;});},onPct:e=>{const y=e.target.value;updD(q=>{q.meals[mi].pct=y===''?'':num(y);});},
+                  rm:()=>updD(q=>{q.meals.splice(mi,1);}),chips,hasChips:chips.length>0,noChips:!chips.length,kcal:Math.round(r.tot.k)+' kcal',mac:'P '+Math.round(r.tot.p)+' · C '+Math.round(r.tot.c)+' · G '+Math.round(r.tot.f)+' g',
+                  zero:zero>0,zeroTxt:zero===1?'Un alimento sale a 0 g: fija sus gramos a mano o quítalo.':zero+' alimentos salen a 0 g: fija sus gramos a mano o quítalos.',hasNote:!!o.note,note:o.note?'Sin encontrar en la base de datos: '+o.note:'',
+                  onRec:e=>{const id=e.target.value;e.target.value='';const t=RECS.find(z=>z.id===id);if(!t)return;updM(mi,mm=>{const c=JSON.parse(JSON.stringify(t.opts[0]));SLOTS.forEach(([sl])=>{c[sl]=(c[sl]||[]).map(z=>({...z,id:uid()}));});c.id=uid();mm.opt=c;if(!mm.name||/^Comida \d+$/.test(mm.name))mm.name=t.name;});this.toast('Receta cargada · gramos ajustados al día');},
+                  q:q0,onQ:e=>{const y=e.target.value;this.setState(st=>({cmQ:{...(st.cmQ||{}),[m.id]:y}}));},hasRes:qq.length>=2,
+                  results:qq.length>=2?allFoods.filter(f=>norm(f.name).includes(qq)).slice(0,8).map(f=>{const mm0=f.cat==='Frutas'||f.cat==='Verduras'?'veg':mainMacro(f);return {name:f.name,slots:SLOTS.map(([sl,sll,tg])=>({l:tg,title:'Añadir a '+sll,bg:sl===mm0?SW[sl]:MBG[sl],ink:sl===mm0?'#fff':MINK[sl],bd:SW[sl],add:()=>{updM(mi,mm=>{const A=mm.opt[sl]=mm.opt[sl]||[];A.push(sl==='veg'?vg(f.id,f.cat==='Frutas'?120:150):it(f.id,100));});this.setState(st=>({cmQ:{...(st.cmQ||{}),[m.id]:''}}));}}))};}):[]};});
+              v.cdNoMeals=!CM.length;v.cdHasMeals=CM.length>0;v.cdMenuSum=CM.length?'Menú: '+Math.round(tot.k)+' kcal · P '+Math.round(tot.p)+' · C '+Math.round(tot.c)+' · G '+Math.round(tot.f)+' g':'';
+              v.cdMenuHint=!hasMac&&CM.length>0;v.cdAddMeal=()=>updD(q=>{const lm=(q.meals||[])[(q.meals||[]).length-1];q.meals=(q.meals||[]).concat([{id:uid(),time:lm?fromMin(Math.min(1439,toMin(lm.time)+180)):'08:30',name:'Comida '+((q.meals||[]).length+1),pct:'',opt:opt()}]);});
+              v.cdLowRes=()=>{updD(q=>{q.meals=CUT_LR();});this.toast('Menú bajo residuo cargado · gramos ajustados al día');};
+              v.cdCopyOpts=[{val:'',label:'Copiar menú de…'}].concat(DS.map((x,j)=>({x,j})).filter(({x,j})=>j!==di&&(x.meals||[]).length).map(({x,j})=>({val:String(j),label:cutTag(num(x.off))+(x.label?' · '+x.label:'')})));v.cdHasCopy=v.cdCopyOpts.length>1;
+              v.onCdCopy=e=>{const j=+e.target.value;e.target.value='';const src=DS[j];if(!src)return;updD(q=>{q.meals=JSON.parse(JSON.stringify(src.meals||[])).map(mm=>{if(!mm.opt){mm.opt=cutMOpt(mm,allFoods);delete mm.items;}mm.id=uid();return mm;});});this.toast('Menú copiado');};}
+            v.cdSupps=(d.supps||[]).map((x,i)=>({time:x.time||'',txt:x.txt||'',onTime:e=>{const y=e.target.value;updD(q=>{q.supps[i].time=y;});},onTxt:e=>{const y=e.target.value;updD(q=>{q.supps[i].txt=y;});},rm:()=>updD(q=>{q.supps.splice(i,1);})}));
+            v.cdAddSupp=()=>updD(q=>{q.supps=(q.supps||[]).concat([{time:'08:00',txt:''}]);});
+            v.cdExtras=(d.extras||[]).map((x,i)=>({name:x.name||'',time:x.time||'',dur:x.dur==null?'':String(x.dur),txt:x.txt||'',onName:e=>{const y=e.target.value;updD(q=>{q.extras[i].name=y;});},onTime:e=>{const y=e.target.value;updD(q=>{q.extras[i].time=y;});},onDur:e=>{const y=e.target.value;updD(q=>{q.extras[i].dur=y===''?'':num(y);});},onTxt:e=>{const y=e.target.value;updD(q=>{q.extras[i].txt=y;});},
+              wBg:x.weigh!==false?'var(--color-accent)':'var(--color-neutral-300)',wKn:x.weigh!==false?'18px':'2px',togW:()=>updD(q=>{q.extras[i].weigh=q.extras[i].weigh===false;}),rm:()=>updD(q=>{q.extras.splice(i,1);})}));
+            v.cdXP=CUTX.map(([n,du,tx])=>({l:n,add:()=>updD(q=>{q.extras=(q.extras||[]).concat([{id:uid(),name:n,time:'20:00',dur:du,weigh:true,txt:tx}]);})})).concat([{l:'Otro',add:()=>updD(q=>{q.extras=(q.extras||[]).concat([{id:uid(),name:'',time:'20:00',dur:'',weigh:true,txt:''}]);})}]);
+            v.cdAllow=d.allow||'';v.onCdAllow=e=>{const x=e.target.value;updD(q=>{q.allow=x;});};v.cdDeny=d.deny||'';v.onCdDeny=e=>{const x=e.target.value;updD(q=>{q.deny=x;});};v.cdTxt=d.txt||'';v.onCdTxt=e=>{const x=e.target.value;updD(q=>{q.txt=x;});};
+            const mf=T.mealFrom;v.cdWeighs=['Al despertar (tras orinar)','Antes de dormir'].concat(mf!=null&&mf!==''&&off>=-num(mf)?['Antes y después de cada comida']:[]).concat((d.extras||[]).filter(x=>x.weigh!==false&&x.name).map(x=>'Antes y después de: '+x.name)).concat(off===0?['Pesaje oficial'+(!isT&&T.wTime?' a las '+T.wTime:'')]:[]).join(' · ');}
+          if(isR){const updR=fn=>upd(t=>{t.refill=t.refill||[];fn(t.refill);});
+            v.crRows=(T.refill||[]).map((r,i)=>{const fT=num(r.fluid&&r.fluid.v)*(r.fluid&&r.fluid.u==='mlkgh'?kg:1),cT=num(r.carb&&r.carb.v)*(r.carb&&r.carb.u==='gkg'?kg:1),hrs=Math.max(0,num(r.to)-num(r.from));
+              const uB=(on,c)=>({bg:on?c:'#fff',fg:on?'#fff':'var(--color-neutral-700)'});
+              return {from:String(r.from==null?'':r.from),to:String(r.to==null?'':r.to),onFrom:e=>{const x=e.target.value;updR(a=>{a[i].from=x===''?'':num(x);});},onTo:e=>{const x=e.target.value;updR(a=>{a[i].to=x===''?'':num(x);});},
+                fv:r.fluid&&r.fluid.v!=null?String(r.fluid.v):'',onFv:e=>{const x=e.target.value;updR(a=>{a[i].fluid={...(a[i].fluid||{u:'mlkgh'}),v:x===''?'':num(x)};});},
+                fu:[['mlkgh','ml/kg/h'],['mlh','ml/h']].map(([u,l])=>({l,...uB((r.fluid||{}).u===u,'#1180c2'),pick:()=>updR(a=>{a[i].fluid={...(a[i].fluid||{v:''}),u};})})),
+                fabs:fT?'≈ '+Math.round(fT)+' ml/h · '+f1(fT*hrs/1000)+' L en el tramo':'',
+                cv:r.carb&&r.carb.v!=null?String(r.carb.v):'',onCv:e=>{const x=e.target.value;updR(a=>{a[i].carb={...(a[i].carb||{u:'gkg'}),v:x===''?'':num(x)};});},
+                cu:[['gkg','g/kg'],['g','g']].map(([u,l])=>({l,...uB((r.carb||{}).u===u,'#e9b23f'),pick:()=>updR(a=>{a[i].carb={...(a[i].carb||{v:''}),u};})})),
+                cabs:cT?'≈ '+Math.round(cT)+' g en el tramo':'',
+                sod:r.sodium||'',onSod:e=>{const x=e.target.value;updR(a=>{a[i].sodium=x;});},food:r.food||'',onFood:e=>{const x=e.target.value;updR(a=>{a[i].food=x;});},txt:r.txt||'',onTxt:e=>{const x=e.target.value;updR(a=>{a[i].txt=x;});},
+                rm:()=>updR(a=>{a.splice(i,1);})};});
+            v.crEmpty=!(T.refill||[]).length;v.crAdd=()=>updR(a=>{const l=a[a.length-1];a.push({id:uid(),from:l?num(l.to):0,to:l?num(l.to)+2:2,fluid:{v:5,u:'mlkgh'},sodium:'Suero oral',carb:{v:1,u:'gkg'},food:'',txt:''});});
+            v.crNote=num(T.gapH)?'Tramos en horas desde el pesaje. Entre pesaje y competición hay '+num(T.gapH)+' h.':'Tramos en horas desde el pesaje o el evento.';}}}
+      if(s.cutAs){const A=s.cutAs,setA=o=>this.setState(st=>({cutAs:{...st.cutAs,...o}}));v.caOn=true;v.caClose=()=>this.setState({cutAs:null});
+        v.caCli=A.cid;v.caCliOpts=s.clients.map(c=>({val:c.id,label:(c.name||'Sin nombre')+(c.comp?' · ya tiene protocolo':'')}));v.onCaCli=e=>{const id=e.target.value,c=s.clients.find(q=>q.id===id);setA({cid:id,start:c?String(num(c.calc&&c.calc.peso)||''):''});};
+        v.caTpl=A.tpl;v.caTplOpts=TPL.map(t=>({val:t.id,label:t.name}));v.onCaTpl=e=>setA({tpl:e.target.value});
+        v.caDate=A.date;v.onCaDate=e=>setA({date:e.target.value});v.caTime=A.time;v.onCaTime=e=>setA({time:e.target.value});v.caStart=A.start;v.onCaStart=e=>setA({start:e.target.value});v.caCat=A.cat;v.onCaCat=e=>setA({cat:e.target.value});
+        const T=TPL.find(t=>t.id===A.tpl);v.caDesc=T?T.desc||'':'';const sK=num(String(A.start).replace(',','.')),cK=num(String(A.cat).replace(',','.'));
+        v.caPct=sK>0&&cK>0?(cK<sK?'Pérdida prevista: '+f1(sK-cK)+' kg ('+f1((sK-cK)/sK*100)+' %)':'Ya está por debajo del peso de la categoría'):'';const pp=sK>0&&cK>0?(sK-cK)/sK*100:0;v.caPctBg=pp>8?'#fff1ee':pp>5?'#fff8e6':'var(--color-neutral-100)';v.caPctFg=pp>8?'#8f2a14':pp>5?'#7a5200':'var(--color-text)';v.caHasPct=!!v.caPct;
+        v.caWarnExist=!!(s.clients.find(c=>c.id===A.cid)||{}).comp;
+        v.caGo=()=>{if(!A.cid||!T||!A.date){this.toast('Elige cliente, plantilla y fecha del pesaje',true);return;}const cid=A.cid;
+          this.setState(st=>({cutAs:null,view:'comp',cutTab:'cli',cutSel:cid,cutDay:0,clT:nowL(),clKg:'',clK:'am',clients:st.clients.map(c=>{if(c.id!==cid)return c;const n=JSON.parse(JSON.stringify(c));if(n.comp)n.compArch=(n.compArch||[]).concat([{...n.comp,ended:Date.now()}]);n.comp=mkComp(T,{wDate:A.date,wTime:A.time||'09:00',startKg:sK||'',catKg:cK||''});n.updated=Date.now();return n;})}));this.toast('Protocolo asignado');};}
+      if(s.cutPrint){const c=s.clients.find(q=>q.id===s.cutPrint.cid),C=c&&c.comp&&withR(c);v.cpOn=!!C;
+        if(C){const kg=cutKg(C,c),isP=s.cutPrint.mode==='plan',sK=num(C.startKg),cK=num(C.catKg);v.cpPlan=isP;v.cpRep=!isP;
+          v.cpClose=()=>{document.body.style.overflow='';document.body.classList.remove('cf-rep-on');this.setState({cutPrint:null});};v.cpPrintFn=()=>window.print();
+          v.cpBarT=isP?'PDF del protocolo':'Informe del protocolo';v.cpTitle=C.name||'Protocolo';v.cpWho=c.name||'';
+          v.cpWhen=C.wDate?'Pesaje: '+new Date(C.wDate+'T12:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+' a las '+(C.wTime||'09:00')+(num(C.gapH)?' · compite '+num(C.gapH)+' h después':''):'';
+          v.cpKg=(cK?'Categoría '+f1(cK)+' kg':'')+(sK?(cK?' · ':'')+'Peso inicial '+f1(sK)+' kg':'')+(sK&&cK&&cK<sK?' · pérdida prevista '+f1(sK-cK)+' kg ('+f1((sK-cK)/sK*100)+' %)':'');
+          v.cpDisc=C.disc==null?CUT_DISC:C.disc;v.cpHasDisc=!!v.cpDisc;
+          const mf=C.mealFrom;v.cpWeighRule='Pésate al despertar (después de orinar) y antes de dormir'+(mf!=null&&mf!==''?(num(mf)===0?'; el día del pesaje, también antes y después de cada comida':'; desde '+cutTag(-num(mf))+', también antes y después de cada comida'):'')+', y antes y después de cada baño o sauna. Anota siempre la hora.';
+          if(isP){v.cpDays=(C.days||[]).slice().sort((a,b)=>num(a.off)-num(b.off)).map(d=>{const off=num(d.off),TK=cutTakes(d,kg);
+            const tg=CUTM.map(([k,l])=>{const x=cutVal(k,d[k],kg);return x?{l,x}:null;}).filter(Boolean);if(d.kcal)tg.push({l:'Kcal',x:d.kcal+' kcal'});
+            return {tag:cutTag(off),date:C.wDate?new Date(addDays(C.wDate,off)+'T12:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}):'',label:d.label||'',tg,
+              takes:TK.length?'Agua en '+TK.length+' tomas: '+TK.map(x=>x.time+' '+x.ml+' ml').join(' · ')+(d.cut?' · Corte de agua a las '+d.cut:''):(d.cut?'Corte de agua a las '+d.cut:''),hasTakes:!!(TK.length||d.cut),
+              meals:cutMeals(d,kg,FM,allFoods).map(({m,o,r})=>({t:(m.time?m.time+' · ':'')+(m.name||'Comida'),x:SLOTS.map(([sl])=>r.S[sl].filter(x=>x.g>0).map(x=>x.food.name+' '+Math.round(x.g)+' g')).flat().concat(o.note?[o.note]:[]).join(' · ')+' ('+Math.round(r.tot.k)+' kcal)'})),hasMeals:!!(d.meals||[]).length,
+              supps:(d.supps||[]).filter(x=>x.txt).map(x=>({t:x.time||'',x:x.txt})),hasSupps:(d.supps||[]).some(x=>x.txt),
+              extras:(d.extras||[]).filter(x=>x.name).map(x=>({t:(x.time||'')+(x.dur?' · '+x.dur+' min':''),x:x.name+(x.txt?': '+x.txt:'')+(x.weigh!==false?' Pésate antes y después.':'')})),hasExtras:(d.extras||[]).some(x=>x.name),
+              allow:d.allow||'',hasAllow:!!d.allow,deny:d.deny||'',hasDeny:!!d.deny,txt:d.txt||'',hasTxt:!!d.txt,isW:off===0,wTxt:'Pesaje oficial'+(C.wTime?' a las '+C.wTime:'')};});
+            v.cpRefill=(C.refill||[]).map(r=>{const hrs=Math.max(0,num(r.to)-num(r.from)),fT=num(r.fluid&&r.fluid.v)*(r.fluid&&r.fluid.u==='mlkgh'?kg:1),cT=num(r.carb&&r.carb.v)*(r.carb&&r.carb.u==='gkg'?kg:1);
+              return {t:num(r.from)+'–'+num(r.to)+' h',fl:fT?Math.round(fT)+' ml/h (≈ '+f1(fT*hrs/1000)+' L)':'—',sod:r.sodium||'—',ch:cT?Math.round(cT)+' g':'—',food:r.food||'—',txt:r.txt||''};});v.cpHasRefill=v.cpRefill.length>0;}
+          else{const Lg=cutLogs(C),w=cutW(C),pre=Lg.filter(x=>w==null||x.ms<=w),post=Lg.filter(x=>w!=null&&x.ms>w),of=Lg.filter(x=>x.kind==='of').pop()||pre[pre.length-1],mn=pre.length?pre.reduce((a,x)=>num(x.kg)<num(a.kg)?x:a):null,lastP=post[post.length-1];
+            v.cpStats=[['Peso inicial',sK?f1(sK)+' kg':'—'],['Pesaje oficial',of?f1(num(of.kg))+' kg':'—'],['Perdido',sK&&of?f1(sK-num(of.kg))+' kg ('+f1((sK-num(of.kg))/sK*100)+' %)':'—'],['Último tras el pesaje',lastP?f1(num(lastP.kg))+' kg':'—'],['Recuperado',lastP&&of?'+'+f1(num(lastP.kg)-num(of.kg))+' kg':'—']].map(([l,x])=>({l,x}));
+            const G=cutGraph(C,720,280);v.cpg=G;v.cpgOn=!G.empty;v.cpSafety=cutSafety(C).map(x=>({t:x.t}));v.cpHasSafety=v.cpSafety.length>0;
+            v.cpRows=Lg.map(x=>({when:cutFT(x.ms),kind:(CUTK.find(k=>k[0]===x.kind)||CUTK[7])[1],kg:f1(num(x.kg))+' kg'}));v.cpHasRows=Lg.length>0;}
+          v.cpLogo=(this.isPrem()&&s.brand&&s.brand.logo)?s.brand.logo:'assets/logo.png';}}}
     v.openPlans=()=>this.setState({plansOpen:true});v.plansOn=!!s.plansOpen;v.plansClose=()=>this.setState({plansOpen:false});
     {const pl=this.myPlan(),pr=pl==='premium';v.planLbl=this.isCEO()?'Plan Premium · CEO':pr?'Plan Premium':'Plan Estándar';v.planCur=pr?'premium':'standard';
       v.plStdBd=pr?'var(--color-divider)':'var(--color-accent)';v.plPreBd=pr?'var(--color-accent)':'var(--color-divider)';v.plStdCur=!pr;v.plPreCur=pr;}
