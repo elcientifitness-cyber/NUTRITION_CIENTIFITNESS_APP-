@@ -1,5 +1,5 @@
 // Siempre intenta la red primero (datos al día); si no hay conexión, usa la última copia.
-const C='cf-v4';
+const C='cf-v7';
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
@@ -13,14 +13,14 @@ function saveN(d){return caches.open(NK).then(c=>c.match(NU).then(r=>r?r.json():
 self.addEventListener('push',e=>{
   let d={};try{d=e.data?e.data.json():{};}catch(x){d={body:e.data?e.data.text():''};}
   // Con la app abierta (iPhone no enseña el aviso del sistema), además se muestra dentro de la app.
-  e.waitUntil(saveN(d).then(()=>self.clients.matchAll({type:'window',includeUncontrolled:true})).then(cs=>{cs.forEach(c=>{if(c.visibilityState==='visible')c.postMessage({cfPush:d});});
+  e.waitUntil((d.coach?Promise.resolve():saveN(d)).then(()=>self.clients.matchAll({type:'window',includeUncontrolled:true})).then(cs=>{cs.forEach(c=>{if(c.visibilityState==='visible')c.postMessage({cfPush:d});});
     return self.registration.showNotification(d.title||'CientiFitness',{body:d.body||'',icon:'assets/icon-192.png',badge:'assets/icon-192.png',tag:d.tag||undefined,renotify:!!d.tag,data:{url:d.url||'asesorado.html'}});}));
 });
 self.addEventListener('notificationclick',e=>{
   e.notification.close();
-  const url=new URL((e.notification.data&&e.notification.data.url)||'asesorado.html',self.registration.scope).href;
-  e.waitUntil(saveN(d).then(()=>self.clients.matchAll({type:'window',includeUncontrolled:true})).then(cs=>{
-    for(const c of cs){if(c.url.indexOf('asesorado')>=0&&'focus' in c){if('navigate' in c)c.navigate(url).catch(()=>{});return c.focus();}}
+  const url=new URL((e.notification.data&&e.notification.data.url)||'asesorado.html',self.registration.scope).href,pg=new URL(url).pathname.split('/').pop()||'index.html';
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
+    for(const c of cs){const cp=new URL(c.url).pathname.split('/').pop()||'index.html';if(cp===pg&&'focus' in c){if('navigate' in c)c.navigate(url).catch(()=>{});return c.focus();}}
     return self.clients.openWindow(url);
   }));
 });

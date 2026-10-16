@@ -683,7 +683,12 @@ class Component extends DCLogic {
   loadCut(){const L=this.state.link;if(!this.sb||!L||!L.comp)return;this.sb.from('cf_cutlogs').select('id,t,kind,kg,sym,note').eq('coach_id',L.coach_id).eq('client_key',L.client_key).order('t',{ascending:true}).limit(800).then(({data,error})=>{if(!error)this.setState({cutL:data||[]});});}
   cutAdd(o){const L=this.state.link;if(!this.sb||!L)return Promise.resolve(false);this.setState({cpBusy:true});
     return this.sb.from('cf_cutlogs').insert({coach_id:L.coach_id,client_key:L.client_key,t:o.t||new Date().toISOString(),kind:o.kind,kg:o.kg==null?null:o.kg,sym:o.sym||null,note:o.note||null}).then(({error})=>{this.setState({cpBusy:false});
-      if(error){this.toastMsg(/cf_cutlogs|relation|schema/i.test(error.message||'')?'Tu entrenador aún no ha activado el registro de competición':'No se pudo guardar: '+error.message,true);return false;}this.loadCut();return true;});}
+      if(error){this.toastMsg(/cf_cutlogs|relation|schema/i.test(error.message||'')?'Tu entrenador aún no ha activado el registro de competición':'No se pudo guardar: '+error.message,true);return false;}this.cutNotify(o);this.loadCut();return true;});}
+  cutNotify(o){if(o.kind==='accept'||!this.sb)return;const L=this.state.link,C=(L&&L.comp)||{},f1=x=>(Math.round(x*10)/10).toLocaleString('es-ES');let text='';
+    if(o.kind==='sym')text=((o.sym||[]).join(', ')||'Síntomas')+(o.note?' · '+o.note:'');
+    else{const K={am:'Al despertar',pm:'Antes de dormir',pre:'Antes de comer',post:'Después de comer',xpre:'Antes de baño/sauna',xpost:'Después de baño/sauna',of:'Pesaje oficial'},W=(this.state.cutL||[]).filter(x=>x.kg!=null&&x.kind!=='sym'&&x.kind!=='accept'),pv=W[W.length-1],cat=Number(C.catKg)||0,kg=Number(o.kg);
+      text=(K[o.kind]||'Pesaje')+': '+f1(kg)+' kg'+(pv?' · '+(kg-Number(pv.kg)>0?'+':kg-Number(pv.kg)<0?'−':'±')+f1(Math.abs(kg-Number(pv.kg)))+' kg desde el anterior':'')+(cat?(kg>cat?' · faltan '+f1(kg-cat)+' kg':' · en peso'):'');}
+    this.sb.auth.getSession().then(({data})=>fetch('/api/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({type:'cut',coach_id:L.coach_id,client_key:L.client_key,kind:o.kind,text})})).catch(()=>{});}
   cpToggle(k){this.setState(s=>{const d={...(s.cpDone||{})};if(d[k])delete d[k];else d[k]=1;try{localStorage.setItem('cf-cut-done',JSON.stringify(d));}catch(e){}return {cpDone:d};});}
   loadForms(){if(!this.sb||!this.user)return;this.sb.from('cf_forms').select('id,title,token,status,created_at').eq('status','sent').order('created_at',{ascending:true}).then(({data,error})=>{if(error)return;this.setState({pendForms:data||[]});});}
   doLogin(){const s=this.state;if(!this.sb)return;this.setState({authMsg:'Entrando…'});
@@ -751,7 +756,7 @@ class Component extends DCLogic {
       v.ntWake=NP.wake||'08:00';v.onNtWake=e=>{const x=e.target.value;this.ntSetPref(p=>{p.wake=x;});};
       v.ntSleep=NP.sleep||'22:30';v.onNtSleep=e=>{const x=e.target.value;this.ntSetPref(p=>{p.sleep=x;});};
       v.ntTrain=NP.train||'';v.onNtTrain=e=>{const x=e.target.value;this.ntSetPref(p=>{if(x)p.train=x;else delete p.train;});};v.ntShowTrain=!PN||!!PN.pre;
-      v.ntTypes=[['water','Beber agua'],['pre','Preentreno'],['rev','Revisiones'],['weigh','Pesarse'],['plan','Plan actualizado'],['msg','Mensajes de tu entrenador']].filter(([k])=>!PN||(k==='rev'?(PN.revBefore||PN.revDay):PN[k])).concat(((PN&&PN.cx)||[]).map(x=>['c:'+x.id,x.title||'Aviso'])).map(([k,l])=>{const on=!off[k];
+      v.ntTypes=(L0.comp&&L0.comp.days?[['comp','Competición: agua, comidas y pesajes']]:[]).concat([['water','Beber agua'],['pre','Preentreno'],['rev','Revisiones'],['weigh','Pesarse'],['plan','Plan actualizado'],['msg','Mensajes de tu entrenador']]).filter(([k])=>k==='comp'||!PN||(k==='rev'?(PN.revBefore||PN.revDay):PN[k])).concat(((PN&&PN.cx)||[]).map(x=>['c:'+x.id,x.title||'Aviso'])).map(([k,l])=>{const on=!off[k];
         return {label:l,bg:on?'#1180c2':'#d3dde7',knob:on?'20px':'2px',toggle:()=>this.ntSetPref(p=>{p.off=p.off||{};if(p.off[k])delete p.off[k];else p.off[k]=true;})};});
       v.ntBanner=s.ntOn===false&&!s.ntDis&&(sup||v.ntNeedInstall)&&perm!=='denied';v.ntDismiss=()=>{try{localStorage.setItem('cf-nt-dis','1');}catch(e){}this.setState({ntDis:true});};}
     {const pb=s.pushB;v.pbOn=!!pb;v.pbTitle=pb?pb.title:'';v.pbBody=pb?pb.body:'';v.pbClose=e=>{if(e)e.stopPropagation();this.setState({pushB:null});};
@@ -784,11 +789,11 @@ class Component extends DCLogic {
           if(hasR){const on=sel==='r';v.cpDays.push({l:'Reposición',sub:'Tras el pesaje',bg:on?'#1d6b43':'#fff',fg:on?'#fff':'#1d6b43',bd:'#1d6b43',pick:()=>this.setState({cpDay:'r'})});}
           v.cpIsR=sel==='r';const d=sel==='r'?null:C.days.find(x=>num(x.off)===sel);v.cpIsD=!!d;
           if(d){const date=addDays(C.wDate,num(d.off)),DN=s.cpDone||{},dk=k=>date+'|'+k;v.cpDTitle=(num(d.off)===0?'D0':'D'+num(d.off))+(d.label?' · '+d.label:'');v.cpDDate=fdl(date);
-            v.cpTg=d.tg||[];v.cpHasTg=v.cpTg.length>0;const wm=C.mealFrom!=null&&num(d.off)>=-num(C.mealFrom),I=[];
+            v.cpTg=(d.tg||[]).concat((()=>{const fb=(d.meals||[]).reduce((a,m)=>a+(Number(m.fib)||0),0);return fb?[{l:'Fibra del menú',x:(Math.round(fb*10)/10).toLocaleString('es-ES')+' g'}]:[];})());v.cpHasTg=v.cpTg.length>0;const wm=C.mealFrom!=null&&num(d.off)>=-num(C.mealFrom),I=[];
             I.push({s:-1,time:'',k:'w',title:'Pésate al despertar',sub:'Después de orinar, antes de beber o comer.',id:'wam'});
             (d.takes||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'water',title:'Bebe '+x.ml+' ml',id:'t'+i,ml:num(x.ml)}));
             if(d.cut)I.push({s:tm(d.cut),time:d.cut,k:'cut',title:'Corte de agua',sub:'A partir de ahora no bebas, salvo lo que te indique tu entrenador.',id:'cut'});
-            (d.meals||[]).forEach((m,i)=>I.push({s:tm(m.time),time:m.time,k:'meal',title:m.name,sub:(m.lines||[]).join(' · '),meta:m.kcal?m.kcal+' kcal':'',id:'m'+i,weigh:wm}));
+            (d.meals||[]).forEach((m,i)=>I.push({s:tm(m.time),time:m.time,k:'meal',title:m.name,sub:(m.lines||[]).join(' · '),meta:[m.kcal?m.kcal+' kcal':'',m.fib?String(m.fib).replace('.',',')+' g fibra':''].filter(Boolean).join(' · '),id:'m'+i,weigh:wm}));
             (d.supps||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'supp',title:x.txt,id:'s'+i}));
             (d.extras||[]).forEach((x,i)=>I.push({s:tm(x.time),time:x.time,k:'extra',title:x.name+(x.dur?' · '+x.dur+' min':''),sub:x.txt,id:'x'+i,weigh:x.weigh}));
             if(num(d.off)===0)I.push({s:tm(C.wTime),time:C.wTime||'',k:'of',title:'Pesaje oficial',sub:'No comas ni bebas hasta pesarte.',id:'of'});else I.push({s:1e4,time:'',k:'w',title:'Pésate antes de dormir',sub:'',id:'wpm'});
