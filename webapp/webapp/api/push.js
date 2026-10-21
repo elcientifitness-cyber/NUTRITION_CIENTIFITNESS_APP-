@@ -10,7 +10,7 @@
 const crypto = require('crypto');
 const URL_SB = 'https://soxtkdakmpjxtvvtrvjs.supabase.co';
 const ANON = 'sb_publishable_mGei9bBQytQo75nSAo2umw_c2bvY_gA';
-const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', msg: true };
+const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', steps: true, stepsHour: '21:00', stepsMiss: 3, msg: true };
 
 const env = k => String(process.env[k] || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
 const b64u = b => Buffer.from(b).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -49,6 +49,7 @@ function local(tz) {
   const g = t => (p.find(x => x.type === t) || {}).value, d = g('year') + '-' + g('month') + '-' + g('day');
   return { d, m: (+g('hour') % 24) * 60 + (+g('minute')), dow: { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 }[g('weekday')], tom: addDay(d, 1) };
 }
+const addD = (d, n) => { const t = new Date(d + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
 const effOf = (cfg, ck) => Object.assign({}, DEF, (cfg && cfg.tpl) || {}, (cfg && cfg.ovr && cfg.ovr[ck]) || {});
 
 function dueList(now, eff, pr, G, evs, C) {
@@ -62,6 +63,7 @@ function dueList(now, eff, pr, G, evs, C) {
     if (eff.revDay && e.d === now.d) out.push({ key: 'rd' + e.d + (e.t || ''), at: t != null ? Math.max(420, t - 120) : 540, data: { title: 'Hoy: ' + lb.toLowerCase(), body: lb + ' hoy' + at + '.', tag: 'rev', url: 'asesorado.html?tab=prog' } });
   });
   if (eff.weigh && !off.weigh && now.dow === num(eff.weighDow)) out.push({ key: 'wg', at: hm(eff.weighHour) != null ? hm(eff.weighHour) : 510, data: { title: 'Toca pesarse', body: 'Pésate en ayunas, después de ir al baño, y apúntalo en la app.', tag: 'weigh', url: 'asesorado.html?tab=prog' } });
+  if (eff.steps && !off.steps && D && num(String(D.steps || '').replace(',', '.')) > 0) out.push({ key: 'st', at: hm(eff.stepsHour) != null ? hm(eff.stepsHour) : 1260, data: { title: 'Pasos de hoy', body: 'Tu objetivo es de ' + Number(String(D.steps).replace(',', '.')).toLocaleString('es-ES') + ' pasos. Apunta en la app los que has dado.', tag: 'steps', url: 'asesorado.html?tab=hoy' } });
   (C || []).forEach(x => {
     const o = (eff.cxo || {})[x.id] || {}, cc = (eff.cxc || {})[x.id], on = cc != null ? !!cc : (o.on != null ? !!o.on : x.on !== false);
     if (!on || off['c:' + x.id]) return;
@@ -170,6 +172,7 @@ module.exports = async (req, res) => {
         const st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
         let go = list.filter(x => x.at <= now.m && now.m - x.at < 40 && !st.k.includes(x.key));
         ['water', 'cw'].forEach(kd => { const w = go.filter(x => x.kind === kd); if (w.length > 1) { w.slice(0, -1).forEach(x => st.k.push(x.key)); go = go.filter(x => x.kind !== kd || x === w[w.length - 1]); } });
+        if (go.some(x => x.key === 'st')) { const dl = await api('cf_daylogs?select=survey&coach_id=eq.' + s.coach_id + '&client_key=eq.' + encodeURIComponent(s.client_key) + '&day=eq.' + now.d).then(r => r.ok ? r.json() : []); if (dl[0] && dl[0].survey && num(dl[0].survey.steps) > 0) { go = go.filter(x => x.key !== 'st'); st.k.push('st'); } }
         if (!go.length) continue;
         let gone = false;
         for (const x of go) { const code = await push(s, x.data, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { gone = true; break; } st.k.push(x.key); if (code >= 200 && code < 300) sent++; }
@@ -183,13 +186,20 @@ module.exports = async (req, res) => {
         const pr = s.prefs || {}, T = hm(pr.sum) != null ? hm(pr.sum) : 1290, st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
         if ((pr.off || {}).sum || st.k.includes('sum') || now.m < T || now.m - T >= 40) continue;
         const act = links.filter(l => l.coach_id === s.user_id && compAct(l.comp, now.d)); st.k.push('sum');
+        const ccfg = CF[s.user_id] || await cfgOf(s.user_id).catch(() => null), sLines = [];
+        { const mine = links.filter(l => l.coach_id === s.user_id && l.guide && ((l.guide.train || {}).steps || (l.guide.rest || {}).steps));
+          if (mine.length) { const DLs = await api('cf_daylogs?select=client_key,day,survey&coach_id=eq.' + s.user_id + '&day=gte.' + addD(now.d, -40) + '&order=day.asc').then(r => r.ok ? r.json() : []);
+            mine.forEach(l => { const ef = effOf(ccfg, l.client_key); if (ef.steps === false) return; const NX = Math.max(1, num(ef.stepsMiss) || 3), G = l.guide, tg = d => { const dw = (new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7, x = G[(G.days || [0, 2, 4]).includes(dw) ? 'train' : 'rest']; return x ? num(String(x.steps || '').replace(',', '.')) : 0; };
+              const RS = DLs.filter(r => r.client_key === l.client_key && r.survey && num(r.survey.steps) > 0 && tg(r.day) > 0).slice(-NX);
+              if (RS.length >= NX && RS.every(r => num(r.survey.steps) < tg(r.day)) && RS[RS.length - 1].day >= addD(now.d, -1)) { const av = Math.round(RS.reduce((a, r) => a + num(r.survey.steps), 0) / RS.length), at = Math.round(RS.reduce((a, r) => a + tg(r.day), 0) / RS.length); sLines.push((l.name || 'Cliente').split(' ')[0] + ': ' + NX + ' días sin llegar a los pasos (media ' + av.toLocaleString('es-ES') + ' de ' + at.toLocaleString('es-ES') + ')'); } }); } }
+        if (sLines.length && !act.length) { const code = await push(s, { title: 'Pasos de tus asesorados', body: sLines.join('\n'), tag: 'cc-steps', url: 'index.html', coach: true }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); continue; } if (code >= 200 && code < 300) sent++; }
         if (act.length) {
           const R = await api('cf_cutlogs?select=client_key,t,kind,kg,sym&coach_id=eq.' + s.user_id + '&t=gte.' + encodeURIComponent(new Date(Date.now() - 20 * 3600e3).toISOString()) + '&order=t.asc').then(r => r.ok ? r.json() : []);
           const lines = act.map(l => { const C = l.comp, my = R.filter(x => x.client_key === l.client_key), W = my.filter(x => x.kg != null && x.kind !== 'sym' && x.kind !== 'accept'), sy = my.filter(x => x.kind === 'sym'), nm = (l.name || 'Cliente').split(' ')[0];
             if (!W.length) return nm + ': sin pesajes hoy' + (sy.length ? ' · ' + sy.length + ' aviso(s) de síntomas' : '');
             const a = num(W[0].kg), b = num(W[W.length - 1].kg), cat = num(C.catKg), df = b - a;
             return nm + ': ' + kgf(b) + ' kg' + (W.length > 1 ? ' (' + (df > 0 ? '+' : df < 0 ? '−' : '±') + kgf(Math.abs(df)) + ' hoy)' : '') + (cat ? (b > cat ? ' · faltan ' + kgf(b - cat) + ' kg' : ' · en peso') : '') + ' · ' + W.length + (W.length === 1 ? ' pesaje' : ' pesajes') + (sy.length ? ' · síntomas: ' + [...new Set(sy.flatMap(x => x.sym || []))].join(', ') : ''); });
-          const code = await push(s, { title: 'Resumen de competición', body: lines.join('\n'), tag: 'cc-sum', url: 'index.html?view=comp', coach: true }, PUB, PRIV).catch(() => 0);
+          const code = await push(s, { title: 'Resumen de competición', body: lines.concat(sLines).join('\n'), tag: 'cc-sum', url: 'index.html?view=comp', coach: true }, PUB, PRIV).catch(() => 0);
           if (code === 404 || code === 410) { await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); continue; }
           if (code >= 200 && code < 300) sent++;
         }
