@@ -29,6 +29,7 @@
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
 <script src="cf-forms.js"></script>
+<script src="cf-brand.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{margin:0}
@@ -59,13 +60,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </sc-if>
 
 <aside data-noprint="1" class="cf-side" data-mini="{{ sideMini }}">
-  <div class="cf-brand">
+  <sc-if value="{{ sbCF }}" hint-placeholder-val="{{ true }}"><div class="cf-brand">
     <img src="assets/logo.png" alt="CientiFitness" style="height:46px;width:auto;display:block">
     <div style="display:flex;flex-direction:column;line-height:1.1">
       <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:19px;letter-spacing:0.01em;text-transform:uppercase;line-height:1">Cienti<span style="color:var(--color-accent)">Fitness</span></span>
       <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600);margin-top:3px">Nutrition Manager</span>
     </div>
-  </div>
+  </div></sc-if>
+  <sc-if value="{{ sbCoach }}" hint-placeholder-val="{{ false }}"><div class="cf-brand">
+    <sc-if value="{{ sbHasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ sbLogo }}" alt="Logo" style="height:44px;width:auto;max-width:72px;object-fit:contain;display:block"></sc-if>
+    <sc-if value="{{ sbNoLogo }}" hint-placeholder-val="{{ true }}"><span style="width:40px;height:40px;border-radius:12px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:15px;flex:none">{{ sbMono }}</span></sc-if>
+    <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
+      <span style="font-family:var(--font-heading);font-weight:700;font-size:16px;text-wrap:pretty">{{ sbName }}</span>
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600);margin-top:3px">Nutrition Manager</span>
+    </div>
+  </div></sc-if>
   <nav class="cf-nav">
     <span class="cf-nav-label">Menú</span>
     <button class="cf-nav-btn" data-on="{{ nav1.on }}" onClick="{{ nav1.go }}" title="Clientes"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Clientes</span><span class="cf-nav-count">{{ nav1.count }}</span></button>
@@ -76,6 +85,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ nav5.on }}" onClick="{{ nav5.go }}" title="Equipo"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Equipo</span></button></sc-if>
   </nav>
   <div class="cf-side-foot">
+    <sc-if value="{{ sbCoach }}" hint-placeholder-val="{{ false }}"><span style="flex-basis:100%;font-size:11px;color:var(--color-neutral-600);padding:0 4px">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:#1180c2">Fitness</span></span></span></sc-if>
     <button onClick="{{ openPlans }}" title="Ver planes" style="font:inherit;font-size:12px;font-weight:700;padding:7px 12px;border-radius:12px;border:1px solid var(--color-divider);background:#fff;color:var(--color-accent-800);cursor:pointer;text-align:left">{{ planLbl }}</button>
     <button class="cf-nav-btn cf-side-tog" onClick="{{ toggleSide }}" title="{{ sideTogLabel }}" aria-label="{{ sideTogLabel }}" style="font-size:13px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M9 3v18"></path><path d="m16 15-3-3 3-3"></path></svg><span>{{ sideTogLabel }}</span></button>
     <sc-if value="{{ hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ meLabel }}</span></sc-if>
@@ -620,12 +630,13 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                   <span style="font-size:12px;color:{{ col.ink }};font-weight:600;font-variant-numeric:tabular-nums">{{ col.sub }}</span>
                 </div>
                 <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="2">
-                  <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;align-items:center;gap:6px;padding:8px 8px 8px 4px;background:#fff;border-radius:12px;box-shadow:{{ it.dropSh }}">
+                  <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:8px 8px 8px 4px;background:#fff;border-radius:12px;box-shadow:{{ it.dropSh }}">
                     <span draggable="true" onDragStart="{{ it.dragStart }}" onDragEnd="{{ it.dragEnd }}" title="Arrastra para mover" style="cursor:grab;display:flex;padding:4px 2px;color:var(--color-neutral-400);flex:none"><svg width="10" height="16" viewBox="0 0 10 16" style="fill:currentColor"><circle cx="3" cy="3" r="1.4"></circle><circle cx="7" cy="3" r="1.4"></circle><circle cx="3" cy="8" r="1.4"></circle><circle cx="7" cy="8" r="1.4"></circle><circle cx="3" cy="13" r="1.4"></circle><circle cx="7" cy="13" r="1.4"></circle></svg></span>
-                    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
-                      <span style="font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
-                      <span class="cf-meta" style="font-size:11px;color:{{ it.metaFg }}">{{ it.meta }}</span>
+                    <div style="flex:1 1 110px;min-width:0;display:flex;flex-direction:column;gap:1px">
+                      <span title="{{ it.name }}" style="font-size:14px;font-weight:600;line-height:1.25;overflow-wrap:break-word;text-wrap:pretty">{{ it.name }}</span>
+                      <span class="cf-meta" style="font-size:11px;line-height:1.3;color:{{ it.metaFg }};text-wrap:pretty">{{ it.meta }}</span>
                     </div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex:none">
                     <sc-if value="{{ it.isVeg }}" hint-placeholder-val="{{ false }}">
                       <input class="input" type="number" value="{{ it.g }}" onChange="{{ it.onG }}" style="width:58px;min-height:28px;padding:2px 6px;text-align:right;font-weight:700">
                     </sc-if>
@@ -642,6 +653,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                     <button onClick="{{ it.remove }}" title="Quitar" style="border:0;background:transparent;cursor:pointer;color:var(--color-neutral-600);padding:2px;display:flex" style-hover="color:var(--color-accent)">
                       <svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                     </button>
+                    </div>
                   </div>
                 </sc-for>
                 <div style="display:flex;gap:6px;margin-top:auto"><button onClick="{{ col.add }}" style="font:inherit;font-size:13px;text-align:left;padding:8px 10px;background:transparent;border:1.5px dashed var(--color-neutral-300);border-radius:12px;color:var(--color-neutral-700);cursor:pointer;flex:1" style-hover="border-color:var(--color-accent);color:var(--color-accent-700)">+ Añadir</button><sc-if value="{{ col.hasEq }}" hint-placeholder-val="{{ false }}"><button onClick="{{ col.addEq }}" title="Añade 3 alternativas equivalentes al primer alimento" style="font:inherit;font-size:12px;font-weight:700;padding:8px 10px;background:#fff;border:0;border-radius:12px;color:{{ col.ink }};cursor:pointer;box-shadow:0 1px 2px rgba(31,38,48,.06)">≈ Equivalentes</button></sc-if></div>
@@ -671,7 +683,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
                   <div onDragOver="{{ row.cDragOver }}" onDrop="{{ row.cDrop }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 4px 2px;border-top:1px solid var(--color-neutral-200);outline:{{ row.cOut }};outline-offset:2px;border-radius:10px">
                     <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:{{ row.sw }};color:{{ row.swFg }}">{{ row.tag }}</span>
                     <sc-for list="{{ row.items }}" as="it" hint-placeholder-count="1">
-                      <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:nowrap;align-items:center;gap:4px 6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:16px;font-size:13px;box-shadow:{{ it.dropSh }};max-width:100%;min-width:0;box-sizing:border-box">
+                      <div class="cf-food" onDragOver="{{ it.dragOver }}" onDrop="{{ it.drop }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 6px 4px 4px;background:{{ it.bg }};color:{{ it.ink }};border-radius:16px;font-size:13px;box-shadow:{{ it.dropSh }};max-width:100%;min-width:0;box-sizing:border-box">
                         <span draggable="true" onDragStart="{{ it.dragStart }}" onDragEnd="{{ it.dragEnd }}" title="Arrastra para mover" style="cursor:grab;display:flex;padding:4px 2px;color:var(--color-neutral-400);flex:none"><svg width="10" height="16" viewBox="0 0 10 16" style="fill:currentColor"><circle cx="3" cy="3" r="1.4"></circle><circle cx="7" cy="3" r="1.4"></circle><circle cx="3" cy="8" r="1.4"></circle><circle cx="7" cy="8" r="1.4"></circle><circle cx="3" cy="13" r="1.4"></circle><circle cx="7" cy="13" r="1.4"></circle></svg></span>
                         <span title="{{ it.name }}" style="font-weight:600;min-width:48px;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
                         <sc-if value="{{ it.flag }}" hint-placeholder-val="{{ false }}"><span class="tag tag-danger" style="padding:1px 7px;font-size:10px">Alergia</span></sc-if>
@@ -783,6 +795,16 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-neutral-700);flex-wrap:wrap">Preentreno<input class="input" type="text" inputmode="numeric" value="{{ cnPre }}" onChange="{{ onCnPre }}" onBlur="{{ blCnPre }}" style="width:64px;min-height:32px;text-align:center">min antes de entrenar</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary" onClick="{{ cnTest }}" style="font-size:13px">Enviar prueba</button><sc-if value="{{ cnHasCus }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ cnReset }}" style="font-size:13px">Volver a la plantilla</button></sc-if></div>
       </div>
+      <div style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:800;font-size:16px">Qué ve el asesorado</span>
+        <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Lo que ocultes no sale en su app, en el PDF ni en el texto de WhatsApp. En su progreso del día verá el porcentaje del objetivo. Se aplica al publicar.</span>
+        <sc-for list="{{ hdRows }}" as="r" hint-placeholder-count="2">
+          <button onClick="{{ r.toggle }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:8px 0;border:0;border-top:1px solid var(--color-divider);background:transparent;color:var(--color-text);cursor:pointer;text-align:left">
+            <span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:13px;font-weight:600">{{ r.label }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ r.sum }}</span></span>
+            <span style="width:38px;height:22px;border-radius:999px;background:{{ r.bg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ r.knob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+          </button>
+        </sc-for>
+      </div>
       <div style="background:var(--color-bg);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
         <button onClick="{{ swToggle }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:0;border:0;background:transparent;color:var(--color-text);cursor:pointer;text-align:left">
           <span style="font-weight:800;font-size:16px;flex:1;min-width:0">Cambios de alimento</span>
@@ -810,12 +832,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </div>
         <div style="text-align:right;font-size:13px;color:var(--color-neutral-700)">{{ vDate }}</div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-        <div style="background:var(--color-accent);color:#fff;padding:14px;border-radius:14px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">Energía</div><div style="font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">{{ tK }}</div><div style="font-size:12px">kcal/día</div></div>
-        <sc-for list="{{ macroCells }}" as="m" hint-placeholder-count="3">
+      <sc-if value="{{ vShowNums }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+        <sc-if value="{{ vShowK }}" hint-placeholder-val="{{ true }}"><div style="background:var(--color-accent);color:#fff;padding:14px;border-radius:14px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">Energía</div><div style="font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">{{ tK }}</div><div style="font-size:12px">kcal/día</div></div></sc-if>
+        <sc-for list="{{ vMacroCells }}" as="m" hint-placeholder-count="3">
           <div style="background:{{ m.bg }};color:{{ m.fg }};padding:14px;border-radius:14px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">{{ m.label }}</div><div style="font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">{{ m.g }}</div><div style="font-size:12px;color:var(--color-neutral-700)">gramos/día</div></div>
         </sc-for>
-      </div>
+      </div></sc-if>
       <sc-if value="{{ hasNotes }}" hint-placeholder-val="{{ false }}">
         <div style="padding:16px 18px;border-radius:14px;background:var(--color-surface);font-size:14px;white-space:pre-wrap"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px">Notas</div>{{ notes }}</div>
       </sc-if>
@@ -831,12 +853,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <div style="display:flex;flex-direction:column;gap:6px;break-inside:avoid">
           <span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">{{ vo.title }}</span>
           <sc-if value="{{ vo.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:8px 12px;border-radius:10px;background:#eef6fc;color:#0e4f78;white-space:pre-wrap;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ vo.note }}</div></sc-if>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 20px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px 20px">
             <sc-for list="{{ vo.blocks }}" as="b" hint-placeholder-count="3">
-              <div style="display:flex;flex-direction:column;gap:2px">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
                 <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:{{ b.ink }};display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ b.sw }}"></span>{{ b.label }}</span>
                 <sc-for list="{{ b.lines }}" as="l" hint-placeholder-count="2">
-                  <div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;border-bottom:1px dotted var(--color-neutral-400);padding:2px 0"><span>{{ l.name }}</span><strong style="font-variant-numeric:tabular-nums;white-space:nowrap;flex:none">{{ l.g }}</strong></div>
+                  <div style="display:flex;flex-direction:column;gap:1px;border-bottom:1px dotted var(--color-neutral-400);padding:3px 0;break-inside:avoid"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;line-height:1.3"><span style="min-width:0;overflow-wrap:break-word;text-wrap:pretty">{{ l.name }}</span><strong style="font-variant-numeric:tabular-nums;white-space:nowrap;flex:none">{{ l.gq }}</strong></div><sc-if value="{{ l.hasHm }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);text-align:right">{{ l.hm }}</span></sc-if></div>
                 </sc-for>
               </div>
             </sc-for>
@@ -848,9 +870,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       </div>
       </sc-for>
       <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:16px;background:var(--color-accent-100);color:var(--color-accent-800);flex-wrap:wrap">
-        <svg width="28" height="28" viewBox="0 0 100 100" style="display:block;fill:none;stroke:var(--color-accent-400);stroke-width:3"><ellipse cx="50" cy="50" rx="44" ry="16"></ellipse><ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(60 50 50)"></ellipse><ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(-60 50 50)"></ellipse><circle cx="50" cy="50" r="9" style="fill:#f2a497;stroke:none"></circle><circle cx="94" cy="50" r="4.5" style="fill:#efc95e;stroke:none"></circle><circle cx="28" cy="12" r="4.5" style="fill:#efc95e;stroke:none"></circle><circle cx="28" cy="88" r="4.5" style="fill:#3597d4;stroke:none"></circle></svg>
-        <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:15px;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:var(--color-accent)">Fitness</span></span>
-        <span style="font-size:13px;margin-left:auto">Dudas por WhatsApp: +34 627 547 983</span>
+        <sc-if value="{{ pdfCoach }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ pdfCoachHasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ pdfLogo }}" alt="Logo" style="height:30px;width:auto;max-width:90px;object-fit:contain;display:block"></sc-if><span style="font-family:var(--font-heading);font-weight:700;font-size:15px;color:var(--color-text)">{{ pdfCoachName }}</span><span style="font-size:11px;color:var(--color-neutral-700)">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:#1180c2">Fitness</span></span></span></sc-if>
+        <sc-if value="{{ pdfCF }}" hint-placeholder-val="{{ true }}"><svg width="28" height="28" viewBox="0 0 100 100" style="display:block;fill:none;stroke:var(--color-accent-400);stroke-width:3"><ellipse cx="50" cy="50" rx="44" ry="16"></ellipse><ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(60 50 50)"></ellipse><ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(-60 50 50)"></ellipse><circle cx="50" cy="50" r="9" style="fill:#f2a497;stroke:none"></circle><circle cx="94" cy="50" r="4.5" style="fill:#efc95e;stroke:none"></circle><circle cx="28" cy="12" r="4.5" style="fill:#efc95e;stroke:none"></circle><circle cx="28" cy="88" r="4.5" style="fill:#3597d4;stroke:none"></circle></svg>
+        <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:15px;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:var(--color-accent)">Fitness</span></span></sc-if>
+        <sc-if value="{{ pdfHasPhone }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;margin-left:auto">Dudas por WhatsApp: {{ pdfPhone }}</span></sc-if>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px;break-before:page;border-top:1px solid var(--color-divider);padding-top:16px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><h3 style="margin:0">Lista de la compra</h3><span style="font-size:13px;color:var(--color-neutral-700)">{{ shopNote }}</span></div>
@@ -1968,13 +1991,80 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     </div>
   </sc-if>
   <sc-if value="{{ isBrand }}" hint-placeholder-val="{{ false }}">
-    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 24px;display:flex;flex-direction:column;gap:14px;max-width:680px">
-      <div style="display:flex;flex-direction:column;gap:3px"><h3 style="margin:0;font-size:20px">Mi marca en el PDF</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Tu logo y tu nombre sustituyen a los de CientiFitness en el PDF del plan y en la cabecera de la Vista cliente.</span></div>
-      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <div style="width:160px;height:100px;border-radius:16px;border:1.5px dashed var(--color-neutral-300);display:flex;align-items:center;justify-content:center;background:var(--color-neutral-100);overflow:hidden;flex:none"><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" src="{{ brLogo }}" alt="Tu logo" style="max-width:90%;max-height:80px;object-fit:contain"></sc-if><sc-if value="{{ brNoLogo }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;color:var(--color-neutral-600)">Sin logo</span></sc-if></div>
-        <div style="display:flex;flex-direction:column;gap:8px"><label class="btn btn-secondary" style="cursor:pointer">Subir logo<input type="file" accept="image/*" onChange="{{ brPick }}" style="display:none"></label><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ brDel }}" style="color:#a8321a">Quitar logo</button></sc-if><span style="font-size:12px;color:var(--color-neutral-700)">PNG o JPG; mejor con fondo transparente.</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;max-width:1240px">
+      <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:3px"><h3 style="margin:0;font-size:20px">Mi marca</h3><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Tu panel cambia al momento. Pulsa «Guardar y aplicar» para que también lo vean tus asesorados en su app y en sus PDF.</span></div>
+        <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Identidad</span>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:6px;width:150px"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Logo</span>
+              <label style="height:110px;border-radius:14px;border:1.5px dashed var(--color-neutral-400);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--color-neutral-700);cursor:pointer;overflow:hidden;background:var(--color-neutral-100)"><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ brLogo }}" alt="Tu logo" style="max-width:86%;max-height:70px;object-fit:contain"></sc-if><sc-if value="{{ brNoLogo }}" hint-placeholder-val="{{ true }}"><span style="width:42px;height:42px;border-radius:12px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800">{{ sbMono }}</span></sc-if><span>{{ brLogoLbl }}</span><input type="file" accept="image/*" onChange="{{ brPick }}" style="display:none"></label>
+              <sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ brDel }}" style="font-size:12px;color:#a8321a;align-self:flex-start;padding:2px 4px">Quitar logo</button></sc-if><span style="font-size:11px;color:var(--color-neutral-600)">PNG o SVG, fondo transparente</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px;width:150px"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Icono de la app</span>
+              <label style="height:110px;border-radius:14px;border:1.5px dashed var(--color-neutral-400);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--color-neutral-700);cursor:pointer;background:var(--color-neutral-100)"><sc-if value="{{ brHasIcon }}" hint-placeholder-val="{{ false }}"><img src="{{ brIcon }}" alt="Icono" style="width:64px;height:64px;border-radius:16px;object-fit:cover"></sc-if><sc-if value="{{ brNoIcon }}" hint-placeholder-val="{{ true }}"><span style="width:64px;height:64px;border-radius:16px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:22px">{{ sbMono }}</span></sc-if><input type="file" accept="image/*" onChange="{{ brIconPick }}" style="display:none"></label>
+              <sc-if value="{{ brHasIcon }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ brIconDel }}" style="font-size:12px;color:#a8321a;align-self:flex-start;padding:2px 4px">Quitar icono</button></sc-if><span style="font-size:11px;color:var(--color-neutral-600)">Cuadrado · al instalar la app en el móvil</span></div>
+            <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:12px">
+              <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Nombre en la cabecera<input class="input" value="{{ brName }}" onChange="{{ onBrName }}" placeholder="Por ejemplo: Laura Gómez Nutrición"></label>
+              <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">La pantalla de acceso sigue siendo de CientiFitness. Al entrar, el asesorado ve tu marca; el pie del menú, el pie del PDF y las notificaciones llevan «con CientiFitness».</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-family:var(--font-heading);font-weight:700;font-size:17px;margin-right:auto">Colores</span><div style="display:flex;padding:3px;border-radius:999px;background:var(--color-neutral-200);font-size:12px;font-weight:700"><sc-for list="{{ brModeSeg }}" as="sg" hint-placeholder-count="2"><button onClick="{{ sg.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;border:0;cursor:pointer;background:{{ sg.bg }};color:{{ sg.fg }};box-shadow:{{ sg.sh }}">{{ sg.label }}</button></sc-for></div></div>
+          <sc-if value="{{ brIsPal }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px">
+              <sc-for list="{{ brPals }}" as="pl" hint-placeholder-count="12">
+                <button onClick="{{ pl.pick }}" style="font:inherit;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:14px;border:{{ pl.bd }};background:{{ pl.bg }};cursor:pointer;text-align:left"><span style="display:flex;height:30px;border-radius:8px;overflow:hidden;width:100%"><span style="flex:2;background:{{ pl.p }}"></span><span style="flex:1;background:{{ pl.a }}"></span></span><span style="font-size:11px;font-weight:{{ pl.fw }};color:{{ pl.fg }}">{{ pl.name }}</span></button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ brIsFree }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--color-neutral-100)">
+              <label style="display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;background:#fff;border:1.5px solid var(--color-divider);font-size:13px;font-weight:700"><input type="color" value="{{ brP }}" onChange="{{ onBrP }}" style="width:28px;height:28px;border:0;padding:0;background:transparent;cursor:pointer">Principal<input class="input" value="{{ brPTxt }}" onChange="{{ onBrPTxt }}" onBlur="{{ blBrPTxt }}" style="width:88px;min-height:28px;padding:2px 8px;font-size:12px;text-transform:uppercase"></label>
+              <label style="display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;background:#fff;border:1.5px solid var(--color-divider);font-size:13px;font-weight:700"><input type="color" value="{{ brA }}" onChange="{{ onBrA }}" style="width:28px;height:28px;border:0;padding:0;background:transparent;cursor:pointer">Acento<input class="input" value="{{ brATxt }}" onChange="{{ onBrATxt }}" onBlur="{{ blBrATxt }}" style="width:88px;min-height:28px;padding:2px 8px;font-size:12px;text-transform:uppercase"></label>
+            </div>
+          </sc-if>
+          <sc-if value="{{ brHasTheme }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><span style="font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:{{ brPChip.bg }};color:{{ brPChip.fg }}">{{ brPChip.txt }}</span><span style="font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--cf-acc-bg);color:var(--cf-acc-ink)">{{ brAChip }}</span></div></sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center">
+            <span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">Fondo</span>
+            <div style="display:flex;padding:3px;border-radius:999px;background:var(--color-neutral-200);font-size:12px;font-weight:700"><sc-for list="{{ brBgSeg }}" as="sg" hint-placeholder-count="2"><button onClick="{{ sg.go }}" style="font:inherit;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;border:0;cursor:pointer;background:{{ sg.bg }};color:{{ sg.fg }};box-shadow:{{ sg.sh }}">{{ sg.label }}</button></sc-for></div>
+            <span style="font-size:12px;color:var(--color-neutral-600)">{{ brBgNote }}</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+          <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px;gap:12px">
+            <span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Tipografía de títulos</span>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ brFonts }}" as="fo" hint-placeholder-count="4"><button onClick="{{ fo.pick }}" style="font:inherit;padding:10px 12px;border-radius:14px;border:{{ fo.bd }};background:{{ fo.bg }};display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left"><span style="font-family:{{ fo.fam }};font-weight:700;font-size:24px;line-height:1.2">Aa</span><span style="font-size:11px;font-weight:{{ fo.fw }};color:{{ fo.fg }}">{{ fo.label }}</span></button></sc-for>
+            </div>
+            <span style="font-size:11px;color:var(--color-neutral-600)">El texto corrido sigue en Manrope para que todo se lea igual de bien.</span>
+          </div>
+          <div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px;gap:12px">
+            <span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Colores de macros</span>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ brMacs }}" as="mc" hint-placeholder-count="4"><button onClick="{{ mc.pick }}" style="font:inherit;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;border:{{ mc.bd }};background:{{ mc.bg }};cursor:pointer;text-align:left"><span style="display:flex;gap:4px"><sc-for list="{{ mc.dots }}" as="d" hint-placeholder-count="4"><span style="width:18px;height:18px;border-radius:50%;background:{{ d }}"></span></sc-for></span><span style="font-size:13px;font-weight:{{ mc.fw }};color:{{ mc.fg }}">{{ mc.label }}</span></button></sc-for>
+              <sc-if value="{{ brMcOn }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;padding:4px 2px"><sc-for list="{{ brMcRows }}" as="r" hint-placeholder-count="4"><label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><input type="color" value="{{ r.val }}" onChange="{{ r.on }}" style="width:26px;height:26px;border:0;padding:0;background:transparent;cursor:pointer">{{ r.label }}</label></sc-for></div></sc-if>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <sc-if value="{{ brHasTheme }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ brReset }}" style="font-size:13px">Volver al tema CientiFitness</button></sc-if>
+          <button class="btn btn-primary" onClick="{{ brApply }}" style="margin-left:auto;min-height:42px;padding:10px 20px">{{ brApplyLbl }}</button>
+        </div>
       </div>
-      <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Nombre que aparece en el PDF<input class="input" value="{{ brName }}" onChange="{{ onBrName }}" placeholder="Por ejemplo: Laura Gómez Nutrición" style="max-width:420px"></label>
+      <div style="flex:0 0 300px;display:flex;flex-direction:column;gap:10px;align-items:center" class="cf-stick">
+        <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-700)">Vista previa · app del asesorado</span>
+        <div style="width:280px;height:560px;border-radius:36px;background:#0f1720;padding:8px;box-sizing:border-box">
+          <div style="width:100%;height:100%;border-radius:29px;overflow:hidden;background:var(--cf-tint,#f5f8fb);display:flex;flex-direction:column">
+            <div style="background:var(--cf-tint-2,#e3f1fa);padding:22px 12px 10px;display:flex;align-items:center;gap:8px"><sc-if value="{{ brHasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ brLogo }}" alt="" style="width:32px;height:32px;border-radius:10px;object-fit:contain;background:#fff"></sc-if><sc-if value="{{ brNoLogo }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:10px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:12px">{{ sbMono }}</span></sc-if><div style="display:flex;flex-direction:column;line-height:1.15;min-width:0"><span style="font-size:10px;font-weight:700;color:var(--color-accent-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ brPrevName }}</span><span style="font-family:var(--font-heading);font-weight:700;font-size:17px">Hoy</span></div></div>
+            <div style="flex:1;padding:10px;display:flex;flex-direction:column;gap:9px">
+              <div style="background:#fff;border-radius:16px;padding:11px 12px;display:flex;flex-direction:column;gap:7px"><span style="font-weight:800;font-size:20px;color:var(--color-accent-700)">1.240 <span style="font-size:11px;font-weight:600;color:var(--color-neutral-700)">de 2.100 kcal</span></span><div style="height:7px;border-radius:999px;background:var(--color-accent-100)"><div style="height:100%;width:59%;background:var(--color-accent);border-radius:999px"></div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"><div style="height:5px;border-radius:999px;background:var(--prot)"></div><div style="height:5px;border-radius:999px;background:var(--carb)"></div><div style="height:5px;border-radius:999px;background:var(--fat)"></div></div></div>
+              <div style="background:#fff;border-radius:16px;padding:11px 12px;display:flex;flex-direction:column;gap:7px"><div style="display:flex;align-items:center"><span style="font-family:var(--font-heading);font-weight:700;font-size:14px;margin-right:auto">Comida</span><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--cf-acc-bg,#fdf3d4);color:var(--cf-acc-ink,#77560a)">Pendiente</span></div><div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--prot)"></span><span style="margin-right:auto">Pechuga de pollo</span><strong>160 g</strong></div><div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--carb)"></span><span style="margin-right:auto">Arroz basmati</span><strong>70 g</strong></div><div style="padding:8px;border-radius:11px;background:var(--color-accent);color:#fff;text-align:center;font-weight:800;font-size:12px">✓ Comí lo pautado</div></div>
+            </div>
+            <div style="background:#fff;padding:7px 8px 14px;display:flex;flex-direction:column;gap:4px"><div style="display:grid;grid-template-columns:repeat(4,1fr);text-align:center;font-size:9px;font-weight:700;color:var(--color-neutral-600)"><span style="color:var(--color-accent-800);font-weight:800;background:var(--color-accent-100);border-radius:999px;padding:3px 0;margin:0 4px">Hoy</span><span style="padding:3px 0">Mi plan</span><span style="padding:3px 0">Chat</span><span style="padding:3px 0">Progreso</span></div><span style="text-align:center;font-size:8px;color:var(--color-neutral-500)">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900">CIENTI<span style="color:#1180c2">FITNESS</span></span></span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </sc-if>
   <sc-if value="{{ isPresets }}" hint-placeholder-val="{{ false }}">
@@ -3077,7 +3167,7 @@ const cutGraph=(C,W,H)=>{const P={l:46,r:56,t:14,b:34},L=cutLogs(C),w=cutW(C);le
     legend:CUTK.filter(k=>L.some(x=>x.kind===k[0])).map(k=>({l:k[1],c:CUTKC[k[0]]}))};};
 const FAD=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 const faDue=(x,d)=>{if(x.on===false)return false;if(x.pause&&d<=x.pause)return false;const f=x.freq||'week',dt=new Date(d+'T12:00:00'),dw=(dt.getDay()+6)%7;
-  if(f==='once')return d===x.date;if(f==='month')return dt.getDate()===num(x.dom||1);if(dw!==num(x.dow))return false;
+  if(f==='once')return d===x.date;if(f==='month')return dt.getDate()===Math.min(num(x.dom||1),new Date(dt.getFullYear(),dt.getMonth()+1,0).getDate());if(dw!==num(x.dow))return false;
   if(f==='2w'){const w=Math.floor((dt-new Date((x.from||d)+'T12:00:00'))/864e5/7);return w>=0&&w%2===0;}return true;};
 const faNext=x=>{const now=new Date(),tm=(x.time||'10:00').split(':'),T=num(tm[0])*60+num(tm[1]),nm=now.getHours()*60+now.getMinutes();
   for(let i=0;i<400;i++){const dt=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,12),d=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');if(i===0&&nm>=T)continue;if(faDue(x,d))return d;}return null;};
@@ -3322,6 +3412,7 @@ class Component extends DCLogic {
     upd(lf=>({busy:false,ph:(lf.ph||[]).concat(urls.map(url=>({url})))}));
   }
   componentDidMount(){
+    setTimeout(()=>this.applyBrand(),0);
     try{const q=new URLSearchParams(location.search);if(q.get('view')==='comp'){const st={view:'comp',cutTab:'cli'};if(q.get('c'))st.cutSel=q.get('c');this.setState(st);this._urlComp=st;setTimeout(()=>{if(this._urlComp&&this.state.view!=='comp')this.setState(this._urlComp);this.loadCut();this.ccCheck();},2500);history.replaceState(null,'',location.pathname);}}catch(e){}
     try{if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{const d=e.data&&e.data.cfPush;if(d&&d.coach){this.toast(d.title+(d.body?': '+d.body.split('\n')[0]:''));this.loadCut();}});}catch(e){}
     try{if(localStorage.getItem('cf-side-mini')==='1')this.setState({sideMini:true});if(localStorage.getItem('cf-latview')==='1')this.setState({latView:true});}catch(e){}
@@ -3380,6 +3471,12 @@ class Component extends DCLogic {
     const T=this.state.tpls||[],ids=new Set(T.map(t=>t.id)),nm=new Set(T.map(t=>norm(t.name))),add=L.list.filter(r=>!ids.has(r.id)&&!nm.has(norm(r.name))).map(r=>JSON.parse(JSON.stringify(r)));
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de CientiFitness añadidas a la Biblioteca');}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
+  brandPub(){const B=this.state.brand||{};if(!this.isPrem())return null;const th=window.CFBrand&&CFBrand.valid(B.p);if(!B.logo&&!(B.name||'').trim()&&!th)return null;
+    const o={name:(B.name||'').trim(),logo:B.logo||'',icon:B.icon||''};if(th)Object.assign(o,{p:B.p,a:B.a||'',bg:B.bg||'tint',font:B.font||'sora',mac:B.mac||'cf',mc:B.mc||null});return o;}
+  applyBrand(){if(!window.CFBrand)return;const b=this.isPrem()?this.state.brand:null,k=b?JSON.stringify([b.p,b.a,b.bg,b.font,b.mac,b.mc]):'';if(k===this._brK)return;this._brK=k;CFBrand.apply(b);}
+  pushBrand(){if(!this._cloud||!this.sb){this.toast('Inicia sesión en la nube para aplicarlo a tus asesorados',true);return;}const bp=this.brandPub();this.setState({brPushing:true});
+    this.sb.from('cf_links').select('client_key,plan').eq('coach_id',this.uid).then(({data,error})=>{if(error){this.setState({brPushing:false});this.toast('No se pudo aplicar: '+error.message,true);return;}const R=(data||[]).filter(r=>r.plan);
+      Promise.all(R.map(r=>this.sb.from('cf_links').update({plan:{...r.plan,brand:bp}}).eq('coach_id',this.uid).eq('client_key',r.client_key))).then(()=>{this.setState({brPushing:false});this.toast(R.length?'Tema aplicado en tu panel y en la app de '+R.length+(R.length===1?' asesorado':' asesorados'):'Tema guardado. Tus asesorados lo verán al publicarles un plan');});});}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
   seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,fibOv:null,unitOv:null,eqFree:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null,cutTpls:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
@@ -3463,6 +3560,7 @@ class Component extends DCLogic {
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({auth:'out',loginErr:'Email o contraseña incorrectos.'});return;}this.afterLogin(data.session);});
   }
   componentDidUpdate(pp,ps){
+    this.applyBrand();
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
@@ -3937,7 +4035,7 @@ class Component extends DCLogic {
         }
       }
       v.tK=T.k.toLocaleString('es-ES');
-      v.stripDisp='block';v.stripCls=inPlan?'cf-hud':'';
+      v.stripDisp=v.isView?'none':'block';v.stripCls=inPlan?'cf-hud':'';
       const stC=(r,d,u)=>{const x=R(Math.abs(d)).toLocaleString('es-ES')+' '+u;if(r>1.05)return {fg:'#a8321a',bar:'#e0664f',bg:'#fff1ee',bd:'#f6d3ca',tag:'Te pasas · +'+x};if(r>=0.95)return {fg:'#1d6b43',bar:'#4fb487',bg:'#eaf7f0',bd:'#cdebdb',tag:'Completo ✓'};if(r>=0.85)return {fg:'#8a5a00',bar:'#e2b33c',bg:'#fff8e6',bd:'#f3e2b0',tag:'Queda poco · faltan '+x};return {fg:'#a8321a',bar:'#e0664f',bg:'#fff1ee',bd:'#f6d3ca',tag:'Falta mucho · faltan '+x};};
       v.strip=[['Proteína','p','prot'],['Hidratos','c','carb'],['Grasas','f','fat']].map(([l,m,mk])=>{const tg=(inPlan?TP:T)[m],a=R(tot[m]),r=tg?a/tg:0,S=stC(r,a-tg,'g');
         return inPlan?{label:l,val:a+' / '+tg+' g',tag:S.tag,w:Math.min(100,r*100)+'%',bar:S.bar,fg:S.fg,bg:S.bg,bd:S.bd,dot:SW[mk]}:{label:l,val:tg+' g',tag:'Objetivo diario',w:'100%',bar:SW[mk],fg:'var(--color-neutral-600)',bg:'#fff',bd:'var(--color-divider)',dot:SW[mk]};});
@@ -4209,6 +4307,9 @@ class Component extends DCLogic {
 
       if(s.tab==='view'){
         const open=cl.planMode==='open';
+        const HD=cl.hide||{},HK=!!HD.k,HM=!!HD.m,setH=k=>this.updC(n=>{n.hide={...(n.hide||{})};if(n.hide[k])delete n.hide[k];else n.hide[k]=true;});
+        v.hdRows=[['k','Calorías','kcal del día, de cada comida y de cada opción'],['m','Gramos de macros','proteína, hidratos y grasas del día']].map(([k,l,d])=>{const on=!HD[k];return {label:l,sum:on?'Visibles · '+d:'Ocultas · ve el % del objetivo',bg:on?'var(--color-accent)':'var(--color-neutral-300)',knob:on?'18px':'2px',toggle:()=>setH(k)};});
+        v.vShowK=!HK;v.vShowNums=!(HK&&HM);v.vMacroCells=HM?[]:v.macroCells;
         v.notes=cl.notes;v.onNotes=e=>{const x=e.target.value;this.updC(n=>{n.notes=x;});};
         v.hasNotes=!!(cl.notes||'').trim();v.vOpenHint=open;
         v.vDate=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
@@ -4218,11 +4319,11 @@ class Component extends DCLogic {
         const GRP={Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'};
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
         const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
-        const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={sl:sl||'',cat:F.cat||'',name:F.name,g:x.g+' g'+(hmTxt(F,x.g)?' ('+hmTxt(F,x.g)+')':''),id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
+        const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={sl:sl||'',cat:F.cat||'',name:F.name,gq:x.g+' g',hm:hmTxt(F,x.g),hasHm:!!hmTxt(F,x.g),g:x.g+' g'+(hmTxt(F,x.g)?' ('+hmTxt(F,x.g)+')':''),id:F.id,gr:x.g,k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
           if(!open&&sl&&sl!=='veg'&&x.eqs&&x.eqs.length&&x.g>0){const mc=sl==='prot'?'p':sl==='fat'?'f':'c';const FE0=freeEqs(F,x.g,FM);o.alts=x.eqs.map(fid=>FM[fid]).filter(Boolean).map(f=>{const fe=FE0.find(q=>q.f.id===f.id),gg=rg(fe?fe.g:x.g*F[mc]/Math.max(0.1,f[mc]),f,cl.round),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10};});}
           if(x.g>0){const FE=freeEqs(F,x.g,FM).filter(q=>!(o.alts||[]).some(z=>z.id===q.f.id));if(FE.length)o.alts=(o.alts||[]).concat(FE.map(({f,g:g0})=>{const gg=rg(g0,f,cl.round),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10,free:true};}));}return o;};
         const buildMeal=(ml,mul,TT)=>{const mt=mealTarget(ml,TT||T);
-          if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
+          if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal',gq:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
           const rs=ml.options.map(o=>solve(o,mt,cl.planMode,FM,cl.round));
           if(mul)rs.forEach(r=>SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{if(x.g)addShop(x,mul);})));
           const multi=rs.length>1,txt=['*'+ml.name.toUpperCase()+'* (~'+R(mt.k)+' kcal)'];
@@ -4241,9 +4342,9 @@ class Component extends DCLogic {
               const tys=DP.adj?[...new Set(p.days.map(d=>DP.days[d].type))].filter(x=>x!=='auto').map(x=>(DTY.find(q=>q[0]===x)||[0,''])[1]):[];
               return {hasTitle:true,title:mn.name+(tys.length?' · '+tys.join(' / '):''),days:daysLabel(p.days),dayIdx:p.days,T:DP.adj?{k:p.t.k,p:p.t.p,c:p.t.c,f:p.t.f}:undefined,kLine:DP.adj?kLineOf(p.t):'',meals:mn.meals.map(ml=>buildMeal(ml,mul,p.t))};});}))
           :[{hasTitle:false,title:'',days:'',kLine:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
-        v.vGroups=groups;
+        v.vGroups=HK||HM?groups.map(g=>({...g,kLine:'',meals:g.meals.map(m=>HK?{...m,kcal:'',opts:m.opts.map(o=>({...o,title:String(o.title||'').replace(/ · [\d.,]+ kcal$/,'')}))}:m)})):groups;
         // versions & sending
-        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[]).concat(cl.guide?[{g:cl.guide}]:[]).concat(cl.swap?[{sw:cl.swap}]:[])));
+        const hash=h32(JSON.stringify([cl.planMode,cl.meals,cl.menus||null,cl.tg,cl.calc,cl.notes].concat(cl.round?[cl.round]:[]).concat(DP.adj?[DP.days.map(d=>tsig(d))]:[]).concat(cl.guide?[{g:cl.guide}]:[]).concat(cl.swap?[{sw:cl.swap}]:[]).concat(cl.hide&&(cl.hide.k||cl.hide.m)?[{hd:cl.hide}]:[])));
         const vers=cl.versions||[],lastV=vers[vers.length-1],dirty=!lastV||lastV.hash!==hash;
         v.verStatus=!lastV?'Sin guardar':dirty?'Cambios sin guardar':'v'+lastV.n+' guardada';
         v.verBg=dirty?'#fff4dc':'#e3f4ea';v.verFg=dirty?'#8a5a00':'#1d6b43';
@@ -4252,8 +4353,8 @@ class Component extends DCLogic {
         v.saveVersion=()=>{if(dirty)saveV();};
         const buildText=(nV,wa)=>{const tl=[],fn=(cl.name||'').split(' ')[0];
           tl.push('Hola '+fn+', te envío tu plan nutricional de CientiFitness (v'+nV+', '+new Date().toLocaleDateString('es-ES')+').');
-          tl.push('Objetivo diario: '+T.k.toLocaleString('es-ES')+' kcal · P '+T.p+' g · C '+T.c+' g · G '+T.f+' g');
-          groups.forEach(g=>{if(g.hasTitle)tl.push('','━━ '+g.title.toUpperCase()+' · '+g.days+' ━━');if(g.kLine)tl.push(g.kLine);g.meals.forEach(mm=>{tl.push('');tl.push(...mm.txt);});});
+          {const ob=[HK?'':T.k.toLocaleString('es-ES')+' kcal',HM?'':'P '+T.p+' g · C '+T.c+' g · G '+T.f+' g'].filter(Boolean).join(' · ');if(ob)tl.push('Objetivo diario: '+ob);}
+          groups.forEach(g=>{if(g.hasTitle)tl.push('','━━ '+g.title.toUpperCase()+' · '+g.days+' ━━');if(g.kLine&&!HK&&!HM)tl.push(g.kLine);g.meals.forEach(mm=>{tl.push('');tl.push(...(HK?mm.txt.map(t=>t.replace(/ \(~[\d.,]+ kcal\)$/,'')):mm.txt));});});
           if((cl.notes||'').trim())tl.push('','Notas:',cl.notes.trim());
           {const ph0=this.myPhone(),nm0=this.myName();tl.push('',ph0?'Cualquier duda, escríbeme por WhatsApp al '+ph0+'.':'Cualquier duda, escríbeme por el chat de la app.','— '+(nm0?nm0+' · CientiFitness':'CientiFitness'));}
           const out=tl.join('\n');return wa?out:out.replace(/\*/g,'');};
@@ -4296,7 +4397,7 @@ class Component extends DCLogic {
           v.pubNote=!cloudOn?'Inicia sesión en la nube para publicar.':!em?'Añade el email del cliente en su ficha: con ese email entrará en la app.':'«Crear acceso» genera una contraseña para enviársela por WhatsApp. «Invitar por email» le manda un enlace (máx. unos pocos por hora).';
           v.publish=()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para publicar',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             const nV=dirty?saveV():lastV.n;
-            const snap={v:nV,at:Date.now(),name:cl.name,T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{}),...(this.isPrem()?{}:{on:false})},open,
+            const snap={v:nV,at:Date.now(),name:cl.name,hide:{k:HK,m:HM},brand:this.brandPub(),T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{}),...(this.isPrem()?{}:{on:false})},open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,note:m.note||'',opts:m.opts.map(o=>({title:o.title,note:o.note||'',blocks:o.blocks}))}))})),
               shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
@@ -4329,7 +4430,7 @@ class Component extends DCLogic {
       const tab=s.libTab==='props'&&!(ceo&&cloud)?'foods':s.libTab,pc=ceo?P0.filter(p=>p.status==='pending').length:0;
       v.libTabs=[['foods','Alimentos'],['eq','Equivalencias'],['eqf','Equivalencias libres'],['presets','Presets de dieta'],['lists','Listas de alimentos'],['tpls','Recetas'],['notes','Comentarios'],['notif','Notificaciones'],['forms','Cuestionarios'],['brand','Mi marca']].concat(ceo&&cloud?[['props','Propuestas'+(pc?' · '+pc:'')]]:[]).map(([k,l])=>({label:l,bd:tab===k?'var(--color-accent)':'transparent',fg:tab===k?'#fff':'var(--color-neutral-700)',go:()=>{this.setState({libTab:k});if(k==='props')this.loadProps();}}));
       v.isFoods=tab==='foods';v.isTpls=tab==='tpls';v.isEq=tab==='eq';v.isPresets=tab==='presets';v.isProps=tab==='props';v.isFormsLib=tab==='forms';v.isListsLib=tab==='lists';v.isBrand=tab==='brand';
-      {const pr=this.isPrem();v.libPremLock=!pr&&(v.isPresets||v.isListsLib||v.isBrand);v.libPremName=v.isPresets?'Presets de dieta':v.isListsLib?'Listas de alimentos':'Mi marca en el PDF';v.libPremTxt=v.isPresets?'Plantillas de objetivo, macros y comidas para hacer dietas en un clic.':v.isListsLib?'Listas de alimentos (vegana, sin gluten, low FODMAP…) para rellenar comidas o limitar el buscador.':'Tu logo y tu nombre en el PDF del plan y en el informe de progreso.';if(v.libPremLock){v.isPresets=false;v.isListsLib=false;v.isBrand=false;}}v.isNotesLib=tab==='notes';v.isNotifLib=tab==='notif';
+      {const pr=this.isPrem();v.libPremLock=!pr&&(v.isPresets||v.isListsLib||v.isBrand);v.libPremName=v.isPresets?'Presets de dieta':v.isListsLib?'Listas de alimentos':'Mi marca';v.libPremTxt=v.isPresets?'Plantillas de objetivo, macros y comidas para hacer dietas en un clic.':v.isListsLib?'Listas de alimentos (vegana, sin gluten, low FODMAP…) para rellenar comidas o limitar el buscador.':'Tu logo, tus colores y tu tipografía en tu panel, en la app de tus asesorados y en sus PDF.';if(v.libPremLock){v.isPresets=false;v.isListsLib=false;v.isBrand=false;}}v.isNotesLib=tab==='notes';v.isNotifLib=tab==='notif';
       v.libSrcShow=cloud&&!v.isProps&&!v.isFormsLib&&!v.isListsLib&&!v.isNotesLib&&!v.isNotifLib;v.libCanAdd=viewOwn;
       v.libSrcSeg=this.seg(ceo?[['base','Biblioteca común'],['coach','De los entrenadores']]:[['all','Todo'],['base','CientiFitness'],['own','Mía']],src,x=>{this.setState({libSrc:x});if(x==='coach')this.loadAllLibs();});
       v.libCoachPick=coachV;v.libCoach=s.libCoach||'';v.onLibCoach=e=>this.setState({libCoach:e.target.value});
@@ -5001,10 +5102,36 @@ class Component extends DCLogic {
     v.openPlans=()=>this.setState({plansOpen:true});v.plansOn=!!s.plansOpen;v.plansClose=()=>this.setState({plansOpen:false});
     {const pl=this.myPlan(),pr=pl==='premium';v.planLbl=this.isCEO()?'Plan Premium · CEO':pr?'Plan Premium':'Plan Estándar';v.planCur=pr?'premium':'standard';
       v.plStdBd=pr?'var(--color-divider)':'var(--color-accent)';v.plPreBd=pr?'var(--color-accent)':'var(--color-divider)';v.plStdCur=!pr;v.plPreCur=pr;}
-    if(v.isBrand){const B=s.brand||{};v.brLogo=B.logo||'';v.brHasLogo=!!B.logo;v.brNoLogo=!B.logo;v.brName=B.name||'';v.onBrName=e=>{const x=e.target.value;this.setState(st=>({brand:{...(st.brand||{}),name:x}}));};
-      v.brPick=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);this.setState(st=>({brand:{...(st.brand||{}),logo:c.toDataURL('image/png')}}));this.toast('Logo guardado');};im.src=rd.result;};rd.readAsDataURL(f);};
-      v.brDel=()=>this.setState(st=>{const b={...(st.brand||{})};delete b.logo;return {brand:b};});}
-    {const B=s.brand||{},use=this.isPrem()&&!!B.logo;v.pdfLogo=use?B.logo:'assets/logo.png';v.pdfBrand=(this.isPrem()&&(B.name||'').trim())?B.name.trim()+' · Plan nutricional':'CientiFitness · Plan nutricional';}
+    if(v.isBrand){const B=s.brand||{},CB=window.CFBrand,setB=o=>this.setState(st=>{const b={...(st.brand||{}),...o};Object.keys(o).forEach(k=>{if(o[k]==null)delete b[k];});return {brand:b};}),th=!!(CB&&CB.valid(B.p));
+      const img=(f,cb)=>{const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>cb(im);im.src=rd.result;};rd.readAsDataURL(f);};
+      v.brLogo=B.logo||'';v.brHasLogo=!!B.logo;v.brNoLogo=!B.logo;v.brLogoLbl=B.logo?'Cambiar':'Subir logo';v.brName=B.name||'';v.onBrName=e=>setB({name:e.target.value});
+      v.brPick=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;img(f,im=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);setB({logo:c.toDataURL('image/png')});this.toast('Logo guardado');});};
+      v.brDel=e=>{if(e)e.preventDefault();setB({logo:null});};
+      v.brIcon=B.icon||'';v.brHasIcon=!!B.icon;v.brNoIcon=!B.icon;v.brIconDel=e=>{if(e)e.preventDefault();setB({icon:null});};
+      v.brIconPick=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;img(f,im=>{const S=256,c=document.createElement('canvas');c.width=S;c.height=S;const x=c.getContext('2d'),k=Math.max(S/im.width,S/im.height),w=im.width*k,hh=im.height*k;x.fillStyle='#fff';x.fillRect(0,0,S,S);x.drawImage(im,(S-w)/2,(S-hh)/2,w,hh);setB({icon:c.toDataURL('image/png')});this.toast('Icono guardado');});};
+      const mode=s.brColMode||(B.pal==='free'?'free':'pal'),sgS=(on)=>({bg:on?'#fff':'transparent',fg:on?'var(--color-text)':'var(--color-neutral-700)',sh:on?'0 1px 2px rgba(0,0,0,.08)':'none'});
+      v.brModeSeg=[['pal','Paletas'],['free','Color libre']].map(([k,l])=>({label:l,...sgS(mode===k),go:()=>this.setState({brColMode:k})}));v.brIsPal=mode==='pal';v.brIsFree=mode==='free';
+      const PL=CB?CB.PAL:[];v.brPals=PL.map(([id,name,p,a])=>{const on=th&&B.pal===id;return {name:on?name+' ✓':name,p,a,bd:on?'2px solid var(--color-accent)':'1.5px solid var(--color-divider)',bg:on?'var(--color-accent-100)':'#fff',fw:on?'800':'700',fg:on?'var(--color-accent-800)':'var(--color-text)',pick:()=>setB({p,a,pal:id,bg:B.bg||'tint'})};});
+      const P0=th?B.p:'#1180c2',A0=CB&&CB.valid(B.a)?B.a:'#f2a497';v.brP=P0;v.brA=A0;
+      v.onBrP=e=>setB({p:e.target.value,a:B.a||A0,pal:'free',bg:B.bg||'tint'});v.onBrA=e=>setB({a:e.target.value,p:B.p||P0,pal:'free',bg:B.bg||'tint'});
+      const dr=s.brDraft||{};v.brPTxt=dr.p!=null?dr.p:P0;v.brATxt=dr.a!=null?dr.a:A0;
+      v.onBrPTxt=e=>this.setState({brDraft:{...dr,p:e.target.value}});v.onBrATxt=e=>this.setState({brDraft:{...dr,a:e.target.value}});
+      const blT=k=>()=>{const x=String((this.state.brDraft||{})[k]||'').trim(),hx=x.startsWith('#')?x:'#'+x;if(CB&&CB.valid(hx))setB(k==='p'?{p:hx,a:B.a||A0,pal:'free',bg:B.bg||'tint'}:{a:hx,p:B.p||P0,pal:'free',bg:B.bg||'tint'});this.setState(st=>{const d={...(st.brDraft||{})};delete d[k];return {brDraft:d};});};
+      v.blBrPTxt=blT('p');v.blBrATxt=blT('a');
+      v.brHasTheme=th;{const R=th&&CB?CB.resolve(B):null;v.brPChip=R?(R.pAdj?{txt:'Principal oscurecido para que el texto blanco se lea ('+CB.contrast(R.p,'#ffffff').toFixed(1).replace('.',',')+':1)',bg:'#fdf3d4',fg:'#77560a'}:{txt:'Texto blanco sobre principal '+CB.contrast(R.p,'#ffffff').toFixed(1).replace('.',',')+':1 ✓',bg:'#dcf0e4',fg:'#1d6b43'}):{txt:'',bg:'',fg:''};
+        v.brAChip=R?(R.aOn==='#ffffff'?'Acento: texto blanco encima':'Acento: texto oscuro encima'):'';}
+      const bgm=B.bg||'tint';v.brBgSeg=[['light','Claro'],['tint','Tintado']].map(([k,l])=>({label:l,...sgS(th&&bgm===k),go:()=>{if(!th){this.toast('Elige antes una paleta o un color',true);return;}setB({bg:k});}}));v.brBgNote=bgm==='light'?'Fondo neutro; tu color en botones y barras.':'Fondo y cabecera teñidos con tu color.';
+      const FN=CB?CB.FONTS:{},fk=th?(B.font||'sora'):'sora';v.brFonts=[['sora','Sora · CientiFitness'],['outfit','Outfit'],['jakarta','Plus Jakarta Sans'],['lora','Lora · serif']].map(([k,l])=>{const on=fk===k;return {label:on?l+' ✓':l,fam:(FN[k]||['Sora','','Sora'])[2]+',sans-serif',bd:on?'2px solid var(--color-accent)':'1.5px solid var(--color-divider)',bg:on?'var(--color-accent-100)':'#fff',fw:on?'800':'700',fg:on?'var(--color-accent-800)':'var(--color-neutral-700)',pick:()=>{if(!th){this.toast('Elige antes una paleta o un color',true);return;}setB({font:k});}};});
+      if(!document.getElementById('cf-brand-fonts-all')){const l=document.createElement('link');l.id='cf-brand-fonts-all';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Plus+Jakarta+Sans:wght@700&family=Lora:wght@700&display=swap';document.head.appendChild(l);}
+      const MS=CB?CB.MACS:{},mk=th?(B.mac||'cf'):'cf',mc0=B.mc||{prot:'#f2a497',carb:'#efc95e',fat:'#b3a2ea',veg:'#8ed2aa'};
+      v.brMacs=Object.entries(MS).map(([k,[l,c]])=>[k,l,[c.prot,c.carb,c.fat,c.veg]]).concat([['custom','Personalizar cada macro',[mc0.prot,mc0.carb,mc0.fat,mc0.veg]]]).map(([k,l,dots])=>{const on=mk===k;return {label:on?l+' ✓':l,dots,bd:on?'2px solid var(--color-accent)':k==='custom'?'1.5px dashed var(--color-neutral-400)':'1.5px solid var(--color-divider)',bg:on?'var(--color-accent-100)':'#fff',fw:on?'800':'700',fg:on?'var(--color-accent-800)':'var(--color-text)',pick:()=>{if(!th){this.toast('Elige antes una paleta o un color',true);return;}setB(k==='custom'?{mac:'custom',mc:mc0}:{mac:k});}};});
+      v.brMcOn=th&&mk==='custom';v.brMcRows=[['prot','Proteína'],['carb','Hidratos'],['fat','Grasas'],['veg','Verdura / fruta']].map(([k,l])=>({label:l,val:mc0[k],on:e=>setB({mc:{...mc0,[k]:e.target.value}})}));
+      v.brReset=()=>{setB({p:null,a:null,pal:null,bg:null,font:null,mac:null,mc:null});this.setState({brColMode:null,brDraft:null});this.toast('Tema CientiFitness. Pulsa «Guardar y aplicar» para tus asesorados');};
+      v.brApply=()=>{if(s.brPushing)return;this.pushBrand();};v.brApplyLbl=s.brPushing?'Aplicando…':'Guardar y aplicar';
+      v.brPrevName=(B.name||'').trim()||'Tu nombre o marca';}
+    {const B=s.brand||{},use=this.isPrem()&&!!B.logo,ph=this.myPhone();v.pdfPhone=ph||'';v.pdfHasPhone=!!ph;v.pdfCoach=this.isPrem()&&!!(B.logo||(B.name||'').trim());v.pdfCF=!v.pdfCoach;v.pdfCoachHasLogo=use;v.pdfCoachName=(B.name||'').trim();
+      v.sbCoach=v.pdfCoach;v.sbCF=!v.sbCoach;v.sbHasLogo=use;v.sbNoLogo=!use;v.sbLogo=B.logo||'';v.sbName=(B.name||'').trim()||'Mi marca';v.sbMono=((B.name||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('')||'CF').toUpperCase();
+      v.pdfLogo=use?B.logo:'assets/logo.png';v.pdfBrand=(this.isPrem()&&(B.name||'').trim())?B.name.trim()+' · Plan nutricional':'CientiFitness · Plan nutricional';}
     if(s.nxEdit){const E=s.nxEdit,upd=fn=>this.setState(st=>{const e=JSON.parse(JSON.stringify(st.nxEdit));fn(e);return {nxEdit:e};}),fv=k=>e=>{const x=e.target.value;upd(q=>{q[k]=x;});},k=E.kind||'daily';
       v.nxeOn=true;v.nxeTitle=E.title||'';v.onNxeTitle=fv('title');v.nxeBody=E.body||'';v.onNxeBody=fv('body');v.nxeKinds=NXK.map(([val,label])=>({val,label}));v.nxeKind=k;v.onNxeKind=fv('kind');
       v.nxeHasTime=NXT.includes(k);v.nxeTime=E.time||'09:00';v.onNxeTime=fv('time');

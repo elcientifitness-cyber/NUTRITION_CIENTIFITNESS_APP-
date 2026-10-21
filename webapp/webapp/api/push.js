@@ -114,7 +114,7 @@ function compList(now, C, pr) {
 }
 const compAct = (C, d) => { if (!C || !C.wDate || !Array.isArray(C.days) || !C.days.length) return false; const mo = Math.min(0, ...C.days.map(x => Number(x.off) || 0)); return d >= addDay(C.wDate, mo) && d <= addDay(C.wDate, 1); };
 const kgf = x => (Math.round(x * 10) / 10).toLocaleString('es-ES');
-const faDue = (it, n) => { if (it.pause && n.d <= it.pause) return false; const f = it.freq || 'week'; if (f === 'once') return n.d === it.date; if (f === 'month') return Number(n.d.slice(8, 10)) === Number(it.dom || 1); if (Number(it.dow) !== n.dow) return false; if (f === '2w') { const w = Math.floor((Date.parse(n.d + 'T12:00:00Z') - Date.parse((it.from || n.d) + 'T12:00:00Z')) / 864e5 / 7); return w >= 0 && w % 2 === 0; } return true; };
+const faDue = (it, n) => { if (it.pause && n.d <= it.pause) return false; const f = it.freq || 'week'; if (f === 'once') return n.d === it.date; if (f === 'month') { const last = new Date(Date.UTC(+n.d.slice(0, 4), +n.d.slice(5, 7), 0)).getUTCDate(); return Number(n.d.slice(8, 10)) === Math.min(Number(it.dom || 1), last); } if (Number(it.dow) !== n.dow) return false; if (f === '2w') { const w = Math.floor((Date.parse(n.d + 'T12:00:00Z') - Date.parse((it.from || n.d) + 'T12:00:00Z')) / 864e5 / 7); return w >= 0 && w % 2 === 0; } return true; };
 const customOf = cfg => { if (!cfg) return []; const own = cfg.own || [], com = cfg.common || []; if (cfg.owner) return own; const mine = cfg.prem ? own : [], ids = new Set(mine.map(x => x.id)); return mine.concat(com.filter(x => x && !ids.has(x.id))); };
 
 module.exports = async (req, res) => {
@@ -135,22 +135,24 @@ module.exports = async (req, res) => {
       let links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,comp').then(r => r.ok ? r.json() : null);
       if (!links) links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide').then(r => r.ok ? r.json() : []);
       const LK = {}, LC = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; if (l.comp) LC[l.coach_id + '|' + l.client_key] = l.comp; });
-      const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id))]) CF[c] = await cfgOf(c);
-      let sent = 0;
+      // Entrenadores con avisos (por sus suscripciones) y con cuestionarios programados (aunque ningún asesorado tenga avisos activados)
+      const FAC = await api('cf_state?select=user_id&data->fauto=not.is.null').then(r => r.ok ? r.json() : []).catch(() => []);
+      const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id).concat(FAC.map(x => x.user_id)))]) CF[c] = await cfgOf(c);
+      let sent = 0, made = 0;
       // Cuestionarios automáticos: crea el cuestionario, avisa y recuerda a las 24 h
       for (const c of Object.keys(CF)) {
-        const cfg = CF[c]; if (!cfg || !cfg.prem || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
+        const cfg = CF[c]; if (!cfg || !(cfg.prem || cfg.owner) || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
         const nowM = local('Europe/Madrid'); if (!nowM) continue;
         for (const it of cfg.fauto) {
           if (it.on === false) continue;
-          const T = hm(it.time); if (T == null || !faDue(it, nowM) || nowM.m < T || nowM.m - T >= 40) continue;
+          const T = hm(it.time || '10:00'); if (T == null || !faDue(it, nowM) || nowM.m < T || nowM.m - T >= 180) continue; // hasta 3 h de margen si el cron se salta alguna pasada
           const frm = ((cfg.forms || []).find(f => f.id === it.formId)) || ((cfg.cforms || []).find(f => f.id === it.formId)) || it.form; if (!frm || !frm.qs) continue;
           for (const ck of Object.keys(cfg.fa || {})) {
             if (!(cfg.fa[ck] || []).includes(it.id)) continue;
             const ex = await api('cf_forms?select=id&coach_id=eq.' + c + '&client_key=eq.' + encodeURIComponent(ck) + '&form->>auto=eq.' + encodeURIComponent(it.id) + '&created_at=gte.' + encodeURIComponent(new Date(Date.now() - 20 * 3600e3).toISOString())).then(r => r.ok ? r.json() : [{}]);
             if (ex.length) continue;
             const ins = await api('cf_forms', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ coach_id: c, client_key: ck, title: frm.name || 'Cuestionario', form: { name: frm.name, kind: frm.kind || 'otro', intro: frm.intro || '', qs: frm.qs, auto: it.id, tpl: it.formId } }) }).then(r => r.ok ? r.json() : null);
-            const row = ins && ins[0]; if (!row) continue;
+            const row = ins && ins[0]; if (!row) continue; made++;
             for (const s of subs.filter(x => x.coach_id === c && x.client_key === ck && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: frm.name || 'Cuestionario', body: 'Tu entrenador te ha enviado un cuestionario. Te llevará un par de minutos.', tag: 'form', url: 'cuestionario.html?t=' + row.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
           }
         }
@@ -205,7 +207,7 @@ module.exports = async (req, res) => {
         }
         await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ sent: st }) });
       }
-      return out(200, { subs: subs.length, coach: csubs.length, sent });
+      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made });
     }
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     const me = await fetch(URL_SB + '/auth/v1/user', { headers: { apikey: ANON, Authorization: 'Bearer ' + tok } }).then(r => r.ok ? r.json() : null);
