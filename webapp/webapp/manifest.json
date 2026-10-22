@@ -7,16 +7,8 @@
   "background_color": "#F3F2EF",
   "theme_color": "#F3F2EF",
   "icons": [
-    {
-      "src": "assets/cn-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/cn-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "assets/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app-icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/cn-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }
   ]
 }
