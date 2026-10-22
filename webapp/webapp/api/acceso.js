@@ -1,4 +1,4 @@
-// Crea o renueva accesos: asesorados (cualquier entrenador) y entrenadores (solo el CEO, kind: 'coach').
+// Crea o renueva accesos: asesorados (cualquier nutricionista) y nutricionistas (solo el CEO, kind: 'coach').
 // Necesita en Vercel la variable SUPABASE_SERVICE_ROLE_KEY (Settings → Environment Variables).
 const URL_SB = 'https://soxtkdakmpjxtvvtrvjs.supabase.co';
 const ANON = 'sb_publishable_mGei9bBQytQo75nSAo2umw_c2bvY_gA';
@@ -25,27 +25,27 @@ module.exports = async (req, res) => {
     const cr = await fetch(URL_SB + '/rest/v1/cf_coaches?select=role,active&email=eq.' + enc(myEmail), { headers: H });
     if (cr.ok) { const rows = await cr.json(); const r0 = rows[0]; if (r0 && r0.active) role = r0.role || 'coach'; else if (!r0 && OWNERS.includes(myEmail)) role = 'owner'; }
     else if (OWNERS.includes(myEmail)) role = 'owner';
-    if (!role) return out(403, { error: 'Solo los entrenadores pueden crear accesos.' });
+    if (!role) return out(403, { error: 'Solo los nutricionistas pueden crear accesos.' });
 
     let body = req.body; if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
     const email = String(body.email || '').trim().toLowerCase(), mode = body.mode, forCoach = body.kind === 'coach';
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return out(400, { error: 'Email no válido.' });
     if (email === myEmail) return out(400, { error: 'Ese es tu propio email.' });
-    if (forCoach && role !== 'owner') return out(403, { error: 'Solo el CEO puede invitar entrenadores.' });
+    if (forCoach && role !== 'owner') return out(403, { error: 'Solo el CEO puede invitar nutricionistas.' });
 
     const tr = await fetch(URL_SB + '/rest/v1/cf_coaches?select=email&email=eq.' + enc(email), { headers: H });
     const isCoach = OWNERS.includes(email) || (tr.ok && (await tr.json()).length > 0);
-    if (!forCoach && isCoach) return out(400, { error: 'Ese email es de un entrenador.' });
+    if (!forCoach && isCoach) return out(400, { error: 'Ese email es de un nutricionista.' });
 
     if (forCoach) {
       const lr = await fetch(URL_SB + '/rest/v1/cf_links?select=client_key&limit=1&email=ilike.' + enc(email), { headers: H });
-      if (lr.ok && (await lr.json()).length) return out(400, { error: 'Ese email ya es de un asesorado. Usa otro para el entrenador.' });
+      if (lr.ok && (await lr.json()).length) return out(400, { error: 'Ese email ya es de un asesorado. Usa otro para el nutricionista.' });
       const row = { email };
       if (body.name) row.name = String(body.name).slice(0, 80);
       if (body.phone) row.phone = String(body.phone).slice(0, 30);
       const ur = await fetch(URL_SB + '/rest/v1/cf_coaches?on_conflict=email', { method: 'POST', headers: { ...H, Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(row) });
-      if (!ur.ok) { const t = await ur.text(); return out(400, { error: /cf_coaches|relation|exist/i.test(t) ? 'Falta ejecutar equipo.sql en Supabase.' : 'No se pudo guardar el entrenador.' }); }
+      if (!ur.ok) { const t = await ur.text(); return out(400, { error: /cf_coaches|relation|exist/i.test(t) ? 'Falta ejecutar equipo.sql en Supabase.' : 'No se pudo guardar el nutricionista.' }); }
     }
 
     if (mode === 'invite') {

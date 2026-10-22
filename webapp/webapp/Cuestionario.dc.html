@@ -75,7 +75,7 @@
       <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}"><button onClick="{{ prev }}" style="font:inherit;font-size:15px;font-weight:700;min-height:50px;padding:0 20px;border-radius:999px;border:1.5px solid var(--color-divider);background:var(--cf-card);color:var(--color-text);cursor:pointer">Anterior</button></sc-if>
       <button onClick="{{ next }}" style="font:inherit;font-size:15px;font-weight:800;min-height:50px;padding:0 22px;border-radius:999px;border:0;background:var(--color-accent);color:#fff;cursor:pointer;flex:1;box-shadow:0 6px 18px color-mix(in srgb,var(--color-accent) 25%,transparent)">{{ nextLabel }}</button>
     </div>
-    <span style="font-size:11px;color:var(--color-neutral-600);text-align:center;text-wrap:pretty">Tus respuestas se guardan en este dispositivo hasta que las envíes. Solo las verá tu entrenador.</span>
+    <span style="font-size:11px;color:var(--color-neutral-600);text-align:center;text-wrap:pretty">Tus respuestas se guardan en este dispositivo hasta que las envíes. Solo las verá tu {{ termT }}.</span>
   </sc-if>
 </div>
 </x-dc>
@@ -104,7 +104,8 @@ class Component extends DCLogic {
       try{localStorage.removeItem('cf-form-'+this.tk);}catch(e){}this.setState({busy:false,st:data?'thanks':'already'});this.toTop();if(this.props.onDone)this.props.onDone();});}
   renderVals(){const s=this.state,F=window.CFForms;
     const v={isLoading:s.st==='loading',isForm:s.st==='form'&&!!F,isMsg:['bad','err','already','thanks'].includes(s.st),hasClose:!!this.props.onClose,close:()=>{if(this.props.onClose)this.props.onClose();}};
-    const M={bad:['Enlace no válido','Este enlace no existe o ya no está disponible. Pide a tu entrenador uno nuevo.'],err:['No se pudo abrir el cuestionario','Revisa tu conexión y vuelve a intentarlo.'+(s.errMsg?' ('+s.errMsg+')':'')],already:['Ya está enviado','Tu entrenador ya tiene tus respuestas. Si quieres cambiar algo, escríbele.'],thanks:['¡Gracias!','Tus respuestas ya le han llegado a tu entrenador.']};
+    const TT=String((s.form&&s.form.term)||'nutricionista');v.termT=TT;
+    const M={bad:['Enlace no válido','Este enlace no existe o ya no está disponible. Pide a tu '+TT+' uno nuevo.'],err:['No se pudo abrir el cuestionario','Revisa tu conexión y vuelve a intentarlo.'+(s.errMsg?' ('+s.errMsg+')':'')],already:['Ya está enviado','Tu '+TT+' ya tiene tus respuestas. Si quieres cambiar algo, escríbele.'],thanks:['¡Gracias!','Tus respuestas ya le han llegado a tu '+TT+'.']};
     const m=M[s.st]||['',''];v.msgTitle=m[0];v.msgText=m[1];v.msgOk=s.st==='thanks'||s.st==='already';v.title=s.title||'';
     if(v.isForm){const S=this.steps(),i=Math.max(0,Math.min(s.step,S.length-1)),cur=S[i]||{label:'',qs:[]};
       v.showIntro=i===0&&!!s.form.intro;v.intro=s.form.intro||'';v.stepN=i+1;v.stepT=Math.max(1,S.length);v.secLabel=cur.label;v.progW=Math.round((i+1)/Math.max(1,S.length)*100)+'%';

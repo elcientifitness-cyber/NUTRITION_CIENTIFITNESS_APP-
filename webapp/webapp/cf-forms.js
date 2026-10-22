@@ -1,5 +1,5 @@
 // CientiFitness · Cuestionarios: plantillas por defecto y utilidades compartidas
-// (panel del entrenador, app del asesorado y página pública cuestionario.html)
+// (panel del nutricionista, app del asesorado y página pública cuestionario.html)
 (function(){
 var S=function(id,label){return {id:id,type:'sec',label:label};};
 var Q=function(id,type,label,o){var q={id:id,type:type,label:label};if(o)for(var k in o)q[k]=o[k];return q;};
@@ -49,7 +49,7 @@ var INICIAL={id:'f-inicial',kind:'inicial',name:'Cuestionario inicial',
   Q('alcohol','one','Alcohol',{opts:['Nunca','Ocasional','Fines de semana','Varias veces por semana']}),
   Q('tabaco','yesno','¿Fumas?'),
   S('s8','Consentimiento'),
-  Q('rgpd','consent','Acepto que mi entrenador trate mis datos personales y de salud para elaborar y seguir mi plan de nutrición y entrenamiento. Puedo pedir su consulta, corrección o eliminación cuando quiera.',{req:true})
+  Q('rgpd','consent','Acepto que mi nutricionista trate mis datos personales y de salud para elaborar y seguir mi plan de nutrición y entrenamiento. Puedo pedir su consulta, corrección o eliminación cuando quiera.',{req:true})
 ]};
 var REVISION={id:'f-revision',kind:'revision',name:'Revisión semanal',
   intro:'Un repaso rápido de tu semana para ajustar el plan. Son 2 minutos.',

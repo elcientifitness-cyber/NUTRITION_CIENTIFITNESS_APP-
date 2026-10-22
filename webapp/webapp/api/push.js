@@ -17,6 +17,7 @@ const b64u = b => Buffer.from(b).toString('base64').replace(/\+/g, '-').replace(
 const ub64 = s => Buffer.from(String(s).replace(/-/g, '+').replace(/_/g, '/'), 'base64');
 const hk = (salt, ikm, info, len) => { const prk = crypto.createHmac('sha256', salt).update(ikm).digest(); return crypto.createHmac('sha256', prk).update(Buffer.concat([info, Buffer.from([1])])).digest().subarray(0, len); };
 const num = v => { const x = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isNaN(x) ? 0 : x; };
+const gnum = v => { const t = String(v == null ? '' : v).replace(/(\d)\.(\d{3})(?!\d)/g, '$1$2'), m = t.match(/\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(',', '.')) : 0; };
 const hm = s => { const m = /^(\d{1,2}):(\d{2})/.exec(String(s || '')); return m ? (+m[1]) * 60 + (+m[2]) : null; };
 const fmt = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
 const addDay = (d, n) => { const t = new Date(d + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
@@ -63,7 +64,7 @@ function dueList(now, eff, pr, G, evs, C) {
     if (eff.revDay && e.d === now.d) out.push({ key: 'rd' + e.d + (e.t || ''), at: t != null ? Math.max(420, t - 120) : 540, data: { title: 'Hoy: ' + lb.toLowerCase(), body: lb + ' hoy' + at + '.', tag: 'rev', url: 'asesorado.html?tab=prog' } });
   });
   if (eff.weigh && !off.weigh && now.dow === num(eff.weighDow)) out.push({ key: 'wg', at: hm(eff.weighHour) != null ? hm(eff.weighHour) : 510, data: { title: 'Toca pesarse', body: 'Pésate en ayunas, después de ir al baño, y apúntalo en la app.', tag: 'weigh', url: 'asesorado.html?tab=prog' } });
-  if (eff.steps && !off.steps && D && num(String(D.steps || '').replace(',', '.')) > 0) out.push({ key: 'st', at: hm(eff.stepsHour) != null ? hm(eff.stepsHour) : 1260, data: { title: 'Pasos de hoy', body: 'Tu objetivo es de ' + Number(String(D.steps).replace(',', '.')).toLocaleString('es-ES') + ' pasos. Apunta en la app los que has dado.', tag: 'steps', url: 'asesorado.html?tab=hoy' } });
+  if (eff.steps && !off.steps && D && gnum(D.steps) > 0) out.push({ key: 'st', at: hm(eff.stepsHour) != null ? hm(eff.stepsHour) : 1260, data: { title: 'Pasos de hoy', body: 'Tu objetivo es de ' + Number(String(D.steps).replace(',', '.')).toLocaleString('es-ES') + ' pasos. Apunta en la app los que has dado.', tag: 'steps', url: 'asesorado.html?tab=hoy' } });
   (C || []).forEach(x => {
     const o = (eff.cxo || {})[x.id] || {}, cc = (eff.cxc || {})[x.id], on = cc != null ? !!cc : (o.on != null ? !!o.on : x.on !== false);
     if (!on || off['c:' + x.id]) return;
@@ -82,7 +83,7 @@ function dueList(now, eff, pr, G, evs, C) {
   });
   out.splice(MX);
   if (eff.water && !off.water) {
-    const L = num(D.water) || num(eff.waterL), room = MX - out.length;
+    const L = gnum(D.water) || num(eff.waterL), room = MX - out.length;
     if (L > 0 && room > 0) {
       const k = Math.min(room, 8, Math.max(3, Math.ceil(L / 0.5))), a = wake + 60, b = Math.max(a + 120, sleep - 60), ml = Math.max(100, Math.round(L * 1000 / k / 50) * 50);
       for (let i = 0; i < k; i++) out.push({ key: 'w' + i, kind: 'water', at: k === 1 ? Math.round((a + b) / 2) : Math.round(a + (b - a) * i / (k - 1)), data: { title: 'Bebe agua', body: 'Unos ' + ml + ' ml ahora (' + (i + 1) + ' de ' + k + '). Objetivo de hoy: ' + String(L).replace('.', ',') + ' L.', tag: 'water', url: 'asesorado.html?tab=hoy' } });
@@ -102,7 +103,7 @@ function compList(now, C, pr) {
     add('am', wake, 'Pésate al despertar', 'Después de orinar y antes de beber o comer. Apúntalo en la app.', 'cwg');
     const T = (d.takes || []).filter(x => hm(x.time) != null);
     T.forEach((x, i) => add('t' + i, hm(x.time), 'Bebe ' + x.ml + ' ml', 'Toma ' + (i + 1) + ' de ' + T.length + (d.cut ? ' · corte de agua a las ' + d.cut : '') + '.', 'cw'));
-    if (hm(d.cut) != null) add('cut', hm(d.cut), 'Corte de agua', 'A partir de ahora no bebas, salvo lo que te indique tu entrenador.', 'ccut');
+    if (hm(d.cut) != null) add('cut', hm(d.cut), 'Corte de agua', 'A partir de ahora no bebas, salvo lo indicado en tu protocolo.', 'ccut');
     (d.meals || []).forEach((m, i) => { const t = hm(m.time); if (t == null) return; add('m' + i, t, (m.name || 'Comida') + (m.kcal ? ' · ' + m.kcal + ' kcal' : ''), ((m.lines || []).join(' · ') || 'Es la hora de tu comida.') + (wm ? ' Pésate antes de empezar.' : ''), 'cmeal' + i); if (wm) add('mp' + i, t + 30, 'Pésate después de comer', (m.name || 'Comida') + ': apunta tu peso en la app.', 'cwg'); });
     (d.supps || []).forEach((x, i) => { const t = hm(x.time); if (t != null) add('s' + i, t, 'Suplemento', x.txt || '', 'csup' + i); });
     (d.extras || []).forEach((x, i) => { const t = hm(x.time); if (t == null) return; add('x' + i, t, x.name + (x.dur ? ' · ' + x.dur + ' min' : ''), ((x.txt || '') + (x.weigh ? ' Pésate antes de empezar.' : '')).trim() || 'Es la hora.', 'cext' + i); if (x.weigh && num(x.dur)) add('xp' + i, t + num(x.dur), 'Pésate después: ' + x.name, 'Apunta tu peso en la app.', 'cwg'); });
@@ -153,7 +154,7 @@ module.exports = async (req, res) => {
             if (ex.length) continue;
             const ins = await api('cf_forms', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ coach_id: c, client_key: ck, title: frm.name || 'Cuestionario', form: { name: frm.name, kind: frm.kind || 'otro', intro: frm.intro || '', qs: frm.qs, auto: it.id, tpl: it.formId } }) }).then(r => r.ok ? r.json() : null);
             const row = ins && ins[0]; if (!row) continue; made++;
-            for (const s of subs.filter(x => x.coach_id === c && x.client_key === ck && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: frm.name || 'Cuestionario', body: 'Tu entrenador te ha enviado un cuestionario. Te llevará un par de minutos.', tag: 'form', url: 'cuestionario.html?t=' + row.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
+            for (const s of subs.filter(x => x.coach_id === c && x.client_key === ck && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: frm.name || 'Cuestionario', body: 'Tienes un cuestionario nuevo. Te llevará un par de minutos.', tag: 'form', url: 'cuestionario.html?t=' + row.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
           }
         }
         if (cfg.fauto.some(i => i.remind !== false)) {
@@ -191,7 +192,7 @@ module.exports = async (req, res) => {
         const ccfg = CF[s.user_id] || await cfgOf(s.user_id).catch(() => null), sLines = [];
         { const mine = links.filter(l => l.coach_id === s.user_id && l.guide && ((l.guide.train || {}).steps || (l.guide.rest || {}).steps));
           if (mine.length) { const DLs = await api('cf_daylogs?select=client_key,day,survey&coach_id=eq.' + s.user_id + '&day=gte.' + addD(now.d, -40) + '&order=day.asc').then(r => r.ok ? r.json() : []);
-            mine.forEach(l => { const ef = effOf(ccfg, l.client_key); if (ef.steps === false) return; const NX = Math.max(1, num(ef.stepsMiss) || 3), G = l.guide, tg = d => { const dw = (new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7, x = G[(G.days || [0, 2, 4]).includes(dw) ? 'train' : 'rest']; return x ? num(String(x.steps || '').replace(',', '.')) : 0; };
+            mine.forEach(l => { const ef = effOf(ccfg, l.client_key); if (ef.steps === false) return; const NX = Math.max(1, num(ef.stepsMiss) || 3), G = l.guide, tg = d => { const dw = (new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7, x = G[(G.days || [0, 2, 4]).includes(dw) ? 'train' : 'rest']; return x ? gnum(x.steps) : 0; };
               const RS = DLs.filter(r => r.client_key === l.client_key && r.survey && num(r.survey.steps) > 0 && tg(r.day) > 0).slice(-NX);
               if (RS.length >= NX && RS.every(r => num(r.survey.steps) < tg(r.day)) && RS[RS.length - 1].day >= addD(now.d, -1)) { const av = Math.round(RS.reduce((a, r) => a + num(r.survey.steps), 0) / RS.length), at = Math.round(RS.reduce((a, r) => a + tg(r.day), 0) / RS.length); sLines.push((l.name || 'Cliente').split(' ')[0] + ': ' + NX + ' días sin llegar a los pasos (media ' + av.toLocaleString('es-ES') + ' de ' + at.toLocaleString('es-ES') + ')'); } }); } }
         if (sLines.length && !act.length) { const code = await push(s, { title: 'Pasos de tus asesorados', body: sLines.join('\n'), tag: 'cc-steps', url: 'index.html', coach: true }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); continue; } if (code >= 200 && code < 300) sent++; }
@@ -240,8 +241,9 @@ module.exports = async (req, res) => {
     if (!subs.length) return out(200, { sent: 0, devices: 0 });
     if (type === 'plan' || type === 'msg') { const eff = effOf(await cfgOf(me.id), subs[0].client_key); if (!eff[type]) return out(200, { sent: 0, devices: subs.length, off: true }); }
     const txt = String(body.text || '').replace(/\s+/g, ' ').trim();
-    const data = type === 'plan' ? { title: 'Plan actualizado', body: 'Tu entrenador ha actualizado tu plan. Échale un vistazo.', tag: 'plan', url: 'asesorado.html?tab=plan' }
-      : type === 'msg' ? { title: 'Mensaje de tu entrenador', body: txt.length > 140 ? txt.slice(0, 137) + '…' : (txt || 'Tienes un mensaje nuevo.'), tag: 'msg', url: 'asesorado.html?tab=chat' }
+    const TRM = String(body.term || 'nutricionista').replace(/[<>]/g, '').slice(0, 30);
+    const data = type === 'plan' ? { title: 'Plan actualizado', body: 'Tu ' + TRM + ' ha actualizado tu plan. Échale un vistazo.', tag: 'plan', url: 'asesorado.html?tab=plan' }
+      : type === 'msg' ? { title: 'Mensaje de tu ' + TRM, body: txt.length > 140 ? txt.slice(0, 137) + '…' : (txt || 'Tienes un mensaje nuevo.'), tag: 'msg', url: 'asesorado.html?tab=chat' }
       : { title: 'Notificaciones activadas', body: 'Así te llegarán los recordatorios de Cientia Nutrition.', tag: 'test', url: 'asesorado.html?tab=hoy' };
     let sent = 0;
     for (const s of subs) {
