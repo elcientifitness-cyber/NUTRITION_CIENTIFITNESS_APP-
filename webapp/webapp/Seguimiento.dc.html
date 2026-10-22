@@ -10,14 +10,14 @@
 <helmet>
 <link rel="stylesheet" href="cf-theme.css">
 </helmet>
-<section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px;font-family:var(--font-body);color:var(--color-text)">
+<section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px;font-family:var(--font-body);color:var(--color-text)">
   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
     <sc-if value="{{ hasHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:18px">{{ head }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ headSub }}</span></div></sc-if>
     <div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;margin-left:auto">
       <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.pick }}" style="font:inherit;font-size:12px;font-weight:800;padding:6px 12px;min-height:32px;border:0;border-radius:999px;background:{{ r.bg }};color:{{ r.fg }};cursor:pointer">{{ r.label }}</button></sc-for>
     </div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:16px;background:var(--color-neutral-100)">
+  <div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;background:var(--color-neutral-100)">
     <sc-for list="{{ chipGroups }}" as="cg" hint-placeholder-count="2">
       <div style="display:flex;align-items:center;gap:10px;min-width:0">
         <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-700);width:96px;flex:none">{{ cg.label }}</span>
@@ -35,7 +35,7 @@
     <sc-if value="{{ hasDelta }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span style="font-size:14px;font-weight:800;padding:3px 10px;border-radius:999px;background:{{ soft }};color:{{ ink }};font-variant-numeric:tabular-nums">{{ delta }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ deltaSub }}</span></div></sc-if>
   </div>
 
-  <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:24px 12px;border-radius:16px;background:var(--color-neutral-100);font-size:13px;color:var(--color-neutral-700);text-align:center;text-wrap:pretty">{{ emptyText }}</p></sc-if>
+  <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:24px 12px;border-radius:12px;background:var(--color-neutral-100);font-size:13px;color:var(--color-neutral-700);text-align:center;text-wrap:pretty">{{ emptyText }}</p></sc-if>
 
   <sc-if value="{{ showLine }}" hint-placeholder-val="{{ false }}">
     <div style="display:grid;grid-template-columns:minmax(0,1fr) 40px;column-gap:6px">
@@ -54,7 +54,7 @@
 
   <sc-if value="{{ showBars }}" hint-placeholder-val="{{ false }}">
     <div style="position:relative;height:150px;display:flex;align-items:flex-end;gap:{{ barGap }};border-bottom:1px solid var(--color-divider)">
-      <sc-if value="{{ hasTarget }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;bottom:{{ target }};border-top:2px dashed #1180c2;pointer-events:none;z-index:1"><span style="position:absolute;right:0;top:-18px;font-size:10px;font-weight:800;color:#0e6fa9;background:#fff;padding:0 4px">{{ targetLabel }}</span></div></sc-if>
+      <sc-if value="{{ hasTarget }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;bottom:{{ target }};border-top:2px dashed var(--color-accent);pointer-events:none;z-index:1"><span style="position:absolute;right:0;top:-18px;font-size:10px;font-weight:800;color:var(--color-accent-600);background:var(--cf-card);padding:0 4px">{{ targetLabel }}</span></div></sc-if>
       <sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><div title="{{ b.tip }}" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0"><div style="width:100%;max-width:24px;height:{{ b.h }};min-height:{{ b.minH }};background:{{ b.bg }};border-radius:6px 6px 2px 2px"></div></div></sc-for>
     </div>
     <div style="display:flex;gap:{{ barGap }};margin-top:-8px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><span style="flex:1;text-align:center;font-size:10px;color:var(--color-neutral-700);font-weight:{{ b.fw }};min-width:0;overflow:hidden;white-space:nowrap">{{ b.lbl }}</span></sc-for></div>
@@ -72,13 +72,13 @@ const addDays=(s,n)=>{const d=parseD(s);d.setDate(d.getDate()+n);return isoD(d);
 const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?0:n;};
 const R=Math.round,fx=(x,d)=>Number(x).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
 const dShort=s=>parseD(s).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-const SCALE=['#e5604a','#f29b62','#efc95e','#9bd08a','#2f9e62'];
+const SCALE=['#e5604a','var(--warn-mid)','var(--carb)','var(--veg)','var(--ok-mid)'];
 const SQ={sat:['Satisfacción',false],hambre:['Hambre',true],energia:['Energía',false]};
-const TONES={coral:['#963a2b','#e0806e','#fde8e3'],blue:['#0e6fa9','#1180c2','#e3f1fa']};
+const TONES={coral:['var(--prot-ink)','var(--danger-mid)','var(--prot-bg)'],blue:['var(--color-accent-600)','var(--color-accent)','var(--color-accent-100)']};
 function dayScore(L,Tk){if(!L)return null;const F=L.foods||[],S=L.survey||{};let a=null,b=null;
   if(F.length&&Tk){const k=F.reduce((s,x)=>s+num(x.k),0),dev=Math.abs(k/Tk-1);a=Math.max(0,Math.min(100,100-Math.max(0,dev-0.1)/0.3*100));}
   if(S.cump)b=(S.cump-1)/4*100;if(a==null&&b==null)return null;return a==null?b:b==null?a:(a+b)/2;}
-const band=p=>p>=80?'#2f9e62':p>=60?'#efc95e':'#e5604a';
+const band=p=>p>=80?'var(--ok-mid)':p>=60?'var(--carb)':'#e5604a';
 class Component extends DCLogic {
   state={metric:null,range:null};
   renderVals(){
@@ -94,10 +94,10 @@ class Component extends DCLogic {
     const metric=s.metric||saved.m,cur=defs.find(d=>d[0]===metric)||defs[0],range=s.range||saved.r||'30';
     const save=o=>{try{localStorage.setItem(key0,JSON.stringify({m:cur[0],r:range,...o}));}catch(e){}};
     const v={ink,solid,soft,hasHead:!!p.head,head:p.head||'',headSub:p.headSub||'',hasDelta:false,showLine:false,showBars:false,empty:false,hasTarget:false,hasLegend:false};
-    const dayK=['cump','kcal','pasos','sat','hambre','energia'],mk=([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'#fff',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft});
+    const dayK=['cump','kcal','pasos','sat','hambre','energia'],mk=([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'var(--cf-card)',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft});
     const isPl=d=>d[0].startsWith('pl:'),isPer=d=>d[0].startsWith('per:');
     v.chipGroups=[['Día a día',defs.filter(d=>dayK.includes(d[0]))],['Cuerpo',defs.filter(d=>!dayK.includes(d[0])&&!isPl(d)&&!isPer(d))],['Pliegues',defs.filter(isPl)],['Perímetros',defs.filter(isPer)]].filter(g=>g[1].length).map(([label,ds])=>({label,items:ds.map(mk)}));
-    v.ranges=[['14','2 sem.'],['30','1 mes'],['91','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:range===r?'#fff':'transparent',fg:range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>{save({r});this.setState({range:r});}}));
+    v.ranges=[['14','2 sem.'],['30','1 mes'],['91','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:range===r?'var(--cf-card)':'transparent',fg:range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>{save({r});this.setState({range:r});}}));
     const allDays=Object.keys(lg).sort(),first=allDays[0]||today;
     const nDays=range==='all'?Math.max(14,Math.min(730,R((parseD(today)-parseD(first))/86400000)+1)):num(range),from=addDays(today,-(nDays-1));
     if(cur[2]==='bars'){v.showBars=true;const k=cur[0];
@@ -109,15 +109,15 @@ class Component extends DCLogic {
       v.barGap=items.length>40?'1px':items.length>20?'2px':'4px';
       const step=Math.ceil(items.length/10);
       const tAll=items.filter(x=>x.t>0),tAvg=tAll.length?tAll.reduce((a,x)=>a+x.t,0)/tAll.length:0;
-      const color=(x,it)=>{if(k==='pasos'){const t=(it&&it.t)||tAvg;if(!t)return solid;const r=x/t;return r>=1?'#2f9e62':r>=0.85?'#efc95e':'#e5604a';}if(k==='cump')return band(x);if(k==='kcal'){const dev=Math.abs(x/Tk-1);return dev<=0.1?'#2f9e62':dev<=0.2?'#efc95e':'#e5604a';}const i=Math.max(1,Math.min(5,R(x)))-1;return SCALE[SQ[k][1]?4-i:i];};
+      const color=(x,it)=>{if(k==='pasos'){const t=(it&&it.t)||tAvg;if(!t)return solid;const r=x/t;return r>=1?'var(--ok-mid)':r>=0.85?'var(--carb)':'#e5604a';}if(k==='cump')return band(x);if(k==='kcal'){const dev=Math.abs(x/Tk-1);return dev<=0.1?'var(--ok-mid)':dev<=0.2?'var(--carb)':'#e5604a';}const i=Math.max(1,Math.min(5,R(x)))-1;return SCALE[SQ[k][1]?4-i:i];};
       let mx=100;if(k==='pasos')mx=Math.max(tAvg*1.3,...got.map(x=>x.v),1000);else if(k==='kcal')mx=Math.max(Tk*1.35,...got.map(x=>x.v),1);else if(k!=='cump')mx=5;
-      v.bars=items.map((x,i)=>({h:(x.v==null?0:Math.max(3,x.v/mx*100))+'%',minH:x.v==null?'4px':'0',bg:x.v==null?'#e8eef4':color(x.v,x),fw:x.d===today?'800':'500',lbl:i%step===0||i===items.length-1?x.lbl:'',
+      v.bars=items.map((x,i)=>({h:(x.v==null?0:Math.max(3,x.v/mx*100))+'%',minH:x.v==null?'4px':'0',bg:x.v==null?'var(--color-neutral-200)':color(x.v,x),fw:x.d===today?'800':'500',lbl:i%step===0||i===items.length-1?x.lbl:'',
         tip:(x.wk?'Semana del '+dShort(x.d):dShort(x.d))+': '+(x.v==null?'sin datos':k==='pasos'?R(x.v).toLocaleString('es-ES')+' pasos'+(x.t?' · objetivo '+R(x.t).toLocaleString('es-ES'):''):k==='cump'?R(x.v)+' %':k==='kcal'?R(x.v)+' kcal':fx(x.v,1)+' / 5')}));
       v.title=(k==='pasos'?'Media diaria de pasos':k==='cump'?'Cumplimiento medio':k==='kcal'?'Media diaria registrada':SQ[k][0]+' media (1 a 5)')+(nDays>31?' · medias semanales':'');
       v.val=avg==null?'—':k==='pasos'?R(avg).toLocaleString('es-ES'):k==='cump'?String(R(avg)):k==='kcal'?R(avg).toLocaleString('es-ES'):fx(avg,1);v.unit=k==='pasos'?'pasos':k==='cump'?'%':k==='kcal'?'kcal':'/ 5';
       if(k==='pasos'&&tAvg){v.hasTarget=true;v.target=(tAvg/mx*100)+'%';v.targetLabel='Objetivo '+R(tAvg).toLocaleString('es-ES')+(tAll.some(x=>Math.abs(x.t-tAvg)>1)?' (media entreno/descanso)':'');}
       if(k==='kcal'&&Tk){v.hasTarget=true;v.target=(Tk/mx*100)+'%';v.targetLabel='Objetivo '+R(Tk).toLocaleString('es-ES');}
-      v.hasLegend=true;v.legend=k==='pasos'?[{c:'#2f9e62',l:'Objetivo cumplido'},{c:'#efc95e',l:'85–99 %'},{c:'#e5604a',l:'Menos del 85 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='cump'?[{c:'#2f9e62',l:'80 % o más'},{c:'#efc95e',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='kcal'?[{c:'#2f9e62',l:'±10 % del objetivo'},{c:'#efc95e',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}].map(g=>({...g,r:'3px'})):[{c:SQ[k][1]?SCALE[0]:SCALE[4],l:SQ[k][1]?'5 = mucha hambre':'5 = muy bien'},{c:SQ[k][1]?SCALE[4]:SCALE[0],l:SQ[k][1]?'1 = nada de hambre':'1 = muy mal'}].map(g=>({...g,r:'3px'}));
+      v.hasLegend=true;v.legend=k==='pasos'?[{c:'var(--ok-mid)',l:'Objetivo cumplido'},{c:'var(--carb)',l:'85–99 %'},{c:'#e5604a',l:'Menos del 85 %'},{c:'var(--color-neutral-200)',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='cump'?[{c:'var(--ok-mid)',l:'80 % o más'},{c:'var(--carb)',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'var(--color-neutral-200)',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='kcal'?[{c:'var(--ok-mid)',l:'±10 % del objetivo'},{c:'var(--carb)',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}].map(g=>({...g,r:'3px'})):[{c:SQ[k][1]?SCALE[0]:SCALE[4],l:SQ[k][1]?'5 = mucha hambre':'5 = muy bien'},{c:SQ[k][1]?SCALE[4]:SCALE[0],l:SQ[k][1]?'1 = nada de hambre':'1 = muy mal'}].map(g=>({...g,r:'3px'}));
       if(!got.length){v.showBars=false;v.hasLegend=false;v.empty=true;v.emptyText=k==='pasos'?'Sin pasos registrados en este periodo. Se apuntan en la tarjeta «Pasos» de Hoy.':k==='kcal'?'Sin comidas registradas en este periodo.':'Sin respuestas en este periodo. Se rellenan desde el cuestionario diario de la app.';}}
     else{const k=cur[0],unit=k==='bf'?'%':k.startsWith('per:')?'cm':(k==='s6'||k.startsWith('pl:'))?'mm':'kg';
       let pts;
@@ -132,7 +132,7 @@ class Component extends DCLogic {
         const X=q=>6+(t1===t0?154:(parseD(q.d).getTime()-t0)/(t1-t0)*308),Y=y=>12+(1-(y-lo)/(hi-lo))*118;
         const xy=pts.map(q=>[X(q).toFixed(1),Y(q.y).toFixed(1),q.big]);
         v.line='M'+xy.map(q=>q[0]+' '+q[1]).join(' L');v.area=v.line+' L'+xy[xy.length-1][0]+' 130 L'+xy[0][0]+' 130 Z';
-        v.dots=xy.map((q,i)=>({q,i})).filter(o=>o.q[2]||pts.length<=60).map(({q,i})=>{const big=q[2];return {l:(q[0]/320*100).toFixed(2)+'%',t:(q[1]/150*100).toFixed(2)+'%',sz:big?'13px':'8px',bg:big?'#fff':solid,bd:big?'3px solid '+ink:'0',tip:dShort(pts[i].d)+' · '+fx(pts[i].y,1)+' '+unit};});
+        v.dots=xy.map((q,i)=>({q,i})).filter(o=>o.q[2]||pts.length<=60).map(({q,i})=>{const big=q[2];return {l:(q[0]/320*100).toFixed(2)+'%',t:(q[1]/150*100).toFixed(2)+'%',sz:big?'13px':'8px',bg:big?'var(--cf-card)':solid,bd:big?'3px solid '+ink:'0',tip:dShort(pts[i].d)+' · '+fx(pts[i].y,1)+' '+unit};});
         v.yHi=fx(hi,1);v.yLo=fx(lo,1);v.yMid=fx((hi+lo)/2,1);v.x0=dShort(pts[0].d);v.x1=dShort(pts[pts.length-1].d);v.nPts=pts.length+' datos';
         const dl=pts[pts.length-1].y-pts[0].y;v.hasDelta=true;v.delta=(dl>0?'+':dl<0?'−':'')+fx(Math.abs(dl),1)+' '+unit;v.deltaSub='desde el '+dShort(pts[0].d);}}
     return v;

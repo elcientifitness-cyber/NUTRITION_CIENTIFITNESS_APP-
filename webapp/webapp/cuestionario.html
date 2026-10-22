@@ -2,20 +2,21 @@
 <html>
 <head>
 <meta charset="utf-8">
+<script>(function(){var d=document.documentElement,q=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};function m(){try{return localStorage.getItem('cf-theme')||'auto'}catch(e){return 'auto'}}function a(){var x=m(),k=(x==='dark'||(x==='auto'&&q.matches))?'dark':'light';d.setAttribute('data-theme',k);var t=document.querySelector('meta[name=theme-color]');if(t)t.setAttribute('content',k==='dark'?'#0E1317':'#F3F2EF');}window.cfTheme=m;window.cfSetTheme=function(x){try{localStorage.setItem('cf-theme',x)}catch(e){}a()};a();if(q.addEventListener)q.addEventListener('change',a);document.addEventListener('DOMContentLoaded',a);})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f2f6fa">
-<link rel="icon" href="assets/cientia-192.png">
-<link rel="apple-touch-icon" href="assets/cientia-192.png">
+<meta name="theme-color" content="#F3F2EF">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="alternate icon" href="assets/cn-192.png">
+<link rel="apple-touch-icon" href="assets/cn-192.png">
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <title>Cientia Nutrition · Cuestionario</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800;1,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="cf-theme.css">
 <style>
-body{margin:0;background:#f2f6fa;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--cf-page);-webkit-tap-highlight-color:transparent}
 a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-600)}
 button{-webkit-user-select:none;user-select:none}
 </style>

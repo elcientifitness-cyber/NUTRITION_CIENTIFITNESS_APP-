@@ -15,32 +15,32 @@
 </helmet>
 <div id="cf-form-top" style="max-width:600px;margin:0 auto;padding:18px 16px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font-family:var(--font-body);color:var(--color-text)">
   <div style="display:flex;align-items:center;gap:10px">
-    <img src="assets/cientia-192.png" alt="Cientia" style="width:36px;height:36px;border-radius:10px;display:block;flex:none"><span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:18px;text-transform:uppercase;margin-right:auto">Cientia <span style="color:#1180c2">Nutrition</span></span>
-    <sc-if value="{{ hasClose }}" hint-placeholder-val="{{ false }}"><button onClick="{{ close }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:#fff;color:var(--color-text);border-radius:999px;padding:10px 16px;min-height:44px;box-shadow:var(--shadow-sm);cursor:pointer">Cerrar</button></sc-if>
+    <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" style="display:block;flex:none"><path d="M74.57 32.79A30 30 0 1 0 74.57 67.21" style="fill:none;stroke:var(--cf-sym-ring);stroke-width:12"></path><path d="M81.41 23.65L87.54 18.5M35.98 11.47L33.24 3.96M9 50L1 50M35.98 88.53L33.24 96.04M81.41 76.35L87.54 81.5" style="fill:none;stroke:var(--cf-sym-tick);stroke-width:4"></path><circle cx="50" cy="50" r="9" style="fill:var(--cf-sym-dot)"></circle></svg><div style="margin-right:auto;display:flex"><span style="display:inline-flex;flex-direction:column;align-items:flex-start;gap:.18em;line-height:1;font-size:19px"><span style="font-family:'Inter Tight',system-ui,sans-serif;font-weight:480;letter-spacing:-.012em;color:var(--color-text);line-height:1;white-space:nowrap">C<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:var(--brass)"></span></span>ent<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:var(--brass)"></span></span>a</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:.3em;letter-spacing:.3em;line-height:1;color:var(--cf-nut);white-space:nowrap">NUTRITION</span></span></div>
+    <sc-if value="{{ hasClose }}" hint-placeholder-val="{{ false }}"><button onClick="{{ close }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--cf-card);color:var(--color-text);border-radius:999px;padding:10px 16px;min-height:44px;box-shadow:var(--shadow-sm);cursor:pointer">Cerrar</button></sc-if>
   </div>
 
   <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ true }}">
-    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:28px 22px;text-align:center;font-size:14px;color:var(--color-neutral-700)">Cargando cuestionario…</div>
+    <div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:28px 22px;text-align:center;font-size:14px;color:var(--color-neutral-700);display:flex;flex-direction:column;align-items:center;gap:12px"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true" style="display:block;flex:none"><path d="M74.57 32.79A30 30 0 1 0 74.57 67.21" style="fill:none;stroke:var(--cf-sym-ring);stroke-width:12"></path><g class="cf-spin"><path d="M81.41 23.65L87.54 18.5M35.98 11.47L33.24 3.96M9 50L1 50M35.98 88.53L33.24 96.04M81.41 76.35L87.54 81.5" style="fill:none;stroke:var(--cf-sym-tick);stroke-width:4"></path></g><circle cx="50" cy="50" r="9" style="fill:var(--cf-sym-dot)"></circle></svg>Cargando cuestionario…</div>
   </sc-if>
 
   <sc-if value="{{ isMsg }}" hint-placeholder-val="{{ false }}">
-    <div style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:30px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+    <div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:30px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
       <sc-if value="{{ msgOk }}" hint-placeholder-val="{{ false }}"><span style="width:56px;height:56px;border-radius:50%;background:var(--veg-bg);color:var(--veg-ink);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
-      <span style="font-family:var(--font-heading);font-weight:700;font-size:22px">{{ msgTitle }}</span>
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:22px">{{ msgTitle }}</span>
       <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);max-width:420px;text-wrap:pretty">{{ msgText }}</span>
     </div>
   </sc-if>
 
   <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;flex-direction:column;gap:6px">
-      <h1 style="margin:0;font-family:var(--font-heading);font-weight:700;font-size:26px;letter-spacing:-0.01em;text-wrap:balance">{{ title }}</h1>
+      <h1 style="margin:0;font-family:var(--font-heading);font-weight:600;font-size:26px;letter-spacing:-0.01em;text-wrap:balance">{{ title }}</h1>
       <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ intro }}</p></sc-if>
     </div>
     <div style="display:flex;flex-direction:column;gap:7px">
       <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span>{{ secLabel }}</span><span style="font-variant-numeric:tabular-nums">Paso {{ stepN }} de {{ stepT }}</span></div>
       <div style="height:6px;border-radius:999px;background:var(--color-accent-100);overflow:hidden"><div style="height:100%;width:{{ progW }};background:var(--color-accent);border-radius:999px;transition:width .3s ease"></div></div>
     </div>
-    <section style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:22px">
+    <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:22px">
       <sc-for list="{{ qs }}" as="q" hint-placeholder-count="4">
         <div id="{{ q.id }}" style="display:flex;flex-direction:column;gap:8px">
           <sc-if value="{{ q.showLabel }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:15px;line-height:1.35;text-wrap:pretty">{{ q.label }}<sc-if value="{{ q.req }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent)"> *</span></sc-if></span></sc-if>
@@ -61,19 +61,19 @@
             <div style="display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:600;color:var(--color-neutral-700)"><span>{{ q.lo }}</span><span>{{ q.hi }}</span></div>
           </sc-if>
           <sc-if value="{{ q.isConsent }}" hint-placeholder-val="{{ false }}">
-            <button onClick="{{ q.toggle }}" style="font:inherit;display:flex;align-items:flex-start;gap:12px;text-align:left;border:1.5px solid var(--color-divider);background:var(--color-neutral-100);border-radius:16px;padding:14px;cursor:pointer;color:var(--color-text)">
+            <button onClick="{{ q.toggle }}" style="font:inherit;display:flex;align-items:flex-start;gap:12px;text-align:left;border:1.5px solid var(--color-divider);background:var(--color-neutral-100);border-radius:12px;padding:14px;cursor:pointer;color:var(--color-text)">
               <span style="width:24px;height:24px;flex:none;border-radius:7px;border:2px solid {{ q.ckBd }};background:{{ q.ckBg }};color:#fff;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></span>
               <span style="font-size:14px;line-height:1.45;text-wrap:pretty">{{ q.label }}<sc-if value="{{ q.req }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent)"> *</span></sc-if></span>
             </button>
           </sc-if>
-          <sc-if value="{{ q.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#a8321a">Responde esta pregunta para continuar</span></sc-if>
+          <sc-if value="{{ q.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:var(--danger)">Responde esta pregunta para continuar</span></sc-if>
         </div>
       </sc-for>
     </section>
-    <sc-if value="{{ hasSendErr }}" hint-placeholder-val="{{ false }}"><div style="background:#fff1ee;border:1px solid #f4c9bf;color:#8f2a14;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:600">{{ sendErr }}</div></sc-if>
-    <div style="position:sticky;bottom:0;display:flex;gap:10px;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(242,246,250,0),#f2f6fa 35%)">
-      <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}"><button onClick="{{ prev }}" style="font:inherit;font-size:15px;font-weight:700;min-height:50px;padding:0 20px;border-radius:999px;border:1.5px solid var(--color-divider);background:#fff;color:var(--color-text);cursor:pointer">Anterior</button></sc-if>
-      <button onClick="{{ next }}" style="font:inherit;font-size:15px;font-weight:800;min-height:50px;padding:0 22px;border-radius:999px;border:0;background:var(--color-accent);color:#fff;cursor:pointer;flex:1;box-shadow:0 6px 18px rgba(17,128,194,.25)">{{ nextLabel }}</button>
+    <sc-if value="{{ hasSendErr }}" hint-placeholder-val="{{ false }}"><div style="background:var(--danger-bg);border:1px solid var(--danger-bd);color:var(--danger);border-radius:14px;padding:10px 14px;font-size:13px;font-weight:600">{{ sendErr }}</div></sc-if>
+    <div style="position:sticky;bottom:0;display:flex;gap:10px;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(color-mix(in srgb,var(--cf-page) 0%,transparent),var(--cf-page) 35%)">
+      <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}"><button onClick="{{ prev }}" style="font:inherit;font-size:15px;font-weight:700;min-height:50px;padding:0 20px;border-radius:999px;border:1.5px solid var(--color-divider);background:var(--cf-card);color:var(--color-text);cursor:pointer">Anterior</button></sc-if>
+      <button onClick="{{ next }}" style="font:inherit;font-size:15px;font-weight:800;min-height:50px;padding:0 22px;border-radius:999px;border:0;background:var(--color-accent);color:#fff;cursor:pointer;flex:1;box-shadow:0 6px 18px color-mix(in srgb,var(--color-accent) 25%,transparent)">{{ nextLabel }}</button>
     </div>
     <span style="font-size:11px;color:var(--color-neutral-600);text-align:center;text-wrap:pretty">Tus respuestas se guardan en este dispositivo hasta que las envíes. Solo las verá tu entrenador.</span>
   </sc-if>
@@ -109,7 +109,7 @@ class Component extends DCLogic {
     if(v.isForm){const S=this.steps(),i=Math.max(0,Math.min(s.step,S.length-1)),cur=S[i]||{label:'',qs:[]};
       v.showIntro=i===0&&!!s.form.intro;v.intro=s.form.intro||'';v.stepN=i+1;v.stepT=Math.max(1,S.length);v.secLabel=cur.label;v.progW=Math.round((i+1)/Math.max(1,S.length)*100)+'%';
       v.hasPrev=i>0;v.prev=()=>this.go(-1);v.next=()=>this.go(1);v.nextLabel=i>=S.length-1?(s.busy?'Enviando…':'Enviar respuestas'):'Siguiente';v.sendErr=s.sendErr||'';v.hasSendErr=!!s.sendErr;
-      const SEL=on=>({bg:on?'var(--color-accent)':'#fff',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)'});
+      const SEL=on=>({bg:on?'var(--color-accent)':'var(--cf-card)',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'var(--color-divider)'});
       v.qs=cur.qs.map(q=>{const val=s.ans[q.id];
         const o={id:'cfq-'+q.id,label:q.label,req:!!q.req,help:q.help||'',hasHelp:!!q.help,showLabel:q.type!=='consent',err:s.tried&&!!q.req&&F.empty(val),
           isText:q.type==='text'||q.type==='date',isLong:q.type==='long',isNum:q.type==='num',isChoice:['one','multi','yesno'].includes(q.type),isMulti:q.type==='multi',isScale:q.type==='scale',isConsent:q.type==='consent',

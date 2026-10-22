@@ -12,7 +12,7 @@
 <script src="cf-lib.js"></script>
 <script src="cf-select.js"></script>
 </helmet>
-<section style="background:var(--color-bg,#fff);border-radius:22px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<section style="background:var(--color-bg,#fff);border-radius:16px;box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px">
   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
     <div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0">
       <span style="font-weight:800;font-size:18px">Fotos de progreso</span>
@@ -24,21 +24,21 @@
     </div>
   </div>
   <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
-    <button onClick="{{ openGallery }}" style="font:inherit;color:inherit;border:0;background:var(--color-neutral-100);border-radius:18px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:8px;overflow:hidden">
-      <sc-for list="{{ strip }}" as="p" hint-placeholder-count="4"><span style="display:flex;flex-direction:column;gap:4px;align-items:center;flex:none"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:72px;height:96px;object-fit:cover;border-radius:12px;display:block;background:#fff"><span style="font-size:10px;font-weight:700;color:var(--color-neutral-700)">{{ p.short }}</span></span></sc-for>
+    <button onClick="{{ openGallery }}" style="font:inherit;color:inherit;border:0;background:var(--color-neutral-100);border-radius:12px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:8px;overflow:hidden">
+      <sc-for list="{{ strip }}" as="p" hint-placeholder-count="4"><span style="display:flex;flex-direction:column;gap:4px;align-items:center;flex:none"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:72px;height:96px;object-fit:cover;border-radius:12px;display:block;background:var(--cf-card)"><span style="font-size:10px;font-weight:700;color:var(--color-neutral-700)">{{ p.short }}</span></span></sc-for>
       <span style="margin-left:auto;font-size:13px;font-weight:800;color:var(--color-accent-700);padding:0 8px;white-space:nowrap">Ver galería ›</span>
     </button>
   </sc-if>
   <input type="file" accept="image/*" multiple="" ref="{{ fileRef }}" onChange="{{ onFiles }}" style="display:none">
-  <sc-if value="{{ errText }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--danger,#c0392b)">{{ errText }}</span></sc-if>
+  <sc-if value="{{ errText }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--danger,var(--danger))">{{ errText }}</span></sc-if>
 </section>
 
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
 <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
 <div style="position:fixed;inset:0;z-index:1300;background:rgba(18,32,46,.6);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
-  <div style="width:min(1240px,100%);background:#fff;border-radius:clamp(0px,2vw,24px);box-shadow:var(--shadow-md);display:flex;flex-direction:column;overflow:hidden">
+  <div style="width:min(1240px,100%);background:var(--cf-card);border-radius:clamp(0px,2vw,24px);box-shadow:var(--shadow-md);display:flex;flex-direction:column;overflow:hidden">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:1px solid var(--color-divider)">
-      <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:700;font-size:20px">Fotos de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ sumText }}</span></div>
+      <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">Fotos de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ sumText }}</span></div>
       <div style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px">
         <sc-for list="{{ modeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:14px;font-weight:700;padding:8px 16px;min-height:38px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
       </div>
@@ -46,9 +46,9 @@
     </div>
 
     <sc-if value="{{ isGallery }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 18px;background:var(--color-surface,#eef4f9)">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 18px;background:var(--color-surface,var(--color-surface))">
         <span style="font-size:13px;font-weight:700">Fecha de las fotos nuevas</span>
-        <button ref="{{ dateRef }}" onClick="{{ pickDate }}" style="font:inherit;font-size:14px;font-weight:800;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--color-accent-800);border-radius:12px;padding:8px 12px;min-height:40px;cursor:pointer">{{ upDayLabel }}<span style="font-size:11px">▾</span></button>
+        <button ref="{{ dateRef }}" onClick="{{ pickDate }}" style="font:inherit;font-size:14px;font-weight:800;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--color-accent-300);background:var(--cf-card);color:var(--color-accent-800);border-radius:12px;padding:8px 12px;min-height:40px;cursor:pointer">{{ upDayLabel }}<span style="font-size:11px">▾</span></button>
         <button class="btn btn-primary" onClick="{{ pickFiles }}" style="min-height:40px">{{ upLabel }}</button>
         <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 220px">Frente, perfil y espalda, con la misma luz y postura.</span>
       </div>
@@ -63,9 +63,9 @@
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">{{ g.label }}</span><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ g.sub }}</span><sc-if value="{{ g.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ g.del }}" style="font:inherit;font-size:12px;font-weight:800;margin-left:auto;border:0;border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer;background:{{ g.delBg }};color:{{ g.delFg }}">{{ g.delLabel }}</button></sc-if></div>
               <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,220px),1fr));gap:12px">
                 <sc-for list="{{ g.items }}" as="p" hint-placeholder-count="3">
-                  <div style="position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:var(--color-neutral-100)">
+                  <div style="position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--color-neutral-100)">
                     <button onClick="{{ p.view }}" aria-label="Ampliar" style="font:inherit;border:0;padding:0;background:transparent;cursor:zoom-in;position:absolute;inset:0;width:100%;height:100%"><img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;height:100%;object-fit:cover;display:block"></button>
-                    <sc-if value="{{ p.byClient }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--color-accent-800);pointer-events:none">Subida por el asesorado</span></sc-if>
+                    <sc-if value="{{ p.byClient }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--cf-card) 92%,transparent);color:var(--color-accent-800);pointer-events:none">Subida por el asesorado</span></sc-if>
                     <sc-if value="{{ p.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.del }}" aria-label="Borrar foto" style="font:inherit;position:absolute;right:8px;top:8px;border:0;border-radius:999px;min-width:36px;height:36px;padding:0 {{ p.delPad }};background:{{ p.delBg }};color:{{ p.delFg }};font-size:{{ p.delFs }};font-weight:800;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.25)">{{ p.delLabel }}</button></sc-if>
                   </div>
                 </sc-for>
@@ -85,20 +85,20 @@
               </div>
             </div>
             <sc-if value="{{ isSlider }}" hint-placeholder-val="{{ true }}">
-              <div style="position:relative;width:100%;max-width:min(560px,calc((100vh - 260px) * .75));aspect-ratio:3/4;margin:0 auto;border-radius:18px;overflow:hidden;background:var(--color-neutral-100);touch-action:none;cursor:ew-resize" onPointerDown="{{ slDown }}" onPointerMove="{{ slMove }}" onPointerUp="{{ slUp }}" ref="{{ slRef }}">
+              <div style="position:relative;width:100%;max-width:min(560px,calc((100vh - 260px) * .75));aspect-ratio:3/4;margin:0 auto;border-radius:12px;overflow:hidden;background:var(--color-neutral-100);touch-action:none;cursor:ew-resize" onPointerDown="{{ slDown }}" onPointerMove="{{ slMove }}" onPointerUp="{{ slUp }}" ref="{{ slRef }}">
                 <img src="{{ bUrl }}" alt="Después" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none">
                 <img src="{{ aUrl }}" alt="Antes" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;clip-path:{{ aClip }};pointer-events:none">
-                <div style="position:absolute;top:0;bottom:0;left:{{ slPos }};width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none"></div>
-                <div style="position:absolute;top:50%;left:{{ slPos }};width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--color-text);pointer-events:none">‹ ›</div>
-                <span style="position:absolute;left:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#1180c2;color:#fff">Antes · {{ aLabel }}</span>
-                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#963a2b;color:#fff">Después · {{ bLabel }}</span>
+                <div style="position:absolute;top:0;bottom:0;left:{{ slPos }};width:3px;margin-left:-1.5px;background:var(--cf-card);box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none"></div>
+                <div style="position:absolute;top:50%;left:{{ slPos }};width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--cf-card);box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--color-text);pointer-events:none">‹ ›</div>
+                <span style="position:absolute;left:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--color-accent);color:#fff">Antes · {{ aLabel }}</span>
+                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--prot-ink);color:#fff">Después · {{ bLabel }}</span>
               </div>
               <span style="font-size:12px;color:var(--color-neutral-700);text-align:center">Arrastra la barra blanca a izquierda y derecha.</span>
             </sc-if>
             <sc-if value="{{ isSide }}" hint-placeholder-val="{{ false }}">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:min(860px,calc((100vh - 260px) * 1.5));margin:0 auto">
-                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ aUrl }}" alt="Antes" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;display:block;box-shadow:0 0 0 3px #1180c2"><span style="font-size:13px;font-weight:800;text-align:center;color:#0e6fa9">Antes · {{ aLabel }}</span></div>
-                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ bUrl }}" alt="Después" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;display:block;box-shadow:0 0 0 3px #963a2b"><span style="font-size:13px;font-weight:800;text-align:center;color:#963a2b">Después · {{ bLabel }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ aUrl }}" alt="Antes" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;box-shadow:0 0 0 3px var(--color-accent)"><span style="font-size:13px;font-weight:800;text-align:center;color:var(--color-accent-600)">Antes · {{ aLabel }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:6px"><img src="{{ bUrl }}" alt="Después" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;box-shadow:0 0 0 3px var(--prot-ink)"><span style="font-size:13px;font-weight:800;text-align:center;color:var(--prot-ink)">Después · {{ bLabel }}</span></div>
               </div>
             </sc-if>
           </div>
@@ -107,8 +107,8 @@
             <span style="font-size:13px;font-weight:800">1. ¿Qué foto quieres cambiar?</span>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <sc-for list="{{ slots }}" as="sl" hint-placeholder-count="2">
-                <button onClick="{{ sl.pick }}" style="font:inherit;color:inherit;text-align:left;border:0;border-radius:16px;padding:8px;cursor:pointer;display:flex;align-items:center;gap:10px;background:{{ sl.bg }};box-shadow:{{ sl.ring }}">
-                  <img src="{{ sl.url }}" alt="{{ sl.label }}" style="width:44px;height:58px;object-fit:cover;border-radius:10px;display:block;flex:none;background:#fff">
+                <button onClick="{{ sl.pick }}" style="font:inherit;color:inherit;text-align:left;border:0;border-radius:12px;padding:8px;cursor:pointer;display:flex;align-items:center;gap:10px;background:{{ sl.bg }};box-shadow:{{ sl.ring }}">
+                  <img src="{{ sl.url }}" alt="{{ sl.label }}" style="width:44px;height:58px;object-fit:cover;border-radius:10px;display:block;flex:none;background:var(--cf-card)">
                   <span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:{{ sl.ink }}">{{ sl.label }}</span><span style="font-size:13px;font-weight:700">{{ sl.date }}</span></span>
                 </button>
               </sc-for>
@@ -137,11 +137,11 @@
 <div onClick="{{ closeView }}" style="position:fixed;inset:0;z-index:1320;background:rgba(10,18,26,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));font-family:var(--font-body)">
   <img src="{{ vUrl }}" alt="{{ vLabel }}" onClick="{{ stop }}" style="max-width:100%;max-height:calc(100% - 76px);object-fit:contain;border-radius:12px;display:block">
   <div onClick="{{ stop }}" style="display:flex;align-items:center;gap:8px;color:#fff;flex-wrap:wrap;justify-content:center">
-    <button onClick="{{ vPrev }}" aria-label="Anterior" style="font:inherit;font-size:22px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">‹</button>
+    <button onClick="{{ vPrev }}" aria-label="Anterior" style="font:inherit;font-size:22px;border:0;background:color-mix(in srgb,var(--cf-card) 14%,transparent);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">‹</button>
     <span style="font-weight:700;min-width:170px;text-align:center">{{ vLabel }}</span>
-    <button onClick="{{ vNext }}" aria-label="Siguiente" style="font:inherit;font-size:22px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">›</button>
-    <sc-if value="{{ vCanDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ vDel }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:transparent;color:#ffb4a8;padding:10px 12px;cursor:pointer">{{ vDelLabel }}</button></sc-if>
-    <button onClick="{{ closeView }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:10px 16px;cursor:pointer">Cerrar</button>
+    <button onClick="{{ vNext }}" aria-label="Siguiente" style="font:inherit;font-size:22px;border:0;background:color-mix(in srgb,var(--cf-card) 14%,transparent);color:#fff;border-radius:50%;width:46px;height:46px;cursor:pointer">›</button>
+    <sc-if value="{{ vCanDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ vDel }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:transparent;color:var(--danger-mid);padding:10px 12px;cursor:pointer">{{ vDelLabel }}</button></sc-if>
+    <button onClick="{{ closeView }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:color-mix(in srgb,var(--cf-card) 14%,transparent);color:#fff;border-radius:999px;padding:10px 16px;cursor:pointer">Cerrar</button>
   </div>
 </div>
 </x-import>
@@ -191,7 +191,7 @@ class Component extends DCLogic {
   slide(e){const el=this.slRef.current;if(!el)return;const r=el.getBoundingClientRect();this.setState({sl:Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))});}
   renderVals(){
     const s=this.state,P=s.photos,n=P.length,by=this.props.by||'coach';
-    const seg=(opts,cur,fn)=>opts.map(([k,l])=>({label:l,bg:cur===k?'#fff':'transparent',fg:cur===k?'var(--color-text)':'var(--color-neutral-700)',pick:()=>fn(k)}));
+    const seg=(opts,cur,fn)=>opts.map(([k,l])=>({label:l,bg:cur===k?'var(--cf-card)':'transparent',fg:cur===k?'var(--color-text)':'var(--color-neutral-700)',pick:()=>fn(k)}));
     const dates=[...new Set(P.map(p=>p.day))];
     const A=P.find(p=>p.id===s.a)||P[0],B=P.find(p=>p.id===s.b)||P[n-1];
     const v={
@@ -207,10 +207,10 @@ class Component extends DCLogic {
       isGallery:s.mode==='gallery',isCompare:s.mode==='compare'&&n>0,
       upDayLabel:dLong(s.upDay),
       pickDate:()=>{const el=this.dateRef.current;if(el&&window.CFDate)window.CFDate.open(el,s.upDay,val=>this.setState({upDay:val||todayIso()}),{max:todayIso()});},
-      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'#c0392b':'var(--danger-bg,#fff1ee)',delFg:s.delDay===d?'#fff':'var(--danger,#8f2a14)',
+      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'var(--danger)':'var(--danger-bg,var(--danger-bg))',delFg:s.delDay===d?'#fff':'var(--danger,var(--danger))',
         del:()=>{if(s.delDay!==d){this.setState({delDay:d,delId:null});return;}this.removeMany(it.filter(p=>by==='coach'||p.by===by));},
         items:it.map(p=>{const ask=s.delId===p.id;return {url:p.url,dayLabel:dLong(p.day),byClient:p.by==='client'&&by==='coach',view:()=>this.setState({view:p.id,delAsk:false,delId:null}),
-          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'#c0392b':'rgba(255,255,255,.92)',delFg:ask?'#fff':'#8f2a14',
+          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'var(--danger)':'rgba(255,255,255,.92)',delFg:ask?'#fff':'var(--danger)',
           del:e=>{e.stopPropagation();if(!ask){this.setState({delId:p.id,delDay:null});return;}this.removeMany([p]);}};})};}),
       cmpSeg:seg([['slider','Deslizar'],['side','Lado a lado']],s.cmp,k=>this.setState({cmp:k})),isSlider:s.cmp==='slider',isSide:s.cmp==='side',
       aUrl:A?A.url:'',bUrl:B?B.url:'',aLabel:A?dShort(A.day):'',bLabel:B?dShort(B.day):'',
@@ -220,12 +220,12 @@ class Component extends DCLogic {
       slMove:e=>{if(this._sd)this.slide(e);},slUp:()=>{this._sd=false;}
     };
     function R(x){return Math.round(x);}
-    const SL={a:['Antes','#1180c2','#0e6fa9','#e3f1fa'],b:['Después','#963a2b','#963a2b','#fde8e3']};
+    const SL={a:['Antes','var(--color-accent)','var(--color-accent-600)','var(--color-accent-100)'],b:['Después','var(--prot-ink)','var(--prot-ink)','var(--prot-bg)']};
     v.slots=['a','b'].map(k=>{const p=k==='a'?A:B,on=s.slot===k,c=SL[k];return {label:c[0],ink:c[2],url:p?p.url:'',date:p?dLong(p.day):'—',bg:on?c[3]:'var(--color-neutral-100)',ring:on?'0 0 0 2.5px '+c[1]:'none',pick:()=>this.setState({slot:k})};});
     v.pickHint='2. Toca la foto que quieres poner como «'+SL[s.slot][0]+'»';
     v.thumbs=P.map(p=>{const isA=A&&A.id===p.id,isB=B&&B.id===p.id,col=SL[s.slot][1];
-      return {url:p.url,dayLabel:dLong(p.day),short:dShort(p.day),hasTag:isA||isB,tag:isA&&isB?'Antes y después':isA?'Antes':'Después',tagBg:isA?'#1180c2':'#963a2b',
-        ring:isA?'0 0 0 3px #1180c2':isB?'0 0 0 3px #963a2b':'none',op:isA||isB?'1':'.85',
+      return {url:p.url,dayLabel:dLong(p.day),short:dShort(p.day),hasTag:isA||isB,tag:isA&&isB?'Antes y después':isA?'Antes':'Después',tagBg:isA?'var(--color-accent)':'var(--prot-ink)',
+        ring:isA?'0 0 0 3px var(--color-accent)':isB?'0 0 0 3px var(--prot-ink)':'none',op:isA||isB?'1':'.85',
         pick:()=>this.setState({[s.slot]:p.id,slot:s.slot==='a'?'b':'a'})};});
     const vi=P.findIndex(p=>p.id===s.view),vp=P[vi];
     v.hasView=!!vp;v.closeView=()=>this.setState({view:null,delAsk:false});
