@@ -1,13 +1,16 @@
 // Notificaciones push de CientiFitness (sin dependencias).
 // Variables en Vercel: SUPABASE_SERVICE_ROLE_KEY, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y CRON_SECRET.
 // GET  → clave pública (la app la usa para activar las notificaciones).
-// POST {cron:true} (cabecera x-cron) → envía los recordatorios que tocan (lo llama Supabase cada 15 min).
+// POST {cron:true} (cabecera x-cron) → envía los recordatorios que tocan (lo llama Supabase cada 5 min).
+//   Incluye las alarmas de competición (cf_links.comp) y el resumen diario al entrenador (cf_coach_subs).
+// POST {type:'cut', coach_id, client_key, kind, text} con sesión del asesorado → aviso al entrenador (pesaje o síntomas).
+// POST {type:'coach-test'} con sesión del entrenador → prueba en sus dispositivos.
 // POST {type:'plan'|'msg'|'test', client_key, text} con sesión del entrenador → aviso inmediato a ese asesorado.
 // POST {type:'test-me'} con sesión del asesorado → prueba en sus dispositivos.
 const crypto = require('crypto');
 const URL_SB = 'https://soxtkdakmpjxtvvtrvjs.supabase.co';
 const ANON = 'sb_publishable_mGei9bBQytQo75nSAo2umw_c2bvY_gA';
-const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', msg: true };
+const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', steps: true, stepsHour: '21:00', stepsMiss: 3, msg: true };
 
 const env = k => String(process.env[k] || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
 const b64u = b => Buffer.from(b).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -38,7 +41,7 @@ function encrypt(sub, text) { // RFC 8291 (aes128gcm)
 }
 async function push(sub, data, PUB, PRIV) {
   const u = new URL(sub.endpoint);
-  const r = await fetch(sub.endpoint, { method: 'POST', headers: { Authorization: 'vapid t=' + jwt(u.origin, PUB, PRIV) + ', k=' + PUB, 'Content-Encoding': 'aes128gcm', 'Content-Type': 'application/octet-stream', TTL: '43200', Urgency: 'normal' }, body: encrypt(sub, JSON.stringify(data)) });
+  const r = await fetch(sub.endpoint, { method: 'POST', headers: { Authorization: 'vapid t=' + jwt(u.origin, PUB, PRIV) + ', k=' + PUB, 'Content-Encoding': 'aes128gcm', 'Content-Type': 'application/octet-stream', TTL: data.urgent ? '1800' : '43200', Urgency: data.urgent ? 'high' : 'normal' }, body: encrypt(sub, JSON.stringify(data)) });
   return r.status;
 }
 function local(tz) {
@@ -46,6 +49,7 @@ function local(tz) {
   const g = t => (p.find(x => x.type === t) || {}).value, d = g('year') + '-' + g('month') + '-' + g('day');
   return { d, m: (+g('hour') % 24) * 60 + (+g('minute')), dow: { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 }[g('weekday')], tom: addDay(d, 1) };
 }
+const addD = (d, n) => { const t = new Date(d + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
 const effOf = (cfg, ck) => Object.assign({}, DEF, (cfg && cfg.tpl) || {}, (cfg && cfg.ovr && cfg.ovr[ck]) || {});
 
 function dueList(now, eff, pr, G, evs, C) {
@@ -59,6 +63,7 @@ function dueList(now, eff, pr, G, evs, C) {
     if (eff.revDay && e.d === now.d) out.push({ key: 'rd' + e.d + (e.t || ''), at: t != null ? Math.max(420, t - 120) : 540, data: { title: 'Hoy: ' + lb.toLowerCase(), body: lb + ' hoy' + at + '.', tag: 'rev', url: 'asesorado.html?tab=prog' } });
   });
   if (eff.weigh && !off.weigh && now.dow === num(eff.weighDow)) out.push({ key: 'wg', at: hm(eff.weighHour) != null ? hm(eff.weighHour) : 510, data: { title: 'Toca pesarse', body: 'Pésate en ayunas, después de ir al baño, y apúntalo en la app.', tag: 'weigh', url: 'asesorado.html?tab=prog' } });
+  if (eff.steps && !off.steps && D && num(String(D.steps || '').replace(',', '.')) > 0) out.push({ key: 'st', at: hm(eff.stepsHour) != null ? hm(eff.stepsHour) : 1260, data: { title: 'Pasos de hoy', body: 'Tu objetivo es de ' + Number(String(D.steps).replace(',', '.')).toLocaleString('es-ES') + ' pasos. Apunta en la app los que has dado.', tag: 'steps', url: 'asesorado.html?tab=hoy' } });
   (C || []).forEach(x => {
     const o = (eff.cxo || {})[x.id] || {}, cc = (eff.cxc || {})[x.id], on = cc != null ? !!cc : (o.on != null ? !!o.on : x.on !== false);
     if (!on || off['c:' + x.id]) return;
@@ -85,6 +90,31 @@ function dueList(now, eff, pr, G, evs, C) {
   }
   return out;
 }
+// Alarmas del protocolo de competición para el día local "now" (minutos desde las 00:00).
+function compList(now, C, pr) {
+  const out = []; if (!C || !C.wDate || !Array.isArray(C.days)) return { out, day: false };
+  const off = Math.round((Date.parse(now.d + 'T12:00:00Z') - Date.parse(C.wDate + 'T12:00:00Z')) / 864e5);
+  const W = hm(C.wTime) != null ? hm(C.wTime) : 540, wake = hm(pr.wake) != null ? hm(pr.wake) : 480, sleep = hm(pr.sleep) != null ? hm(pr.sleep) : 1350, U = 'asesorado.html?tab=hoy';
+  const add = (key, at, title, body, tag) => { at = Math.round(at); if (at >= 0 && at < 1440) out.push({ key: 'k' + C.wDate + key, kind: tag === 'cw' ? 'cw' : 'comp', at, data: { title, body, tag, url: U, urgent: true } }); };
+  const d = C.days.find(x => Number(x.off) === off);
+  if (d) {
+    const mf = C.mealFrom == null ? null : Number(C.mealFrom), wm = mf != null && off >= -mf;
+    add('am', wake, 'Pésate al despertar', 'Después de orinar y antes de beber o comer. Apúntalo en la app.', 'cwg');
+    const T = (d.takes || []).filter(x => hm(x.time) != null);
+    T.forEach((x, i) => add('t' + i, hm(x.time), 'Bebe ' + x.ml + ' ml', 'Toma ' + (i + 1) + ' de ' + T.length + (d.cut ? ' · corte de agua a las ' + d.cut : '') + '.', 'cw'));
+    if (hm(d.cut) != null) add('cut', hm(d.cut), 'Corte de agua', 'A partir de ahora no bebas, salvo lo que te indique tu entrenador.', 'ccut');
+    (d.meals || []).forEach((m, i) => { const t = hm(m.time); if (t == null) return; add('m' + i, t, (m.name || 'Comida') + (m.kcal ? ' · ' + m.kcal + ' kcal' : ''), ((m.lines || []).join(' · ') || 'Es la hora de tu comida.') + (wm ? ' Pésate antes de empezar.' : ''), 'cmeal' + i); if (wm) add('mp' + i, t + 30, 'Pésate después de comer', (m.name || 'Comida') + ': apunta tu peso en la app.', 'cwg'); });
+    (d.supps || []).forEach((x, i) => { const t = hm(x.time); if (t != null) add('s' + i, t, 'Suplemento', x.txt || '', 'csup' + i); });
+    (d.extras || []).forEach((x, i) => { const t = hm(x.time); if (t == null) return; add('x' + i, t, x.name + (x.dur ? ' · ' + x.dur + ' min' : ''), ((x.txt || '') + (x.weigh ? ' Pésate antes de empezar.' : '')).trim() || 'Es la hora.', 'cext' + i); if (x.weigh && num(x.dur)) add('xp' + i, t + num(x.dur), 'Pésate después: ' + x.name, 'Apunta tu peso en la app.', 'cwg'); });
+    if (off === 0) add('of', Math.max(0, W - 60), 'Pesaje oficial a las ' + fmt(W), 'No comas ni bebas hasta pesarte.', 'cof');
+    else add('pm', Math.max(0, sleep - 30), 'Pésate antes de dormir', 'Apunta tu peso en la app.', 'cwg');
+  }
+  (C.refill || []).forEach((r, i) => { const a = W + Math.round(num(r.from) * 60), dd = Math.floor(a / 1440); if (addDay(C.wDate, dd) !== now.d) return; const b = [r.fl && 'Líquidos: ' + r.fl, r.sod && 'Sodio: ' + r.sod, r.ch && 'Hidratos: ' + r.ch, r.food && 'Comida: ' + r.food].filter(Boolean).join(' · '); add('r' + i, a - dd * 1440, 'Reposición ' + num(r.from) + '–' + num(r.to) + ' h', b || r.txt || 'Empieza este tramo de reposición.', 'crf' + i); });
+  return { out, day: !!d };
+}
+const compAct = (C, d) => { if (!C || !C.wDate || !Array.isArray(C.days) || !C.days.length) return false; const mo = Math.min(0, ...C.days.map(x => Number(x.off) || 0)); return d >= addDay(C.wDate, mo) && d <= addDay(C.wDate, 1); };
+const kgf = x => (Math.round(x * 10) / 10).toLocaleString('es-ES');
+const faDue = (it, n) => { if (it.pause && n.d <= it.pause) return false; const f = it.freq || 'week'; if (f === 'once') return n.d === it.date; if (f === 'month') { const last = new Date(Date.UTC(+n.d.slice(0, 4), +n.d.slice(5, 7), 0)).getUTCDate(); return Number(n.d.slice(8, 10)) === Math.min(Number(it.dom || 1), last); } if (Number(it.dow) !== n.dow) return false; if (f === '2w') { const w = Math.floor((Date.parse(n.d + 'T12:00:00Z') - Date.parse((it.from || n.d) + 'T12:00:00Z')) / 864e5 / 7); return w >= 0 && w % 2 === 0; } return true; };
 const customOf = cfg => { if (!cfg) return []; const own = cfg.own || [], com = cfg.common || []; if (cfg.owner) return own; const mine = cfg.prem ? own : [], ids = new Set(mine.map(x => x.id)); return mine.concat(com.filter(x => x && !ids.has(x.id))); };
 
 module.exports = async (req, res) => {
@@ -102,31 +132,107 @@ module.exports = async (req, res) => {
     if (body.cron) {
       const cs = env('CRON_SECRET'); if (cs && req.headers['x-cron'] !== cs) return out(403, { error: 'No autorizado' });
       const subs = await api('cf_push_subs?select=*').then(r => r.ok ? r.json() : []);
-      if (!subs.length) return out(200, { subs: 0, sent: 0 });
-      const links = await api('cf_links?select=coach_id,client_key,guide:plan->guide').then(r => r.ok ? r.json() : []);
-      const LK = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; });
-      const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id))]) CF[c] = await cfgOf(c);
-      let sent = 0;
+      let links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,comp').then(r => r.ok ? r.json() : null);
+      if (!links) links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide').then(r => r.ok ? r.json() : []);
+      const LK = {}, LC = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; if (l.comp) LC[l.coach_id + '|' + l.client_key] = l.comp; });
+      // Entrenadores con avisos (por sus suscripciones) y con cuestionarios programados (aunque ningún asesorado tenga avisos activados)
+      const FAC = await api('cf_state?select=user_id&data->fauto=not.is.null').then(r => r.ok ? r.json() : []).catch(() => []);
+      const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id).concat(FAC.map(x => x.user_id)))]) CF[c] = await cfgOf(c);
+      let sent = 0, made = 0;
+      // Cuestionarios automáticos: crea el cuestionario, avisa y recuerda a las 24 h
+      for (const c of Object.keys(CF)) {
+        const cfg = CF[c]; if (!cfg || !(cfg.prem || cfg.owner) || !Array.isArray(cfg.fauto) || !cfg.fauto.length) continue;
+        const nowM = local('Europe/Madrid'); if (!nowM) continue;
+        for (const it of cfg.fauto) {
+          if (it.on === false) continue;
+          const T = hm(it.time || '10:00'); if (T == null || !faDue(it, nowM) || nowM.m < T || nowM.m - T >= 180) continue; // hasta 3 h de margen si el cron se salta alguna pasada
+          const frm = ((cfg.forms || []).find(f => f.id === it.formId)) || ((cfg.cforms || []).find(f => f.id === it.formId)) || it.form; if (!frm || !frm.qs) continue;
+          for (const ck of Object.keys(cfg.fa || {})) {
+            if (!(cfg.fa[ck] || []).includes(it.id)) continue;
+            const ex = await api('cf_forms?select=id&coach_id=eq.' + c + '&client_key=eq.' + encodeURIComponent(ck) + '&form->>auto=eq.' + encodeURIComponent(it.id) + '&created_at=gte.' + encodeURIComponent(new Date(Date.now() - 20 * 3600e3).toISOString())).then(r => r.ok ? r.json() : [{}]);
+            if (ex.length) continue;
+            const ins = await api('cf_forms', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ coach_id: c, client_key: ck, title: frm.name || 'Cuestionario', form: { name: frm.name, kind: frm.kind || 'otro', intro: frm.intro || '', qs: frm.qs, auto: it.id, tpl: it.formId } }) }).then(r => r.ok ? r.json() : null);
+            const row = ins && ins[0]; if (!row) continue; made++;
+            for (const s of subs.filter(x => x.coach_id === c && x.client_key === ck && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: frm.name || 'Cuestionario', body: 'Tu entrenador te ha enviado un cuestionario. Te llevará un par de minutos.', tag: 'form', url: 'cuestionario.html?t=' + row.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
+          }
+        }
+        if (cfg.fauto.some(i => i.remind !== false)) {
+          const pend = await api('cf_forms?select=id,client_key,token,title,form&coach_id=eq.' + c + '&status=eq.sent&form->>auto=not.is.null&form->>reminded=is.null&created_at=lt.' + encodeURIComponent(new Date(Date.now() - 24 * 3600e3).toISOString()) + '&created_at=gt.' + encodeURIComponent(new Date(Date.now() - 48 * 3600e3).toISOString())).then(r => r.ok ? r.json() : []);
+          for (const f of pend) {
+            const it = cfg.fauto.find(i => i.id === f.form.auto); if (!it || it.remind === false) continue;
+            await api('cf_forms?id=eq.' + f.id, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ form: Object.assign({}, f.form, { reminded: true }) }) });
+            for (const s of subs.filter(x => x.coach_id === c && x.client_key === f.client_key && !((x.prefs && x.prefs.off) || {}).form)) { const code = await push(s, { title: 'Te falta el cuestionario', body: (f.title || 'Cuestionario') + ': todavía no lo has respondido.', tag: 'form', url: 'cuestionario.html?t=' + f.token }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++; }
+          }
+        }
+      }
       for (const s of subs) {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
-        const list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key), customOf(cfg));
+        let list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key), customOf(cfg));
+        const CP = LC[s.coach_id + '|' + s.client_key];
+        if (CP && cfg && cfg.prem && !((s.prefs && s.prefs.off) || {}).comp) { const K = compList(now, CP, s.prefs || {}); if (K.day) list = list.filter(x => x.kind !== 'water'); list = list.concat(K.out); }
         const st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
         let go = list.filter(x => x.at <= now.m && now.m - x.at < 40 && !st.k.includes(x.key));
-        const w = go.filter(x => x.kind === 'water'); if (w.length > 1) { w.slice(0, -1).forEach(x => st.k.push(x.key)); go = go.filter(x => x.kind !== 'water' || x === w[w.length - 1]); }
+        ['water', 'cw'].forEach(kd => { const w = go.filter(x => x.kind === kd); if (w.length > 1) { w.slice(0, -1).forEach(x => st.k.push(x.key)); go = go.filter(x => x.kind !== kd || x === w[w.length - 1]); } });
+        if (go.some(x => x.key === 'st')) { const dl = await api('cf_daylogs?select=survey&coach_id=eq.' + s.coach_id + '&client_key=eq.' + encodeURIComponent(s.client_key) + '&day=eq.' + now.d).then(r => r.ok ? r.json() : []); if (dl[0] && dl[0].survey && num(dl[0].survey.steps) > 0) { go = go.filter(x => x.key !== 'st'); st.k.push('st'); } }
         if (!go.length) continue;
         let gone = false;
         for (const x of go) { const code = await push(s, x.data, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { gone = true; break; } st.k.push(x.key); if (code >= 200 && code < 300) sent++; }
         if (gone) await drop(s.endpoint);
         else await api('cf_push_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ sent: st }) });
       }
-      return out(200, { subs: subs.length, sent });
+      // Resumen diario de competición para el entrenador
+      const csubs = await api('cf_coach_subs?select=*').then(r => r.ok ? r.json() : []);
+      for (const s of csubs) {
+        const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
+        const pr = s.prefs || {}, T = hm(pr.sum) != null ? hm(pr.sum) : 1290, st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
+        if ((pr.off || {}).sum || st.k.includes('sum') || now.m < T || now.m - T >= 40) continue;
+        const act = links.filter(l => l.coach_id === s.user_id && compAct(l.comp, now.d)); st.k.push('sum');
+        const ccfg = CF[s.user_id] || await cfgOf(s.user_id).catch(() => null), sLines = [];
+        { const mine = links.filter(l => l.coach_id === s.user_id && l.guide && ((l.guide.train || {}).steps || (l.guide.rest || {}).steps));
+          if (mine.length) { const DLs = await api('cf_daylogs?select=client_key,day,survey&coach_id=eq.' + s.user_id + '&day=gte.' + addD(now.d, -40) + '&order=day.asc').then(r => r.ok ? r.json() : []);
+            mine.forEach(l => { const ef = effOf(ccfg, l.client_key); if (ef.steps === false) return; const NX = Math.max(1, num(ef.stepsMiss) || 3), G = l.guide, tg = d => { const dw = (new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7, x = G[(G.days || [0, 2, 4]).includes(dw) ? 'train' : 'rest']; return x ? num(String(x.steps || '').replace(',', '.')) : 0; };
+              const RS = DLs.filter(r => r.client_key === l.client_key && r.survey && num(r.survey.steps) > 0 && tg(r.day) > 0).slice(-NX);
+              if (RS.length >= NX && RS.every(r => num(r.survey.steps) < tg(r.day)) && RS[RS.length - 1].day >= addD(now.d, -1)) { const av = Math.round(RS.reduce((a, r) => a + num(r.survey.steps), 0) / RS.length), at = Math.round(RS.reduce((a, r) => a + tg(r.day), 0) / RS.length); sLines.push((l.name || 'Cliente').split(' ')[0] + ': ' + NX + ' días sin llegar a los pasos (media ' + av.toLocaleString('es-ES') + ' de ' + at.toLocaleString('es-ES') + ')'); } }); } }
+        if (sLines.length && !act.length) { const code = await push(s, { title: 'Pasos de tus asesorados', body: sLines.join('\n'), tag: 'cc-steps', url: 'index.html', coach: true }, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); continue; } if (code >= 200 && code < 300) sent++; }
+        if (act.length) {
+          const R = await api('cf_cutlogs?select=client_key,t,kind,kg,sym&coach_id=eq.' + s.user_id + '&t=gte.' + encodeURIComponent(new Date(Date.now() - 20 * 3600e3).toISOString()) + '&order=t.asc').then(r => r.ok ? r.json() : []);
+          const lines = act.map(l => { const C = l.comp, my = R.filter(x => x.client_key === l.client_key), W = my.filter(x => x.kg != null && x.kind !== 'sym' && x.kind !== 'accept'), sy = my.filter(x => x.kind === 'sym'), nm = (l.name || 'Cliente').split(' ')[0];
+            if (!W.length) return nm + ': sin pesajes hoy' + (sy.length ? ' · ' + sy.length + ' aviso(s) de síntomas' : '');
+            const a = num(W[0].kg), b = num(W[W.length - 1].kg), cat = num(C.catKg), df = b - a;
+            return nm + ': ' + kgf(b) + ' kg' + (W.length > 1 ? ' (' + (df > 0 ? '+' : df < 0 ? '−' : '±') + kgf(Math.abs(df)) + ' hoy)' : '') + (cat ? (b > cat ? ' · faltan ' + kgf(b - cat) + ' kg' : ' · en peso') : '') + ' · ' + W.length + (W.length === 1 ? ' pesaje' : ' pesajes') + (sy.length ? ' · síntomas: ' + [...new Set(sy.flatMap(x => x.sym || []))].join(', ') : ''); });
+          const code = await push(s, { title: 'Resumen de competición', body: lines.concat(sLines).join('\n'), tag: 'cc-sum', url: 'index.html?view=comp', coach: true }, PUB, PRIV).catch(() => 0);
+          if (code === 404 || code === 410) { await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); continue; }
+          if (code >= 200 && code < 300) sent++;
+        }
+        await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ sent: st }) });
+      }
+      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made });
     }
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     const me = await fetch(URL_SB + '/auth/v1/user', { headers: { apikey: ANON, Authorization: 'Bearer ' + tok } }).then(r => r.ok ? r.json() : null);
     if (!me || !me.id) return out(403, { error: 'Sesión no válida. Vuelve a entrar.' });
     const type = String(body.type || '');
-    if (!['plan', 'msg', 'test', 'test-me'].includes(type)) return out(400, { error: 'Tipo no válido' });
+    if (!['plan', 'msg', 'test', 'test-me', 'cut', 'coach-test'].includes(type)) return out(400, { error: 'Tipo no válido' });
+    if (type === 'cut' || type === 'coach-test') {
+      let cid = me.id, data;
+      if (type === 'cut') {
+        cid = String(body.coach_id || ''); const ck = String(body.client_key || '');
+        const lk = await api('cf_links?select=name,email&coach_id=eq.' + encodeURIComponent(cid) + '&client_key=eq.' + encodeURIComponent(ck)).then(r => r.ok ? r.json() : []);
+        if (!lk.length || String(lk[0].email || '').toLowerCase() !== String(me.email || '').toLowerCase()) return out(403, { error: 'No autorizado' });
+        const sym = body.kind === 'sym', txt = String(body.text || '').replace(/\s+/g, ' ').trim().slice(0, 220);
+        data = { title: (lk[0].name || 'Asesorado') + (sym ? ' · síntomas' : ' · pesaje'), body: txt || (sym ? 'Ha marcado síntomas.' : 'Ha registrado un pesaje.'), tag: 'cc-' + ck + (sym ? '-s' : ''), url: 'index.html?view=comp&c=' + encodeURIComponent(ck), coach: true, urgent: sym };
+      } else data = { title: 'Avisos de competición activados', body: 'Así te llegarán los pesajes, los síntomas y el resumen del día.', tag: 'cc-test', url: 'index.html?view=comp', coach: true };
+      const cs = await api('cf_coach_subs?select=*&user_id=eq.' + encodeURIComponent(cid)).then(r => r.ok ? r.json() : []);
+      let sent = 0;
+      for (const s of cs) {
+        const off = (s.prefs && s.prefs.off) || {};
+        if (type === 'cut' && (body.kind === 'sym' ? off.sym : off.w)) continue;
+        const code = await push(s, data, PUB, PRIV).catch(() => 0);
+        if (code === 404 || code === 410) await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'DELETE' }); else if (code >= 200 && code < 300) sent++;
+      }
+      return out(200, { sent, devices: cs.length });
+    }
     let q;
     if (type === 'test-me') q = 'cf_push_subs?select=*&user_id=eq.' + me.id;
     else { const ck = String(body.client_key || ''); if (!ck) return out(400, { error: 'Falta el cliente' }); q = 'cf_push_subs?select=*&coach_id=eq.' + me.id + '&client_key=eq.' + encodeURIComponent(ck); }

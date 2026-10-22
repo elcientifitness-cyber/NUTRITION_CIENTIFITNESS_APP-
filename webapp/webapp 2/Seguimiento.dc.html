@@ -39,14 +39,14 @@
 
   <sc-if value="{{ showLine }}" hint-placeholder-val="{{ false }}">
     <div style="display:grid;grid-template-columns:minmax(0,1fr) 40px;column-gap:6px">
-      <svg viewBox="0 0 320 150" preserveAspectRatio="none" style="width:100%;height:200px;display:block;overflow:visible">
+      <div style="position:relative;height:200px;min-width:0">
+      <svg viewBox="0 0 320 150" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible">
         <path d="M0 12H320M0 71H320M0 130H320" stroke="#e8eef4" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"></path>
-        <path d="{{ area }}" fill="{{ soft }}"></path>
+        <path d="{{ area }}" fill="{{ soft }}" fill-opacity=".75"></path>
         <path d="{{ line }}" fill="none" stroke="{{ solid }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
-        <path d="{{ dotsSmall }}" fill="none" stroke="{{ solid }}" stroke-width="5" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
-        <path d="{{ dotsBig }}" fill="none" stroke="{{ ink }}" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
-        <path d="{{ dotsBig }}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
       </svg>
+      <sc-for list="{{ dots }}" as="p" hint-placeholder-count="0"><span title="{{ p.tip }}" style="position:absolute;left:{{ p.l }};top:{{ p.t }};width:{{ p.sz }};height:{{ p.sz }};transform:translate(-50%,-50%);border-radius:50%;background:{{ p.bg }};border:{{ p.bd }};box-sizing:border-box;box-shadow:0 1px 3px rgba(20,50,80,.18)"></span></sc-for>
+      </div>
       <div style="position:relative;font-size:10px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums"><span style="position:absolute;top:8%;transform:translateY(-50%)">{{ yHi }}</span><span style="position:absolute;top:47%;transform:translateY(-50%)">{{ yMid }}</span><span style="position:absolute;top:86.7%;transform:translateY(-50%)">{{ yLo }}</span></div>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-neutral-700);margin:-6px 46px 0 0"><span>{{ x0 }}</span><span>{{ nPts }}</span><span>{{ x1 }}</span></div>
@@ -85,7 +85,8 @@ class Component extends DCLogic {
     const p=this.props,s=this.state,lg=p.logs||{},ms=(p.metrics||[]).slice().sort((a,b)=>a.d<b.d?-1:1),PN=p.perNames||[],Tk=num(p.tk),today=isoD(new Date());
     const T=TONES[p.tone]||TONES.coral,[ink,solid,soft]=T;
     const key0=p.storeKey||'cf-seg';let saved={};try{saved=JSON.parse(localStorage.getItem(key0)||'{}');}catch(e){}
-    const defs=[['cump','Cumplimiento','bars'],['kcal','Kcal','bars'],['peso','Peso','line'],['sat','Satisfacción','bars'],['hambre','Hambre','bars'],['energia','Energía','bars']];
+    const G=p.guide||null,stT=d=>{if(!G)return 0;const dw=(parseD(d).getDay()+6)%7,x=G[(G.days||[0,2,4]).includes(dw)?'train':'rest'];return x?num(String(x.steps||'').replace(',','.')):0;};
+    const defs=[['cump','Cumplimiento','bars'],['kcal','Kcal','bars'],['pasos','Pasos','bars'],['peso','Peso','line'],['sat','Satisfacción','bars'],['hambre','Hambre','bars'],['energia','Energía','bars']];
     if(ms.some(m=>m.bf!=null))defs.push(['bf','% Grasa','line']);if(ms.some(m=>m.lbm!=null))defs.push(['lbm','Masa magra','line']);if(ms.some(m=>m.mm!=null))defs.push(['mm','Masa muscular','line']);
     if(ms.some(m=>m.s6!=null))defs.push(['s6','Σ6 pliegues','line']);
     (p.plNames||[]).forEach(([k,l])=>{if(ms.some(m=>m.pl&&num(m.pl[k])>0))defs.push(['pl:'+k,l,'line']);});
@@ -93,29 +94,31 @@ class Component extends DCLogic {
     const metric=s.metric||saved.m,cur=defs.find(d=>d[0]===metric)||defs[0],range=s.range||saved.r||'30';
     const save=o=>{try{localStorage.setItem(key0,JSON.stringify({m:cur[0],r:range,...o}));}catch(e){}};
     const v={ink,solid,soft,hasHead:!!p.head,head:p.head||'',headSub:p.headSub||'',hasDelta:false,showLine:false,showBars:false,empty:false,hasTarget:false,hasLegend:false};
-    const dayK=['cump','kcal','sat','hambre','energia'],mk=([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'#fff',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft});
+    const dayK=['cump','kcal','pasos','sat','hambre','energia'],mk=([k,l])=>({label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:k===cur[0]?ink:'#fff',fg:k===cur[0]?'#fff':ink,bd:k===cur[0]?ink:soft});
     const isPl=d=>d[0].startsWith('pl:'),isPer=d=>d[0].startsWith('per:');
     v.chipGroups=[['Día a día',defs.filter(d=>dayK.includes(d[0]))],['Cuerpo',defs.filter(d=>!dayK.includes(d[0])&&!isPl(d)&&!isPer(d))],['Pliegues',defs.filter(isPl)],['Perímetros',defs.filter(isPer)]].filter(g=>g[1].length).map(([label,ds])=>({label,items:ds.map(mk)}));
     v.ranges=[['14','2 sem.'],['30','1 mes'],['91','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:range===r?'#fff':'transparent',fg:range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>{save({r});this.setState({range:r});}}));
     const allDays=Object.keys(lg).sort(),first=allDays[0]||today;
     const nDays=range==='all'?Math.max(14,Math.min(730,R((parseD(today)-parseD(first))/86400000)+1)):num(range),from=addDays(today,-(nDays-1));
     if(cur[2]==='bars'){v.showBars=true;const k=cur[0];
-      const val=d=>{const L=lg[d];if(!L)return null;if(k==='cump')return dayScore(L,Tk);if(k==='kcal'){const F=L.foods||[];return F.length?F.reduce((a,x)=>a+num(x.k),0):null;}const q=L.survey&&L.survey[k];return q?num(q):null;};
+      const val=d=>{const L=lg[d];if(!L)return null;if(k==='cump')return dayScore(L,Tk);if(k==='kcal'){const F=L.foods||[];return F.length?F.reduce((a,x)=>a+num(x.k),0):null;}if(k==='pasos'){const q=L.survey&&num(L.survey.steps);return q>0?q:null;}const q=L.survey&&L.survey[k];return q?num(q):null;};
       let dayList=[];for(let i=nDays-1;i>=0;i--)dayList.push(addDays(today,-i));
-      let items=dayList.map(d=>({d,v:val(d),lbl:String(parseD(d).getDate())}));
-      if(nDays>31){const wk=[];for(let i=0;i<items.length;i+=7){const ch=items.slice(i,i+7),g=ch.filter(x=>x.v!=null);wk.push({d:ch[0].d,v:g.length?g.reduce((a,x)=>a+x.v,0)/g.length:null,lbl:dShort(ch[0].d).split(' ')[0]+'/'+(parseD(ch[0].d).getMonth()+1),wk:true});}items=wk;}
+      let items=dayList.map(d=>({d,v:val(d),t:stT(d),lbl:String(parseD(d).getDate())}));
+      if(nDays>31){const wk=[];for(let i=0;i<items.length;i+=7){const ch=items.slice(i,i+7),g=ch.filter(x=>x.v!=null);const gt=ch.filter(x=>x.t>0);wk.push({d:ch[0].d,v:g.length?g.reduce((a,x)=>a+x.v,0)/g.length:null,t:gt.length?gt.reduce((a,x)=>a+x.t,0)/gt.length:0,lbl:dShort(ch[0].d).split(' ')[0]+'/'+(parseD(ch[0].d).getMonth()+1),wk:true});}items=wk;}
       const got=items.filter(x=>x.v!=null),avg=got.length?got.reduce((a,x)=>a+x.v,0)/got.length:null;
       v.barGap=items.length>40?'1px':items.length>20?'2px':'4px';
       const step=Math.ceil(items.length/10);
-      const color=x=>{if(k==='cump')return band(x);if(k==='kcal'){const dev=Math.abs(x/Tk-1);return dev<=0.1?'#2f9e62':dev<=0.2?'#efc95e':'#e5604a';}const i=Math.max(1,Math.min(5,R(x)))-1;return SCALE[SQ[k][1]?4-i:i];};
-      let mx=100;if(k==='kcal')mx=Math.max(Tk*1.35,...got.map(x=>x.v),1);else if(k!=='cump')mx=5;
-      v.bars=items.map((x,i)=>({h:(x.v==null?0:Math.max(3,x.v/mx*100))+'%',minH:x.v==null?'4px':'0',bg:x.v==null?'#e8eef4':color(x.v),fw:x.d===today?'800':'500',lbl:i%step===0||i===items.length-1?x.lbl:'',
-        tip:(x.wk?'Semana del '+dShort(x.d):dShort(x.d))+': '+(x.v==null?'sin datos':k==='cump'?R(x.v)+' %':k==='kcal'?R(x.v)+' kcal':fx(x.v,1)+' / 5')}));
-      v.title=(k==='cump'?'Cumplimiento medio':k==='kcal'?'Media diaria registrada':SQ[k][0]+' media (1 a 5)')+(nDays>31?' · medias semanales':'');
-      v.val=avg==null?'—':k==='cump'?String(R(avg)):k==='kcal'?R(avg).toLocaleString('es-ES'):fx(avg,1);v.unit=k==='cump'?'%':k==='kcal'?'kcal':'/ 5';
+      const tAll=items.filter(x=>x.t>0),tAvg=tAll.length?tAll.reduce((a,x)=>a+x.t,0)/tAll.length:0;
+      const color=(x,it)=>{if(k==='pasos'){const t=(it&&it.t)||tAvg;if(!t)return solid;const r=x/t;return r>=1?'#2f9e62':r>=0.85?'#efc95e':'#e5604a';}if(k==='cump')return band(x);if(k==='kcal'){const dev=Math.abs(x/Tk-1);return dev<=0.1?'#2f9e62':dev<=0.2?'#efc95e':'#e5604a';}const i=Math.max(1,Math.min(5,R(x)))-1;return SCALE[SQ[k][1]?4-i:i];};
+      let mx=100;if(k==='pasos')mx=Math.max(tAvg*1.3,...got.map(x=>x.v),1000);else if(k==='kcal')mx=Math.max(Tk*1.35,...got.map(x=>x.v),1);else if(k!=='cump')mx=5;
+      v.bars=items.map((x,i)=>({h:(x.v==null?0:Math.max(3,x.v/mx*100))+'%',minH:x.v==null?'4px':'0',bg:x.v==null?'#e8eef4':color(x.v,x),fw:x.d===today?'800':'500',lbl:i%step===0||i===items.length-1?x.lbl:'',
+        tip:(x.wk?'Semana del '+dShort(x.d):dShort(x.d))+': '+(x.v==null?'sin datos':k==='pasos'?R(x.v).toLocaleString('es-ES')+' pasos'+(x.t?' · objetivo '+R(x.t).toLocaleString('es-ES'):''):k==='cump'?R(x.v)+' %':k==='kcal'?R(x.v)+' kcal':fx(x.v,1)+' / 5')}));
+      v.title=(k==='pasos'?'Media diaria de pasos':k==='cump'?'Cumplimiento medio':k==='kcal'?'Media diaria registrada':SQ[k][0]+' media (1 a 5)')+(nDays>31?' · medias semanales':'');
+      v.val=avg==null?'—':k==='pasos'?R(avg).toLocaleString('es-ES'):k==='cump'?String(R(avg)):k==='kcal'?R(avg).toLocaleString('es-ES'):fx(avg,1);v.unit=k==='pasos'?'pasos':k==='cump'?'%':k==='kcal'?'kcal':'/ 5';
+      if(k==='pasos'&&tAvg){v.hasTarget=true;v.target=(tAvg/mx*100)+'%';v.targetLabel='Objetivo '+R(tAvg).toLocaleString('es-ES')+(tAll.some(x=>Math.abs(x.t-tAvg)>1)?' (media entreno/descanso)':'');}
       if(k==='kcal'&&Tk){v.hasTarget=true;v.target=(Tk/mx*100)+'%';v.targetLabel='Objetivo '+R(Tk).toLocaleString('es-ES');}
-      v.hasLegend=true;v.legend=k==='cump'?[{c:'#2f9e62',l:'80 % o más'},{c:'#efc95e',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='kcal'?[{c:'#2f9e62',l:'±10 % del objetivo'},{c:'#efc95e',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}].map(g=>({...g,r:'3px'})):[{c:SQ[k][1]?SCALE[0]:SCALE[4],l:SQ[k][1]?'5 = mucha hambre':'5 = muy bien'},{c:SQ[k][1]?SCALE[4]:SCALE[0],l:SQ[k][1]?'1 = nada de hambre':'1 = muy mal'}].map(g=>({...g,r:'3px'}));
-      if(!got.length){v.showBars=false;v.hasLegend=false;v.empty=true;v.emptyText=k==='kcal'?'Sin comidas registradas en este periodo.':'Sin respuestas en este periodo. Se rellenan desde el cuestionario diario de la app.';}}
+      v.hasLegend=true;v.legend=k==='pasos'?[{c:'#2f9e62',l:'Objetivo cumplido'},{c:'#efc95e',l:'85–99 %'},{c:'#e5604a',l:'Menos del 85 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='cump'?[{c:'#2f9e62',l:'80 % o más'},{c:'#efc95e',l:'60–79 %'},{c:'#e5604a',l:'Menos de 60 %'},{c:'#e8eef4',l:'Sin registro'}].map(g=>({...g,r:'3px'})):k==='kcal'?[{c:'#2f9e62',l:'±10 % del objetivo'},{c:'#efc95e',l:'±20 %'},{c:'#e5604a',l:'Más desviado'}].map(g=>({...g,r:'3px'})):[{c:SQ[k][1]?SCALE[0]:SCALE[4],l:SQ[k][1]?'5 = mucha hambre':'5 = muy bien'},{c:SQ[k][1]?SCALE[4]:SCALE[0],l:SQ[k][1]?'1 = nada de hambre':'1 = muy mal'}].map(g=>({...g,r:'3px'}));
+      if(!got.length){v.showBars=false;v.hasLegend=false;v.empty=true;v.emptyText=k==='pasos'?'Sin pasos registrados en este periodo. Se apuntan en la tarjeta «Pasos» de Hoy.':k==='kcal'?'Sin comidas registradas en este periodo.':'Sin respuestas en este periodo. Se rellenan desde el cuestionario diario de la app.';}}
     else{const k=cur[0],unit=k==='bf'?'%':k.startsWith('per:')?'cm':(k==='s6'||k.startsWith('pl:'))?'mm':'kg';
       let pts;
       if(k==='peso'){const m={};Object.keys(lg).forEach(d=>{const w=lg[d]&&lg[d].survey&&num(lg[d].survey.peso);if(w)m[d]={y:w,big:false};});ms.forEach(x=>{if(x.w)m[x.d]={y:num(x.w),big:true};});pts=Object.keys(m).sort().map(d=>({d,...m[d]}));}
@@ -129,7 +132,7 @@ class Component extends DCLogic {
         const X=q=>6+(t1===t0?154:(parseD(q.d).getTime()-t0)/(t1-t0)*308),Y=y=>12+(1-(y-lo)/(hi-lo))*118;
         const xy=pts.map(q=>[X(q).toFixed(1),Y(q.y).toFixed(1),q.big]);
         v.line='M'+xy.map(q=>q[0]+' '+q[1]).join(' L');v.area=v.line+' L'+xy[xy.length-1][0]+' 130 L'+xy[0][0]+' 130 Z';
-        v.dotsSmall=pts.length<=60?xy.filter(q=>!q[2]).map(q=>'M'+q[0]+' '+q[1]+'h0').join(''):'';v.dotsBig=xy.filter(q=>q[2]).map(q=>'M'+q[0]+' '+q[1]+'h0').join('');
+        v.dots=xy.map((q,i)=>({q,i})).filter(o=>o.q[2]||pts.length<=60).map(({q,i})=>{const big=q[2];return {l:(q[0]/320*100).toFixed(2)+'%',t:(q[1]/150*100).toFixed(2)+'%',sz:big?'13px':'8px',bg:big?'#fff':solid,bd:big?'3px solid '+ink:'0',tip:dShort(pts[i].d)+' · '+fx(pts[i].y,1)+' '+unit};});
         v.yHi=fx(hi,1);v.yLo=fx(lo,1);v.yMid=fx((hi+lo)/2,1);v.x0=dShort(pts[0].d);v.x1=dShort(pts[pts.length-1].d);v.nPts=pts.length+' datos';
         const dl=pts[pts.length-1].y-pts[0].y;v.hasDelta=true;v.delta=(dl>0?'+':dl<0?'−':'')+fx(Math.abs(dl),1)+' '+unit;v.deltaSub='desde el '+dShort(pts[0].d);}}
     return v;
