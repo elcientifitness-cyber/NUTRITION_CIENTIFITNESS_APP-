@@ -1,6 +1,6 @@
 {
-  "name": "CientiFitness Manager",
-  "short_name": "CientiFitness",
+  "name": "Cientia Nutrition Manager",
+  "short_name": "Cientia",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -8,12 +8,12 @@
   "theme_color": "#1180c2",
   "icons": [
     {
-      "src": "assets/icon-192.png",
+      "src": "assets/cientia-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "assets/cientia-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

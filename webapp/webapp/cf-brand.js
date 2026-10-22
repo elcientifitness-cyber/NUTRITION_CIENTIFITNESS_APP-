@@ -1,10 +1,10 @@
-/* CientiFitness · tema de marca del entrenador (Premium). Usado por index.html y asesorado.html */
+/* Cientia Nutrition · tema de marca del entrenador (Premium). Usado por index.html y asesorado.html */
 (function(){
-  const PAL=[['cf','CientiFitness','#1180c2','#f2a497'],['pet','Petróleo','#1f6f5c','#f0a35e'],['mar','Marino','#23324a','#e4b363'],['gra','Granate','#b0413e','#2f4858'],
+  const PAL=[['cf','Cientia','#1180c2','#f2a497'],['pet','Petróleo','#1f6f5c','#f0a35e'],['mar','Marino','#23324a','#e4b363'],['gra','Granate','#b0413e','#2f4858'],
     ['ind','Índigo','#5b4bb7','#7fd1b9'],['grf','Grafito','#1b1b1f','#d7ff5a'],['tej','Teja','#c2571a','#2b4c3f'],['lag','Laguna','#0e7490','#fbbf77'],
     ['fra','Frambuesa','#9d2b6b','#f5c2d8'],['oli','Oliva','#4d6a2e','#e9d8a6'],['piz','Pizarra','#3d4f63','#9ad0ec'],['cac','Cacao','#7a4b2a','#f2d0a4']];
   const FONTS={sora:['Sora','',"Sora"],outfit:['Outfit','Outfit:wght@500;600;700;800',"Outfit"],jakarta:['Plus Jakarta Sans','Plus+Jakarta+Sans:wght@500;600;700;800',"'Plus Jakarta Sans'"],lora:['Lora','Lora:wght@500;600;700',"Lora"]};
-  const MACS={cf:['CientiFitness',{prot:'#f2a497',carb:'#efc95e',fat:'#b3a2ea',veg:'#8ed2aa'}],vivid:['Intensos',{prot:'#e5604a',carb:'#e9a826',fat:'#7b61d6',veg:'#34a86a'}],soft:['Sobrios',{prot:'#c9a49a',carb:'#d2c08e',fat:'#a9a3c4',veg:'#9fbfad'}]};
+  const MACS={cf:['Cientia',{prot:'#f2a497',carb:'#efc95e',fat:'#b3a2ea',veg:'#8ed2aa'}],vivid:['Intensos',{prot:'#e5604a',carb:'#e9a826',fat:'#7b61d6',veg:'#34a86a'}],soft:['Sobrios',{prot:'#c9a49a',carb:'#d2c08e',fat:'#a9a3c4',veg:'#9fbfad'}]};
   const CFMAC={prot:['#f2a497','#fde8e3','#963a2b'],carb:['#efc95e','#fdf3d4','#77560a'],fat:['#b3a2ea','#eee9fc','#51408d'],veg:['#8ed2aa','#e0f4e8','#21633d']};
   const hx=h=>{h=String(h||'').trim().replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');if(!/^[0-9a-f]{6}$/i.test(h))return null;return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));};
   const toHex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');

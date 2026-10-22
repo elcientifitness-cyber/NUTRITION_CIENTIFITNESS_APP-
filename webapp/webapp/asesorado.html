@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest-asesorado.json">
 <meta name="theme-color" content="#f2f6fa">
-<link rel="apple-touch-icon" href="assets/icon-192.png">
-<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/cientia-192.png">
+<link rel="icon" href="assets/cientia-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mi plan">
@@ -16,7 +16,7 @@
 <body>
 <x-dc>
 <helmet>
-<title>CientiFitness · Mi plan</title>
+<title>Cientia Nutrition · Mi plan</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800;1,900&display=swap">
 <link rel="stylesheet" href="cf-theme.css">
 <script src="data/alimentos.js"></script>
@@ -39,8 +39,7 @@ button{-webkit-user-select:none;user-select:none}
 <sc-if value="{{ showAuth }}" hint-placeholder-val="{{ true }}">
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 18px;box-sizing:border-box;font-family:var(--font-body);color:var(--color-text)">
   <div style="width:min(400px,100%);background:#fff;border-radius:24px;box-shadow:var(--shadow-md);padding:30px 24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
-    <img src="assets/logo.png" alt="CientiFitness" style="height:96px;width:auto;align-self:center">
-    <div style="text-align:center;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:22px;text-transform:uppercase">Cienti<span style="color:var(--color-accent)">Fitness</span></span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ authSub }}</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center"><span style="width:72px;height:72px;border-radius:20px;background:#1180c2;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:42px;line-height:1;flex:none">C</span><div style="display:flex;flex-direction:column;gap:6px;align-items:center"><span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;font-size:30px;line-height:1;text-transform:uppercase;color:var(--color-text)">Cientia</span><span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:800;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.2em;color:#1180c2">Nutrition</span></div><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ authSub }}</span><span style="font-size:11px;color:var(--color-neutral-600)">por <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">El Cienti<span style="color:#1180c2">fitness</span></span></span></div>
     <sc-if value="{{ isLoginForm }}" hint-placeholder-val="{{ true }}">
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Email<input class="input" type="email" autocomplete="email" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" style="font-size:16px"></label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Contraseña<input class="input" type="password" autocomplete="current-password" value="{{ loginPass }}" onChange="{{ onLoginPass }}" onKeyDown="{{ onLoginKey }}" style="font-size:16px"></label>
@@ -324,7 +323,7 @@ button{-webkit-user-select:none;user-select:none}
     </div>
     <article style="background:#fff;border-radius:22px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:18px">
       <div style="display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--color-divider);padding-bottom:14px">
-        <img src="{{ planLogo }}" alt="{{ planLogoAlt }}" style="height:52px;width:auto;display:block">
+        <img src="{{ planLogo }}" alt="{{ planLogoAlt }}" style="height:52px;width:auto;display:block;border-radius:14px">
         <div style="min-width:0"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cf-plan-ink,#21633d);font-weight:700">{{ planKicker }}</div><div style="font-family:var(--font-heading);font-weight:700;font-size:20px">{{ planName }}</div></div>
       </div>
       <sc-if value="{{ pShowNums }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
@@ -357,7 +356,8 @@ button{-webkit-user-select:none;user-select:none}
           </sc-for>
         </div>
       </sc-for>
-      <sc-if value="{{ brOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:12px;flex-wrap:wrap"><span style="font-weight:700">{{ planLogoAlt }}</span><span style="margin-left:auto">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">Cienti<span style="color:#1180c2">Fitness</span></span></span></div></sc-if>
+      <sc-if value="{{ brOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:12px;flex-wrap:wrap"><span style="font-weight:700">{{ planLogoAlt }}</span><span style="margin-left:auto">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">Cientia <span style="color:#1180c2">Nutrition</span></span></span></div></sc-if>
+      <sc-if value="{{ brOff }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:8px;padding:4px 2px;font-size:11px;color:var(--color-neutral-600);flex-wrap:wrap"><span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">Cientia <span style="color:#1180c2">Nutrition</span></span><span style="margin-left:auto">por <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-text)">El Cienti<span style="color:#1180c2">fitness</span></span></span></div></sc-if>
       <sc-if value="{{ showShop }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--color-divider);padding-top:16px;break-before:page">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">Lista de la compra</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ shopNote }}</span></div>
@@ -438,7 +438,7 @@ button{-webkit-user-select:none;user-select:none}
       </button>
     </sc-for>
     </div>
-    <sc-if value="{{ brOn }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;font-size:10px;color:var(--color-neutral-500);padding-top:2px">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-neutral-700)">Cienti<span style="color:#1180c2">Fitness</span></span></div></sc-if>
+    <sc-if value="{{ brOn }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;font-size:10px;color:var(--color-neutral-500);padding-top:2px">con <span style="font-family:'Exo 2',var(--font-heading);font-style:italic;font-weight:900;text-transform:uppercase;color:var(--color-neutral-700)">Cientia <span style="color:#1180c2">Nutrition</span></span></div></sc-if>
   </nav>
 </div>
 </sc-if>
@@ -579,11 +579,11 @@ button{-webkit-user-select:none;user-select:none}
         <span>1. Abre esta página en Safari.</span>
         <span>2. Pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</span>
         <span>3. Elige «Añadir a pantalla de inicio» y después «Añadir».</span>
-        <span>4. Abre CientiFitness desde el icono nuevo, toca la campana y activa las notificaciones.</span>
+        <span>4. Abre Cientia desde el icono nuevo, toca la campana y activa las notificaciones.</span>
       </div>
     </sc-if>
     <sc-if value="{{ ntUnsup }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">Este navegador no admite notificaciones. Prueba con Chrome en Android o instala la app en tu iPhone desde Safari.</span></sc-if>
-    <sc-if value="{{ ntBlocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:1.45;color:#8a5a00;background:#fff4dc;border-radius:14px;padding:12px;text-wrap:pretty">Las notificaciones están bloqueadas. Actívalas en los ajustes del móvil (Notificaciones → CientiFitness) o en los permisos del navegador y vuelve a abrir la app.</span></sc-if>
+    <sc-if value="{{ ntBlocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:1.45;color:#8a5a00;background:#fff4dc;border-radius:14px;padding:12px;text-wrap:pretty">Las notificaciones están bloqueadas. Actívalas en los ajustes del móvil (Notificaciones → Cientia) o en los permisos del navegador y vuelve a abrir la app.</span></sc-if>
     <sc-if value="{{ ntCanOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ntEnable }}" style="font:inherit;font-size:16px;font-weight:800;min-height:52px;border:0;border-radius:999px;background:var(--color-accent);color:#fff;cursor:pointer">{{ ntBtn }}</button></sc-if>
     <sc-if value="{{ ntIsOn }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onClick="{{ ntTest }}" style="font:inherit;font-size:14px;font-weight:700;min-height:46px;border:1.5px solid var(--color-divider);border-radius:999px;background:#fff;color:var(--color-text);cursor:pointer">Enviar una prueba</button><button onClick="{{ ntDisable }}" style="font:inherit;font-size:14px;font-weight:700;min-height:46px;border:0;border-radius:999px;background:var(--color-neutral-100);color:#a8321a;cursor:pointer">Desactivar</button></div></sc-if>
     <div style="display:flex;flex-direction:column;gap:8px">
@@ -655,7 +655,7 @@ class Component extends DCLogic {
   fixVV(){clearTimeout(this._vvT);this._vvT=setTimeout(()=>{window.scrollTo(window.scrollX,window.scrollY);},80);}
   loadInbox(){if(!('caches' in window))return;caches.open('cf-notifs').then(c=>c.match('/__cf_notifs')).then(r=>r?r.json():[]).then(x=>{if(Array.isArray(x))this.setState({inbox:x});}).catch(()=>{});}
   clearInbox(){if('caches' in window)caches.open('cf-notifs').then(c=>c.put('/__cf_notifs',new Response('[]',{headers:{'Content-Type':'application/json'}}))).catch(()=>{});this.setState({inbox:[]});}
-  onPush(d){if(!d)return;setTimeout(()=>this.loadInbox(),300);clearTimeout(this._pbT);this.setState({pushB:{title:d.title||'CientiFitness',body:d.body||'',url:d.url||''}});this._pbT=setTimeout(()=>this.setState({pushB:null}),7000);
+  onPush(d){if(!d)return;setTimeout(()=>this.loadInbox(),300);clearTimeout(this._pbT);this.setState({pushB:{title:d.title||'Cientia Nutrition',body:d.body||'',url:d.url||''}});this._pbT=setTimeout(()=>this.setState({pushB:null}),7000);
     if(d.tag==='msg')this.loadMsgs();if(d.tag==='plan')this.loadLink(false);}
   toastMsg(m,bad){clearTimeout(this._tt);this.setState({toast:m,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
   demo(){const ln=(name,gr,k,p,c,f)=>({name,g:gr+' g',gr,k,p,c,f});
@@ -668,7 +668,7 @@ class Component extends DCLogic {
       groups:[{title:'',days:'',dayIdx:[0,1,2,3,4,5,6],meals}],shop:[{cat:'Proteínas',items:[{name:'Pechuga de pollo',g:'1,1 kg'},{name:'Huevos',g:'12 u.'}]},{cat:'Verduras y frutas',items:[{name:'Brócoli',g:'1,4 kg'},{name:'Arándanos',g:'700 g'}]}],shopNote:'Cantidades para 7 días',
       perNames:[['cintura','Cintura'],['cadera','Cadera']],metrics:[{d:addDays(isoD(new Date()),-84),w:72.4,bf:29.1,lbm:51.3,per:{cintura:82,cadera:101}},{d:addDays(isoD(new Date()),-56),w:71.2,bf:28.2,lbm:51.1,per:{cintura:80.5,cadera:100}},{d:addDays(isoD(new Date()),-28),w:70.1,bf:27.0,lbm:51.2,per:{cintura:78.8,cadera:99}},{d:addDays(isoD(new Date()),-2),w:69.3,bf:26.1,lbm:51.2,per:{cintura:77.5,cadera:98.2}}]};
     const logs={},td=isoD(new Date());for(let i=1;i<14;i++){const d=addDays(td,-i);if(i%5===3)continue;const k=1850*(0.8+((i*37)%40)/100);logs[d]={foods:[{key:'x'+i,mi:0,name:'Demo',src:'plan',gr:100,k,p:0,c:0,f:0}],survey:{cump:1+(i*3)%5,sat:4,hambre:2,energia:3,peso:r1(69.3+i*0.08)},opts:{}};}
-    this.setState({auth:'in',link:{coach_id:'demo',client_key:'demo',name:'Ana López',plan,plan_at:new Date().toISOString(),agenda:{coach:{name:'CientiFitness',phone:'+34 627 547 983'},appts:[{id:'demo1',date:addDays(isoD(new Date()),3),start:'10:30',dur:30,allDay:false,type:'Revisión',mode:'online',modeLabel:'Online',place:'',link:'https://meet.jit.si/CientiFitness-demo',prep:'Pésate en ayunas esa mañana y ten a mano cómo te ha ido la semana.',status:'confirmada'}]}},logs,
+    this.setState({auth:'in',link:{coach_id:'demo',client_key:'demo',name:'Ana López',plan,plan_at:new Date().toISOString(),agenda:{coach:{name:'Cientia Nutrition',phone:'+34 627 547 983'},appts:[{id:'demo1',date:addDays(isoD(new Date()),3),start:'10:30',dur:30,allDay:false,type:'Revisión',mode:'online',modeLabel:'Online',place:'',link:'https://meet.jit.si/Cientia-demo',prep:'Pésate en ayunas esa mañana y ten a mano cómo te ha ido la semana.',status:'confirmada'}]}},logs,
       msgs:[{id:1,sender:'coach',body:'¡Hola Ana! Ya tienes tu plan nuevo. Cualquier duda me dices.',created_at:new Date(Date.now()-86400000).toISOString(),read_at:null},{id:2,sender:'client',body:'¡Gracias! ¿Puedo cambiar la merluza por salmón?',created_at:new Date(Date.now()-80000000).toISOString(),read_at:null}]});}
   init(t){if(/[?&]demo/.test(location.search)){this.demo();return;}const cfg=window.CF_CONFIG;if(!window.supabase||!cfg){if(t>80){this.setState({auth:'out',authMsg:'No se pudo conectar. Revisa tu conexión.'});return;}setTimeout(()=>this.init(t+1),100);return;}
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
@@ -773,7 +773,7 @@ class Component extends DCLogic {
     const L0=s.link,P=L0.plan||{groups:[],T:{k:0,p:0,c:0,f:0}},T=P.T||{k:0,p:0,c:0,f:0},HK=!!(P.hide&&P.hide.k),HM=!!(P.hide&&P.hide.m),BRD=P.brand||null,BTH=!!(BRD&&window.CFBrand&&CFBrand.valid(BRD.p)),THX=BTH?Object.fromEntries(Object.entries(TH).map(([k,t])=>[k,[t[0],BRD.bg==='light'?'#ffffff':'var(--cf-tint-2)','var(--color-accent)','#fff','var(--color-accent-800)']])):TH,today=isoD(new Date()),Tk=num(T.k);const tkOf=d=>num((this.group(P,d).T||T).k);
     const th=THX[s.tab]||THX.hoy;
     {const k=BRD?JSON.stringify([BRD.p,BRD.a,BRD.bg,BRD.font,BRD.mac,BRD.mc,(BRD.icon||'').length,BRD.name]):'';if(k!==this._brK){this._brK=k;setTimeout(()=>{if(!window.CFBrand)return;CFBrand.apply(BTH?BRD:null);CFBrand.icon(BRD&&BRD.icon||'',BRD&&BRD.name||'','asesorado.html');},0);}}
-    v.brOn=!!BRD;v.brHasLogo=!!(BRD&&BRD.logo);v.brNoLogo=!v.brHasLogo;v.brLogo=(BRD&&BRD.logo)||'';v.planLogo=v.brLogo||'assets/logo.png';v.planLogoAlt=(BRD&&BRD.name)||'CientiFitness';v.thTitle=s.tab==='hoy'&&L0.comp&&L0.comp.days?(()=>{try{const C=L0.comp,mo=Math.min(0,...C.days.map(d=>num(d.off))),st=parseD(addDays(C.wDate,mo)).getTime(),end=new Date(C.wDate+'T'+(C.wTime||'09:00')).getTime()+Math.max(2,num(C.gapH),...(C.refill||[]).map(r=>num(r.to)))*36e5;return (Date.now()>=st&&Date.now()<end+12*36e5)||s.cpPeek?'Competición':th[0];}catch(e){return th[0];}})():th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
+    v.brOn=!!BRD;v.brOff=!BRD;v.brHasLogo=!!(BRD&&BRD.logo);v.brNoLogo=!v.brHasLogo;v.brLogo=(BRD&&BRD.logo)||'';v.planLogo=v.brLogo||'assets/cientia-192.png';v.planLogoAlt=(BRD&&BRD.name)||'Cientia Nutrition';v.thTitle=s.tab==='hoy'&&L0.comp&&L0.comp.days?(()=>{try{const C=L0.comp,mo=Math.min(0,...C.days.map(d=>num(d.off))),st=parseD(addDays(C.wDate,mo)).getTime(),end=new Date(C.wDate+'T'+(C.wTime||'09:00')).getTime()+Math.max(2,num(C.gapH),...(C.refill||[]).map(r=>num(r.to)))*36e5;return (Date.now()>=st&&Date.now()<end+12*36e5)||s.cpPeek?'Competición':th[0];}catch(e){return th[0];}})():th[0];v.thBg=th[1];v.thSolid=th[2];v.thOn=th[3];v.thInk=th[4];v.thIcon=ICONS[s.tab]||ICONS.hoy;
     {const sup=this.ntSup(),ios=this.ntIOS(),sa=this.ntStand(),perm=sup?Notification.permission:'default',NP=s.ntPrefs||{},off=NP.off||{},PN=(s.link&&s.link.plan&&s.link.plan.notif)||null;
       v.ntBell=()=>this.setState({ntOpen:true});v.ntOpenOn=!!s.ntOpen;v.ntClose=()=>this.setState({ntOpen:false});
       v.ntNeedInstall=ios&&!sa&&!sup;v.ntUnsup=!sup&&!v.ntNeedInstall;v.ntBlocked=sup&&perm==='denied';v.ntIsOn=!!s.ntOn;v.ntCanOn=sup&&!s.ntOn&&perm!=='denied';v.ntBellDot=!s.ntOn&&(sup||v.ntNeedInstall)&&perm!=='denied'&&!(s.inbox||[]).some(x=>(x.t||0)>(s.ibSeen!=null?s.ibSeen:(()=>{try{return +localStorage.getItem('cf-nt-seen')||0;}catch(e){return 0;}})()));
@@ -794,7 +794,7 @@ class Component extends DCLogic {
       v.ibUn=un>0;v.ibUnN=un>9?'9+':String(un);v.ibOn=!!s.ibOpen;v.ibEmpty=!IB.length;v.ibHas=IB.length>0;
       v.ibOpenFn=()=>{const now=Date.now();try{localStorage.setItem('cf-nt-seen',String(now));}catch(e){}this.loadInbox();this.setState({ibOpen:true,ibSeen:now,ibPrev:seen});};
       v.ibClose=()=>this.setState({ibOpen:false});v.ibSettings=()=>this.setState({ibOpen:false,ntOpen:true});v.ibClear=()=>this.clearInbox();
-      const pv=s.ibPrev!=null?s.ibPrev:seen;v.ibList=IB.slice(0,40).map(x=>({title:x.title||'CientiFitness',body:x.body||'',when:ago(x.t||Date.now()),isNew:(x.t||0)>pv,bg:(x.t||0)>pv?'#eef6fc':'#fff',go:()=>go(x.url)}));
+      const pv=s.ibPrev!=null?s.ibPrev:seen;v.ibList=IB.slice(0,40).map(x=>({title:x.title||'Cientia Nutrition',body:x.body||'',when:ago(x.t||Date.now()),isNew:(x.t||0)>pv,bg:(x.t||0)>pv?'#eef6fc':'#fff',go:()=>go(x.url)}));
       v.ibNoNt=s.ntOn===false;}
     v.hello=BRD&&(BRD.name||'').trim()?BRD.name.trim():'Hola, '+((P.name||L0.name||'').split(' ')[0]||'bienvenido/a');
     const unread=s.msgs.filter(m=>m.sender==='coach'&&!m.read_at).length;
@@ -956,14 +956,14 @@ class Component extends DCLogic {
         v.apHasLink=nx.mode==='online'&&!!nx.link;v.apLink=nx.link||'';v.apNoLink=nx.mode==='online'&&!nx.link;v.apIsPhone=nx.mode==='telefono';v.apPresNoPlace=nx.mode==='presencial'&&!nx.place;
         v.apPrep=nx.prep||'';v.apHasPrep=!!v.apPrep;v.apHasCoach=!!CO.name;v.apCoach='Con '+(CO.name||'');
         const ph=String(CO.phone||'').replace(/\D/g,''),wn=ph.length===9?'34'+ph:ph;v.apHasWa=wn.length>=10;v.apWa='https://wa.me/'+wn;
-        const title=(nx.type||'Cita')+' · CientiFitness',desc=[nx.modeLabel,nx.link?'Enlace: '+nx.link:'',nx.prep].filter(Boolean).join('\n'),loc=nx.mode==='presencial'?(nx.place||''):(nx.link||'');
+        const title=(nx.type||'Cita')+' · Cientia Nutrition',desc=[nx.modeLabel,nx.link?'Enlace: '+nx.link:'',nx.prep].filter(Boolean).join('\n'),loc=nx.mode==='presencial'?(nx.place||''):(nx.link||'');
         const z=x=>x.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),dates=noT?nx.date.replace(/-/g,'')+'/'+addDays(nx.date,1).replace(/-/g,''):z(d0)+'/'+z(endT);
         v.apGcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+dates+'&details='+encodeURIComponent(desc)+'&location='+encodeURIComponent(loc);
         v.apIcs=()=>{const esc=t=>String(t||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
-          const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CientiFitness//Mi plan//ES','BEGIN:VEVENT','UID:'+(nx.id||Date.now())+'@cientifitness','DTSTAMP:'+z(new Date())];
+          const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Cientia Nutrition//Mi plan//ES','BEGIN:VEVENT','UID:'+(nx.id||Date.now())+'@cientifitness','DTSTAMP:'+z(new Date())];
           if(noT)L.push('DTSTART;VALUE=DATE:'+nx.date.replace(/-/g,''),'DTEND;VALUE=DATE:'+addDays(nx.date,1).replace(/-/g,''));else L.push('DTSTART:'+z(d0),'DTEND:'+z(endT));
           L.push('SUMMARY:'+esc(title),'DESCRIPTION:'+esc(desc));if(loc)L.push('LOCATION:'+esc(loc));L.push('BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:'+esc(title),'END:VALARM','END:VEVENT','END:VCALENDAR');
-          const b=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cita-cientifitness.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
+          const b=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cita-cientia.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
         v.apChange=()=>{const msg='Hola'+(coFirst?' '+coFirst:'')+', necesitaría cambiar la cita del '+d0.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+(noT?'':' a las '+nx.start)+'. ¿Qué otros huecos tienes?';this.setState({apOpen:false,draft:msg});this.toastMsg('Revisa el mensaje y pulsa Enviar');};}}
     if(v.isChat){v.thrRef=this.thrRef;v.noMsgs=s.msgs.length===0;let pd='';
       v.bubbles=s.msgs.map(m=>{const mine=m.sender==='client',d=new Date(m.created_at),dk=isoD(d),sd=dk!==pd;pd=dk;

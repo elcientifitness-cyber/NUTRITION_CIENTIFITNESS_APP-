@@ -1,4 +1,4 @@
-// Notificaciones push de CientiFitness (sin dependencias).
+// Notificaciones push de Cientia Nutrition (sin dependencias).
 // Variables en Vercel: SUPABASE_SERVICE_ROLE_KEY, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y CRON_SECRET.
 // GET  → clave pública (la app la usa para activar las notificaciones).
 // POST {cron:true} (cabecera x-cron) → envía los recordatorios que tocan (lo llama Supabase cada 5 min).
@@ -67,7 +67,7 @@ function dueList(now, eff, pr, G, evs, C) {
   (C || []).forEach(x => {
     const o = (eff.cxo || {})[x.id] || {}, cc = (eff.cxc || {})[x.id], on = cc != null ? !!cc : (o.on != null ? !!o.on : x.on !== false);
     if (!on || off['c:' + x.id]) return;
-    const T = hm(o.time || x.time) != null ? hm(o.time || x.time) : 540, d = { title: x.title || 'CientiFitness', body: x.body || '', tag: 'c' + x.id, url: 'asesorado.html?tab=hoy' };
+    const T = hm(o.time || x.time) != null ? hm(o.time || x.time) : 540, d = { title: x.title || 'Cientia Nutrition', body: x.body || '', tag: 'c' + x.id, url: 'asesorado.html?tab=hoy' };
     const add = (k, at) => { if (at >= 0 && at < 1440) out.push({ key: 'c' + x.id + k, at, data: d }); };
     switch (x.kind) {
       case 'week': if ((x.days || []).includes(now.dow)) add('', T); break;
@@ -242,7 +242,7 @@ module.exports = async (req, res) => {
     const txt = String(body.text || '').replace(/\s+/g, ' ').trim();
     const data = type === 'plan' ? { title: 'Plan actualizado', body: 'Tu entrenador ha actualizado tu plan. Échale un vistazo.', tag: 'plan', url: 'asesorado.html?tab=plan' }
       : type === 'msg' ? { title: 'Mensaje de tu entrenador', body: txt.length > 140 ? txt.slice(0, 137) + '…' : (txt || 'Tienes un mensaje nuevo.'), tag: 'msg', url: 'asesorado.html?tab=chat' }
-      : { title: 'Notificaciones activadas', body: 'Así te llegarán los recordatorios de CientiFitness.', tag: 'test', url: 'asesorado.html?tab=hoy' };
+      : { title: 'Notificaciones activadas', body: 'Así te llegarán los recordatorios de Cientia Nutrition.', tag: 'test', url: 'asesorado.html?tab=hoy' };
     let sent = 0;
     for (const s of subs) {
       const off = (s.prefs && s.prefs.off) || {};
