@@ -1,5 +1,5 @@
 // Siempre intenta la red primero (datos al día); si no hay conexión, usa la última copia.
-const C='cf-v7';
+const C='cf-v8';
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
