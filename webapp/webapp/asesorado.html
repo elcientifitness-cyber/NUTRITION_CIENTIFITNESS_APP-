@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mi plan">
-<script>window.CF_HASH_TYPE=(location.hash.match(/type=(\w+)/)||[])[1]||'';</script>
+<script>addEventListener('pageshow',function(e){if(e.persisted)location.reload();});window.CF_HASH_TYPE=(location.hash.match(/type=(\w+)/)||[])[1]||'';</script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -71,7 +71,7 @@ button{-webkit-user-select:none;user-select:none}
       <button onClick="{{ themeCycle }}" aria-label="{{ themeLbl }}" title="{{ themeLbl }}" style="font:inherit;width:36px;height:36px;border:0;border-radius:50%;background:color-mix(in srgb,var(--cf-card) 70%,transparent);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;display:block"><circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 0 0 16z" style="fill:currentColor;stroke:none"></path></svg></button>
       <button onClick="{{ ibOpenFn }}" aria-label="Notificaciones" title="Notificaciones" style="font:inherit;position:relative;width:36px;height:36px;border:0;border-radius:50%;background:color-mix(in srgb,var(--cf-card) 70%,transparent);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><sc-if value="{{ ibUn }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--danger-mid);color:var(--cf-on-ink);font-size:11px;font-weight:800;line-height:18px;text-align:center;border:2px solid #fff">{{ ibUnN }}</span></sc-if><sc-if value="{{ ntBellDot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--danger-mid);border:2px solid #fff"></span></sc-if></button>
       <sc-if value="{{ isSelf }}" hint-placeholder-val="{{ false }}"><a href="index.html" style="font:inherit;font-size:12px;font-weight:700;background:var(--color-accent);color:#fff;border-radius:999px;padding:8px 12px;min-height:36px;box-sizing:border-box;display:inline-flex;align-items:center;text-decoration:none">Panel</a></sc-if>
-      <button onClick="{{ doLogout }}" style="font:inherit;font-size:12px;font-weight:700;border:0;background:color-mix(in srgb,var(--cf-card) 70%,transparent);color:var(--color-neutral-700);border-radius:999px;padding:8px 12px;min-height:36px;cursor:pointer">Salir</button>
+      <sc-if value="{{ notSelf }}" hint-placeholder-val="{{ true }}"><button onClick="{{ doLogout }}" style="font:inherit;font-size:12px;font-weight:700;border:0;background:color-mix(in srgb,var(--cf-card) 70%,transparent);color:var(--color-neutral-700);border-radius:999px;padding:8px 12px;min-height:36px;cursor:pointer">Salir</button></sc-if>
     </div>
   </header>
 
@@ -783,7 +783,7 @@ class Component extends DCLogic {
     this.sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname}).then(({error})=>this.setState({authMsg:error?'No se pudo enviar: '+error.message:'Te hemos enviado un email para crear una nueva contraseña.'}));}
   doSetPass(){const p=this.state.newPass;if(p.length<8){this.setState({authMsg:'La contraseña debe tener al menos 8 caracteres.'});return;}
     this.sb.auth.updateUser({password:p}).then(({error})=>{if(error){this.setState({authMsg:'No se pudo guardar: '+error.message});return;}this.sb.auth.getSession().then(({data:d})=>{if(d&&d.session)this.afterLogin(d.session);});});}
-  doLogout(){if(!this.sb){location.href=location.pathname;return;}if(this._rt)try{this.sb.removeChannel(this._rt);}catch(e){}this._rt=null;clearInterval(this._pl);this.sb.auth.signOut().then(()=>this.setState({auth:'out',link:null,msgs:[],logs:{},loginPass:'',authMsg:''}));}
+  doLogout(){if(!this.sb){location.href=location.pathname;return;}if(this._coach){location.href='index.html';return;}if(this._rt)try{this.sb.removeChannel(this._rt);}catch(e){}this._rt=null;clearInterval(this._pl);this.sb.auth.signOut({scope:'local'}).then(()=>this.setState({auth:'out',link:null,msgs:[],logs:{},loginPass:'',authMsg:''}));}
   key(){const l=this.state.link;return {coach_id:l.coach_id,client_key:l.client_key};}
   loadLogs(){const l=this.state.link;if(!l)return;const from=addDays(isoD(new Date()),-370);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',l.coach_id).eq('client_key',l.client_key).gte('day',from).then(({data})=>{if(!data)return;
@@ -905,7 +905,7 @@ class Component extends DCLogic {
           v.cpSySend=()=>{if(!SY.length&&!(s.cpSyNote||'').trim()){this.toastMsg('Marca cómo te encuentras',true);return;}this.cutAdd({kind:'sym',sym:SY,note:(s.cpSyNote||'').trim()}).then(ok=>{if(ok){this.setState({cpSy:[],cpSyNote:''});this.toastMsg('Enviado a tu '+TT()+'');}});};
           const LS=R.filter(x=>x.kind==='sym').slice(-3).reverse();v.cpLastSy=LS.map(x=>({when:new Date(x.t).toLocaleDateString('es-ES',{weekday:'short',day:'numeric'})+' '+clk(new Date(x.t).getTime()),txt:(x.sym||[]).join(', ')+(x.note?' · '+x.note:'')}));v.cpHasLastSy=LS.length>0;}}}
     const go=k=>{try{localStorage.setItem('cf-as-tab',k);}catch(e){}this.setState({tab:k});};
-    const coachOff=!!P.noHoy,hoyOff=(coachOff||!!s.hoyHid)&&!v.cpOn,isSelf=!!P.self,TAB0=hoyOff&&s.tab==='hoy'?'plan':s.tab,TAB=isSelf&&TAB0==='chat'?'plan':TAB0;v.isSelf=isSelf;this._hoyOff=hoyOff;
+    const coachOff=!!P.noHoy,hoyOff=(coachOff||!!s.hoyHid)&&!v.cpOn,isSelf=!!P.self,TAB0=hoyOff&&s.tab==='hoy'?'plan':s.tab,TAB=isSelf&&TAB0==='chat'?'plan':TAB0;v.isSelf=isSelf;v.notSelf=!isSelf;this._hoyOff=hoyOff;
     if(TAB!==s.tab&&!this._tabFix){this._tabFix=true;setTimeout(()=>{this._tabFix=false;this.setState({tab:TAB});},0);}
     v.hoyOff=hoyOff;v.hoyCanShow=hoyOff&&!coachOff;
     v.hoyHide=()=>{try{localStorage.setItem('cf-as-nohoy','1');localStorage.setItem('cf-as-tab','plan');}catch(e){}this.setState({hoyHid:true,tab:'plan',survOpen:false});this.toastMsg('«Hoy» oculto · puedes volver a mostrarlo desde Mi plan');};

@@ -3524,6 +3524,8 @@ class Component extends DCLogic {
     if(!cfg||!cfg.url||!cfg.key||cfg.url.indexOf('PEGA')>=0){this.setState({auth:'local'},()=>this.seedRecipes());return;}
     if(!window.supabase){if((tries||0)>60){this.setState({auth:'local'},()=>this.seedRecipes());return;}setTimeout(()=>this.initCloud((tries||0)+1),100);return;}
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
+    const chk=()=>{if(this._out||!this._cloud||!this.uid||this._lost)return;this.sb.auth.getSession().then(({data})=>{const id=data&&data.session&&data.session.user&&data.session.user.id;if(id!==this.uid)this.lostSess();});};
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chk();});addEventListener('pageshow',e=>{if(e.persisted)location.reload();});
     try{this.sb.auth.onAuthStateChange((ev,ss)=>{if(this._out||!this._cloud||!this.uid)return;const id=ss&&ss.user&&ss.user.id;if(id!==this.uid)setTimeout(()=>this.lostSess(),0);});}catch(e){}
     this.sb.auth.getSession().then(({data})=>{if(data&&data.session)this.afterLogin(data.session);else this.setState({auth:'out'});});
   }
@@ -3644,6 +3646,7 @@ class Component extends DCLogic {
         this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.fibOv!==s.fibOv||this.state.unitOv!==s.unitOv||this.state.eqFree!==s.eqFree||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand||this.state.cutTpls!==s.cutTpls;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
+        if(this._afterSave){const f=this._afterSave;this._afterSave=null;f();return;}
         if(stillDirty)this.schedule();});
     });});
   }
@@ -3832,11 +3835,11 @@ class Component extends DCLogic {
     v.sideMini=s.sideMini?'1':'0';v.sideTogLabel=s.sideMini?'Expandir menú':'Contraer menú';
     v.toggleSide=()=>{const x=!this.state.sideMini;try{localStorage.setItem('cf-side-mini',x?'1':'0');}catch(e){}this.setState({sideMini:x});};
     {const au=s.auth;v.showLogin=au==='checking'||au==='out'||au==='loading'||au==='wrong';v.isBoot=s.auth==='checking';v.loginReady=au==='out';v.loginWrong=au==='wrong';
-      v.wrongSwitch=()=>{this._out=true;if(this.sb)this.sb.auth.signOut().then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
+      v.wrongSwitch=()=>{this._out=true;if(this.sb)this.sb.auth.signOut({scope:'local'}).then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
       v.loginMsg=au==='wrong'&&s.wrongOff?'La cuenta '+(s.wrongEmail||'')+' tiene el acceso de nutricionista desactivado. Habla con Cientia Nutrition para reactivarlo.':au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso para nutricionistas de Cientia Nutrition.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'var(--danger)':'var(--color-neutral-700)';
       v.loginEmail=s.loginEmail;v.loginPass=s.loginPass;v.onLoginEmail=e=>this.setState({loginEmail:e.target.value});v.onLoginPass=e=>this.setState({loginPass:e.target.value});
       v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();
-      v.showLogout=au==='in';v.doLogout=()=>{this._out=true;this._lost=false;if(this.sb)this.sb.auth.signOut().then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
+      v.showLogout=au==='in';v.doLogout=()=>{this._out=true;this._lost=false;if(this.sb)this.sb.auth.signOut({scope:'local'}).then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
       v.showSaveBtn=au==='in'||au==='local';v.saveNow=()=>this.pushCloud(false,true);
       v.saveBtnLabel=s.saving?'Guardando…':s.dirty?'Guardar cambios':'Guardado';v.saveBtnBg=s.dirty||s.saving?'var(--color-accent)':'var(--ok-bg)';v.saveBtnFg=s.dirty||s.saving?'#fff':'var(--ok)';
       v.saveDot=s.dirty?'var(--carb)':'var(--ok-mid)';
@@ -4571,7 +4574,7 @@ class Component extends DCLogic {
             up().then(r=>dup(r.error)&&cl.self?this.sb.from('cf_links').delete().eq('coach_id',this.uid).eq('email',em).neq('client_key',cl.id).then(()=>up()):r).then(({error})=>{
               if(error){this.toast(dup(error)?(cl.self?'Tu email ya está enlazado como asesorado de otra cuenta':'Ese email ya está enlazado a otro cliente'):'No se pudo publicar: '+error.message+' (¿ejecutaste portal.sql?)',true);return;}
               this.updC(n=>{n.pub={v:nV,at:Date.now(),hash,msig:mSig};});this.toast('Plan v'+nV+' publicado en la app');this.loadChats();this.pushNotify('plan',cl.id);if(typeof done==='function')done();});};
-          if(this._selfGo&&cl.self){this._selfGo=false;const go=()=>{location.href='asesorado.html?me=1';};setTimeout(()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para abrir tu app',true);return;}if(!em){this.toast('Falta tu email en la ficha',true);return;}if(pubDirty)v.publish(go);else go();},0);}
+          if(this._selfGo&&cl.self){this._selfGo=false;const go=()=>{const nav=()=>{if(this._navd)return;this._navd=true;location.href='asesorado.html?me=1';};this.saveLocal();if(!this._cloud){nav();return;}this._afterSave=nav;setTimeout(nav,5000);setTimeout(()=>this.pushCloud(true),250);};setTimeout(()=>{if(!cloudOn){this.toast('Inicia sesión en la nube para abrir tu app',true);return;}if(!em){this.toast('Falta tu email en la ficha',true);return;}if(pubDirty)v.publish(go);else go();},0);}
           const callAcc=(mode,done)=>{if(!cloudOn){this.toast('Inicia sesión en la nube',true);return;}if(!em){this.toast('Añade antes el email del cliente',true);return;}
             if(!pub){this.toast('Primero pulsa «Publicar en la app»',true);return;}if(s.accBusy)return;this.setState({accBusy:true});
             this.sb.auth.getSession().then(({data})=>fetch('/api/acceso',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+((data&&data.session&&data.session.access_token)||'')},body:JSON.stringify({email:em,mode})}))
