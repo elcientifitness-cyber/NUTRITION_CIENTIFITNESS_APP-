@@ -599,7 +599,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <sc-if value="{{ dwOpen }}" hint-placeholder-val="{{ false }}">
         <aside data-noprint="1" style="position:fixed;right:12px;top:12px;bottom:12px;width:min(360px,calc(100vw - 24px));z-index:45;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--color-divider);display:flex;flex-direction:column;overflow:hidden;opacity:{{ dwOp }};pointer-events:{{ dwPe }};transition:opacity .15s">
           <div style="padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
-            <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:16px;margin-right:auto">Arrastra al plan</span><button onClick="{{ dwToggle }}" title="Cerrar" aria-label="Cerrar" style="font:inherit;width:32px;height:32px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:16px;margin-right:auto">Arrastra al plan</span><button data-esc="1" onClick="{{ dwToggle }}" title="Cerrar" aria-label="Cerrar" style="font:inherit;width:32px;height:32px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-neutral-700);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px">
               <sc-for list="{{ dwTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 10px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};cursor:pointer">{{ t.label }}</button></sc-for>
             </div>
@@ -1175,7 +1175,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><select class="input" value="{{ cmpAVal }}" onChange="{{ onCmpA }}" style="min-height:40px;font-size:13px;width:auto;max-width:200px"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select><span style="font-weight:800;color:var(--color-neutral-500)">→</span><select class="input" value="{{ cmpBVal }}" onChange="{{ onCmpB }}" style="min-height:40px;font-size:13px;width:auto;max-width:200px"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select></div>
         <div class="cf-rail" style="display:flex;gap:6px"><sc-for list="{{ repToggles }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.toggle }}" style="font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;min-height:38px;border-radius:999px;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};cursor:pointer"><span style="width:16px;height:16px;border-radius:5px;border:2px solid {{ t.bd }};background:{{ t.box }};box-sizing:border-box"></span>{{ t.label }}</button></sc-for></div>
         <button class="btn btn-primary" onClick="{{ repPrint }}" style="min-height:44px;padding:0 18px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9V3h12v6"></path><rect x="3" y="9" width="18" height="8" rx="2"></rect><path d="M6 14h12v7H6z"></path></svg>Imprimir / Guardar PDF</button>
-        <button onClick="{{ repClose }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--color-neutral-100);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer">Cerrar</button>
+        <button data-esc="1" onClick="{{ repClose }}" style="font:inherit;font-size:14px;font-weight:700;border:0;background:var(--color-neutral-100);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer">Cerrar</button>
       </div>
       <div class="cf-rep-scroll" style="flex:1;min-height:0;overflow-y:auto;padding:24px 12px 40px;background:var(--color-neutral-200)">
         <div class="cf-rep-sheet" style="width:min(820px,100%);margin:0 auto;background:var(--cf-card);border-radius:6px;box-shadow:var(--shadow-md);padding:clamp(20px,5vw,44px);box-sizing:border-box;display:flex;flex-direction:column;gap:26px">
@@ -2533,7 +2533,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </sc-if>
 
 <sc-if value="{{ srOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ srClose }}" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ srClose }}" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(720px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--color-bg);box-shadow:var(--shadow-lg);border-radius:16px;overflow:hidden">
     <div style="padding:18px 20px 12px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:baseline;gap:12px">
@@ -2583,9 +2583,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </sc-if>
 
 <sc-if value="{{ tdOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ tdClose }}" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;gap:14px;padding:24px;background:var(--color-bg);box-shadow:var(--shadow-lg);box-sizing:border-box;border-radius:16px">
-    <div style="font-weight:800;font-size:20px">{{ tdTitle }}</div>
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-weight:800;font-size:20px;margin-right:auto">{{ tdTitle }}</span><button data-esc="1" onClick="{{ tdClose }}" aria-label="Cerrar" style="font:inherit;width:36px;height:36px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-text);font-size:19px;line-height:1;cursor:pointer;flex:none">×</button></div>
     <sc-if value="{{ tdIsSave }}" hint-placeholder-val="{{ false }}">
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Nombre de la receta<input class="input" value="{{ tdName }}" onChange="{{ onTdName }}"></label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Categoría<select class="input" value="{{ tdCat }}" onChange="{{ onTdCat }}"><sc-for list="{{ recCats }}" as="rc" hint-placeholder-count="7"><option value="{{ rc }}">{{ rc }}</option></sc-for></select></label>
@@ -2593,7 +2593,8 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     </sc-if>
     <sc-if value="{{ tdIsImport }}" hint-placeholder-val="{{ false }}">
       <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Marca una o varias recetas. Se añaden a la comida sin borrar lo que ya tiene y los gramos se ajustan a sus kcal.</span>
-      <input class="input cf-search" placeholder="Buscar receta o alimento…" value="{{ tdQ }}" onChange="{{ onTdQ }}">
+      <input id="cf-td-q" class="input cf-search" placeholder="Buscar receta o alimento…" value="{{ tdQ }}" onChange="{{ onTdQ }}" autocomplete="off">
+      <div class="cf-rail" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;flex:none"><sc-for list="{{ tdChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;white-space:nowrap;flex:none">{{ c.label }}</button></sc-for></div>
       <div style="overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:120px">
         <sc-for list="{{ tdGroups }}" as="rg2" hint-placeholder-count="3">
           <div style="border-radius:12px;background:var(--color-neutral-100);overflow:hidden;flex:none">
@@ -2607,6 +2608,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         </sc-for>
       </div>
       <sc-if value="{{ tdEmpty }}" hint-placeholder-val="{{ false }}"><p style="color:var(--color-neutral-700);margin:0">No hay recetas que coincidan.</p></sc-if>
+      <sc-if value="{{ tdElse }}" hint-placeholder-val="{{ false }}"><button onClick="{{ tdToAll }}" style="font:inherit;font-size:14px;align-self:flex-start;border:0;background:none;padding:0;color:var(--color-accent-700);text-decoration:underline;cursor:pointer">{{ tdElseTxt }}</button></sc-if>
       <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--color-divider)">
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:12px;color:var(--color-neutral-700)">Añadir como</span><div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:14px"><sc-for list="{{ tdHowSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:0;border-radius:11px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
         <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ tdHowNote }}</span>
@@ -2618,7 +2620,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </sc-if>
 
 <sc-if value="{{ qkOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ qkClose }}" style="position:fixed;inset:0;z-index:170;background:rgba(20,40,60,.38);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px">
+<div data-esc="1" data-noprint="1" onClick="{{ qkClose }}" style="position:fixed;inset:0;z-index:170;background:rgba(20,40,60,.38);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(600px,100%);max-height:72vh;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
     <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--color-divider)"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;flex:none"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="cf-qk-in" value="{{ qkQ }}" onChange="{{ qkOnQ }}" onKeyDown="{{ qkKey }}" placeholder="Busca un cliente, alimento, receta o pantalla…" autocomplete="off" style="flex:1;min-width:0;border:0;outline:none;background:transparent;font:inherit;font-size:16px;color:var(--color-text)"><span style="font-size:11px;color:var(--color-neutral-600);border:1px solid var(--color-divider);border-radius:6px;padding:2px 6px;flex:none">Esc</span></div>
     <div style="overflow-y:auto;padding:6px;display:flex;flex-direction:column">
@@ -2630,7 +2632,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ avEdOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ avClose }}" style="position:fixed;inset:0;z-index:130;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ avClose }}" style="position:fixed;inset:0;z-index:130;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:3px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">Reservas desde la app</span><span style="font-size:13px;line-height:1.45;color:var(--color-neutral-700);text-wrap:pretty">Tus asesorados activos ven tus huecos libres y piden cita. La solicitud te llega a Pendientes y al chat para confirmarla.</span></div><button onClick="{{ avToggle }}" role="switch" aria-label="Reservas desde la app" style="position:relative;width:44px;height:26px;border-radius:999px;border:0;background:{{ avTrack }};cursor:pointer;flex:none;padding:0"><span style="position:absolute;top:3px;left:{{ avKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s"></span></button></div>
     <sc-if value="{{ avIsOn }}" hint-placeholder-val="{{ true }}">
@@ -2652,7 +2654,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ rsOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ rsClose }}" style="position:fixed;inset:0;z-index:120;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ rsClose }}" style="position:fixed;inset:0;z-index:120;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(620px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;text-wrap:pretty">{{ rsTitle }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rsSub }}</span></div><button class="btn btn-ghost" onClick="{{ rsClose }}" style="font-size:13px">Cerrar</button></div>
     <sc-if value="{{ rsLoading }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-600)">Cargando sus registros de la app…</span></sc-if>
@@ -2673,7 +2675,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ bkOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ bkClose }}" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ bkClose }}" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Copias de seguridad</span><button class="btn btn-ghost" onClick="{{ bkClose }}" style="font-size:13px">Cerrar</button></div>
     <div style="display:flex;flex-direction:column;gap:8px">
@@ -2700,7 +2702,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ bkAskTitle }}</span>
     <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ bkAskTxt }}</span>
     <sc-if value="{{ bkAskHasWarn }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;padding:8px 12px;border-radius:12px;background:var(--warn-bg);color:var(--warn)">{{ bkAskWarn }}</span></sc-if>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-ghost" onClick="{{ bkAskNo }}">Cancelar</button><button class="btn btn-primary" onClick="{{ bkAskGo }}">{{ bkAskLbl }}</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-ghost" data-esc="1" onClick="{{ bkAskNo }}">Cancelar</button><button class="btn btn-primary" onClick="{{ bkAskGo }}">{{ bkAskLbl }}</button></div>
   </div>
 </div>
 </sc-if>
@@ -2725,7 +2727,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ fShareOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ fsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ fsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:12px"><div style="margin-right:auto;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ fsWho }}</span><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;text-wrap:pretty">{{ fsTitle }}</span></div><button class="btn btn-ghost" onClick="{{ fsClose }}">Cerrar</button></div>
     <sc-if value="{{ fsDone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;padding:8px 12px;border-radius:12px;background:var(--veg-bg);color:var(--veg-ink)">Ya está respondido.</span></sc-if>
@@ -2743,7 +2745,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(900px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
-      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar cuestionario</span><button class="btn btn-ghost" onClick="{{ feClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ feSave }}">Guardar</button></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar cuestionario</span><button class="btn btn-ghost" data-esc="1" onClick="{{ feClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ feSave }}">Guardar</button></div>
       <input value="{{ feName }}" onChange="{{ onFeName }}" placeholder="Nombre del cuestionario" style="font:inherit;font-family:var(--font-heading);font-weight:600;font-size:22px;border:0;border-bottom:2px solid transparent;padding:0;background:transparent;color:var(--color-text);min-width:0" style-focus="border-bottom-color:var(--color-accent);outline:none">
       <textarea class="input" rows="2" value="{{ feIntro }}" onChange="{{ onFeIntro }}" placeholder="Texto de bienvenida (opcional)" style="resize:vertical;font-size:14px"></textarea>
     </div>
@@ -2778,7 +2780,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(1040px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
-      <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Biblioteca · Recetas</span><span style="font-family:var(--font-heading);font-weight:600;font-size:22px">Revisión del recetario</span><span style="font-size:13px;color:var(--color-neutral-700);max-width:760px;text-wrap:pretty">{{ revIntro }}</span></div><button class="btn btn-ghost" onClick="{{ revClose }}">Cerrar</button></div>
+      <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Biblioteca · Recetas</span><span style="font-family:var(--font-heading);font-weight:600;font-size:22px">Revisión del recetario</span><span style="font-size:13px;color:var(--color-neutral-700);max-width:760px;text-wrap:pretty">{{ revIntro }}</span></div><button class="btn btn-ghost" data-esc="1" onClick="{{ revClose }}">Cerrar</button></div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <div class="cf-rail" style="display:flex;gap:4px;padding:3px;background:var(--color-neutral-100);border-radius:999px;max-width:100%"><sc-for list="{{ revTabs }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};cursor:pointer;white-space:nowrap">{{ t.label }}</button></sc-for></div>
         <sc-if value="{{ revBulkOn }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ revBulk }}" style="margin-left:auto">{{ revBulkLabel }}</button></sc-if>
@@ -2813,7 +2815,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ lsOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ lsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ lsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(900px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:21px">Lista de alimentos</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ lsMode }} Los gramos los calcula la app como siempre. Las listas se editan en Biblioteca → Listas de alimentos.</span></div><button class="btn btn-ghost" onClick="{{ lsClose }}">Cerrar</button></div>
     <div style="overflow:auto;padding:16px 22px 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px;background:var(--color-neutral-100)">
@@ -2835,7 +2837,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(980px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
-      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar lista de alimentos</span><button class="btn btn-ghost" onClick="{{ leClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ leSave }}">Guardar</button></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar lista de alimentos</span><button class="btn btn-ghost" data-esc="1" onClick="{{ leClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ leSave }}">Guardar</button></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><input value="{{ leName }}" onChange="{{ onLeName }}" placeholder="Nombre" style="font:inherit;font-family:var(--font-heading);font-weight:600;font-size:22px;border:0;border-bottom:2px solid transparent;padding:0;background:transparent;color:var(--color-text);flex:1 1 260px;min-width:0" style-focus="border-bottom-color:var(--color-accent);outline:none"><input class="input" value="{{ leTag }}" onChange="{{ onLeTag }}" placeholder="Etiqueta (p. ej. Vegetal)" style="width:200px"></div>
       <input class="input" value="{{ leDesc }}" onChange="{{ onLeDesc }}" placeholder="Descripción breve">
     </div>
@@ -2860,7 +2862,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ eqiOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ eqiClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ eqiClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 20px 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Equivalencias · {{ eqiCount }}</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ eqiTitle }}</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ eqiSub }}</span></div><button class="btn btn-ghost" onClick="{{ eqiClose }}">Cerrar</button></div>
     <div style="overflow:auto;padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px">
@@ -2879,7 +2881,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <sc-if value="{{ nxeOn }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(580px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
-    <div style="padding:18px 22px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--color-divider)"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Aviso personalizado</span><button class="btn btn-ghost" onClick="{{ nxeClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ nxeSave }}">Guardar</button></div>
+    <div style="padding:18px 22px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--color-divider)"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Aviso personalizado</span><button class="btn btn-ghost" data-esc="1" onClick="{{ nxeClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ nxeSave }}">Guardar</button></div>
     <div style="overflow:auto;padding:16px 22px 22px;display:flex;flex-direction:column;gap:14px">
       <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Título<input class="input" value="{{ nxeTitle }}" onChange="{{ onNxeTitle }}" placeholder="Por ejemplo: Magnesio antes de dormir" style="font-size:15px"></label>
       <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Texto<textarea class="input" rows="2" value="{{ nxeBody }}" onChange="{{ onNxeBody }}" placeholder="Por ejemplo: Toma tu magnesio 30 minutos antes de acostarte." style="font-size:14px;resize:vertical"></textarea></label>
@@ -2900,7 +2902,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ plansOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ plansClose }}" style="position:fixed;inset:0;z-index:80;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ plansClose }}" style="position:fixed;inset:0;z-index:80;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(860px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
     <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:600;font-size:22px;margin-right:auto">Planes Cientia Nutrition</span><button class="btn btn-ghost" onClick="{{ plansClose }}">Cerrar</button></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
@@ -2920,7 +2922,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ caOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ caClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ caClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
     <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:600;font-size:21px;margin-right:auto">Asignar protocolo</span><button class="btn btn-ghost" onClick="{{ caClose }}">Cancelar</button></div>
     <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Cliente<select class="input" value="{{ caCli }}" onChange="{{ onCaCli }}"><sc-for list="{{ caCliOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
@@ -2995,7 +2997,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </x-import>
 </sc-if>
 <sc-if value="{{ psOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ psClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ psClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(500px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Guardar como preset</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ psInfo }}</span></div><button class="btn btn-ghost" onClick="{{ psClose }}">Cerrar</button></div>
     <input class="input" value="{{ psName }}" onChange="{{ onPsName }}" placeholder="Nombre del preset (p. ej. Definición 4 comidas)" style="font-weight:700">
@@ -3006,7 +3008,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ paOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ paClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ paClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(480px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ paTitle }}</span>
     <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ paTxt }}</span>
@@ -3020,7 +3022,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ umOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ umClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ umClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Medida casera</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ umName }}</span></div><button class="btn btn-ghost" onClick="{{ umClose }}">Cerrar</button></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px">
@@ -3042,7 +3044,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <div data-noprint="1" class="cf-toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:160;background:{{ toastBg }};color:var(--cf-on-ink);padding:12px 20px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px)"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastMsg }}</div>
 </sc-if>
 <sc-if value="{{ peOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ peClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ peClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(820px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--color-divider)">
       <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ peCtx }}</span>
@@ -3100,7 +3102,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ reOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ reClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ reClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(780px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:4px">
@@ -3141,7 +3143,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ pkOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ pkClose }}" style="position:fixed;inset:0;z-index:65;background:rgba(20,40,60,.22);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ pkClose }}" style="position:fixed;inset:0;z-index:65;background:rgba(20,40,60,.22);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <sc-if value="{{ pkIsEv }}" hint-placeholder-val="{{ false }}">
       <div style="height:8px;background:{{ pk.dot }}"></div>
@@ -3189,7 +3191,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ evOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ evClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ evClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(660px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 12px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
@@ -3252,7 +3254,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 <sc-if value="{{ eqOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" onClick="{{ eqClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ eqClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(820px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:baseline;gap:12px"><div style="margin-right:auto"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ eqCtx }}</div><div style="font-family:var(--font-heading);font-weight:600;font-size:20px">Menú de equivalencias</div></div><button class="btn btn-ghost" onClick="{{ eqClose }}">Cerrar</button></div>
@@ -3741,7 +3743,8 @@ class Component extends DCLogic {
     document.addEventListener('visibilitychange',onVis);window.addEventListener('focus',()=>this.pullCloud(false));
     window.addEventListener('beforeunload',e=>{if(this.state.dirty||this.state.saving){e.preventDefault();e.returnValue='';}});
     ['pointerdown','keydown','drop','input','change'].forEach(n=>window.addEventListener(n,()=>{this._uAct=Date.now();},true));
-    window.addEventListener('keydown',e=>{const tg=e.target,ed=!!tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.tagName==='SELECT'||tg.isContentEditable),ky=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&ky==='k'&&(this.state.auth==='in'||this.state.auth==='local')){e.preventDefault();this.setState(st=>({qk:!st.qk,qkQ:'',qkSel:0}));return;}if((e.ctrlKey||e.metaKey)&&!ed&&(ky==='z'||ky==='y')&&(this.state.auth==='in'||this.state.auth==='local')){e.preventDefault();if(ky==='y'||e.shiftKey)this.redo();else this.undo();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.qk)this.setState({qk:false});else if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
+    window.addEventListener('keydown',e=>{const tg=e.target,ed=!!tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.tagName==='SELECT'||tg.isContentEditable),ky=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&ky==='k'&&(this.state.auth==='in'||this.state.auth==='local')){e.preventDefault();this.setState(st=>({qk:!st.qk,qkQ:'',qkSel:0}));return;}if((e.ctrlKey||e.metaKey)&&!ed&&(ky==='z'||ky==='y')&&(this.state.auth==='in'||this.state.auth==='local')){e.preventDefault();if(ky==='y'||e.shiftKey)this.redo();else this.undo();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'&&!e.defaultPrevented){const C=[...document.querySelectorAll('[data-esc]')].filter(el=>el.getClientRects().length);if(C.length){const zOf=el=>{let z=0;for(let p=el;p&&p!==document.body;p=p.parentElement){const cs=getComputedStyle(p);if(cs.position==='fixed'){const n=parseInt(cs.zIndex,10);if(!isNaN(n))z=Math.max(z,n);}}return z;};let best=C[0],bz=zOf(C[0]);C.slice(1).forEach(el=>{const z=zOf(el);if(z>=bz){best=el;bz=z;}});e.preventDefault();if(document.activeElement&&document.activeElement.blur&&document.activeElement!==document.body)document.activeElement.blur();best.click();return;}}
+    if(e.key==='Escape'){if(this.state.qk)this.setState({qk:false});else if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
     try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,todoDone:d.todoDone||null,qreplies:d.qreplies||null,onbOff:d.onbOff||null,feeRem:d.feeRem||null,avail:d.avail||null,savedAt:d.savedAt||null});}catch(e){}
@@ -3965,6 +3968,7 @@ class Component extends DCLogic {
   }
   componentDidUpdate(pp,ps){
     this.applyBrand();
+    {const tdI=!!(this.state.td&&this.state.td.mode==='import');if(tdI&&!this._tdF){this._tdF=true;setTimeout(()=>{const el=document.getElementById('cf-td-q');if(el)el.focus();},40);}else if(!tdI)this._tdF=false;}
     if(this.state.qk&&!this._qkF){this._qkF=true;setTimeout(()=>{const el=document.getElementById('cf-qk-in');if(el)el.focus();},40);}else if(!this.state.qk)this._qkF=false;
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
@@ -4724,7 +4728,7 @@ class Component extends DCLogic {
             toggleCollapse:()=>this.setState(st=>({collapsed:{...st.collapsed,[ml.id]:!st.collapsed[ml.id]}})),
             summary:ml.cheat?'Comida libre':ml.options.map((o,oi)=>(ml.options.length>1?String.fromCharCode(65+oi)+': ':'')+([].concat(...SLOTS.map(([sl])=>(o[sl]||[]).map(x=>FM[x.fid]&&FM[x.fid].name).filter(Boolean))).slice(0,4).join(', ')||'vacía')).join('   ·   '),
             openEq:()=>this.setState({eqd:{mealId:ml.id,src:ml.id+'|'+o0.id,picks:{}}}),
-            openTpl:()=>this.setState({td:{mode:'import',mealId:ml.id},tdQ:'',tdSel:[],tdHow:'opts'}),
+            openTpl:()=>this.setState({td:{mode:'import',mealId:ml.id},tdQ:'',tdSel:[],tdHow:'opts',tdCatF:'all',tdClosed:{}}),
             saveTpl:()=>this.setState({td:{mode:'save',mealId:ml.id},tdName:ml.name,tdCat:guessCat(ml.name)}),
             remove:()=>this.updC(n=>{const a=mealsOf(n);const i=a.findIndex(x=>x.id===ml.id);if(i>=0)a.splice(i,1);}),
             isOpen:open&&!ml.cheat,isClosed:!open&&!ml.cheat,isCheat:!!ml.cheat,showCheatBtn:!open,
@@ -5218,7 +5222,9 @@ class Component extends DCLogic {
           if(!add.length){this.toast('Las recetas marcadas no tienen alimentos',true);return;}
           this.updC(n=>{const m=mealsOf(n).find(x=>x.id===mid);if(!m)return;m.options=(m.options||[]).filter(o=>!empty(o)).concat(add);});
           this.setState({td:null,tdSel:[]});this.toast(ts.length===1?'Receta añadida a la comida':ts.length+' recetas añadidas a la comida');};}
-      v.tdGroups=this.recGroups(s.tdQ,FM,tdItem,this.libAll('tpls'));v.tdEmpty=v.tdGroups.length===0;
+      {const G0=this.recGroups(s.tdQ,FM,tdItem,this.libAll('tpls')),cf=s.tdCatF||'all',CL=s.tdClosed||{},tot=G0.reduce((a,g)=>a+g.items.length,0);
+        v.tdChips=[['all','Todo',tot]].concat(G0.map(g=>[g.name,g.name,g.items.length])).concat(cf!=='all'&&!G0.some(g=>g.name===cf)?[[cf,cf,0]]:[]).map(([k,l,n])=>({label:l+' · '+n,bg:cf===k?'var(--color-accent)':'transparent',fg:cf===k?'#fff':'var(--color-text)',bd:cf===k?'var(--color-accent)':'var(--color-neutral-300)',pick:()=>this.setState({tdCatF:k})}));
+        v.tdGroups=G0.filter(g=>cf==='all'||g.name===cf).map(g=>{const open=!CL[g.name];return {...g,open,chev:open?'rotate(90deg)':'rotate(0deg)',toggle:()=>this.setState(st=>({tdClosed:{...(st.tdClosed||{}),[g.name]:!(st.tdClosed||{})[g.name]}}))};});v.tdEmpty=v.tdGroups.length===0&&!(cf!=='all'&&tot>0);v.tdElse=v.tdGroups.length===0&&cf!=='all'&&tot>0;v.tdElseTxt='No hay recetas en '+cf+' · ver las '+tot+' de Todo';v.tdToAll=()=>this.setState({tdCatF:'all'});}
     }
     v.eqOpen=false;
     if(s.eqd&&cl){

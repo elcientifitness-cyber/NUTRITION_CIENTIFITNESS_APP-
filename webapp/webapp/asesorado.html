@@ -401,10 +401,10 @@ button{-webkit-user-select:none;user-select:none}
     </section>
     </div></sc-if>
     <div data-noprint="1" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <button onClick="{{ printPlan }}" style="font:inherit;font-size:14px;font-weight:800;min-height:48px;border-radius:12px;border:0;background:var(--cf-plan-ink,var(--veg-ink));color:var(--cf-on-ink);cursor:pointer">Descargar PDF</button>
+      <button onClick="{{ printPlan }}" style="font:inherit;font-size:14px;font-weight:800;min-height:48px;border-radius:12px;border:0;background:var(--cf-plan-ink,var(--veg-ink));color:var(--cf-on-ink);cursor:pointer">{{ pdfLbl }}</button>
       <button onClick="{{ toggleShop }}" style="font:inherit;font-size:14px;font-weight:800;min-height:48px;border-radius:12px;border:0;background:var(--cf-plan-bg,var(--veg-bg));color:var(--cf-plan-ink,var(--veg-ink));cursor:pointer">{{ shopLabel }}</button>
     </div>
-    <article style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:18px">
+    <article id="cf-plan-pdf" style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:18px">
       <div style="display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--color-divider);padding-bottom:14px">
         <img src="{{ planLogo }}" alt="{{ planLogoAlt }}" style="height:52px;width:auto;display:block;border-radius:14px">
         <div style="min-width:0"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cf-plan-ink,var(--veg-ink));font-weight:700">{{ planKicker }}</div><div style="font-family:var(--font-heading);font-weight:600;font-size:20px">{{ planName }}</div></div>
@@ -568,6 +568,15 @@ button{-webkit-user-select:none;user-select:none}
 </div>
 </sc-if>
 
+<sc-if value="{{ pdfSheet }}" hint-placeholder-val="{{ false }}">
+<div data-cf-lock="1" data-noprint="1" onClick="{{ pdfClose }}" style="position:fixed;inset:0;overscroll-behavior:contain;z-index:60;background:rgba(18,32,46,.5);display:flex;align-items:flex-end;justify-content:center;font-family:var(--font-body);color:var(--color-text)">
+  <section onClick="{{ stop }}" style="width:min(560px,100%);background:var(--cf-card);border-radius:26px 26px 0 0;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:20px 18px calc(18px + env(safe-area-inset-bottom))">
+    <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:21px">Tu PDF está listo</span><span style="font-size:13px;color:var(--color-neutral-700);overflow-wrap:anywhere">{{ pdfName }} · {{ pdfInfo }}</span></div><button onClick="{{ pdfClose }}" aria-label="Cerrar" style="font:inherit;width:40px;height:40px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-text);font-size:20px;cursor:pointer;flex:none">×</button></div>
+    <sc-if value="{{ pdfCanShare }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pdfShare }}" style="font:inherit;min-height:50px;border-radius:14px;border:0;background:var(--color-accent);color:#fff;font-size:15px;font-weight:800;cursor:pointer">Guardar o compartir</button></sc-if>
+    <a href="{{ pdfUrl }}" download="{{ pdfName }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:14px;border:1.5px solid var(--color-accent);color:var(--color-accent-700);font-size:15px;font-weight:800;text-decoration:none">Abrir PDF</a>
+  </section>
+</div>
+</sc-if>
 <sc-if value="{{ bkSheet }}" hint-placeholder-val="{{ false }}">
 <div data-cf-lock="1" onClick="{{ bkClose }}" style="position:fixed;inset:0;overscroll-behavior:contain;z-index:60;background:rgba(18,32,46,.5);display:flex;align-items:flex-end;justify-content:center;font-family:var(--font-body);color:var(--color-text)">
   <section onClick="{{ stop }}" style="width:min(560px,100%);max-height:90vh;overflow-y:auto;background:var(--cf-card);border-radius:26px 26px 0 0;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:18px 18px calc(18px + env(safe-area-inset-bottom))">
@@ -859,6 +868,34 @@ class Component extends DCLogic {
   mealPhDel(x){if(this.sb&&!String(x.p).startsWith('demo/'))this.sb.storage.from('cf-fotos').remove([x.p]).then(()=>{},()=>{});this.patchLog(n=>{n.survey=n.survey||{};n.survey.mph=(n.survey.mph||[]).filter(y=>y.p!==x.p);});}
   mpSign(rows){if(!this.sb)return;const U=this.state.mpUrl||{},lim=addDays(isoD(new Date()),-21),P=[];(rows||[]).forEach(r=>{if(String(r.day)<lim)return;const m=(r.survey||{}).mph;if(Array.isArray(m))m.forEach(x=>{if(x&&x.p&&!U[x.p])P.push(x.p);});});if(!P.length)return;
     this.sb.storage.from('cf-fotos').createSignedUrls(P,3600).then(({data})=>{const o={};(data||[]).forEach(u=>{if(u&&u.signedUrl)o[u.path]=u.signedUrl;});this.setState(st=>({mpUrl:{...(st.mpUrl||{}),...o}}));}).catch(()=>{});}
+  loadJs(src){this._js=this._js||{};if(!this._js[src])this._js[src]=new Promise((ok,ko)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=()=>{delete this._js[src];ko(new Error('load'));};document.head.appendChild(s);});return this._js[src];}
+  async makePdf(){if(this._pdfBusy)return;const src=document.getElementById('cf-plan-pdf');if(!src)return;this._pdfBusy=true;this.setState({pdfBusy:true});
+    const R=document.documentElement,th0=R.getAttribute('data-theme'),cover=document.createElement('div'),box=document.createElement('div');
+    cover.setAttribute('style','position:fixed;inset:0;z-index:9999;background:#1D3A4C;color:#F3F2EF;display:flex;align-items:center;justify-content:center;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:24px');cover.textContent='Preparando tu PDF…';document.body.appendChild(cover);
+    try{await Promise.all([this.loadJs('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'),this.loadJs('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js')]);
+      const H2I=window.htmlToImage,JP=window.jspdf&&window.jspdf.jsPDF;if(!H2I||!JP)throw new Error('lib');
+      R.setAttribute('data-theme','light');
+      const W=720,cl=src.cloneNode(true);cl.removeAttribute('id');cl.querySelectorAll('[data-noprint]').forEach(e=>e.remove());cl.style.cssText+=';width:'+W+'px;max-width:none;padding:0;margin:0;border-radius:0;box-shadow:none;background:#fff;box-sizing:border-box';
+      box.setAttribute('style','position:fixed;left:-12000px;top:0;width:'+W+'px;background:#fff;color:var(--color-text);font-family:var(--font-body)');box.appendChild(cl);document.body.appendChild(box);
+      await new Promise(r=>setTimeout(r,120));await Promise.all([...cl.querySelectorAll('img')].map(im=>im.complete?0:new Promise(r=>{im.onload=im.onerror=r;})));
+      const mg=12,cw=210-2*mg,sc=cw/W,PH=(297-2*mg-6)/sc,top0=cl.getBoundingClientRect().top,B=[];
+      const walk=el=>{[...el.children].forEach(c=>{const r=c.getBoundingClientRect();if(r.height<1)return;if(r.height>PH*0.9&&c.children.length>1)walk(c);else B.push({el:c,t:r.top-top0,b:r.bottom-top0,l:r.left-cl.getBoundingClientRect().left,w:r.width,h:r.height});});};walk(cl);
+      let fe='';try{fe=await H2I.getFontEmbedCSS(cl);}catch(e){}
+      const opt={pixelRatio:2,backgroundColor:'#ffffff',cacheBust:false};if(fe)opt.fontEmbedCSS=fe;else opt.skipFonts=true;
+      if(/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)&&B[0]){try{await H2I.toCanvas(B[0].el,opt);}catch(e){}}
+      const pdf=new JP({unit:'mm',format:'a4',compress:true});let y=0,prevB=null,pg=1;
+      for(const k of B){const cv=await H2I.toCanvas(k.el,opt),gap=prevB==null||y===0?0:Math.max(0,k.t-prevB);
+        if(k.h<=PH){if(y>0&&y+gap+k.h>PH){pdf.addPage();pg++;y=0;}else y+=gap;pdf.addImage(cv.toDataURL('image/jpeg',0.9),'JPEG',mg+k.l*sc,mg+y*sc,k.w*sc,k.h*sc,undefined,'FAST');y+=k.h;}
+        else{if(y>0){pdf.addPage();pg++;y=0;}const pxr=cv.height/k.h;let off=0;while(off<k.h){const hh=Math.min(PH,k.h-off),c2=document.createElement('canvas');c2.width=cv.width;c2.height=Math.ceil(hh*pxr);const x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(cv,0,Math.floor(off*pxr),cv.width,c2.height,0,0,cv.width,c2.height);pdf.addImage(c2.toDataURL('image/jpeg',0.9),'JPEG',mg+k.l*sc,mg,k.w*sc,hh*sc,undefined,'FAST');off+=hh;if(off<k.h){pdf.addPage();pg++;}y=hh;}}
+        prevB=k.b;}
+      const n=pdf.getNumberOfPages();if(n>1)for(let i=1;i<=n;i++){pdf.setPage(i);pdf.setFontSize(8);pdf.setTextColor(140);pdf.text(i+' / '+n,210-mg,297-6,{align:'right'});}
+      const nm=((this.state.link&&this.state.link.plan&&this.state.link.plan.name)||'').trim(),fname='Plan de nutrición'+(nm?' · '+nm.replace(/[\\/:*?"<>|]/g,''):'')+'.pdf';
+      const blob=pdf.output('blob'),file=typeof File==='function'?new File([blob],fname,{type:'application/pdf'}):null;
+      if(this._pdfUrl)URL.revokeObjectURL(this._pdfUrl);this._pdfUrl=URL.createObjectURL(blob);this._pdfFile=file;
+      const share=!!(file&&navigator.canShare&&(()=>{try{return navigator.canShare({files:[file]});}catch(e){return false;}})());
+      this.setState({pdfReady:{url:this._pdfUrl,name:fname,pages:n,share}});
+    }catch(e){this.toastMsg('No se pudo crear el PDF aquí. Se abre la impresión: elige «Guardar como PDF».');setTimeout(()=>window.print(),400);}
+    finally{if(th0)R.setAttribute('data-theme',th0);else R.removeAttribute('data-theme');if(window.cfSetTheme&&window.cfTheme)window.cfSetTheme(window.cfTheme());box.remove();cover.remove();this._pdfBusy=false;this.setState({pdfBusy:false});}}
   pendK(){const l=this.state.link;return l?'cf-as-pend:'+l.coach_id+'|'+l.client_key:'';}
   savePend(){const k=this.pendK();if(!k)return;try{const P={},lg=this.state.logs||{};Object.keys(lg).forEach(d=>{if(lg[d]&&lg[d]._dirty)P[d]=lg[d];});if(Object.keys(P).length)localStorage.setItem(k,JSON.stringify(P));else localStorage.removeItem(k);}catch(e){}}
   restorePend(save){const k=this.pendK();if(!k)return;let P=null;try{P=JSON.parse(localStorage.getItem(k)||'null');}catch(e){}if(!P||!Object.keys(P).length)return;
@@ -1103,7 +1140,10 @@ class Component extends DCLogic {
       const spG=l=>{const m=/^(.+? g)\s*\((≈[^)]*)\)$/.exec(l.g||'');return {...l,gq:m?m[1]:(l.g||''),hm:m?m[2]:'',hasHm:!!m};};
       v.pGroups=(P.groups||[]).map(g=>({...g,meals:(g.meals||[]).map(m=>({...m,kcal:HK?'':m.kcal,opts:(m.opts||[]).map(o=>({...o,title:HK?String(o.title||'').replace(/ · [\d.,]+ kcal$/,''):o.title,blocks:(o.blocks||[]).map(b=>({...b,lines:(b.lines||[]).map(spG)}))}))})),hasTitle:!!g.title,hasK:!!g.kLine&&!HK&&!HM,kLine:g.kLine||'',isToday:(g.dayIdx||[]).includes(td)&&(P.groups||[]).length>1}));
       v.shop=P.shop||[];v.shopNote=P.shopNote||'';v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
-      v.printPlan=()=>{if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>window.print(),150));else window.print();};}
+      v.printPlan=()=>{if(this._pdfBusy)return;if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>this.makePdf(),200));else this.makePdf();};}
+    v.pdfLbl=s.pdfBusy?'Preparando PDF…':'Descargar PDF';v.pdfSheet=!!s.pdfReady;
+    if(s.pdfReady){const P=s.pdfReady;v.pdfName=P.name;v.pdfInfo=P.pages+(P.pages===1?' página':' páginas');v.pdfUrl=P.url;v.pdfCanShare=!!P.share;v.pdfClose=()=>this.setState({pdfReady:null});
+      v.pdfShare=()=>{const f=this._pdfFile;if(!f||!navigator.share)return;navigator.share({files:[f],title:P.name}).then(()=>this.setState({pdfReady:null})).catch(e=>{if(e&&e.name!=='AbortError')this.toastMsg('No se pudo compartir. Prueba con «Abrir PDF».',true);});};}
 
     v.apHas=false;v.apSheet=false;
     if(v.isChat||(hoyOff&&v.isPlan)){const stD=a=>new Date(a.date+'T'+(a.allDay||!a.start?'00:00':a.start)+':00'),enD=a=>a.allDay||!a.start?parseD(addDays(a.date,1)):new Date(stD(a).getTime()+(num(a.dur)||30)*60000),now=Date.now();
