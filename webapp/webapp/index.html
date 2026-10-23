@@ -74,6 +74,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   </div></sc-if>
   <nav class="cf-nav">
     <span class="cf-nav-label">Menú</span>
+    <button class="cf-nav-btn" data-on="{{ navT.on }}" onClick="{{ navT.go }}" title="Pendientes"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg><span>Pendientes</span><sc-if value="{{ navT.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count">{{ navT.count }}</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav1.on }}" onClick="{{ nav1.go }}" title="Clientes"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Clientes</span><span class="cf-nav-count">{{ nav1.count }}</span></button>
     <button class="cf-nav-btn" data-on="{{ navMe.on }}" onClick="{{ navMe.go }}" title="Mi nutrición"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"></path></svg><span>Mi nutrición</span><sc-if value="{{ navMe.lock }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" style="color:var(--brass-ink)">Premium</span></sc-if></button>
     <button class="cf-nav-btn" data-on="{{ nav3.on }}" onClick="{{ nav3.go }}" title="Agenda"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg><span>Agenda</span><sc-if value="{{ nav3.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Citas de hoy">{{ nav3.count }}</span></sc-if></button>
@@ -87,6 +88,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <sc-if value="{{ sbCF }}" hint-placeholder-val="{{ true }}"><span style="width:100%;box-sizing:border-box;font-size:11px;color:var(--color-neutral-600);padding:0 4px">por <span style="font-weight:600;color:var(--color-text)">El Cientifitness</span></span></sc-if>
     <button onClick="{{ openPlans }}" title="Ver planes" style="font:inherit;font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid {{ planBd }};background:transparent;color:{{ planFg }};cursor:pointer;text-align:left">{{ planLbl }}</button>
     <button class="cf-nav-btn" onClick="{{ themeCycle }}" title="Cambiar tema" aria-label="Cambiar tema"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;flex:none;display:block"><circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 0 0 16z" style="fill:currentColor;stroke:none"></path></svg><span>{{ themeLbl }}</span></button>
+    <button class="cf-nav-btn" onClick="{{ bkOpen }}" title="Copias de seguridad"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path><path d="M12 7v5l3 2"></path></svg><span>Copias de seguridad</span></button>
     <button class="cf-nav-btn cf-side-tog" onClick="{{ toggleSide }}" title="{{ sideTogLabel }}" aria-label="{{ sideTogLabel }}" style="font-size:13px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M9 3v18"></path><path d="m16 15-3-3 3-3"></path></svg><span>{{ sideTogLabel }}</span></button>
     <sc-if value="{{ hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700);padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ meLabel }}</span></sc-if>
     <span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:{{ saveFg }};font-variant-numeric:tabular-nums;padding:0 4px"><span style="width:8px;height:8px;border-radius:50%;background:{{ saveDot }};box-shadow:0 0 0 3px rgba(79,180,135,.15)"></span>{{ saveLabel }}</span>
@@ -163,12 +165,16 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}">
 <div style="flex:1;display:flex;flex-direction:column">
   <div data-noprint="1" style="padding:24px 28px 0;max-width:1280px;width:100%;margin:0 auto;box-sizing:border-box">
-    <button class="btn btn-ghost" onClick="{{ goClients }}" style="padding-left:0">
-      <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
-      Clientes
-    </button>
+    <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onClick="{{ goClients }}" style="padding-left:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+        Clientes
+      </button>
+        <span style="flex:1"></span>
+      <button class="btn btn-ghost" onClick="{{ undo }}" title="Deshacer (Ctrl/Cmd + Z)" aria-label="Deshacer" style="min-height:38px;padding:0 10px;opacity:{{ undoOp }}"><svg width="17" height="17" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg></button><button class="btn btn-ghost" onClick="{{ redo }}" title="Rehacer (Ctrl/Cmd + Shift + Z)" aria-label="Rehacer" style="min-height:38px;padding:0 10px;opacity:{{ redoOp }}"><svg width="17" height="17" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="m15 14 5-5-5-5"></path><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"></path></svg></button>
+    </div>
     <div style="display:flex;flex-wrap:wrap;gap:16px 20px;align-items:center;margin-top:8px">
-      <span style="width:56px;height:56px;border-radius:50%;background:{{ cAvBg }};color:{{ cAvFg }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;flex:none;align-self:center;box-shadow:0 0 0 4px #fff,var(--shadow-sm)">{{ cIni }}</span>
+      <span style="width:56px;height:56px;border-radius:50%;background:{{ cAvBg }};color:{{ cAvFg }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;flex:none;align-self:center;box-shadow:0 0 0 4px var(--cf-page,var(--color-bg)),var(--shadow-sm)">{{ cIni }}</span>
       <input value="{{ cName }}" onChange="{{ onName }}" placeholder="Nombre del cliente" style="font:inherit;font-family:var(--font-heading);font-weight:600;font-size:32px;letter-spacing:-0.02em;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);flex:1 1 280px;min-width:0" style-focus="border-bottom-color:var(--color-accent)">
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px;margin-top:16px">
@@ -477,6 +483,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
       <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;background:{{ distBg }};color:{{ distFg }};white-space:nowrap;flex:none">{{ distLabel }}</span>
       <div class="cf-rail" style="display:flex;gap:6px;align-items:center;flex:1 1 auto;min-width:0;padding:2px 0">
       <span style="margin-left:auto"></span>
+      <button class="btn btn-ghost" onClick="{{ undo }}" title="Deshacer (Ctrl/Cmd + Z)" aria-label="Deshacer" style="min-height:38px;padding:0 10px;opacity:{{ undoOp }}"><svg width="17" height="17" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg></button><button class="btn btn-ghost" onClick="{{ redo }}" title="Rehacer (Ctrl/Cmd + Shift + Z)" aria-label="Rehacer" style="min-height:38px;padding:0 10px;opacity:{{ redoOp }}"><svg width="17" height="17" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="m15 14 5-5-5-5"></path><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"></path></svg></button>
       <sc-if value="{{ flActive }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 5px 4px 12px;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-800)">Lista: {{ flActiveName }}<button onClick="{{ flUnset }}" title="Dejar de usar la lista permitida" aria-label="Quitar lista" style="font:inherit;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:color-mix(in srgb,var(--color-accent) 12%,transparent);color:inherit;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-if>
       <button class="btn btn-secondary" onClick="{{ psOpenFn }}" title="Guarda este plan (comidas, % y alimentos) como preset para otros clientes" style="font-size:13px;min-height:38px">Guardar como preset</button>
       <button class="btn btn-secondary" onClick="{{ lsOpenFn }}" title="Rellena las comidas con una lista de alimentos o limita los alimentos a esa lista" style="font-size:13px;min-height:38px">Lista de alimentos<sc-if value="{{ lsLock }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--warn-bg);color:var(--warn)">PREMIUM</span></sc-if></button>
@@ -1848,6 +1855,37 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </main>
 </sc-if>
 
+<sc-if value="{{ isTodo }}" hint-placeholder-val="{{ false }}">
+<main class="cf-fade" style="padding:36px 28px 60px;max-width:1040px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+    <div style="margin-right:auto"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ tdSummary }}</div><h1 style="margin:4px 0 0">Pendientes</h1></div>
+    <button class="btn btn-secondary" onClick="{{ tdRefresh }}" style="min-height:38px">Actualizar</button>
+  </div>
+  <sc-if value="{{ tdNoCloud }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px;color:var(--color-neutral-700)">Mensajes, registros y cuestionarios necesitan la sesión iniciada en la nube.</p></sc-if>
+  <sc-if value="{{ tdEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:36px 24px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center"><span style="font-family:var(--font-heading);font-weight:600;font-size:19px">Todo al día</span><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">No hay mensajes, cuestionarios ni seguimientos pendientes.</span></div></sc-if>
+  <sc-for list="{{ tdGroups }}" as="g" hint-placeholder-count="3">
+    <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:18px 20px 8px;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:baseline;gap:6px 10px;flex-wrap:wrap;padding-bottom:10px">
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:17px">{{ g.title }}</span>
+        <span class="cf-nav-count" style="margin-left:0">{{ g.count }}</span>
+        <span style="font-size:12px;color:var(--color-neutral-600);flex:1 1 260px;text-wrap:pretty">{{ g.sub }}</span>
+      </div>
+      <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+        <div style="display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--color-divider)">
+          <span style="width:36px;height:36px;border-radius:50%;background:{{ it.avBg }};color:{{ it.avFg }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex:none">{{ it.ini }}</span>
+          <button onClick="{{ it.open }}" style="font:inherit;color:inherit;text-align:left;border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 240px">
+            <span style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:14px">{{ it.name }}</span><sc-if value="{{ it.hasWhen }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-600)">{{ it.when }}</span></sc-if></span>
+            <span style="font-size:13px;line-height:1.45;color:var(--color-neutral-700);text-wrap:pretty;overflow-wrap:anywhere">{{ it.txt }}</span>
+            <sc-for list="{{ it.warns }}" as="w" hint-placeholder-count="0"><span style="font-size:12px;font-weight:600;color:var(--danger);text-wrap:pretty">{{ w.t }}</span></sc-for>
+          </button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto"><sc-for list="{{ it.acts }}" as="a" hint-placeholder-count="1"><button class="{{ a.cls }}" onClick="{{ a.go }}" style="font-size:12px;min-height:34px">{{ a.label }}</button></sc-for></div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ g.more }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-600);padding:4px 0 10px">{{ g.moreTxt }}</span></sc-if>
+    </section>
+  </sc-for>
+</main>
+</sc-if>
 <sc-if value="{{ isMsgs }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 60px;max-width:1280px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
   <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
@@ -2488,6 +2526,38 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 
+<sc-if value="{{ bkOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" onClick="{{ bkClose }}" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
+    <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Copias de seguridad</span><button class="btn btn-ghost" onClick="{{ bkClose }}" style="font-size:13px">Cerrar</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">En tu ordenador</span>
+      <span style="font-size:13px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Descarga un archivo con todos tus datos: clientes, planes, biblioteca, agenda y ajustes. Guárdalo de vez en cuando en un sitio seguro.</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ bkDownload }}" style="min-height:40px">Descargar copia</button><label class="btn btn-secondary" style="min-height:40px;cursor:pointer">Restaurar desde archivo<input type="file" accept=".json,application/json" onChange="{{ bkFile }}" style="display:none"></label></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--color-divider)">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Automáticas en la nube</span>
+      <span style="font-size:13px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Mientras trabajas se guarda una copia como máximo cada 3 horas. Se conservan las 40 más recientes.</span>
+      <sc-if value="{{ bkLoading }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-600)">Cargando…</span></sc-if>
+      <sc-if value="{{ bkSql }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:1.5;padding:10px 12px;border-radius:12px;background:var(--warn-bg);color:var(--warn);text-wrap:pretty">Para activarlas, ejecuta el archivo pendientes-copias.sql en Supabase (SQL Editor → New query → Run) y vuelve a abrir esta ventana.</span></sc-if>
+      <sc-if value="{{ bkLocal }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Solo funcionan con la sesión iniciada en la nube.</span></sc-if>
+      <sc-if value="{{ bkFail }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--danger)">{{ bkFailTxt }}</span></sc-if>
+      <sc-if value="{{ bkNone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-600)">Aún no hay copias. La primera se crea con el próximo guardado.</span></sc-if>
+      <div style="display:flex;flex-direction:column"><sc-for list="{{ bkRows }}" as="r" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--color-divider)"><span style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">{{ r.when }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ r.sub }}</span></span><button class="btn btn-secondary" onClick="{{ r.pick }}" style="font-size:12px;min-height:34px">Restaurar</button></div></sc-for></div>
+    </div>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ bkAskOn }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:145;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
+    <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ bkAskTitle }}</span>
+    <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ bkAskTxt }}</span>
+    <sc-if value="{{ bkAskHasWarn }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;padding:8px 12px;border-radius:12px;background:var(--warn-bg);color:var(--warn)">{{ bkAskWarn }}</span></sc-if>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-ghost" onClick="{{ bkAskNo }}">Cancelar</button><button class="btn btn-primary" onClick="{{ bkAskGo }}">{{ bkAskLbl }}</button></div>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ showSessLost }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" style="position:fixed;inset:0;z-index:160;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
   <div style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:14px">
@@ -3514,10 +3584,11 @@ class Component extends DCLogic {
     const onVis=()=>{if(document.visibilityState==='visible')this.pullCloud(false);else if(this.state.dirty)this.pushCloud(false,false);};
     document.addEventListener('visibilitychange',onVis);window.addEventListener('focus',()=>this.pullCloud(false));
     window.addEventListener('beforeunload',e=>{if(this.state.dirty||this.state.saving){e.preventDefault();e.returnValue='';}});
-    window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
+    ['pointerdown','keydown','drop','input','change'].forEach(n=>window.addEventListener(n,()=>{this._uAct=Date.now();},true));
+    window.addEventListener('keydown',e=>{const tg=e.target,ed=!!tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.tagName==='SELECT'||tg.isContentEditable),ky=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&!ed&&(ky==='z'||ky==='y')&&(this.state.auth==='in'||this.state.auth==='local')){e.preventDefault();if(ky==='y'||e.shiftKey)this.redo();else this.undo();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();this.pushCloud(false,true);}if(e.key==='Escape'){if(this.state.ev)this.setState({ev:null,evDel:false});else if(this.state.re)this.setState({re:null,reQ:null});else if(this.state.pe)this.setState({pe:null,peDel:false});else if(this.state.pk)this.setState({pk:null});}});
     if(/^https?:$/.test(location.protocol)){if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});if(!document.getElementById('cf-gsi')){const gs=document.createElement('script');gs.id='cf-gsi';gs.async=true;gs.src='https://accounts.google.com/gsi/client';document.head.appendChild(gs);}}
     if(!window.CF_FOODS){this._iv=setInterval(()=>{if(window.CF_FOODS){clearInterval(this._iv);this.forceUpdate();}},100);}
-    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:d.savedAt||null});}catch(e){}
+    try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.clients)this.setState({clients:d.clients.map(c=>{if(c.planMode==='closed'&&!(c.menus&&c.menus.length)){c=JSON.parse(JSON.stringify(c));ensureMenus(c);}return c;}),foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,todoDone:d.todoDone||null,savedAt:d.savedAt||null});}catch(e){}
   }
   initCloud(tries){
     const cfg=window.CF_CONFIG;
@@ -3538,17 +3609,40 @@ class Component extends DCLogic {
       try{localStorage.setItem('cf-last-email',em);}catch(e){}
       this.setState({me:{email:em,name:(me&&me.name)||'',phone:(me&&me.phone)||'',role}});this.startSession(sess,role);});
   }
+  undo(){const U=this._undo||[];if(!U.length){this.toast('No hay nada que deshacer');return;}const prev=U.pop();this._redo=(this._redo||[]).concat([this.state.clients]).slice(-60);this._uSkip=true;this._uT=0;const st={clients:prev,uN:U.length,rN:this._redo.length};if(this.state.view==='client'&&!prev.some(c=>c.id===this.state.activeId))st.view='clients';this.setState(st);this.toast('Cambio deshecho · Ctrl/Cmd + Shift + Z para rehacer');}
+  redo(){const R=this._redo||[];if(!R.length){this.toast('No hay nada que rehacer');return;}const nx=R.pop();this._undo=(this._undo||[]).concat([this.state.clients]).slice(-60);this._uSkip=true;this._uT=0;const st={clients:nx,uN:this._undo.length,rN:R.length};if(this.state.view==='client'&&!nx.some(c=>c.id===this.state.activeId))st.view='clients';this.setState(st);this.toast('Cambio rehecho');}
+  loadPendLogs(){if(!this._cloud||!this.sb)return;const set=m=>this.setState({pendLast:m});
+    const fb=()=>this.sb.from('cf_daylogs').select('client_key,day').eq('coach_id',this.uid).gte('day',addDays(isoD(new Date()),-30)).order('day',{ascending:false}).limit(1000).then(({data,error})=>{if(error)return;const m={};(data||[]).forEach(r=>{const d=String(r.day).slice(0,10);if(!m[r.client_key]||d>m[r.client_key])m[r.client_key]=d;});set(m);});
+    if(this._noLL){fb();return;}
+    this.sb.rpc('cf_last_logs').then(({data,error})=>{if(error){this._noLL=true;fb();return;}const m={};(data||[]).forEach(r=>{m[r.client_key]=String(r.last_day).slice(0,10);});set(m);});}
+  todoRemind(r){if(!this.sb||!this._cloud)return;if(!(this.state.links||[]).some(l=>l.client_key===r.client_key)){this.toast('Este cliente aún no tiene la app enlazada',true);return;}
+    const body='Te recuerdo el cuestionario «'+(r.title||'Cuestionario')+'». Puedes rellenarlo aquí: '+this.formLink(r.token);
+    this.sb.from('cf_messages').insert({coach_id:this.uid,client_key:r.client_key,sender:'coach',body}).then(({error})=>{if(error){this.toast('No se pudo enviar: '+error.message,true);return;}this.toast('Recordatorio enviado por el chat');this.loadChats();this.pushNotify('msg',r.client_key,body);this.setState(st=>({todoDone:{...(st.todoDone||{}),['s:'+r.id]:Date.now()}}));});}
+  bkKeys(){return ['clients','foods','tpls','eqGroups','events','presets','recSeed','recRev','forms','lists','fibOv','unitOv','eqFree','mnotes','notif','nlist','fauto','brand','cutTpls','todoDone'];}
+  bkData(){const s=this.state,d={};this.bkKeys().forEach(k=>{d[k]=s[k]==null?null:s[k];});d.clients=s.clients||[];return d;}
+  bkDownload(){try{const me=this.state.me||{},blob=new Blob([JSON.stringify({app:'cientia-nutrition',v:1,at:new Date().toISOString(),email:me.email||'',data:this.bkData()})],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cientia-copia-'+isoD(new Date())+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);this.toast('Copia descargada');}catch(e){this.toast('No se pudo descargar la copia',true);}}
+  bkOpen(){this.setState({bk:true,bkList:null,bkErr:null,bkAsk:null});this.bkLoad();}
+  bkLoad(){if(!this._cloud||!this.sb){this.setState({bkList:[],bkErr:'local'});return;}
+    this.sb.from('cf_state_hist').select('id,saved_at,n_clients,note').eq('user_id',this.uid).order('saved_at',{ascending:false}).limit(40).then(({data,error})=>{if(error){this.setState({bkList:[],bkErr:/cf_state_hist|relation|schema|does not exist|not find/i.test(error.message||'')?'sql':error.message});return;}this.setState({bkList:data||[],bkErr:null});});}
+  bkFile(e){const f=e.target.files&&e.target.files[0];try{e.target.value='';}catch(x){}if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const j=JSON.parse(r.result),d=j&&j.data;if(!d||!Array.isArray(d.clients))throw 0;this.setState({bkAsk:{src:'file',data:d,at:j.at||null,email:j.email||''}});}catch(x){this.toast('El archivo no es una copia válida de Cientia',true);}};r.readAsText(f);}
+  bkPick(row){if(!this.sb)return;this.setState({bkBusy:true});this.sb.from('cf_state_hist').select('data').eq('id',row.id).maybeSingle().then(({data,error})=>{this.setState({bkBusy:false});if(error||!data||!data.data){this.toast('No se pudo leer la copia',true);return;}this.setState({bkAsk:{src:'cloud',data:data.data,at:row.saved_at}});});}
+  bkRestore(){const A=this.state.bkAsk;if(!A||this.state.bkBusy)return;const cur=this.bkData();this.setState({bkBusy:true});
+    const apply=()=>{const D=A.data,st={};this.bkKeys().forEach(k=>{st[k]=D[k]===undefined?null:D[k];});['clients','foods','tpls','eqGroups','events'].forEach(k=>{if(!Array.isArray(st[k]))st[k]=[];});this._undo=[];this._redo=[];
+      this.setState({...st,bk:null,bkAsk:null,bkBusy:false,view:'clients',activeId:null,uN:0,rN:0},()=>{this.pushCloud(true);try{this.applyBrand();}catch(x){}});this.toast('Copia restaurada');};
+    try{localStorage.setItem('cf-pre-restore',JSON.stringify({at:Date.now(),data:cur}));}catch(e){}
+    if(this._cloud&&this.sb&&this.state.bkErr!=='sql')this.sb.from('cf_state_hist').insert({user_id:this.uid,data:cur,saved_at:new Date().toISOString(),n_clients:(cur.clients||[]).filter(c=>!c.self).length,note:'Antes de restaurar'}).then(()=>apply(),()=>apply());else apply();}
   lostSess(){if(this._lost)return;this._lost=true;clearTimeout(this._t);this.saveLocal();this.setState({sessLost:true,saving:false});}
   startSession(sess,role){
     const keep=!!this._lost&&sess.user.id===this.uid;this._out=false;
     this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null,sessLost:false});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(!keep&&data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      if(!keep&&data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,todoDone:d.todoDone||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
       const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;this._lost=false;
         this._cloud=true;this.setState({auth:'in'});if(keep)setTimeout(()=>this.pushCloud(true),300);setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
-        this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>{this.loadChats();this.pollForms();if(this.compLive()||this.state.view==='comp')this.loadCut();},30000);this.loadForms();};
+        this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>{this.loadChats();this.pollForms();this._pN=(this._pN||0)+1;if(this.state.view==='todo'||this._pN%10===0)this.loadPendLogs();if(this.compLive()||this.state.view==='comp')this.loadCut();},30000);this.loadForms();setTimeout(()=>this.loadPendLogs(),1500);};
       if(data){go();return;}
       this.sb.from('cf_links').select('client_key').ilike('email',(sess.user.email||'').toLowerCase()).limit(1).then(({data:lk})=>{if(lk&&lk.length){location.replace('asesorado.html');return;}go();});
     });
@@ -3581,7 +3675,7 @@ class Component extends DCLogic {
     this.sb.from('cf_links').select('client_key,plan').eq('coach_id',this.uid).then(({data,error})=>{if(error){if(!quiet){this.setState({brPushing:false});this.toast('No se pudo aplicar: '+error.message,true);}return;}const R=(data||[]).filter(r=>r.plan&&(!quiet||r.plan.brand));if(quiet){R.forEach(r=>this.sb.from('cf_links').update({plan:{...r.plan,brand:null}}).eq('coach_id',this.uid).eq('client_key',r.client_key).then(()=>{}));return;}
       Promise.all(R.map(r=>this.sb.from('cf_links').update({plan:{...r.plan,brand:bp}}).eq('coach_id',this.uid).eq('client_key',r.client_key))).then(()=>{this.setState({brPushing:false});this.toast(R.length?'Tema aplicado en tu panel y en la app de '+R.length+(R.length===1?' asesorado':' asesorados'):'Tema guardado. Tus asesorados lo verán al publicarles un plan');});});}
   myPhone(){const m=this.state.me;return (m&&m.phone)||(!m||m.role==='owner'?TRAINER_PHONE:'');}
-  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,fibOv:null,unitOv:null,eqFree:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null,cutTpls:null},()=>{this.pushCloud(true);this.loadBase();});}
+  seedCoach(){this._skip=true;this.setState({clients:[],events:[],foods:[],tpls:[],eqGroups:[],presets:[],activeId:null,view:'clients',recSeed:null,recRev:null,forms:null,lists:null,fibOv:null,unitOv:null,eqFree:null,mnotes:null,notif:null,nlist:null,fauto:null,brand:null,cutTpls:null,todoDone:null},()=>{this.pushCloud(true);this.loadBase();});}
   isCEO(){const m=this.state.me;return !m||m.role==='owner';}
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
@@ -3628,7 +3722,7 @@ class Component extends DCLogic {
   loadDaylogs(key){if(!this.sb||!key)return;const from=addDays(isoD(new Date()),-13);
     this.sb.from('cf_daylogs').select('day,foods,survey').eq('coach_id',this.uid).eq('client_key',key).gte('day',from).order('day',{ascending:false}).then(({data,error})=>{this.setState(st=>({dayl:{...(st.dayl||{}),[key]:error?[]:data||[]}}));});}
   toast(msg,bad){clearTimeout(this._tt);this.setState({toast:msg,toastBad:!!bad});this._tt=setTimeout(()=>this.setState({toast:null}),2600);}
-  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,fibOv:s.fibOv||null,unitOv:s.unitOv||null,eqFree:s.eqFree||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null,savedAt:Date.now()}));}catch(e){}}
+  saveLocal(){try{const s=this.state;localStorage.setItem(LS,JSON.stringify({clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,fibOv:s.fibOv||null,unitOv:s.unitOv||null,eqFree:s.eqFree||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null,todoDone:s.todoDone||null,savedAt:Date.now()}));}catch(e){}}
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
@@ -3641,9 +3735,9 @@ class Component extends DCLogic {
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
-      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,fibOv:s.fibOv||null,unitOv:s.unitOv||null,eqFree:s.eqFree||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null},updated_at:at}).then(({error})=>{
+      this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,fibOv:s.fibOv||null,unitOv:s.unitOv||null,eqFree:s.eqFree||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null,todoDone:s.todoDone||null},updated_at:at}).then(({error})=>{
         if(error){this.setState({saving:false,syncErr:true});if(/row-level security/i.test(error.message||'')){this.toast('Tu cuenta no tiene permiso para guardar en la nube. Vuelve a entrar en el panel.',true);return;}this.toast('No se pudo guardar: '+error.message,true);return;}
-        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.fibOv!==s.fibOv||this.state.unitOv!==s.unitOv||this.state.eqFree!==s.eqFree||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand||this.state.cutTpls!==s.cutTpls;
+        this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.fibOv!==s.fibOv||this.state.unitOv!==s.unitOv||this.state.eqFree!==s.eqFree||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand||this.state.cutTpls!==s.cutTpls||this.state.todoDone!==s.todoDone;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(this._afterSave){const f=this._afterSave;this._afterSave=null;f();return;}
@@ -3657,7 +3751,7 @@ class Component extends DCLogic {
       if(error||!data)return;const rt=Date.parse(data.updated_at);
       if(!force&&rt<=this.remoteAt+1)return;if(this.state.dirty&&!force)return;
       const d=data.data;this._skip=true;this.remoteAt=rt;
-      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,dirty:false,conflict:false,savedAt:rt});
+      this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,todoDone:d.todoDone||null,dirty:false,conflict:false,savedAt:rt});
       this.toast(force?'Cargada la versión de la nube':'Actualizado con cambios de otro dispositivo');});
   }
   schedule(){clearTimeout(this._t);this._t=setTimeout(()=>this.pushCloud(false,false),1500);}
@@ -3671,10 +3765,12 @@ class Component extends DCLogic {
     if(this.state.view!==this._lv){this._lv=this.state.view;if(this._lv==='library'&&this._cloud){this.loadBase();this.loadProps();if(this.isCEO()&&this.state.libSrc==='coach')this.loadAllLibs();}}
     if(this.state.view==='msgs'){const k=this._selKey;if(k&&this._dlKey!==k){this._dlKey=k;this.loadDaylogs(k);this.markRead(k);}
       const el=this._thrRef&&this._thrRef.current,n=(this.state.msgs||[]).length;if(el&&(this._thrN!==n||this._thrK!==k)){this._thrN=n;this._thrK=k;el.scrollTop=el.scrollHeight;}}else this._dlKey=null;
-    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,fibOv:s.fibOv,unitOv:s.unitOv,eqFree:s.eqFree,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto,brand:s.brand,cutTpls:s.cutTpls};ps=ps||snap||this._snap;
+    const s=this.state;const snap=this._snap;this._snap={events:s.events,clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,presets:s.presets,recRev:s.recRev,forms:s.forms,lists:s.lists,fibOv:s.fibOv,unitOv:s.unitOv,eqFree:s.eqFree,mnotes:s.mnotes,notif:s.notif,nlist:s.nlist,fauto:s.fauto,brand:s.brand,cutTpls:s.cutTpls,todoDone:s.todoDone};ps=ps||snap||this._snap;
     if(ps.events!==s.events&&this._cloud)this.agendaSoon();if(ps.clients!==s.clients&&this._cloud)this.compSoon();
     if(ps.events!==s.events&&this._gtok){clearTimeout(this._gt);this._gt=setTimeout(()=>this.gSync(),2000);}
-    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.fibOv!==s.fibOv||ps.unitOv!==s.unitOv||ps.eqFree!==s.eqFree||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto||ps.brand!==s.brand||ps.cutTpls!==s.cutTpls){
+    if(ps.clients!==s.clients){const uOK=s.auth==='in'||s.auth==='local';if(this._skip||!uOK){this._undo=[];this._redo=[];this._uSkip=false;}else if(this._uSkip){this._uSkip=false;}else if(Date.now()-(this._uAct||0)<2500){const now=Date.now();if(!this._uT||now-this._uT>1000){this._undo=(this._undo||[]).concat([ps.clients]).slice(-60);this._redo=[];}this._uT=now;}
+      const uN=(this._undo||[]).length,rN=(this._redo||[]).length;if(uN!==(s.uN||0)||rN!==(s.rN||0))setTimeout(()=>this.setState({uN,rN}),0);}
+    if(ps.clients!==s.clients||ps.foods!==s.foods||ps.tpls!==s.tpls||ps.eqGroups!==s.eqGroups||ps.events!==s.events||ps.presets!==s.presets||ps.recRev!==s.recRev||ps.forms!==s.forms||ps.lists!==s.lists||ps.fibOv!==s.fibOv||ps.unitOv!==s.unitOv||ps.eqFree!==s.eqFree||ps.mnotes!==s.mnotes||ps.notif!==s.notif||ps.nlist!==s.nlist||ps.fauto!==s.fauto||ps.brand!==s.brand||ps.cutTpls!==s.cutTpls||ps.todoDone!==s.todoDone){
       if(this._skip){this._skip=false;this.saveLocal();return;}
       if(!s.dirty)this.setState({dirty:true});
       this.saveLocal();
@@ -3843,7 +3939,12 @@ class Component extends DCLogic {
       v.showSaveBtn=au==='in'||au==='local';v.saveNow=()=>this.pushCloud(false,true);
       v.saveBtnLabel=s.saving?'Guardando…':s.dirty?'Guardar cambios':'Guardado';v.saveBtnBg=s.dirty||s.saving?'var(--color-accent)':'var(--ok-bg)';v.saveBtnFg=s.dirty||s.saving?'#fff':'var(--ok)';
       v.saveDot=s.dirty?'var(--carb)':'var(--ok-mid)';
-      v.showSessLost=!!s.sessLost&&au==='in';v.sessRelogin=()=>this.setState({sessLost:false,auth:'out',loginPass:'',loginErr:'Vuelve a entrar con tu cuenta del panel. Los cambios sin guardar se conservan y se subirán al entrar.'});v.showConflict=!!s.conflict;v.conflictLoad=()=>this.pullCloud(true);v.conflictKeep=()=>this.pushCloud(true,true);
+      v.showSessLost=!!s.sessLost&&au==='in';v.sessRelogin=()=>this.setState({sessLost:false,auth:'out',loginPass:'',loginErr:'Vuelve a entrar con tu cuenta del panel. Los cambios sin guardar se conservan y se subirán al entrar.'});v.undo=()=>this.undo();v.redo=()=>this.redo();v.undoOp=s.uN?'1':'.4';v.redoOp=s.rN?'1':'.4';
+      v.bkOpen=()=>this.bkOpen();v.bkOn=!!s.bk;v.bkClose=()=>this.setState({bk:null,bkAsk:null});v.bkDownload=()=>this.bkDownload();v.bkFile=e=>this.bkFile(e);
+      {const L=s.bkList,E=s.bkErr,fdt=d=>{const x=new Date(d);return x.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short',year:'numeric'})+' · '+x.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});};v.bkLoading=!!s.bk&&L==null;v.bkSql=E==='sql';v.bkLocal=E==='local';v.bkFail=!!E&&E!=='sql'&&E!=='local';v.bkFailTxt='No se pudieron leer las copias: '+(E||'');
+        v.bkRows=(L||[]).map(r=>({when:fdt(r.saved_at),sub:(r.n_clients!=null?r.n_clients+(r.n_clients===1?' cliente':' clientes'):'')+(r.note?(r.n_clients!=null?' · ':'')+r.note:''),pick:()=>this.bkPick(r)}));v.bkNone=!!L&&!E&&L.length===0;
+        const A=s.bkAsk;v.bkAskOn=!!A;if(A){const n=(A.data.clients||[]).filter(c=>!c.self).length,me=((s.me||{}).email||'').toLowerCase();v.bkAskTitle='¿Restaurar la copia'+(A.at?' del '+fdt(A.at):'')+'?';v.bkAskTxt='Sustituye todos los datos del panel (clientes, biblioteca, agenda y ajustes) por los de la copia: '+n+(n===1?' cliente':' clientes')+'. Antes se guarda una copia del estado actual para poder volver atrás.';v.bkAskWarn=A.email&&me&&A.email.toLowerCase()!==me?'Esta copia es de otra cuenta ('+A.email+').':'';v.bkAskHasWarn=!!v.bkAskWarn;v.bkAskGo=()=>this.bkRestore();v.bkAskNo=()=>this.setState({bkAsk:null});v.bkAskLbl=s.bkBusy?'Restaurando…':'Restaurar';}}
+      v.showConflict=!!s.conflict;v.conflictLoad=()=>this.pullCloud(true);v.conflictKeep=()=>this.pushCloud(true,true);
       v.hasToast=!!s.toast;v.toastMsg=s.toast;v.toastBg=s.toastBad?'var(--danger)':'var(--color-text)';
       if(au==='in'){v.saveLabel=s.syncErr?'Error al sincronizar':s.dirty?'Cambios sin guardar':'En la nube'+(s.savedAt?' · '+new Date(s.savedAt).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'');v.saveFg=s.syncErr?'var(--danger)':s.dirty?'var(--warn)':'var(--ok)';}
       else{v.saveFg='var(--color-neutral-700)';if(au==='local')v.saveLabel='Solo en este navegador';}}
@@ -4942,6 +5043,30 @@ class Component extends DCLogic {
             v.dlRows=(DL||[]).map(r=>{const fs=r.foods||[],k=Math.round(fs.reduce((a,x)=>a+num(x.k),0)),ex=fs.filter(x=>x.src!=='plan'||x.changed).length,sv=r.survey||{},pc=Tk?k/Tk:0;
               const dw=(new Date(r.day+'T12:00').getDay()+6)%7,G=c.guide,gd=G&&G[(G.days||[0,2,4]).includes(dw)?'train':'rest'],tS=gd?gnum(gd.steps):0,st=num(sv.steps);
               return {steps:st?st.toLocaleString('es-ES'):'—',stFg:!st?'var(--color-neutral-600)':tS&&st<tS*0.85?'var(--danger)':tS&&st>=tS?'var(--ok)':'var(--color-text)',day:fmtDayShort(r.day),peso:sv.peso?String(sv.peso).replace('.',',')+' kg':'—',kcal:fs.length?k.toLocaleString('es-ES'):'—',kFg:!fs.length?'var(--color-neutral-600)':pc>1.12||pc<0.85?'var(--danger)':'var(--ok)',extra:fs.length?String(ex):'—',sv:SV.map(([q])=>sc(q,sv[q])),note:sv.note||''};});}}}
+      {const LK=s.links||[],MS=s.msgs||[],FD=s.formsDb||[],TD=s.todoDone||{},CN={},NOW=Date.now();s.clients.forEach(c=>{if(!c.self)CN[c.id]=c;});
+        const AVt=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']];
+        const agoT=d=>{const m=Math.round((NOW-Date.parse(d))/60000);if(!(m>=0))return '';if(m<60)return 'hace '+Math.max(1,m)+' min';if(m<1440)return 'hace '+Math.round(m/60)+' h';const dd=Math.round(m/1440);return dd===1?'ayer':'hace '+dd+' días';};
+        const who=c=>{const av=AVt[Math.abs(h32(c.id))%AVt.length];return {ini:initials(c.name),avBg:av[0],avFg:av[1],name:c.name||'Sin nombre'};};
+        const hideK=k=>()=>this.setState(st=>{const o={...(st.todoDone||{})},lim=Date.now()-120*864e5;Object.keys(o).forEach(x=>{if(o[x]<lim)delete o[x];});o[k]=Date.now();return {todoDone:o};});
+        const openC=(id,tab)=>()=>this.setState({activeId:id,view:'client',tab:tab||'calc',confirmDel:null});
+        const chat=id=>()=>{this.setState({view:'msgs',chatSel:id});this.loadChats();};
+        const A=(label,go,kind)=>({label,go,cls:kind==='p'?'btn btn-primary':kind==='g'?'btn btn-ghost':'btn btn-secondary'});
+        const G=[];
+        {const U={};MS.forEach(m=>{if(m.sender==='client'&&!m.read_at&&CN[m.client_key]){const u=U[m.client_key]||(U[m.client_key]={n:0,m:null});u.n++;u.m=m;}});
+          G.push({title:'Mensajes sin leer',sub:'',items:Object.keys(U).sort((a,b)=>U[a].m.created_at<U[b].m.created_at?1:-1).map(k=>{const u=U[k],b=String(u.m.body||'').replace(/\[\[cf:[^\]]*\]\]/g,'').trim();return {...who(CN[k]),open:chat(k),when:agoT(u.m.created_at),txt:(u.n>1?u.n+' mensajes · ':'')+(b.length>120?b.slice(0,120)+'…':b||'Mensaje'),warns:[],acts:[A('Responder',chat(k),'p')]};})});}
+        {const lim=NOW-45*864e5,R=FD.filter(r=>r.status==='done'&&CN[r.client_key]&&r.answered_at&&Date.parse(r.answered_at)>lim&&!TD['f:'+r.id]).sort((a,b)=>a.answered_at<b.answered_at?1:-1);
+          G.push({title:'Cuestionarios respondidos',sub:'Pulsa «Revisado» cuando los hayas leído.',items:R.map(r=>{const c=CN[r.client_key];return {...who(c),open:openC(c.id,'forms'),when:agoT(r.answered_at),txt:r.title||(r.form&&r.form.name)||'Cuestionario',warns:(c.alerts||[]).filter(a=>a.fid===r.id).map(a=>({t:a.label+(a.txt?': '+a.txt:'')})),acts:[A('Ver respuestas',openC(c.id,'forms'),'p'),A('Revisado',hideK('f:'+r.id),'g')]};})});}
+        if(s.pendLast){const PL=s.pendLast,LKm={};LK.forEach(l=>{LKm[l.client_key]=l;});
+          const R=Object.keys(CN).filter(k=>LKm[k]&&LKm[k].plan_at&&!CN[k].noHoy).map(k=>{const last=PL[k]||'',since=last?Math.round((parseD(today)-parseD(last))/864e5):null,pub=Math.floor((NOW-Date.parse(LKm[k].plan_at))/864e5);return {k,last,since,pub};}).filter(x=>(x.since==null?x.pub>=3:x.since>=3)&&!TD['l:'+x.k+':'+(x.last||'0')]).sort((a,b)=>(b.since==null?1e4:b.since)-(a.since==null?1e4:a.since));
+          G.push({title:'Sin registrar en la app',sub:'3 días o más sin apuntar comidas ni el cuestionario del día.',items:R.map(x=>{const c=CN[x.k];return {...who(c),open:openC(c.id,'prog'),when:'',txt:x.last?'Último registro: '+fmtDayShort(x.last)+' · hace '+x.since+' días':'Aún no ha registrado ningún día',warns:[],acts:[A('Escribir',chat(c.id)),A('Ocultar',hideK('l:'+x.k+':'+(x.last||'0')),'g')]};})});}
+        {const R=FD.filter(r=>r.status==='sent'&&CN[r.client_key]&&Date.parse(r.created_at)<NOW-3*864e5&&!(TD['s:'+r.id]&&TD['s:'+r.id]>NOW-3*864e5)).sort((a,b)=>a.created_at<b.created_at?-1:1);
+          G.push({title:'Cuestionarios sin responder',sub:'Enviados hace más de 3 días. Tras un recordatorio vuelven a salir a los 3 días si siguen sin respuesta.',items:R.map(r=>{const c=CN[r.client_key];return {...who(c),open:openC(c.id,'forms'),when:'enviado '+agoT(r.created_at),txt:r.title||'Cuestionario',warns:[],acts:[A('Recordar por chat',()=>this.todoRemind(r)),A('Copiar enlace',()=>{try{navigator.clipboard.writeText(this.formLink(r.token));this.toast('Enlace copiado');}catch(e){this.toast('No se pudo copiar',true);}},'g'),A('Ocultar',hideK('s:'+r.id),'g')]};})});}
+        {const NM=this.nextMap(),lim=addDays(today,-21),R=s.clients.filter(c=>!c.self&&!NM[c.id]).map(c=>{let last='';(c.logs||[]).forEach(l=>{if(l.date&&l.date>last)last=l.date.slice(0,10);});EVA.forEach(e=>{if(e.clientId===c.id&&e.date<=today&&e.status!=='cancelada'&&e.status!=='noshow'&&e.date>last)last=e.date;});return {c,last};}).filter(x=>(!x.last||x.last<lim)&&!TD['r:'+x.c.id+':'+(x.last||'0')]).sort((a,b)=>(a.last||'')<(b.last||'')?-1:1);
+          G.push({title:'Seguimiento',sub:'Sin próxima cita y sin revisión en las últimas 3 semanas.',items:R.map(({c,last})=>{const d=last?Math.round((parseD(today)-parseD(last))/864e5):null;return {...who(c),open:openC(c.id),when:'',txt:d==null?'Sin revisiones registradas':'Última revisión hace '+(d>=60?Math.round(d/30)+' meses':d+' días'),warns:[],acts:[A('Agendar revisión',()=>this.evNew(addDays(today,1),'10:00',c.id,last||EVA.some(e=>e.clientId===c.id)?'revision':'inicial')),A('Ocultar',hideK('r:'+c.id+':'+(last||'0')),'g')]};})});}
+        const GS=G.filter(g=>g.items.length),tot=GS.reduce((a,g)=>a+g.items.length,0);
+        v.navT={on:s.view==='todo'?'1':'0',count:String(tot),showCount:tot>0,go:()=>{this.setState({view:'todo',confirmDel:null});this.loadChats();this.loadForms();this.loadPendLogs();}};
+        v.isTodo=s.view==='todo';
+        if(v.isTodo){v.tdGroups=GS.map(g=>({title:g.title,sub:g.sub,count:String(g.items.length),items:g.items.slice(0,30).map(it=>({...it,hasWhen:!!it.when})),more:g.items.length>30,moreTxt:'Y '+(g.items.length-30)+' más'}));v.tdEmpty=tot===0;v.tdSummary=tot?tot+(tot===1?' pendiente':' pendientes'):'Todo al día';v.tdNoCloud=!this._cloud;v.tdRefresh=()=>{this.loadChats();this.loadForms();this.loadPendLogs();this.toast('Actualizado');};}}
       if(s.view==='clients'){const AV=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']];
         v.hasFollow=s.clients.length>0;v.goAgenda=()=>this.setState({view:'calendar'});
         v.todayAppts=EVA.filter(e=>e.date===today).sort((a,b)=>(b.allDay?1:0)-(a.allDay?1:0)||toMin(a.start)-toMin(b.start)).map(e=>({...pill(e),t:e.allDay?'Día':e.start,sub:evModeLabel(e)+(e.status==='confirmada'?' · Confirmada':'')}));
