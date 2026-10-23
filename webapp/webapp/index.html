@@ -3958,7 +3958,7 @@ class Component extends DCLogic {
             mode:(a.planMode==='closed'?'Menú cerrado'+(ms.length>1?' · '+ms.length+' menús':''):'Intercambios')+' · '+nM+(nM===1?' comida':' comidas'),
             onName:e=>{const x=e.target.value;updA(a.id,q=>{q.name=x;});},
             isOpen:isO,openLabel:isO?'Ocultar':'Ver plan',toggle:()=>this.setState({archOpen:isO?null:a.id}),
-            restLabel:s.confirmRest===a.id?'Sustituye el plan actual · pulsa otra vez':'Restaurar',restBg:s.confirmRest===a.id?'var(--color-accent)':'#fff',restFg:s.confirmRest===a.id?'#fff':'var(--color-text)',
+            restLabel:s.confirmRest===a.id?'Sustituye el plan actual · pulsa otra vez':'Restaurar',restBg:s.confirmRest===a.id?'var(--color-accent)':'var(--cf-card)',restFg:s.confirmRest===a.id?'#fff':'var(--color-text)',
             restore:()=>{if(s.confirmRest!==a.id){this.setState({confirmRest:a.id});clearTimeout(this._cr);this._cr=setTimeout(()=>this.setState({confirmRest:null}),4000);return;}
               const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.updC(n=>{n.planMode=a.planMode;n.round=a.round;n.meals=cj(a.meals)||[];n.menus=cj(a.menus)||[];n.activeMenu=a.activeMenu;if(a.dayT)n.dayT=cj(a.dayT);else delete n.dayT;});this.setState({confirmRest:null,tab:'plan',collapsed:{}});this.toast('Plan restaurado');},
             delLabel:s.confirmArchDel===a.id?'¿Eliminar? Pulsa otra vez':'Eliminar',delBg:s.confirmArchDel===a.id?'var(--danger)':'transparent',delFg:s.confirmArchDel===a.id?'var(--cf-on-ink)':'var(--danger)',
@@ -4437,7 +4437,7 @@ class Component extends DCLogic {
           v.lsMode=cl.planMode==='closed'?'Menú cerrado: cada comida recibe hasta 3 opciones (A, B, C) con un alimento de cada macro.':'Intercambios: cada comida recibe todos los alimentos de la lista como alternativas.';
           v.lsCards=LL.map(Lst=>{const on=cl.foodList===Lst.id,ask=s.lsAsk===Lst.id,nI=listIds(Lst).size;
             return {name:Lst.name,tag:Lst.tag||'',desc:Lst.desc||'',meta:nI+' alimentos',bd:on?'var(--color-accent)':'var(--color-divider)',
-              fillLabel:ask?'Sustituye los alimentos · pulsa otra vez':'Rellenar comidas',fillBg:ask?'var(--color-accent)':'#fff',fillFg:ask?'#fff':'var(--color-text)',
+              fillLabel:ask?'Sustituye los alimentos · pulsa otra vez':'Rellenar comidas',fillBg:ask?'var(--color-accent)':'var(--cf-card)',fillFg:ask?'#fff':'var(--color-text)',
               fill:()=>{if(!ask){this.setState({lsAsk:Lst.id});clearTimeout(this._lsT);this._lsT=setTimeout(()=>this.setState({lsAsk:null}),4000);return;}this.updC(n=>{fillFromList(n,Lst);n.foodList=Lst.id;});this.setState({lsOpen:false,lsAsk:null,collapsed:{}});this.toast('Comidas rellenadas con «'+Lst.name+'» · gramos ajustados');},
               allowLabel:on?'Lista permitida activa':'Usar como lista permitida',allowBg:on?'var(--color-accent-100)':'transparent',allowFg:on?'var(--color-accent-800)':'var(--color-text)',
               allow:()=>{this.updC(n=>{if(on)delete n.foodList;else n.foodList=Lst.id;});if(!on)this.toast('Al añadir alimentos verás solo los de «'+Lst.name+'»');}};});}
