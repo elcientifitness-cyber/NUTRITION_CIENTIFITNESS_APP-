@@ -1,10 +1,10 @@
 // Siempre intenta la red primero (datos al día); si no hay conexión, usa la última copia.
-const C='cf-v15';
+const C='cf-v16',EXT=/^(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)$/;
 self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>/^cf-v\d+$/.test(k)&&k!==C).map(k=>caches.delete(k)))).catch(()=>{}).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
-  if(e.request.method!=='GET'||u.origin!==location.origin||u.pathname.startsWith('/api/'))return;
+  if(e.request.method!=='GET'||(u.origin!==location.origin&&!EXT.test(u.hostname))||(u.origin===location.origin&&u.pathname.startsWith('/api/')))return;
   e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(C).then(c=>c.put(e.request,cp));return r;}).catch(()=>caches.match(e.request)));
 });
 // Notificaciones push (también se guardan para verlas dentro de la app)

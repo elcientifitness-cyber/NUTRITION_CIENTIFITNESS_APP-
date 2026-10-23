@@ -166,6 +166,32 @@ module.exports = async (req, res) => {
           }
         }
       }
+      // Recordatorio de cuota por el chat (de 10:00 a 13:00, hora de Madrid; una vez por cobro)
+      let fees = 0;
+      const nowF = local('Europe/Madrid');
+      if (nowF && nowF.m >= 600 && nowF.m < 780) {
+        const FQ = await api('cf_state?select=user_id,fq:data->feeQ&data->feeQ=not.is.null').then(r => r.ok ? r.json() : []).catch(() => []);
+        for (const row of FQ) {
+          const q = row.fq; if (!q || !Array.isArray(q.list) || !q.list.length) continue;
+          const days = Math.max(0, Math.min(14, Number(q.days) || 3)), TRM = String(q.term || 'nutricionista').replace(/[<>]/g, '').slice(0, 30);
+          for (const it of q.list) {
+            if (!it || !it.c || !/^\d{4}-\d{2}-\d{2}$/.test(String(it.next || '')) || nowF.d < addD(it.next, -days) || nowF.d > it.next) continue;
+            if (!links.some(l => l.coach_id === row.user_id && l.client_key === it.c)) continue;
+            const mk = '[[cf:fee|' + it.next + ']]';
+            const ex = await api('cf_messages?select=id&coach_id=eq.' + row.user_id + '&client_key=eq.' + encodeURIComponent(it.c) + '&body=like.' + encodeURIComponent('*' + mk + '*')).then(r => r.ok ? r.json() : [{}]).catch(() => [{}]);
+            if (ex.length) continue;
+            const fd = new Date(it.next + 'T12:00:00Z').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+            const txt = String(q.txt || '').replace(/\{nombre\}/gi, it.nm || '').replace(/\{importe\}/gi, it.amt || '').replace(/\{fecha\}/gi, fd).replace(/\s+([,.!?])/g, '$1').replace(/[ \t]+/g, ' ').trim();
+            if (!txt) continue;
+            const ins = await api('cf_messages', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ coach_id: row.user_id, client_key: it.c, sender: 'coach', body: txt + '\n' + mk }) }).catch(() => null);
+            if (!ins || !ins.ok) continue; fees++;
+            for (const s of subs.filter(x => x.coach_id === row.user_id && x.client_key === it.c && !((x.prefs && x.prefs.off) || {}).msg)) {
+              const code = await push(s, { title: 'Mensaje de tu ' + TRM, body: txt.length > 140 ? txt.slice(0, 137) + '…' : txt, tag: 'msg', url: 'asesorado.html?tab=chat' }, PUB, PRIV).catch(() => 0);
+              if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++;
+            }
+          }
+        }
+      }
       for (const s of subs) {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
@@ -208,7 +234,7 @@ module.exports = async (req, res) => {
         }
         await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ sent: st }) });
       }
-      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made });
+      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made, fees });
     }
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     const me = await fetch(URL_SB + '/auth/v1/user', { headers: { apikey: ANON, Authorization: 'Bearer ' + tok } }).then(r => r.ok ? r.json() : null);
