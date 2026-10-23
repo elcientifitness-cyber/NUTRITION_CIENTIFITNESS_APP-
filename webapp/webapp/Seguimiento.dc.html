@@ -121,8 +121,8 @@ class Component extends DCLogic {
     const gSel=String(metric||'').startsWith('g:')?GR.find(g=>'g:'+g[0]===metric&&g[2].length>1)||null:null;
     const save=o=>{try{localStorage.setItem(key0,JSON.stringify({m:gSel?metric:cur[0],r:range,...o}));}catch(e){}};
     const v={ink,solid,soft,hasHead:!!p.head,head:p.head||'',headSub:p.headSub||'',hasDelta:false,showLine:false,showBars:false,empty:false,hasTarget:false,hasLegend:false};
-    const mk=([k,l])=>{const on=!gSel&&k===cur[0];return {label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:on?ink:'var(--cf-card)',fg:on?'#fff':ink,bd:on?ink:soft};};
-    v.chipGroups=GR.map(([gk,label,ds])=>{const on=!!gSel&&gSel[0]===gk;return {label,items:ds.map(mk),hasAll:ds.length>1,allBg:on?ink:'var(--cf-card)',allFg:on?'#fff':ink,allBd:on?ink:soft,all:()=>{save({m:'g:'+gk});this.setState({metric:'g:'+gk});}};});
+    const mk=([k,l])=>{const on=!gSel&&k===cur[0];return {label:l,pick:()=>{save({m:k});this.setState({metric:k});},bg:on?ink:'var(--cf-card)',fg:on?'var(--cf-on-ink,#fff)':ink,bd:on?ink:soft};};
+    v.chipGroups=GR.map(([gk,label,ds])=>{const on=!!gSel&&gSel[0]===gk;return {label,items:ds.map(mk),hasAll:ds.length>1,allBg:on?ink:'var(--cf-card)',allFg:on?'var(--cf-on-ink,#fff)':ink,allBd:on?ink:soft,all:()=>{save({m:'g:'+gk});this.setState({metric:'g:'+gk});}};});
     v.ranges=[['14','2 sem.'],['30','1 mes'],['91','3 meses'],['all','Todo']].map(([r,l])=>({label:l,bg:range===r?'var(--cf-card)':'transparent',fg:range===r?'var(--color-text)':'var(--color-neutral-700)',pick:()=>{save({r});this.setState({range:r});}}));
     const allDays=Object.keys(lg).sort(),first=[allDays[0],ms[0]&&ms[0].d].filter(Boolean).sort()[0]||today;
     const nDays=range==='all'?Math.max(14,Math.min(730,R((parseD(today)-parseD(first))/86400000)+1)):num(range),from=addDays(today,-(nDays-1));

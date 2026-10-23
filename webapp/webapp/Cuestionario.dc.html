@@ -118,7 +118,7 @@ class Component extends DCLogic {
         if(o.isChoice){const opts=q.type==='yesno'?['Sí','No']:(q.opts||[]);o.opts=opts.map(lb=>{const on=q.type==='multi'?Array.isArray(val)&&val.includes(lb):val===lb;
           return {label:lb,...SEL(on),pick:()=>{if(q.type==='multi'){const a=Array.isArray(this.state.ans[q.id])?this.state.ans[q.id].slice():[];const k=a.indexOf(lb);if(k>=0)a.splice(k,1);else a.push(lb);this.setA(q.id,a);}else this.setA(q.id,on?'':lb);}};});}
         if(o.isScale){o.scale=[1,2,3,4,5,6,7,8,9,10].map(n=>({label:String(n),...SEL(val===n),pick:()=>this.setA(q.id,val===n?'':n)}));o.lo=q.lo||'';o.hi=q.hi||'';}
-        if(o.isConsent){o.ckBg=val?'var(--color-accent)':'#fff';o.ckBd=val?'var(--color-accent)':'var(--color-neutral-400)';o.toggle=()=>this.setA(q.id,!val);}
+        if(o.isConsent){o.ckBg=val?'var(--color-accent)':'var(--cf-card,#fff)';o.ckBd=val?'var(--color-accent)':'var(--color-neutral-400)';o.toggle=()=>this.setA(q.id,!val);}
         return o;});}
     return v;}
 }

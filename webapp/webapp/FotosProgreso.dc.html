@@ -91,7 +91,7 @@
                 <div style="position:absolute;top:0;bottom:0;left:{{ slPos }};width:3px;margin-left:-1.5px;background:var(--cf-card);box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none"></div>
                 <div style="position:absolute;top:50%;left:{{ slPos }};width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--cf-card);box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--color-text);pointer-events:none">‹ ›</div>
                 <span style="position:absolute;left:10px;top:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--color-accent);color:#fff">Antes · {{ aLabel }}</span>
-                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--prot-ink);color:#fff">Después · {{ bLabel }}</span>
+                <span style="position:absolute;right:10px;bottom:10px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--prot-ink);color:var(--cf-on-ink,#fff)">Después · {{ bLabel }}</span>
               </div>
               <span style="font-size:12px;color:var(--color-neutral-700);text-align:center">Arrastra la barra blanca a izquierda y derecha.</span>
             </sc-if>
@@ -118,7 +118,7 @@
               <sc-for list="{{ thumbs }}" as="p" hint-placeholder-count="6">
                 <button onClick="{{ p.pick }}" style="font:inherit;border:0;padding:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:stretch;position:relative">
                   <img src="{{ p.url }}" alt="{{ p.dayLabel }}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;box-shadow:{{ p.ring }};opacity:{{ p.op }}">
-                  <sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:4px;top:4px;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:{{ p.tagBg }};color:#fff">{{ p.tag }}</span></sc-if>
+                  <sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:4px;top:4px;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:{{ p.tagBg }};color:{{ p.tagFg }}">{{ p.tag }}</span></sc-if>
                   <span style="font-size:11px;font-weight:700;color:var(--color-neutral-700);text-align:center">{{ p.short }}</span>
                 </button>
               </sc-for>
@@ -207,10 +207,10 @@ class Component extends DCLogic {
       isGallery:s.mode==='gallery',isCompare:s.mode==='compare'&&n>0,
       upDayLabel:dLong(s.upDay),
       pickDate:()=>{const el=this.dateRef.current;if(el&&window.CFDate)window.CFDate.open(el,s.upDay,val=>this.setState({upDay:val||todayIso()}),{max:todayIso()});},
-      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'var(--danger)':'var(--danger-bg,var(--danger-bg))',delFg:s.delDay===d?'#fff':'var(--danger,var(--danger))',
+      groups:dates.slice().reverse().map(d=>{const it=P.filter(p=>p.day===d),i0=days(P[0].day,d);return {label:dLong(d),sub:(it.length===1?'1 foto':it.length+' fotos')+(i0>0?' · día '+i0:' · inicio'),canDel:it.some(p=>by==='coach'||p.by===by),delLabel:s.delDay===d?'¿Borrar las '+it.filter(p=>by==='coach'||p.by===by).length+'? Confirmar':'Borrar esta fecha',delBg:s.delDay===d?'var(--danger)':'var(--danger-bg,var(--danger-bg))',delFg:s.delDay===d?'var(--cf-on-ink,#fff)':'var(--danger,var(--danger))',
         del:()=>{if(s.delDay!==d){this.setState({delDay:d,delId:null});return;}this.removeMany(it.filter(p=>by==='coach'||p.by===by));},
         items:it.map(p=>{const ask=s.delId===p.id;return {url:p.url,dayLabel:dLong(p.day),byClient:p.by==='client'&&by==='coach',view:()=>this.setState({view:p.id,delAsk:false,delId:null}),
-          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'var(--danger)':'rgba(255,255,255,.92)',delFg:ask?'#fff':'var(--danger)',
+          canDel:by==='coach'||p.by===by,delLabel:ask?'¿Borrar?':'✕',delPad:ask?'12px':'0',delFs:ask?'12px':'15px',delBg:ask?'var(--danger)':'color-mix(in srgb,var(--cf-card,#fff) 92%,transparent)',delFg:ask?'var(--cf-on-ink,#fff)':'var(--danger)',
           del:e=>{e.stopPropagation();if(!ask){this.setState({delId:p.id,delDay:null});return;}this.removeMany([p]);}};})};}),
       cmpSeg:seg([['slider','Deslizar'],['side','Lado a lado']],s.cmp,k=>this.setState({cmp:k})),isSlider:s.cmp==='slider',isSide:s.cmp==='side',
       aUrl:A?A.url:'',bUrl:B?B.url:'',aLabel:A?dShort(A.day):'',bLabel:B?dShort(B.day):'',
@@ -224,7 +224,7 @@ class Component extends DCLogic {
     v.slots=['a','b'].map(k=>{const p=k==='a'?A:B,on=s.slot===k,c=SL[k];return {label:c[0],ink:c[2],url:p?p.url:'',date:p?dLong(p.day):'—',bg:on?c[3]:'var(--color-neutral-100)',ring:on?'0 0 0 2.5px '+c[1]:'none',pick:()=>this.setState({slot:k})};});
     v.pickHint='2. Toca la foto que quieres poner como «'+SL[s.slot][0]+'»';
     v.thumbs=P.map(p=>{const isA=A&&A.id===p.id,isB=B&&B.id===p.id,col=SL[s.slot][1];
-      return {url:p.url,dayLabel:dLong(p.day),short:dShort(p.day),hasTag:isA||isB,tag:isA&&isB?'Antes y después':isA?'Antes':'Después',tagBg:isA?'var(--color-accent)':'var(--prot-ink)',
+      return {url:p.url,dayLabel:dLong(p.day),short:dShort(p.day),hasTag:isA||isB,tag:isA&&isB?'Antes y después':isA?'Antes':'Después',tagBg:isA?'var(--color-accent)':'var(--prot-ink)',tagFg:isA?'#fff':'var(--cf-on-ink,#fff)',
         ring:isA?'0 0 0 3px var(--color-accent)':isB?'0 0 0 3px var(--prot-ink)':'none',op:isA||isB?'1':'.85',
         pick:()=>this.setState({[s.slot]:p.id,slot:s.slot==='a'?'b':'a'})};});
     const vi=P.findIndex(p=>p.id===s.view),vp=P[vi];

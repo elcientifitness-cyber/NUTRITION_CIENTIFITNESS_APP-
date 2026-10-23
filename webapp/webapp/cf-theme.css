@@ -17,6 +17,7 @@
   --danger:#9B2F1C;--danger-bg:#F6E6E1;--danger-bd:#E7C3B8;--danger-mid:#C4573F;
   --ok:#2F5E43;--ok-bg:#E3ECE5;--ok-bd:#C4D6C9;--ok-mid:#5E8F6E;
   --warn:#7A5A1E;--warn-bg:#F4ECDC;--warn-bd:#E3D2AE;--warn-mid:#B89350;
+  --cf-on-ink:#fff;
   --radius-sm:6px;--radius-md:10px;--radius-lg:14px;
   --shadow-sm:0 1px 2px rgba(20,27,34,.05),0 4px 14px rgba(20,27,34,.04);
   --shadow-md:0 6px 22px rgba(20,27,34,.09);
@@ -38,10 +39,13 @@
   --danger:#F0A493;--danger-bg:#3A211B;--danger-bd:#5A3329;--danger-mid:#D9715A;
   --ok:#9CCBAA;--ok-bg:#1C2D22;--ok-bd:#2E4636;--ok-mid:#6FA884;
   --warn:#E3C58E;--warn-bg:#33291A;--warn-bd:#4D3E24;--warn-mid:#C9A45E;
+  --cf-on-ink:#10161B;
   --shadow-sm:0 1px 2px rgba(0,0,0,.3);--shadow-md:0 6px 22px rgba(0,0,0,.4);--shadow-lg:0 20px 50px rgba(0,0,0,.55);
   --cf-grid:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M8 6.5v3M6.5 8h3' stroke='%23F3F2EF' stroke-opacity='.05' stroke-width='1'/%3E%3C/svg%3E");
 }
 :root[data-theme="dark"] img{color-scheme:light}
+/* Tarjetas oscuras (competición): conservan la paleta clara dentro */
+:root[data-theme="dark"] [data-cf-inv]{--cf-page:#F3F2EF;--cf-card:#FBFAF8;--color-bg:#FBFAF8;--color-surface:#ECEDEA;--color-text:#141B22;--color-divider:#E2E1DC;--color-neutral-100:#F0EFEB;--color-neutral-200:#E6E7E4;--color-neutral-300:#D5D7D4;--color-neutral-400:#B3B9BC;--color-neutral-500:#8A9BA6;--color-neutral-600:#6B7A84;--color-neutral-700:#4E5B64;--color-neutral-800:#343F47;--color-neutral-900:#1F282F;--color-accent-100:#E4E9EC;--color-accent-200:#CBD4DA;--color-accent-300:#A5B4BE;--color-accent-400:#6E8494;--color-accent-500:#2C4C60;--color-accent-600:#18323F;--color-accent-700:#16303F;--color-accent-800:#122733;--color-accent-900:#0B171E;--prot:#1D3A4C;--prot-bg:#E2E8EC;--prot-ink:#1D3A4C;--carb:#9DB0BC;--carb-bg:#EBEFF1;--carb-ink:#3F505B;--fat:#A8865A;--fat-bg:#F1EADF;--fat-ink:#6B522F;--veg:#7E9C86;--veg-bg:#E6EDE7;--veg-ink:#3D5A45;--lav:#8F89AD;--lav-bg:#ECEAF2;--lav-ink:#4E4870;--brass:#A8865A;--brass-ink:#7A5E38;--danger:#9B2F1C;--danger-bg:#F6E6E1;--danger-bd:#E7C3B8;--danger-mid:#C4573F;--ok:#2F5E43;--ok-bg:#E3ECE5;--ok-bd:#C4D6C9;--ok-mid:#5E8F6E;--warn:#7A5A1E;--warn-bg:#F4ECDC;--warn-bd:#E3D2AE;--warn-mid:#B89350;--cf-on-ink:#fff;outline:1px solid #2C3640;outline-offset:-1px}
 :root[data-theme="dark"] .input,:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{color:var(--color-text)}
 }
 *{box-sizing:border-box}

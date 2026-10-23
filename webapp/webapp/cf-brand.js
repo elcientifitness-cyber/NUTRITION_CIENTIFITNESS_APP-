@@ -28,10 +28,12 @@
     if(R.font!=='sora')v+='--font-heading:'+F[2]+',system-ui,sans-serif;';
     if(R.mac)Object.entries(R.mac).forEach(([k,[c,bg,ink]])=>{v+='--'+k+':'+c+';--'+k+'-bg:'+bg+';--'+k+'-ink:'+ink+';';});
     const DK='#151C22',dsc={100:mix(p,DK,0.82),200:mix(p,DK,0.7),300:mix(p,DK,0.55),400:mix(p,DK,0.3),500:mix(p,W,0.12),600:mix(p,W,0.25),700:mix(p,W,0.48),800:mix(p,W,0.68),900:mix(p,W,0.84)};
-    let dv='--color-accent:'+p+';'+Object.entries(dsc).map(([k,c])=>'--color-accent-'+k+':'+c).join(';')+';--cf-tint:#0E1317;--cf-tint-2:'+mix(p,DK,0.86)+';--cf-acc-bg:'+mix(R.a,DK,0.75)+';--cf-acc-ink:'+mix(R.a,W,0.45)+';--cf-plan-ink:'+dsc[700]+';--cf-plan-bg:'+dsc[100]+';--cf-acc-hover:'+dsc[400]+';';
+    /* en oscuro el principal se aclara hasta leerse sobre el fondo, sin perder el texto blanco encima */
+    let pd=p,di=0;while(contrast(pd,DK)<3.6&&di<20){const n=mix(pd,W,0.06);if(contrast(n,W)<4.4)break;pd=n;di++;}
+    let dv='--color-accent:'+pd+';'+Object.entries(dsc).map(([k,c])=>'--color-accent-'+k+':'+c).join(';')+';--cf-tint:#0E1317;--cf-tint-2:'+mix(p,DK,0.86)+';--cf-acc-bg:'+mix(R.a,DK,0.75)+';--cf-acc-ink:'+mix(R.a,W,0.45)+';--cf-plan-ink:'+dsc[700]+';--cf-plan-bg:'+dsc[100]+';--cf-acc-hover:'+dsc[400]+';';
     if(R.mac)Object.entries(R.mac).forEach(([k,[c]])=>{dv+='--'+k+':'+c+';--'+k+'-bg:'+mix(c,DK,0.78)+';--'+k+'-ink:'+mix(c,W,0.45)+';';});
     let s=':root{'+v+'--cf-acc-hover:'+sc[600]+'}@media screen{:root[data-theme="dark"]{'+dv+'}}:root:not([data-theme="dark"]) body{background:var(--cf-grid),'+t1+'!important}::selection{background:'+sc[200]+'}'+
-      '.btn-primary{background:'+p+'!important;box-shadow:none!important;color:#fff!important}.btn-primary:hover{background:'+sc[600]+'!important}'+
+      '.btn-primary{background:'+p+'!important;box-shadow:none!important;color:#fff!important}.btn-primary:hover{background:'+sc[600]+'!important}@media screen{:root[data-theme="dark"] .btn-primary{background:'+pd+'!important}}'+
       '.cf-nav-count{background:var(--cf-acc-bg)!important;color:var(--cf-acc-ink)!important}'+
       ':root:not([data-theme="dark"]) .cf-side{background:'+t2+'!important;border-color:'+(R.tint?t2:'var(--color-divider)')+'!important}'+
       '.cf-lift:hover{box-shadow:0 0 0 1px '+sc[300]+'!important}';
