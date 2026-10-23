@@ -239,6 +239,18 @@ button{-webkit-user-select:none;user-select:none}
       </div>
       <span style="font-size:11px;color:var(--color-neutral-600);text-wrap:pretty">La web no puede leer el contador de pasos del móvil: copia aquí el dato de Salud, Google Fit o tu reloj.</span>
     </section>
+    <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:16px">Agua</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ waTgt }}</span></span>
+        <span style="display:flex;align-items:center;gap:2px;background:var(--color-accent-100);border-radius:14px;padding:2px;flex:none">
+          <button onClick="{{ waMinus }}" aria-label="Quitar un vaso" style="font:inherit;border:0;background:transparent;width:36px;height:44px;font-size:20px;font-weight:700;color:var(--color-accent-700);cursor:pointer">−</button>
+          <span style="min-width:62px;text-align:center;font-weight:800;font-size:17px;font-variant-numeric:tabular-nums">{{ waVal }}</span>
+          <button onClick="{{ waPlus }}" aria-label="Añadir un vaso de 250 ml" style="font:inherit;border:0;background:transparent;width:36px;height:44px;font-size:20px;font-weight:700;color:var(--color-accent-700);cursor:pointer">+</button>
+        </span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ waGlasses }}" as="g" hint-placeholder-count="8"><button onClick="{{ g.tap }}" aria-label="{{ g.lbl }}" style="font:inherit;width:30px;height:40px;border:0;padding:0;border-radius:4px 4px 10px 10px;background:{{ g.bg }};cursor:pointer;transition:background .2s"></button></sc-for></div>
+      <sc-if value="{{ waHasMsg }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;color:{{ waMsgFg }}">{{ waMsg }}</span></sc-if>
+    </section>
     <button onClick="{{ survOpenFn }}" style="font:inherit;color:inherit;text-align:left;background:var(--carb-bg);border:0;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer">
       <span style="display:flex;align-items:center;gap:12px;width:100%">
         <span style="width:40px;height:40px;border-radius:12px;background:var(--carb);color:var(--carb-ink);display:flex;align-items:center;justify-content:center;flex:none">{{ icSurv }}</span>
@@ -370,6 +382,18 @@ button{-webkit-user-select:none;user-select:none}
         </sc-for>
       </div>
       <span style="font-size:11px;color:var(--color-neutral-600);text-wrap:pretty">La web no puede leer el contador de pasos del móvil: copia aquí el dato de Salud, Google Fit o tu reloj.</span>
+    </section>
+    <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:16px">Agua</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ waTgt }}</span></span>
+        <span style="display:flex;align-items:center;gap:2px;background:var(--color-accent-100);border-radius:14px;padding:2px;flex:none">
+          <button onClick="{{ waMinus }}" aria-label="Quitar un vaso" style="font:inherit;border:0;background:transparent;width:36px;height:44px;font-size:20px;font-weight:700;color:var(--color-accent-700);cursor:pointer">−</button>
+          <span style="min-width:62px;text-align:center;font-weight:800;font-size:17px;font-variant-numeric:tabular-nums">{{ waVal }}</span>
+          <button onClick="{{ waPlus }}" aria-label="Añadir un vaso de 250 ml" style="font:inherit;border:0;background:transparent;width:36px;height:44px;font-size:20px;font-weight:700;color:var(--color-accent-700);cursor:pointer">+</button>
+        </span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ waGlasses }}" as="g" hint-placeholder-count="8"><button onClick="{{ g.tap }}" aria-label="{{ g.lbl }}" style="font:inherit;width:30px;height:40px;border:0;padding:0;border-radius:4px 4px 10px 10px;background:{{ g.bg }};cursor:pointer;transition:background .2s"></button></sc-for></div>
+      <sc-if value="{{ waHasMsg }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;color:{{ waMsgFg }}">{{ waMsg }}</span></sc-if>
     </section>
     </div></sc-if>
     <div data-noprint="1" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -960,7 +984,12 @@ class Component extends DCLogic {
         const W7=[6,5,4,3,2,1,0].map(i=>{const dk=addDays(day,-i),q=s.logs[dk],x=num(q&&q.survey&&q.survey.steps);return {dk,x};}),mx=Math.max(tgt,...W7.map(q=>q.x),1);
         v.stWeek=W7.map(q=>({h:Math.max(q.x?6:0,Math.round(q.x/mx*100))+'%',bg:q.dk===day?'var(--color-accent)':tgt&&q.x>=tgt?'var(--ok-mid)':'var(--color-accent-200)',l:['L','M','X','J','V','S','D'][(new Date(q.dk+'T12:00').getDay()+6)%7],v:q.x?(q.x>=1000?(Math.round(q.x/100)/10).toLocaleString('es-ES')+'k':String(q.x)):''}));
         v.stTgtLine=tgt?(100-Math.round(tgt/mx*100))+'%':'';v.stHasLine=tgt>0;
-        v.svStSub=st?'Lo que apuntaste en «Pasos» · puedes corregirlo'+(tgt?' · objetivo '+tgt.toLocaleString('es-ES'):''):(tgt?'Objetivo '+tgt.toLocaleString('es-ES')+' · opcional':'Opcional · se guarda también en «Pasos»');}
+        v.svStSub=st?'Lo que apuntaste en «Pasos» · puedes corregirlo'+(tgt?' · objetivo '+tgt.toLocaleString('es-ES'):''):(tgt?'Objetivo '+tgt.toLocaleString('es-ES')+' · opcional':'Opcional · se guarda también en «Pasos»');
+        {const wl=gd?gnum(gd.water):0,tMl=wl>20?wl:wl*1000,w=num(((s.logs[day]||{}).survey||{}).water),fL=ml=>(Math.round(ml/100)/10).toLocaleString('es-ES')+' L',setW=x=>this.patchLog(q=>{q.survey=q.survey||{};if(!(x>0))delete q.survey.water;else q.survey.water=Math.round(x);});
+          const have=Math.round(w/250),nG=Math.min(16,Math.max(tMl?Math.ceil(tMl/250):8,have));
+          v.waVal=fL(w);v.waPlus=()=>setW(w+250);v.waMinus=()=>setW(Math.max(0,w-250));v.waTgt=(tMl?'Objetivo '+fL(tMl)+(tr?' · día de entreno':' · día de descanso'):'Toca un vaso por cada 250 ml que bebas');
+          v.waGlasses=Array.from({length:nG},(_,i)=>({bg:i<have?'var(--color-accent)':'var(--color-accent-100)',lbl:(i+1)+(i?' vasos':' vaso'),tap:()=>setW(i+1===have?i*250:(i+1)*250)}));
+          v.waMsg=!tMl||!w?'':w>=tMl?'Objetivo cumplido':'Te faltan '+fL(tMl-w);v.waHasMsg=!!v.waMsg;v.waMsgFg=tMl&&w>=tMl?'var(--ok)':'var(--color-neutral-700)';}}
       v.dayPrev=()=>this.setState({day:addDays(day,-1)});v.dayNext=()=>{if(day<today)this.setState({day:addDays(day,1)});};v.nextOp=day<today?'1':'.3';
       const F=L.foods||[],tot={k:0,p:0,c:0,f:0};F.forEach(x=>{tot.k+=num(x.k);tot.p+=num(x.p);tot.c+=num(x.c);tot.f+=num(x.f);});
       const pc=(a,b)=>Math.min(100,b?a/b*100:0)+'%';
