@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
   const SK = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
   if (!SK) return out(500, { error: 'Falta configurar la clave secreta en Vercel (SUPABASE_SERVICE_ROLE_KEY).' });
   try {
-    const host = req.headers['x-forwarded-host'] || req.headers.host || 'prueba-de-app-movil.vercel.app';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'cientia-nutrition-manager.vercel.app';
     const APP = (/^localhost|^127\./.test(host) ? 'http://' : 'https://') + host + '/asesorado.html';
     const H = { apikey: SK, Authorization: 'Bearer ' + SK, 'Content-Type': 'application/json' };
     const enc = encodeURIComponent;
