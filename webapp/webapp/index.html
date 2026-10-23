@@ -3741,6 +3741,7 @@ const mHM=m=>pad2(Math.floor(m/60))+':'+pad2(m%60);
 const dLong=d=>parseD(d).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
 const BKRE=/\[\[cf:book\|([^|\]]+)\|([^|\]]+)\|?([^\]]*)\]\]/;
 const fmtL=ml=>(Math.round(num(ml)/100)/10).toLocaleString('es-ES')+' L';
+const PUB_ORIGIN=/(^|\.)prueba-de-app-movil\.vercel\.app$/.test(location.hostname)?'https://cientia-nutrition-manager.vercel.app':location.origin;
 const addMon=(d,m)=>{const x=parseD(d),dy=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+m);x.setDate(Math.min(dy,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));return isoD(x);};
 const fmtEur=x=>(Math.round(num(String(x==null?'':x).replace(',','.'))*100)/100).toLocaleString('es-ES',{maximumFractionDigits:2})+' €';
 const parseD=s=>{const p=String(s||'').split('-').map(Number);return p.length===3&&p[0]?new Date(p[0],p[1]-1,p[2]):new Date();};
@@ -4274,7 +4275,7 @@ class Component extends DCLogic {
         v.tiCreate=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('create'),j=>{this.setState({teamAcc:{email:j.email,pass:j.password,name:inv.name.trim(),phone:inv.phone.trim(),reset:j.mode==='reset'},teamInv:blank});setPlan(em0,ip);this.loadTeam();this.toast(j.mode==='reset'?'Contraseña nueva generada':'Nutricionista añadido');});};
         v.tiInvite=()=>{if(!okE(em0)){this.toast('Escribe un email válido',true);return;}this.callAcc(body0('invite'),()=>{this.setState({teamInv:blank});setPlan(em0,ip);this.loadTeam();this.toast('Invitación enviada a '+em0);});};
         const A=s.teamAcc;v.taShow=!!A;
-        if(A){const url=location.origin+location.pathname.replace(/[^/]*$/,''),first=(A.name||'').trim().split(/\s+/)[0]||'';
+        if(A){const url=PUB_ORIGIN+location.pathname.replace(/[^/]*$/,''),first=(A.name||'').trim().split(/\s+/)[0]||'';
           v.taTitle=A.reset?'Contraseña nueva (la anterior ya no sirve)':'Acceso creado · envíaselo';v.taUrl=url;v.taEmail=A.email;v.taPass=A.pass;
           const txt='Hola'+(first?' '+first:'')+', ya puedes usar Cientia Nutrition Manager para gestionar a tus clientes.\n\nEntra aquí: '+url+'\nEmail: '+A.email+'\nContraseña: '+A.pass+'\n\nTienes tu biblioteca personal y acceso a la biblioteca común de Cientia.';
           v.taWa=()=>window.open('https://wa.me/'+waNum(A.phone)+'?text='+encodeURIComponent(txt),'_blank');
@@ -5016,7 +5017,7 @@ class Component extends DCLogic {
               .then(r=>r.json().catch(()=>({error:'Respuesta no válida del servidor (¿está subida la carpeta api?)'})))
               .then(j=>{this.setState({accBusy:false});if(!j||j.error){this.toast(j&&j.error||'No se pudo',true);return;}done(j);})
               .catch(()=>{this.setState({accBusy:false});this.toast('No se pudo conectar con el servidor',true);});};
-          const appUrl=location.origin+'/asesorado.html',A=s.acc&&s.acc.cid===cl.id?s.acc:null,first=(cl.name||'').trim().split(/\s+/)[0]||'';
+          const appUrl=PUB_ORIGIN+'/asesorado.html',A=s.acc&&s.acc.cid===cl.id?s.acc:null,first=(cl.name||'').trim().split(/\s+/)[0]||'';
           v.accLabel=s.accBusy?'Creando…':'Crear acceso';
           v.makeAccess=()=>callAcc('create',j=>{this.updC(n=>{n.accAt=Date.now();});this.setState({acc:{cid:cl.id,email:j.email,pass:j.password,reset:j.mode==='reset'}});this.toast(j.mode==='reset'?'Contraseña nueva generada':'Acceso creado');});
           v.invite=()=>callAcc('invite',()=>{this.updC(n=>{n.accAt=Date.now();});this.toast('Invitación enviada a '+em);});
