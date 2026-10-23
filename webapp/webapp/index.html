@@ -2488,6 +2488,16 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </div>
 </sc-if>
 
+<sc-if value="{{ showSessLost }}" hint-placeholder-val="{{ false }}">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:160;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:14px">
+    <div style="font-family:var(--font-heading);font-weight:600;font-size:20px">Se ha cambiado la sesión de este navegador</div>
+    <p style="margin:0;font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Se ha entrado con otra cuenta o se ha cerrado la sesión en otra pestaña (por ejemplo, en la app de un asesorado). El panel ha dejado de guardar en la nube para no mezclar datos. Tus cambios siguen guardados en este navegador.</p>
+    <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Para probar la app con otra cuenta a la vez, usa una ventana de incógnito u otro navegador.</p>
+    <button class="btn btn-primary" onClick="{{ sessRelogin }}" style="min-height:42px">Volver a entrar en el panel</button>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ showConflict }}" hint-placeholder-val="{{ false }}">
 <div data-noprint="1" style="position:fixed;inset:0;z-index:150;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
   <div style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:14px">
@@ -3514,6 +3524,7 @@ class Component extends DCLogic {
     if(!cfg||!cfg.url||!cfg.key||cfg.url.indexOf('PEGA')>=0){this.setState({auth:'local'},()=>this.seedRecipes());return;}
     if(!window.supabase){if((tries||0)>60){this.setState({auth:'local'},()=>this.seedRecipes());return;}setTimeout(()=>this.initCloud((tries||0)+1),100);return;}
     this.sb=window.supabase.createClient(cfg.url,cfg.key);
+    try{this.sb.auth.onAuthStateChange((ev,ss)=>{if(this._out||!this._cloud||!this.uid)return;const id=ss&&ss.user&&ss.user.id;if(id!==this.uid)setTimeout(()=>this.lostSess(),0);});}catch(e){}
     this.sb.auth.getSession().then(({data})=>{if(data&&data.session)this.afterLogin(data.session);else this.setState({auth:'out'});});
   }
   afterLogin(sess){
@@ -3525,13 +3536,15 @@ class Component extends DCLogic {
       try{localStorage.setItem('cf-last-email',em);}catch(e){}
       this.setState({me:{email:em,name:(me&&me.name)||'',phone:(me&&me.phone)||'',role}});this.startSession(sess,role);});
   }
+  lostSess(){if(this._lost)return;this._lost=true;clearTimeout(this._t);this.saveLocal();this.setState({sessLost:true,saving:false});}
   startSession(sess,role){
-    this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null});
+    const keep=!!this._lost&&sess.user.id===this.uid;this._out=false;
+    this.uid=sess.user.id;this.setState({auth:'loading',loginErr:null,sessLost:false});
     this.sb.from('cf_state').select('data,updated_at').eq('user_id',this.uid).maybeSingle().then(({data,error})=>{
       if(error){this.setState({auth:'out',loginErr:'No se pudo leer la base de datos: '+error.message});return;}
-      if(data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
-      const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;
-        this._cloud=true;this.setState({auth:'in'});setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
+      if(!keep&&data&&data.data&&data.data.clients){const d=data.data;this._skip=true;this.setState({clients:d.clients,foods:d.foods||[],tpls:d.tpls||[],eqGroups:d.eqGroups||[],events:d.events||[],presets:d.presets||null,recSeed:d.recSeed||null,recRev:d.recRev||null,forms:d.forms||null,lists:d.lists||null,fibOv:d.fibOv||null,unitOv:d.unitOv||null,eqFree:d.eqFree||null,mnotes:d.mnotes||null,notif:d.notif||null,nlist:d.nlist||null,fauto:d.fauto||null,brand:d.brand||null,cutTpls:d.cutTpls||null,savedAt:Date.parse(data.updated_at)||Date.now()});}
+      const go=()=>{this.remoteAt=data?Date.parse(data.updated_at)||0:0;this._lost=false;
+        this._cloud=true;this.setState({auth:'in'});if(keep)setTimeout(()=>this.pushCloud(true),300);setTimeout(()=>this.seedRecipes(),600);this.loadBase();this.loadProps();
         if(!data){if(role!=='owner')this.seedCoach();else this.pushCloud(true);}
         this.loadChats();this.chatSub();clearInterval(this._cpoll);this._cpoll=setInterval(()=>{this.loadChats();this.pollForms();if(this.compLive()||this.state.view==='comp')this.loadCut();},30000);this.loadForms();};
       if(data){go();return;}
@@ -3617,20 +3630,22 @@ class Component extends DCLogic {
   pushCloud(force,manual){
     clearTimeout(this._t);this.saveLocal();
     if(!this._cloud||!this.sb){this.setState({dirty:false,savedAt:Date.now()});if(manual)this.toast('Guardado en este navegador');return;}
+    if(this._lost){this.setState({sessLost:true});return;}
     if(this.state.saving)return;
     this.setState({saving:true});
+    this.sb.auth.getSession().then(({data:ses})=>{const sid=ses&&ses.session&&ses.session.user&&ses.session.user.id;if(sid!==this.uid){this.setState({saving:false});this.lostSess();return;}
     this.sb.from('cf_state').select('updated_at').eq('user_id',this.uid).maybeSingle().then(({data:rm,error:e1})=>{
       if(e1){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar. Revisa tu conexión.',true);return;}
       const rt=rm?Date.parse(rm.updated_at):0;
       if(!force&&rt>this.remoteAt+1){this.setState({saving:false,conflict:true});return;}
       const s=this.state,at=new Date().toISOString();
       this.sb.from('cf_state').upsert({user_id:this.uid,data:{clients:s.clients,foods:s.foods,tpls:s.tpls,eqGroups:s.eqGroups,events:s.events,presets:s.presets,recSeed:s.recSeed||null,recRev:s.recRev||null,forms:s.forms||null,lists:s.lists||null,fibOv:s.fibOv||null,unitOv:s.unitOv||null,eqFree:s.eqFree||null,mnotes:s.mnotes||null,notif:s.notif||null,nlist:s.nlist||null,fauto:s.fauto||null,brand:s.brand||null,cutTpls:s.cutTpls||null},updated_at:at}).then(({error})=>{
-        if(error){this.setState({saving:false,syncErr:true});this.toast('No se pudo guardar: '+error.message,true);return;}
+        if(error){this.setState({saving:false,syncErr:true});if(/row-level security/i.test(error.message||'')){this.toast('Tu cuenta no tiene permiso para guardar en la nube. Vuelve a entrar en el panel.',true);return;}this.toast('No se pudo guardar: '+error.message,true);return;}
         this.remoteAt=Date.parse(at);const stillDirty=this.state.clients!==s.clients||this.state.foods!==s.foods||this.state.tpls!==s.tpls||this.state.eqGroups!==s.eqGroups||this.state.events!==s.events||this.state.presets!==s.presets||this.state.recRev!==s.recRev||this.state.forms!==s.forms||this.state.lists!==s.lists||this.state.fibOv!==s.fibOv||this.state.unitOv!==s.unitOv||this.state.eqFree!==s.eqFree||this.state.mnotes!==s.mnotes||this.state.notif!==s.notif||this.state.nlist!==s.nlist||this.state.fauto!==s.fauto||this.state.brand!==s.brand||this.state.cutTpls!==s.cutTpls;
         this.setState({saving:false,syncErr:false,conflict:false,dirty:stillDirty,savedAt:Date.now()});
         if(manual||force)this.toast('Cambios guardados en la nube');
         if(stillDirty)this.schedule();});
-    });
+    });});
   }
   pullCloud(force){
     if(!this._cloud||!this.sb||this.state.saving)return;
@@ -3817,15 +3832,15 @@ class Component extends DCLogic {
     v.sideMini=s.sideMini?'1':'0';v.sideTogLabel=s.sideMini?'Expandir menú':'Contraer menú';
     v.toggleSide=()=>{const x=!this.state.sideMini;try{localStorage.setItem('cf-side-mini',x?'1':'0');}catch(e){}this.setState({sideMini:x});};
     {const au=s.auth;v.showLogin=au==='checking'||au==='out'||au==='loading'||au==='wrong';v.isBoot=s.auth==='checking';v.loginReady=au==='out';v.loginWrong=au==='wrong';
-      v.wrongSwitch=()=>{if(this.sb)this.sb.auth.signOut().then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
+      v.wrongSwitch=()=>{this._out=true;if(this.sb)this.sb.auth.signOut().then(()=>this.setState({auth:'out',loginPass:'',loginErr:null,loginEmail:''}));};
       v.loginMsg=au==='wrong'&&s.wrongOff?'La cuenta '+(s.wrongEmail||'')+' tiene el acceso de nutricionista desactivado. Habla con Cientia Nutrition para reactivarlo.':au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso para nutricionistas de Cientia Nutrition.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'var(--danger)':'var(--color-neutral-700)';
       v.loginEmail=s.loginEmail;v.loginPass=s.loginPass;v.onLoginEmail=e=>this.setState({loginEmail:e.target.value});v.onLoginPass=e=>this.setState({loginPass:e.target.value});
       v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();
-      v.showLogout=au==='in';v.doLogout=()=>{if(this.sb)this.sb.auth.signOut().then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
+      v.showLogout=au==='in';v.doLogout=()=>{this._out=true;this._lost=false;if(this.sb)this.sb.auth.signOut().then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
       v.showSaveBtn=au==='in'||au==='local';v.saveNow=()=>this.pushCloud(false,true);
       v.saveBtnLabel=s.saving?'Guardando…':s.dirty?'Guardar cambios':'Guardado';v.saveBtnBg=s.dirty||s.saving?'var(--color-accent)':'var(--ok-bg)';v.saveBtnFg=s.dirty||s.saving?'#fff':'var(--ok)';
       v.saveDot=s.dirty?'var(--carb)':'var(--ok-mid)';
-      v.showConflict=!!s.conflict;v.conflictLoad=()=>this.pullCloud(true);v.conflictKeep=()=>this.pushCloud(true,true);
+      v.showSessLost=!!s.sessLost&&au==='in';v.sessRelogin=()=>this.setState({sessLost:false,auth:'out',loginPass:'',loginErr:'Vuelve a entrar con tu cuenta del panel. Los cambios sin guardar se conservan y se subirán al entrar.'});v.showConflict=!!s.conflict;v.conflictLoad=()=>this.pullCloud(true);v.conflictKeep=()=>this.pushCloud(true,true);
       v.hasToast=!!s.toast;v.toastMsg=s.toast;v.toastBg=s.toastBad?'var(--danger)':'var(--color-text)';
       if(au==='in'){v.saveLabel=s.syncErr?'Error al sincronizar':s.dirty?'Cambios sin guardar':'En la nube'+(s.savedAt?' · '+new Date(s.savedAt).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'');v.saveFg=s.syncErr?'var(--danger)':s.dirty?'var(--warn)':'var(--ok)';}
       else{v.saveFg='var(--color-neutral-700)';if(au==='local')v.saveLabel='Solo en este navegador';}}
