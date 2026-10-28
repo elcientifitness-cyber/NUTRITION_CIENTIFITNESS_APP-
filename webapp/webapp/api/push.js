@@ -10,7 +10,13 @@
 const crypto = require('crypto');
 const URL_SB = 'https://soxtkdakmpjxtvvtrvjs.supabase.co';
 const ANON = 'sb_publishable_mGei9bBQytQo75nSAo2umw_c2bvY_gA';
-const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', steps: true, stepsHour: '21:00', stepsMiss: 3, msg: true };
+const DEF = { water: true, waterL: 2, pre: true, preMin: 60, revBefore: true, revDay: true, revHour: '20:00', plan: true, weigh: true, weighDow: 0, weighHour: '08:30', steps: true, stepsHour: '21:00', stepsMiss: 3, msg: true, cyc: true, cycHour: '20:00' };
+function cycNext(map, today) { const dn = d => Math.round(Date.parse(d + 'T00:00:00Z') / 864e5), md = a => { const b = a.slice().sort((x, y) => x - y), m = b.length >> 1; return b.length ? (b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2) : 0; };
+  let mode = 'nat', best = ''; Object.keys(map).forEach(d => { if (map[d] && map[d].cycM && d > best) { best = d; mode = map[d].cycM; } }); if (mode !== 'nat') return null;
+  const P = Object.keys(map).filter(d => map[d] && map[d].mens === 'p' && d <= today).sort(), st = []; P.forEach(d => { const l = st[st.length - 1]; if (l && dn(d) - dn(l.e) <= 3) l.e = d; else st.push({ d, e: d }); });
+  if (!st.length) return null; let L = []; for (let i = 1; i < st.length; i++) L.push(dn(st[i].d) - dn(st[i - 1].d)); L = L.filter(x => x >= 21 && x <= 45); if (L.length >= 3) { const m0 = md(L); L = L.filter(x => Math.abs(x - m0) <= 12); } L = L.slice(-6);
+  const M = L.length ? Math.round(md(L)) : 28, mn = L.length >= 2 ? Math.min(...L) : M - 3, mx = L.length >= 2 ? Math.max(...L) : M + 3; if (L.length >= 3 && mx - mn > 8) return null;
+  return { last: st[st.length - 1].d, a: addD(st[st.length - 1].d, mn), b: addD(st[st.length - 1].d, mx) }; }
 
 const env = k => String(process.env[k] || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
 const b64u = b => Buffer.from(b).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -133,9 +139,9 @@ module.exports = async (req, res) => {
     if (body.cron) {
       const cs = env('CRON_SECRET'); if (cs && req.headers['x-cron'] !== cs) return out(403, { error: 'No autorizado' });
       const subs = await api('cf_push_subs?select=*').then(r => r.ok ? r.json() : []);
-      let links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,comp').then(r => r.ok ? r.json() : null);
-      if (!links) links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide').then(r => r.ok ? r.json() : []);
-      const LK = {}, LC = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; if (l.comp) LC[l.coach_id + '|' + l.client_key] = l.comp; });
+      let links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,cyc:plan->cyc,nw:plan->nightW,sup:plan->supps,comp').then(r => r.ok ? r.json() : null);
+      if (!links) links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,cyc:plan->cyc,nw:plan->nightW,sup:plan->supps').then(r => r.ok ? r.json() : []);
+      const LK = {}, LC = {}, LY = {}, LX = {}; links.forEach(l => { LK[l.coach_id + '|' + l.client_key] = l.guide || null; if (l.cyc && l.cyc.on) LY[l.coach_id + '|' + l.client_key] = l.cyc; if (l.nw || (Array.isArray(l.sup) && l.sup.length)) LX[l.coach_id + '|' + l.client_key] = { nw: !!l.nw, sup: Array.isArray(l.sup) ? l.sup : [] }; if (l.comp) LC[l.coach_id + '|' + l.client_key] = l.comp; });
       // Entrenadores con avisos (por sus suscripciones) y con cuestionarios programados (aunque ningún asesorado tenga avisos activados)
       const FAC = await api('cf_state?select=user_id&data->fauto=not.is.null').then(r => r.ok ? r.json() : []).catch(() => []);
       const CF = {}; for (const c of [...new Set(subs.map(s => s.coach_id).concat(FAC.map(x => x.user_id)))]) CF[c] = await cfgOf(c);
@@ -196,12 +202,21 @@ module.exports = async (req, res) => {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
         let list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key), customOf(cfg));
+        const CY = LY[s.coach_id + '|' + s.client_key]; if (CY && eff.cyc !== false && !((s.prefs && s.prefs.off) || {}).cyc) list.push({ key: 'cy', at: hm(eff.cycHour) != null ? hm(eff.cycHour) : 1200, data: null });
+        { const XL = LX[s.coach_id + '|' + s.client_key], pr0 = s.prefs || {}, off0 = pr0.off || {};
+          if (XL) { const G0 = LK[s.coach_id + '|' + s.client_key], dys = (G0 && G0.days) || pr0.days || [0, 2, 4], tr0 = dys.includes(now.dow), wk = hm(pr0.wake) != null ? hm(pr0.wake) : 480, sl = hm(pr0.sleep) != null ? hm(pr0.sleep) : 1350, tn = hm(pr0.train);
+            if (XL.nw && !off0.nightW) list.push({ key: 'nw', at: Math.max(0, sl - 15), data: { title: 'Peso antes de dormir', body: 'Pésate justo antes de acostarte, después de ir al baño, y apúntalo en tu registro.', tag: 'nightw', url: 'asesorado.html?tab=hoy' } });
+            if (!off0.sup) XL.sup.forEach(x => { if ((x.days === 'train' && !tr0) || (x.days === 'rest' && tr0)) return; const DT = { ayunas: wk, desayuno: wk + 30, comida: 840, cena: 1260, pre: tn != null ? tn - 30 : null, post: tn != null ? tn + 75 : null, dormir: sl - 30 }, at = hm(x.time) != null ? hm(x.time) : DT[x.wk]; if (at == null || at < 0 || at >= 1440) return; list.push({ key: 'sp' + x.id, sid: x.id, at, data: { title: x.name + (x.dose ? ' · ' + x.dose : ''), body: (x.when || 'Suplemento') + (x.note ? ' · ' + x.note : '') + '. Márcalo en Hoy cuando lo tomes.', tag: 'sup', url: 'asesorado.html?tab=hoy' } }); }); } }
         const CP = LC[s.coach_id + '|' + s.client_key];
         if (CP && cfg && cfg.prem && !((s.prefs && s.prefs.off) || {}).comp) { const K = compList(now, CP, s.prefs || {}); if (K.day) list = list.filter(x => x.kind !== 'water'); list = list.concat(K.out); }
         const st = s.sent && s.sent.d === now.d ? { d: now.d, k: (s.sent.k || []).slice() } : { d: now.d, k: [] };
         let go = list.filter(x => x.at <= now.m && now.m - x.at < 40 && !st.k.includes(x.key));
         ['water', 'cw'].forEach(kd => { const w = go.filter(x => x.kind === kd); if (w.length > 1) { w.slice(0, -1).forEach(x => st.k.push(x.key)); go = go.filter(x => x.kind !== kd || x === w[w.length - 1]); } });
         if (go.some(x => x.key === 'st')) { const dl = await api('cf_daylogs?select=survey&coach_id=eq.' + s.coach_id + '&client_key=eq.' + encodeURIComponent(s.client_key) + '&day=eq.' + now.d).then(r => r.ok ? r.json() : []); if (dl[0] && dl[0].survey && num(dl[0].survey.steps) > 0) { go = go.filter(x => x.key !== 'st'); st.k.push('st'); } }
+        if (go.some(x => x.key === 'nw' || x.sid)) { const dl = await api('cf_daylogs?select=survey&coach_id=eq.' + s.coach_id + '&client_key=eq.' + encodeURIComponent(s.client_key) + '&day=eq.' + now.d).then(r => r.ok ? r.json() : []); const sv = (dl[0] && dl[0].survey) || {}; go = go.filter(x => { const done = x.key === 'nw' ? num(sv.pesoN) > 0 : x.sid ? (sv.sup || []).includes(x.sid) : false; if (done) st.k.push(x.key); return !done; }); }
+        if (go.some(x => x.key === 'cy')) { const dl = await api('cf_daylogs?select=day,survey&coach_id=eq.' + s.coach_id + '&client_key=eq.' + encodeURIComponent(s.client_key) + '&day=gte.' + addD(now.d, -400)).then(r => r.ok ? r.json() : []); const M = {}; (dl || []).forEach(r => { M[r.day] = r.survey || {}; }); const nx = cycNext(M, now.d), cx = go.find(x => x.key === 'cy');
+          if (nx && addD(nx.a, -2) === now.d) { const fd = d => new Date(d + 'T12:00:00Z').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'UTC' }); cx.data = { title: 'Tu regla podría llegar pronto', body: 'Según tus ciclos, entre el ' + fd(nx.a) + ' y el ' + fd(nx.b) + '. Cuando llegue, apúntala en la pestaña Ciclo.', tag: 'cyc', url: 'asesorado.html?tab=cyc' }; }
+          else { go = go.filter(x => x.key !== 'cy'); st.k.push('cy'); } }
         if (!go.length) continue;
         let gone = false;
         for (const x of go) { const code = await push(s, x.data, PUB, PRIV).catch(() => 0); if (code === 404 || code === 410) { gone = true; break; } st.k.push(x.key); if (code >= 200 && code < 300) sent++; }
