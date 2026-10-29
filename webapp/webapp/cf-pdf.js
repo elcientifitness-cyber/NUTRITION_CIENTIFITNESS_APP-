@@ -2,6 +2,7 @@
 (function(){
 var JS={};
 function load(src){if(!JS[src])JS[src]=new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=function(){delete JS[src];ko(new Error('load'));};document.head.appendChild(s);});return JS[src];}
+function tm(p,ms){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('timeout'));},ms);Promise.resolve(p).then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
 function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 var TH='text-align:left;padding:9px 12px;background:var(--color-accent);color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700';
 // Tabla del plan publicada (plan.tbl) → HTML con estilos en línea
@@ -40,7 +41,8 @@ function splitTables(root,PH){[].slice.call(root.querySelectorAll('table')).forE
 async function make(src,o){o=o||{};var land=!!o.landscape,W=o.width||(land?1040:720),PW=land?297:210,PHm=land?210:297,mg=land?10:12;
   var R=document.documentElement,th0=R.getAttribute('data-theme'),cover=document.createElement('div'),box=document.createElement('div');
   cover.setAttribute('style','position:fixed;inset:0;z-index:9999;background:#1D3A4C;color:#F3F2EF;display:flex;align-items:center;justify-content:center;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:24px');cover.textContent=o.label||'Preparando el PDF…';document.body.appendChild(cover);
-  try{await Promise.all([load('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'),load('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js')]);
+  var T0=Date.now();
+  try{await tm(Promise.all([load('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'),load('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js')]),20000);
     var H2I=window.htmlToImage,JP=window.jspdf&&window.jspdf.jsPDF;if(!H2I||!JP)throw new Error('lib');
     R.setAttribute('data-theme','light');
     var cl=src.cloneNode(true);cl.removeAttribute('id');[].slice.call(cl.querySelectorAll('[data-noprint]')).forEach(function(e){e.remove();});if(o.prep)o.prep(cl);
@@ -53,17 +55,19 @@ async function make(src,o){o=o||{};var land=!!o.landscape,W=o.width||(land?1040:
     (function walk(el,brk){[].slice.call(el.children).forEach(function(c){var r=c.getBoundingClientRect();if(r.height<1)return;var bk=brk||/page/.test((c.style&&c.style.breakBefore)||'');brk=false;if(r.height>PH*0.9&&c.children.length>1&&!NO[c.tagName])walk(c,bk);else B.push({el:c,t:r.top-top0,b:r.bottom-top0,l:r.left-left0,w:r.width,h:r.height,brk:bk});});})(cl,false);
     B.sort(function(a,b){return a.t-b.t||a.l-b.l;});
     var RW=[];B.forEach(function(k){var L=RW[RW.length-1];if(L&&k.t<L.b-1&&!k.brk){L.it.push(k);L.b=Math.max(L.b,k.b);}else RW.push({t:k.t,b:k.b,it:[k],brk:k.brk});});
-    var fe='';try{fe=await H2I.getFontEmbedCSS(cl);}catch(e){}
+    var fe='';try{fe=await tm(H2I.getFontEmbedCSS(cl),8000);}catch(e){}
     var opt={pixelRatio:2,cacheBust:false},flat=function(cv){var c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(cv,0,0);return c;};if(fe)opt.fontEmbedCSS=fe;else opt.skipFonts=true;
-    if(/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)&&B[0]){try{await H2I.toCanvas(B[0].el,opt);}catch(e){}}
+    var SAF=/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)&&!/Chrome|CriOS|Firefox|FxiOS|Edg/.test(navigator.userAgent),MAXA=SAF?1.2e7:2.4e7;
+    var toCv=function(el,k){if(Date.now()-T0>120000)throw new Error('timeout');var pr=Math.max(0.5,Math.min(2,Math.sqrt(MAXA/Math.max(1,k.w*k.h))));var o2={};for(var z in opt)o2[z]=opt[z];o2.pixelRatio=pr;return tm(H2I.toCanvas(el,o2),30000);};
+    if(SAF&&B[0]){try{await toCv(B[0].el,B[0]);}catch(e){}}
     var pdf=new JP({unit:'mm',format:'a4',orientation:land?'landscape':'portrait',compress:true}),ps=null,used=false;
     var put=function(cv,k,y){pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',mg+k.l*sc,mg+y*sc,k.w*sc,k.h*sc,undefined,'FAST');};
     for(var i=0;i<RW.length;i++){var w=RW[i],nx=RW[i+1],rh=w.b-w.t;
       if(ps==null)ps=w.t;
       if(used&&(w.brk||(rh<=PH&&w.b-ps>PH)||(rh<70&&nx&&nx.b-nx.t<=PH&&nx.b-ps>PH))){pdf.addPage();ps=w.t;}
-      if(rh<=PH){for(var q=0;q<w.it.length;q++){var k=w.it[q];put(flat(await H2I.toCanvas(k.el,opt)),k,k.t-ps);}used=true;continue;}
+      if(rh<=PH){for(var q=0;q<w.it.length;q++){var k=w.it[q];put(flat(await toCv(k.el,k)),k,k.t-ps);}used=true;continue;}
       if(used&&w.t-ps>0){pdf.addPage();ps=w.t;}
-      for(var q2=0;q2<w.it.length;q2++){var k2=w.it[q2],cv=flat(await H2I.toCanvas(k2.el,opt));if(k2.h<=PH){put(cv,k2,k2.t-ps);continue;}
+      for(var q2=0;q2<w.it.length;q2++){var k2=w.it[q2],cv=flat(await toCv(k2.el,k2));if(k2.h<=PH){put(cv,k2,k2.t-ps);continue;}
         var pxr=cv.height/k2.h,off=0,hh=0;while(off<k2.h){hh=Math.min(PH,k2.h-off);var c2=document.createElement('canvas');c2.width=cv.width;c2.height=Math.ceil(hh*pxr);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(cv,0,Math.floor(off*pxr),cv.width,c2.height,0,0,cv.width,c2.height);pdf.addImage(c2.toDataURL('image/jpeg',0.92),'JPEG',mg+k2.l*sc,mg+(off?0:Math.max(0,k2.t-ps))*sc,k2.w*sc,hh*sc,undefined,'FAST');off+=hh;if(off<k2.h)pdf.addPage();}
         ps=k2.b-hh;}
       used=true;}
