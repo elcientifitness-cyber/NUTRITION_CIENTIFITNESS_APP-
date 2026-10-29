@@ -202,7 +202,7 @@ module.exports = async (req, res) => {
         const now = local(s.tz || 'Europe/Madrid'); if (!now) continue;
         const cfg = CF[s.coach_id], eff = effOf(cfg, s.client_key);
         let list = dueList(now, eff, s.prefs || {}, LK[s.coach_id + '|' + s.client_key], ((cfg && cfg.ev) || []).filter(e => e.c === s.client_key), customOf(cfg));
-        const CY = LY[s.coach_id + '|' + s.client_key]; if (CY && eff.cyc !== false && !((s.prefs && s.prefs.off) || {}).cyc) list.push({ key: 'cy', at: hm(eff.cycHour) != null ? hm(eff.cycHour) : 1200, data: null });
+        const CY = LY[s.coach_id + '|' + s.client_key]; if (CY && cfg && (cfg.prem || cfg.owner) && eff.cyc !== false && !((s.prefs && s.prefs.off) || {}).cyc) list.push({ key: 'cy', at: hm(eff.cycHour) != null ? hm(eff.cycHour) : 1200, data: null });
         { const XL = LX[s.coach_id + '|' + s.client_key], pr0 = s.prefs || {}, off0 = pr0.off || {};
           if (XL) { const G0 = LK[s.coach_id + '|' + s.client_key], dys = (G0 && G0.days) || pr0.days || [0, 2, 4], tr0 = dys.includes(now.dow), wk = hm(pr0.wake) != null ? hm(pr0.wake) : 480, sl = hm(pr0.sleep) != null ? hm(pr0.sleep) : 1350, tn = hm(pr0.train);
             if (XL.nw && !off0.nightW) list.push({ key: 'nw', at: Math.max(0, sl - 15), data: { title: 'Peso antes de dormir', body: 'Pésate justo antes de acostarte, después de ir al baño, y apúntalo en tu registro.', tag: 'nightw', url: 'asesorado.html?tab=hoy' } });
