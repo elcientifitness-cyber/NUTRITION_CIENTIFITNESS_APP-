@@ -2556,6 +2556,7 @@ html,body{height:auto!important;overflow:visible!important}
               <div style="display:flex;align-items:center;gap:10px;flex:none"><span style="font-size:13px;font-weight:700">{{ g.onL }}</span><button onClick="{{ g.togAll }}" aria-label="{{ g.onL }}" style="width:46px;height:28px;border-radius:999px;border:0;padding:3px;background:{{ g.trk }};cursor:pointer;display:flex;align-items:center;justify-content:{{ g.jc }};flex:none;box-sizing:border-box;transition:background .15s"><span style="width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);flex:none"></span></button></div>
             </div>
             <span style="font-size:13px;text-wrap:pretty">{{ g.who }}</span>
+            <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Tú (CEO) las ves siempre, también en pausa.</span>
             <div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider);opacity:{{ g.rowsOp }}">
               <sc-if value="{{ g.coLoad }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding-top:10px">Cargando el equipo…</span></sc-if>
               <sc-if value="{{ g.noCo }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700);padding-top:10px">Aún no hay nutricionistas en Equipo.</span></sc-if>
