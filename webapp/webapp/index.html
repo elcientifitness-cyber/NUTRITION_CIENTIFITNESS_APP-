@@ -30,6 +30,7 @@
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
 <script src="cf-cycle.js"></script>
+<script src="cf-pdf.js"></script>
 <script src="cf-forms.js"></script>
 <script src="cf-brand.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -949,13 +950,17 @@ html,body{height:auto!important;overflow:visible!important}
           <sc-for list="{{ daysSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
       </div>
+      <sc-if value="{{ shopModeOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Comidas con varias opciones
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content"><sc-for list="{{ shopModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.label }}</button></sc-for></div>
+        <span style="font-size:11px;color:var(--color-neutral-600);text-wrap:pretty">Una sola lista reparte las opciones entre los días y lo suma todo por secciones del súper.</span>
+      </div></sc-if>
       <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Formato del PDF
         <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content"><sc-for list="{{ pdfFmtSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.label }}</button></sc-for></div>
         <span style="font-size:11px;color:var(--color-neutral-600);text-wrap:pretty">{{ pdfFmtNote }}</span>
       </div>
       <button class="btn btn-primary" onClick="{{ print }}" style="justify-content:flex-start;padding:12px 16px">
         <svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
-        Imprimir / guardar PDF
+        {{ pdfBtnLbl }}
       </button>
       <div style="background:var(--color-bg);border-radius:14px;box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:16px">Guardar y enviar</span><span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:{{ verBg }};color:{{ verFg }}">{{ verStatus }}</span></div>
@@ -1045,7 +1050,7 @@ html,body{height:auto!important;overflow:visible!important}
       </div>
     </div>
 
-    <article data-pdf="1" style="flex:3 1 560px;min-width:0;background:var(--cf-card);border-radius:16px;padding:40px;box-sizing:border-box;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:28px">
+    <article id="cf-vista-pdf" data-pdf="1" style="flex:3 1 560px;min-width:0;background:var(--cf-card);border-radius:16px;padding:40px;box-sizing:border-box;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:28px">
       <sc-if value="{{ pdfOwn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;border-bottom:1px solid var(--color-divider);padding-bottom:16px">
         <div style="display:flex;gap:16px;align-items:center">
           <sc-if value="{{ pdfLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" src="{{ pdfLogo }}" alt="Logo" style="height:72px;width:auto;max-width:200px;object-fit:contain;display:block"></sc-if>
@@ -1135,6 +1140,7 @@ html,body{height:auto!important;overflow:visible!important}
             </div>
           </sc-for>
         </div>
+          <sc-if value="{{ shopRotOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;padding:10px 14px;border-radius:12px;background:var(--color-neutral-100);font-size:13px;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact"><span style="font-weight:800">Días con cada opción</span><sc-for list="{{ shopRot }}" as="r" hint-placeholder-count="1"><span><strong>{{ r.name }}</strong> · {{ r.txt }}</span></sc-for><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Si vas a repetir una opción más días, compra más de esa y menos de las otras.</span></div></sc-if>
           <sc-if value="{{ shopHasOpts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Según la opción que elijas</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En estas comidas eliges una opción: compra solo lo de la que vayas a comer.</span></div>
             <sc-for list="{{ shopOpts }}" as="so" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:6px;break-inside:avoid">
@@ -1143,7 +1149,7 @@ html,body{height:auto!important;overflow:visible!important}
             </div></sc-for>
           </div></sc-if>
           <sc-if value="{{ shopHasAlts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Para elegir</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Se intercambian entre sí: compra los que vayas a comer. La cantidad es la de una ración.</span></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Para elegir</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada ración eliges uno de la lista; la cantidad es la de una ración. Compra según lo que vayas a comer.</span></div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 28px"><sc-for list="{{ shopAlts }}" as="sc" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:2px;break-inside:avoid"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:{{ sc.ink }};background:{{ sc.bg }};padding:5px 10px;border-radius:10px;margin-bottom:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ sc.cat }}</span><sc-for list="{{ sc.items }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--color-neutral-200)"><span>{{ l.name }}</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ l.g }}</span></div></sc-for></div></sc-for></div>
           </div></sc-if>
       </div>
@@ -5265,21 +5271,24 @@ class Component extends DCLogic {
         v.vSupRows=suppPub(cl).map(x=>({name:x.name,dose:x.dose,when:x.when+(x.time?' · '+x.time:''),days:SDAYS[x.days]||'',note:x.note,hasNote:!!x.note}));v.vSupOn=v.vSupRows.length>0;
         v.vDate=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
         v.daysSeg=this.seg([[1,'1 día'],[7,'7 días']],s.shopDays,x=>this.setState({shopDays:x}));
-        v.print=()=>{const o0=document.getElementById('cf-page-fmt');if(o0)o0.remove();const st=document.createElement('style');st.id='cf-page-fmt';st.textContent=cl.pdfFmt==='t'?'@page{size:A4 landscape;margin:10mm}':'@page{size:A4 portrait;margin:12mm}';document.head.appendChild(st);const done=()=>{if(st&&st.parentNode)st.parentNode.removeChild(st);window.removeEventListener('afterprint',done);};window.addEventListener('afterprint',done);window.print();setTimeout(done,1500);};
-        const shop={},shopO={},shopA={},SF={};
+        v.pdfBtnLbl=s.pdfBusy?'Preparando el PDF…':'Descargar PDF';
+        const printOld=()=>{const o0=document.getElementById('cf-page-fmt');if(o0)o0.remove();const st=document.createElement('style');st.id='cf-page-fmt';st.textContent=cl.pdfFmt==='t'?'@page{size:A4 landscape;margin:10mm}':'@page{size:A4 portrait;margin:12mm}';document.head.appendChild(st);const done=()=>{if(st&&st.parentNode)st.parentNode.removeChild(st);window.removeEventListener('afterprint',done);};window.addEventListener('afterprint',done);window.print();setTimeout(done,1500);};
+        v.print=()=>{if(s.pdfBusy)return;const el=document.getElementById('cf-vista-pdf');if(!el||!window.CFPdf){printOld();return;}this.setState({pdfBusy:true});
+          CFPdf.make(el,{landscape:cl.pdfFmt==='t',name:'Plan de nutrición'+((cl.name||'').trim()?' · '+cl.name.trim():''),label:'Preparando el PDF…'}).then(r=>{CFPdf.download(r);this.toast('PDF descargado · '+r.pages+(r.pages===1?' página':' páginas')+(cl.pdfFmt==='t'?' en horizontal':''));}).catch(()=>{this.toast('No se pudo crear el PDF: se abre la impresión',true);printOld();}).finally(()=>this.setState({pdfBusy:false}));};
+        const shop={},shopO={},shopA={},SF={};let callN=0;
         const GRP={Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'};
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';SF[x.food.name]=x.food;shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
         const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
         const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={sl:sl||'',cat:F.cat||'',name:F.name,gq:qTxt(F,x.g),hm:isUO(F)?'':hmTxt(F,x.g),hasHm:!isUO(F)&&!!hmTxt(F,x.g),g:isUO(F)?uoTxt(F,x.g):x.g+' g'+(hmTxt(F,x.g)?' ('+hmTxt(F,x.g)+')':''),id:F.id,gr:x.g,...(isUO(F)?{u:{n:(unitOf(F)||{}).n||'pieza',pl:(unitOf(F)||{}).pl||'piezas',g:num((unitOf(F)||{}).g)||100}}:{}),k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
           if(!open&&sl&&sl!=='veg'&&x.eqs&&x.eqs.length&&x.g>0){const mc=sl==='prot'?'p':sl==='fat'?'f':'c';const FE0=freeEqs(F,x.g,FM);o.alts=x.eqs.map(fid=>FM[fid]).filter(Boolean).map(f=>{const fe=FE0.find(q=>q.f.id===f.id),gg=rg(fe?fe.g:x.g*F[mc]/Math.max(0.1,f[mc]),f,rdOf(cl)),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10};});}
           if(x.g>0){const FE=freeEqs(F,x.g,FM).filter(q=>!(o.alts||[]).some(z=>z.id===q.f.id));if(FE.length)o.alts=(o.alts||[]).concat(FE.map(({f,g:g0})=>{const gg=rg(g0,f,rdOf(cl)),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10,free:true};}));}return o;};
-        const buildMeal=(ml,mul,TT,cx)=>{const mt=mealTarget(ml,TT||T);
+        const buildMeal=(ml,mul,TT,cx)=>{const mt=mealTarget(ml,TT||T),CALL=++callN;
           if(ml.cheat)return {name:ml.name,kcal:'~'+R(mt.k)+' kcal',opts:[{title:'',blocks:[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Comida libre',lines:[{name:'Sin pesar · con moderación',g:'~'+R(mt.k)+' kcal',gq:'~'+R(mt.k)+' kcal'}]}]}],txt:['*'+ml.name.toUpperCase()+'* — Comida libre (~'+R(mt.k)+' kcal)']};
           const rs=ml.options.map(o=>solve(o,mt,cl.planMode,FM,rdOf(cl)));
           if(mul){const mlt=rs.length>1;rs.forEach((r,i)=>{
             if(mlt&&!open){const k=((cx&&cx.k)||'')+'|'+ml.id,E=shopO[k]=shopO[k]||{name:((cx&&cx.pre)?cx.pre+' · ':'')+(ml.name||'Comida'),n:0,opts:[]};if(i===0)E.n+=mul;const tt=((ml.options[i]||{}).title||'').trim(),O=E.opts[i]=E.opts[i]||{label:'Opción '+Lt(i)+(tt?' · '+tt:''),items:{}};SLOTS.forEach(([sl])=>r.S[sl].forEach(x=>{if(x.g>0){SF[x.food.name]=x.food;O.items[x.food.name]=(O.items[x.food.name]||0)+x.g*mul;}}));return;}
             SLOTS.forEach(([sl])=>{const a=r.S[sl].filter(x=>x.g>0);if(!a.length)return;
-              if(open&&(mlt||(sl!=='veg'&&a.length>1)))a.forEach(x=>{const g=GRP[x.food.cat]||'Otros',A2=shopA[g]=shopA[g]||{},o=A2[x.food.name]=A2[x.food.name]||{mn:1e9,mx:0,f:x.food};o.mn=Math.min(o.mn,x.g);o.mx=Math.max(o.mx,x.g);});
+              if(open&&(mlt||(sl!=='veg'&&a.length>1))){const kk=((cx&&cx.k)||'')+'|'+ml.id+'|'+sl,E=shopA[kk]=shopA[kk]||{name:((cx&&cx.pre)?cx.pre+' · ':'')+(ml.name||'Comida')+' · '+((SLOTS.find(q=>q[0]===sl)||[0,''])[1]),sl,n:0,c:0,it:{}};if(E.c!==CALL){E.c=CALL;E.n+=(mul||1);}a.forEach(x=>{const o=E.it[x.food.name]=E.it[x.food.name]||{mn:1e9,mx:0,f:x.food};o.mn=Math.min(o.mn,x.g);o.mx=Math.max(o.mx,x.g);});}
               else a.forEach(x=>addShop(x,mul));});});}
           const multi=rs.length>1,txt=['*'+ml.name.toUpperCase()+'* (~'+R(mt.k)+' kcal)','_'+gkLine(mt,VW)+'_'];
           rs.forEach((r,i)=>{const tt=((ml.options[i]||{}).title||'').trim();if(multi||tt)txt.push((multi?'Opción '+Lt(i):'')+(tt?(multi?' · ':'')+tt:'')+':');
@@ -5312,8 +5321,8 @@ class Component extends DCLogic {
               MS.forEach((m,mi)=>(m.opts||[]).forEach((o,oi)=>{const mo=(m.opts||[]).length>1,free=(o.blocks||[]).find(b=>!((b.lines||[])[0]||{}).sl);
                 rows.push({...(oi===0?mc(m):blank),hasSub:mo,sub:'Opción '+Lt(oi)+(o.name?' · '+o.name:'')+(mo&&!HK?' · '+(o.kc||''):''),hasOnote:!!o.note,onote:o.note||'',bg:mi%2?ZB:'transparent',
                   cells:SL.map(([sl],ci)=>{if(free)return ci===0?{empty:false,lines:free.lines||[],hasHead:false,head:'',hasNote:false,note:''}:{empty:true,lines:[],hasHead:false,head:'',hasNote:false,note:''};const b=(o.blocks||[]).find(q=>((q.lines||[])[0]||{}).sl===sl);if(!b)return {empty:true,lines:[],hasHead:false,head:'',hasNote:false,note:''};const ch=sl!=='veg'&&(b.lines||[]).length>1;return {empty:false,lines:b.lines||[],hasHead:ch,head:'Elige 1',hasNote:false,note:''};})});}));}
-            const CHK=open?5:4;if(head.length<=CHK)return [{hasTitle:!!g.hasTitle,title:g.title||'',days:g.days||'',kLine:g.kLine||'',head,rows,minW:minW+'px'}];
-            const out=[];for(let s0=0;s0<head.length;s0+=CHK){const hs=head.slice(s0,s0+CHK),e0=Math.min(head.length,s0+CHK)-1;out.push({hasTitle:true,title:(g.title?g.title+' · ':'')+(open?'Grupos ':'Opciones ')+(open?(s0+1)+'–'+(e0+1):Lt(s0)+'–'+Lt(e0)),days:s0?'':(g.days||''),kLine:s0?'':(g.kLine||''),head:hs,rows:rows.map(r=>({...r,cells:r.cells.slice(s0,s0+CHK)})),minW:(150+hs.length*200)+'px'});}return out;}));}
+            const CHK=open?5:4;if(head.length<=CHK)return [{hasTitle:!!g.hasTitle,title:g.title||'',days:g.days||'',kLine:g.kLine||'',head,rows,minW:'0'}];
+            const out=[];for(let s0=0;s0<head.length;s0+=CHK){const hs=head.slice(s0,s0+CHK),e0=Math.min(head.length,s0+CHK)-1;out.push({hasTitle:true,title:(g.title?g.title+' · ':'')+(open?'Grupos ':'Opciones ')+(open?(s0+1)+'–'+(e0+1):Lt(s0)+'–'+Lt(e0)),days:s0?'':(g.days||''),kLine:s0?'':(g.kLine||''),head:hs,rows:rows.map(r=>({...r,cells:r.cells.slice(s0,s0+CHK)})),minW:'0'});}return out;}));}
         // versions & sending
         const hash=this.pubSig(cl).hash;
         const vers=cl.versions||[],lastV=vers[vers.length-1],dirty=!lastV||lastV.hash!==hash;
@@ -5344,11 +5353,16 @@ class Component extends DCLogic {
         const order=['Carnes','Pescados','Lácteos y huevos','Cereales, legumbres y tubérculos','Verduras y frutas','Grasas y frutos secos','Otros'];
         const SHC={'Carnes':'prot','Pescados':'prot','Lácteos y huevos':'prot','Cereales, legumbres y tubérculos':'carb','Verduras y frutas':'veg','Grasas y frutos secos':'fat'};
         const fmtQ=(n,t)=>{const f=SF[n];if(isUO(f))return uoTxt(f,t);return t>=1000?(t/1000).toFixed(1).replace('.',',')+' kg':R(t)+' g';},catS=k=>({bg:SHC[k]?MBG[SHC[k]]:'var(--color-neutral-100)',ink:SHC[k]?MINK[SHC[k]]:'var(--color-neutral-700)'});
+        const SMo=cl.shopMode||'one',rot=[];
+        if(SMo==='one')Object.keys(shopO).forEach(k=>{const E=shopO[k],O=E.opts,nk=O.length;if(nk<2||E.n<nk||O.some(q=>!q))return;const ds=O.map((_,i)=>Math.floor(E.n/nk)+(i<E.n%nk?1:0));
+          O.forEach((Op,i)=>Object.entries(Op.items).forEach(([nm,g])=>{const cat=GRP[(SF[nm]||{}).cat]||'Otros';shop[cat]=shop[cat]||{};shop[cat][nm]=(shop[cat][nm]||0)+g/E.n*ds[i];}));
+          rot.push({name:E.name,txt:O.map((Op,i)=>Lt(i)+' '+ds[i]+(ds[i]===1?' día':' días')).join(' · ')});delete shopO[k];});
+        v.shopRot=rot;v.shopRotOn=rot.length>0;v.shopModeOn=!open;v.shopModeSeg=this.seg([['one','Una sola lista'],['opt','Separada por opción']],SMo,x=>this.updC(n=>{if(x==='opt')n.shopMode='opt';else delete n.shopMode;}));
         v.shop=order.filter(k=>shop[k]).map(k=>({cat:k,...catS(k),items:Object.entries(shop[k]).map(([n,g])=>({name:n,g:fmtQ(n,g*dayMul)}))}));
         v.shopOpts=Object.values(shopO).map(E=>({name:E.name,sub:E.n>1?'Para '+E.n+' días':(byMenu&&s.shopDays===7?'Para 1 día':''),opts:E.opts.filter(Boolean).map(O=>({label:O.label,items:Object.entries(O.items).map(([n,g])=>({name:n,g:fmtQ(n,g*dayMul)}))}))}));
-        v.shopAlts=order.filter(k=>shopA[k]).map(k=>({cat:k,...catS(k),items:Object.entries(shopA[k]).map(([n,o])=>({name:n,g:(isUO(o.f)?uoTxt(o.f,o.mx):(o.mn===o.mx?R(o.mn)+' g':R(o.mn)+'–'+R(o.mx)+' g'))+' por ración'}))}));
+        v.shopAlts=Object.values(shopA).map(E=>{const nr=E.n*dayMul;return {cat:E.name+' · '+nr+(nr===1?' ración':' raciones'),bg:MBG[E.sl]||'var(--color-neutral-100)',ink:MINK[E.sl]||'var(--color-neutral-700)',items:Object.entries(E.it).map(([n,o])=>({name:n,g:isUO(o.f)?uoTxt(o.f,o.mx):(o.mn===o.mx?R(o.mn)+' g':R(o.mn)+'–'+R(o.mx)+' g')}))};});
         v.shopHasOpts=v.shopOpts.length>0;v.shopHasAlts=v.shopAlts.length>0;v.shopBaseTitle=(v.shopHasOpts||v.shopHasAlts)&&v.shop.length?'Siempre':'';
-        v.shopNote=byMenu?(s.shopDays===7?'Semana completa según los días de cada menú':'1 día del menú activo'):(s.shopDays===7?'Cantidades para 7 días':'Cantidades para 1 día');
+        v.shopNote=byMenu?(s.shopDays===7?'Semana completa según los días de cada menú':'1 día del menú activo'):(s.shopDays===7?'Cantidades para 7 días':'Cantidades para 1 día');if(rot.length)v.shopNote+=' · opciones repartidas por igual entre los días';
         {const pub=cl.pub,em=(cl.email||'').trim().toLowerCase(),cloudOn=s.auth==='in'&&!!this.sb;
           const mSig=this.pubSig(cl).mSig;const pubDirty=!pub||pub.hash!==hash||(pub.msig||'')!==mSig;
           v.pubStatus=!em?'Falta email':!pub?'Sin publicar':pubDirty?'Cambios sin publicar':'Publicado · v'+pub.v;
@@ -5374,7 +5388,7 @@ class Component extends DCLogic {
             const nV=dirty?saveV():lastV.n;
             const snap={v:nV,at:Date.now(),name:cl.name,hide:{k:HK,m:HM,g:!!HD.g},kg:VW,noHoy:!!cl.noHoy,nightW:!!cl.nightW,supps:suppPub(cl),cyc:this.isPrem()&&cl.cyc&&cl.cyc.on?{on:true,mode:cl.cyc.mode||'nat',notes:cl.cyc.notes||{}}:null,term:this.term(),self:!!cl.self,brand:this.brandPub(),T:{k:T.k,p:T.p,c:T.c,f:T.f},notes:cl.notes||'',guide:cl.guide||null,notif:{...NDEF,...(s.notif||{}),...(cl.notif||{}),cx:this.customAll().filter(x=>{const cc=((cl.notif||{}).cxc)||{};return x.id in cc?!!cc[x.id]:(x._base?nxOn(x,s.notif):x.on!==false);}).map(x=>({id:x.id,title:x.title||'Aviso'}))},swap:{on:true,max:3,tol:10,...(cl.swap||{}),...(this.isPrem()?{}:{on:false})},open,
               groups:groups.map(g=>({title:g.title,days:g.days,dayIdx:g.dayIdx,T:g.T,kLine:g.kLine,meals:g.meals.map(m=>({name:m.name,kcal:m.kcal,gk:HG?'':m.gk||'',note:m.note||'',opts:m.opts.map(o=>({title:o.title,gk:HG?'':o.gk||'',note:o.note||'',blocks:o.blocks}))}))})),
-              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopO:v.shopOpts,shopA:v.shopAlts.map(x=>({cat:x.cat,items:x.items})),shopNote:v.shopNote,fruit:usesF?(window.CF_FRUTA||[]):null,coachPhone:this.myPhone(),coachName:this.myName(),
+              shop:v.shop.map(x=>({cat:x.cat,items:x.items})),shopO:v.shopOpts,shopA:v.shopAlts.map(x=>({cat:x.cat,items:x.items})),shopRot:v.shopRot||[],tbl:cl.pdfFmt==='t'?(v.tGroups||[]).map(g=>({t:g.hasTitle?g.title:'',d:g.days||'',k:g.kLine||'',h:(g.head||[]).map(x=>({l:x.l,sw:x.hasSw?x.sw:''})),r:(g.rows||[]).map(r=>({n:r.name||'',sub:r.hasSub?r.sub:'',kc:r.hasK?r.kcal:'',gk:r.hasGk?r.gk:'',no:r.hasNote?r.note:'',on:r.hasOnote?r.onote:'',c:(r.cells||[]).map(c=>c.empty?null:{h:c.hasHead?c.head:'',no:c.hasNote?c.note:'',l:(c.lines||[]).map(l=>[l.name,l.gq||l.g||'',l.hasHm?l.hm:''])})}))})):null,shopNote:v.shopNote,fruit:usesF?(window.CF_FRUTA||[]):null,coachPhone:this.myPhone(),coachName:this.myName(),
               perNames:PER,metrics:(cl.logs||[]).slice().sort((a,b)=>a.date<b.date?-1:1).map(l=>{const c=computeComp(l,{...cl,proto:cl.proto||'jp3'}),per={};PER.forEach(([k])=>{if(c[k])per[k]=Math.round(c[k]*10)/10;});const q1=x=>x!=null&&!isNaN(x)?Math.round(x*10)/10:null,o1=src=>{const o={};Object.keys(src||{}).forEach(k=>{if(num(src[k])>0)o[k]=q1(num(src[k]));});return o;};return {d:l.date,w:c.w,bf:q1(c.bf),lbm:q1(c.lbm),mm:q1(c.mm),fm:q1(c.fm),mo:q1(c.mo),s6:c.s6!=null?Math.round(c.s6):null,s8:c.s8!=null?Math.round(c.s8):null,per,pl:o1(l.pl),dia:o1(l.dia)};}),plNames:PL,diaNames:DIA,goals:cl.goals||{}};
             const row={coach_id:this.uid,client_key:cl.id,email:em,name:cl.name,plan:snap,plan_at:new Date().toISOString()},up=()=>this.sb.from('cf_links').upsert(row),dup=e=>!!e&&/duplicate|unique/i.test(e.message||'');
             up().then(r=>dup(r.error)&&cl.self?this.sb.from('cf_links').delete().eq('coach_id',this.uid).eq('email',em).neq('client_key',cl.id).then(()=>up()):r).then(({error})=>{

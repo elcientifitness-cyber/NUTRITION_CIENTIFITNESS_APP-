@@ -25,6 +25,7 @@
 <script src="cf-select.js"></script>
 <script src="cf-lib.js"></script>
 <script src="cf-cycle.js"></script>
+<script src="cf-pdf.js"></script>
 <script src="cf-forms.js"></script>
 <script src="cf-brand.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -427,6 +428,7 @@ button{-webkit-user-select:none;user-select:none}
       <sc-if value="{{ pSupOn }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px;border-radius:12px;background:var(--color-neutral-100);display:flex;flex-direction:column;gap:2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);font-weight:800;margin-bottom:4px">Suplementación</div><sc-for list="{{ pSupRows }}" as="x" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px solid var(--color-divider)"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><strong>{{ x.name }}</strong><span style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ x.dose }}</span></div><span style="font-size:12px;color:var(--color-neutral-700)">{{ x.when }} · {{ x.days }}</span><sc-if value="{{ x.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-600);text-wrap:pretty">{{ x.note }}</span></sc-if></div></sc-for></div></sc-if>
       <sc-if value="{{ pFruitOn }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:14px;background:var(--carb-bg);color:var(--color-text);display:flex;flex-direction:column;gap:8px;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--carb-ink);font-weight:800">1 pieza de fruta equivale a</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 18px"><sc-for list="{{ pFruit }}" as="fr" hint-placeholder-count="6"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;border-bottom:1px dotted var(--color-neutral-400);padding:4px 0"><span>{{ fr.n }}</span><span style="font-variant-numeric:tabular-nums;color:var(--color-neutral-700);white-space:nowrap">{{ fr.q }}</span></div></sc-for></div><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Cada pieza aporta unos 14 g de hidratos (≈ 60 kcal). Puedes combinar media de una y media de otra.</span></div></sc-if>
       <sc-if value="{{ pOpen }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada comida elige una opción y, dentro de ella, un alimento de cada grupo: las cantidades ya están ajustadas para que cualquiera cuadre.</p></sc-if>
+      <div data-pdf-meals="1" style="display:flex;flex-direction:column;gap:18px">
       <sc-for list="{{ pGroups }}" as="g" hint-placeholder-count="1">
         <div style="display:flex;flex-direction:column;gap:18px">
           <sc-if value="{{ g.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:var(--cf-plan-bg,var(--veg-bg));color:var(--cf-plan-ink,var(--veg-ink))"><span style="font-weight:800;font-size:16px">{{ g.title }}</span><span style="font-size:12px">{{ g.days }}</span><sc-if value="{{ g.isToday }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--cf-plan-ink,var(--veg-ink));color:var(--cf-on-ink)">Hoy</span></sc-if><sc-if value="{{ g.hasK }}" hint-placeholder-val="{{ false }}"><span style="flex-basis:100%;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums">{{ g.kLine }}</span></sc-if></div></sc-if>
@@ -450,6 +452,7 @@ button{-webkit-user-select:none;user-select:none}
           </sc-for>
         </div>
       </sc-for>
+      </div>
       <sc-if value="{{ brOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:12px;flex-wrap:wrap"><span style="font-weight:700">{{ planLogoAlt }}</span><span style="margin-left:auto">con <span style="font-weight:600;color:var(--color-text)">Cientia Nutrition</span></span></div></sc-if>
       <sc-if value="{{ brOff }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:8px;padding:4px 2px;font-size:11px;color:var(--color-neutral-600);flex-wrap:wrap"><span style="font-weight:600;color:var(--color-text)">Cientia Nutrition</span><span style="margin-left:auto">por <span style="font-weight:600;color:var(--color-text)">El Cientifitness</span></span></div></sc-if>
       <sc-if value="{{ showShop }}" hint-placeholder-val="{{ false }}">
@@ -462,6 +465,7 @@ button{-webkit-user-select:none;user-select:none}
               <sc-for list="{{ sc.items }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:4px 2px;border-bottom:1px solid var(--color-neutral-200)"><span>{{ l.name }}</span><span style="font-variant-numeric:tabular-nums">{{ l.g }}</span></div></sc-for>
             </div>
           </sc-for>
+          <sc-if value="{{ pshopRotOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;padding:10px 14px;border-radius:12px;background:var(--color-neutral-100);font-size:13px"><span style="font-weight:800">Días con cada opción</span><sc-for list="{{ pshopRot }}" as="r" hint-placeholder-count="1"><span><strong>{{ r.name }}</strong> · {{ r.txt }}</span></sc-for><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Si vas a repetir una opción más días, compra más de esa y menos de las otras.</span></div></sc-if>
           <sc-if value="{{ pshopHasOpts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Según la opción que elijas</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En estas comidas eliges una opción: compra solo lo de la que vayas a comer.</span></div>
             <sc-for list="{{ pshopOpts }}" as="so" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:6px;break-inside:avoid">
@@ -470,7 +474,7 @@ button{-webkit-user-select:none;user-select:none}
             </div></sc-for>
           </div></sc-if>
           <sc-if value="{{ pshopHasAlts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Para elegir</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Se intercambian entre sí: compra los que vayas a comer. La cantidad es la de una ración.</span></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Para elegir</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada ración eliges uno de la lista; la cantidad es la de una ración. Compra según lo que vayas a comer.</span></div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 28px"><sc-for list="{{ pshopAlts }}" as="sc" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:2px;break-inside:avoid"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:{{ sc.ink }};background:{{ sc.bg }};padding:5px 10px;border-radius:10px;margin-bottom:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ sc.cat }}</span><sc-for list="{{ sc.items }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--color-neutral-200)"><span>{{ l.name }}</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ l.g }}</span></div></sc-for></div></sc-for></div>
           </div></sc-if>
         </div>
@@ -954,32 +958,15 @@ class Component extends DCLogic {
     this.sb.storage.from('cf-fotos').createSignedUrls(P,3600).then(({data})=>{const o={};(data||[]).forEach(u=>{if(u&&u.signedUrl)o[u.path]=u.signedUrl;});this.setState(st=>({mpUrl:{...(st.mpUrl||{}),...o}}));}).catch(()=>{});}
   loadJs(src){this._js=this._js||{};if(!this._js[src])this._js[src]=new Promise((ok,ko)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=()=>{delete this._js[src];ko(new Error('load'));};document.head.appendChild(s);});return this._js[src];}
   async makePdf(){if(this._pdfBusy)return;const src=document.getElementById('cf-plan-pdf');if(!src)return;this._pdfBusy=true;this.setState({pdfBusy:true});
-    const R=document.documentElement,th0=R.getAttribute('data-theme'),cover=document.createElement('div'),box=document.createElement('div');
-    cover.setAttribute('style','position:fixed;inset:0;z-index:9999;background:#1D3A4C;color:#F3F2EF;display:flex;align-items:center;justify-content:center;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:24px');cover.textContent='Preparando tu PDF…';document.body.appendChild(cover);
-    try{await Promise.all([this.loadJs('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'),this.loadJs('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js')]);
-      const H2I=window.htmlToImage,JP=window.jspdf&&window.jspdf.jsPDF;if(!H2I||!JP)throw new Error('lib');
-      R.setAttribute('data-theme','light');
-      const W=720,cl=src.cloneNode(true);cl.removeAttribute('id');cl.querySelectorAll('[data-noprint]').forEach(e=>e.remove());cl.style.cssText+=';width:'+W+'px;max-width:none;padding:0;margin:0;border-radius:0;box-shadow:none;background:#fff;box-sizing:border-box';
-      box.setAttribute('style','position:fixed;left:-12000px;top:0;width:'+W+'px;background:#fff;color:var(--color-text);font-family:var(--font-body)');box.appendChild(cl);document.body.appendChild(box);
-      await new Promise(r=>setTimeout(r,120));await Promise.all([...cl.querySelectorAll('img')].map(im=>im.complete?0:new Promise(r=>{im.onload=im.onerror=r;})));
-      const mg=12,cw=210-2*mg,sc=cw/W,PH=(297-2*mg-6)/sc,top0=cl.getBoundingClientRect().top,B=[];
-      const walk=el=>{[...el.children].forEach(c=>{const r=c.getBoundingClientRect();if(r.height<1)return;if(r.height>PH*0.9&&c.children.length>1)walk(c);else B.push({el:c,t:r.top-top0,b:r.bottom-top0,l:r.left-cl.getBoundingClientRect().left,w:r.width,h:r.height});});};walk(cl);
-      let fe='';try{fe=await H2I.getFontEmbedCSS(cl);}catch(e){}
-      const opt={pixelRatio:2,backgroundColor:'#ffffff',cacheBust:false};if(fe)opt.fontEmbedCSS=fe;else opt.skipFonts=true;
-      if(/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)&&B[0]){try{await H2I.toCanvas(B[0].el,opt);}catch(e){}}
-      const pdf=new JP({unit:'mm',format:'a4',compress:true});let y=0,prevB=null,pg=1;
-      for(const k of B){const cv=await H2I.toCanvas(k.el,opt),gap=prevB==null||y===0?0:Math.max(0,k.t-prevB);
-        if(k.h<=PH){if(y>0&&y+gap+k.h>PH){pdf.addPage();pg++;y=0;}else y+=gap;pdf.addImage(cv.toDataURL('image/jpeg',0.9),'JPEG',mg+k.l*sc,mg+y*sc,k.w*sc,k.h*sc,undefined,'FAST');y+=k.h;}
-        else{if(y>0){pdf.addPage();pg++;y=0;}const pxr=cv.height/k.h;let off=0;while(off<k.h){const hh=Math.min(PH,k.h-off),c2=document.createElement('canvas');c2.width=cv.width;c2.height=Math.ceil(hh*pxr);const x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(cv,0,Math.floor(off*pxr),cv.width,c2.height,0,0,cv.width,c2.height);pdf.addImage(c2.toDataURL('image/jpeg',0.9),'JPEG',mg+k.l*sc,mg,k.w*sc,hh*sc,undefined,'FAST');off+=hh;if(off<k.h){pdf.addPage();pg++;}y=hh;}}
-        prevB=k.b;}
-      const n=pdf.getNumberOfPages();if(n>1)for(let i=1;i<=n;i++){pdf.setPage(i);pdf.setFontSize(8);pdf.setTextColor(140);pdf.text(i+' / '+n,210-mg,297-6,{align:'right'});}
-      const nm=((this.state.link&&this.state.link.plan&&this.state.link.plan.name)||'').trim(),fname='Plan de nutrición'+(nm?' · '+nm.replace(/[\\/:*?"<>|]/g,''):'')+'.pdf';
-      const blob=pdf.output('blob'),file=typeof File==='function'?new File([blob],fname,{type:'application/pdf'}):null;
+    const P=(this.state.link&&this.state.link.plan)||{},tb=Array.isArray(P.tbl)&&P.tbl.length?P.tbl:null,nm=(P.name||'').trim();
+    try{if(!window.CFPdf)throw new Error('lib');
+      const res=await CFPdf.make(src,{landscape:!!tb,label:'Preparando tu PDF…',name:'Plan de nutrición'+(nm?' · '+nm:''),prep:tb?(c=>{const m=c.querySelector('[data-pdf-meals]');if(m)m.innerHTML=CFPdf.tableHTML(tb);}):null});
+      const fname=res.name,blob=res.blob,n=res.pages,file=typeof File==='function'?new File([blob],fname,{type:'application/pdf'}):null;
       if(this._pdfUrl)URL.revokeObjectURL(this._pdfUrl);this._pdfUrl=URL.createObjectURL(blob);this._pdfFile=file;
       const share=!!(file&&navigator.canShare&&(()=>{try{return navigator.canShare({files:[file]});}catch(e){return false;}})());
       this.setState({pdfReady:{url:this._pdfUrl,name:fname,pages:n,share}});
     }catch(e){this.toastMsg('No se pudo crear el PDF aquí. Se abre la impresión: elige «Guardar como PDF».');setTimeout(()=>window.print(),400);}
-    finally{if(th0)R.setAttribute('data-theme',th0);else R.removeAttribute('data-theme');if(window.cfSetTheme&&window.cfTheme)window.cfSetTheme(window.cfTheme());box.remove();cover.remove();this._pdfBusy=false;this.setState({pdfBusy:false});}}
+    finally{this._pdfBusy=false;this.setState({pdfBusy:false});}}
   pendK(){const l=this.state.link;return l?'cf-as-pend:'+l.coach_id+'|'+l.client_key:'';}
   savePend(){const k=this.pendK();if(!k)return;try{const P={},lg=this.state.logs||{};Object.keys(lg).forEach(d=>{if(lg[d]&&lg[d]._dirty)P[d]=lg[d];});if(Object.keys(P).length)localStorage.setItem(k,JSON.stringify(P));else localStorage.removeItem(k);}catch(e){}}
   restorePend(save){const k=this.pendK();if(!k)return;let P=null;try{P=JSON.parse(localStorage.getItem(k)||'null');}catch(e){}if(!P||!Object.keys(P).length)return;
@@ -1265,7 +1252,7 @@ class Component extends DCLogic {
       v.pKSub=((P.groups||[]).some(g=>g.T)?'kcal de media al día':'kcal al día')+(HK||(P.hide&&P.hide.g)||!KG?'':' · '+R(Tk/KG)+' kcal/kg');
       const spG=l=>{const m=/^(.+? g)\s*\((≈[^)]*)\)$/.exec(l.g||'');return {...l,gq:m?m[1]:(l.g||''),hm:m?m[2]:'',hasHm:!!m};};
       v.pGroups=(P.groups||[]).map(g=>({...g,meals:(g.meals||[]).map(m=>({...m,kcal:HK?'':m.kcal,gk:HG?'':(m.gk||''),opts:(m.opts||[]).map(o=>({...o,gk:HG?'':(o.gk||''),title:HK?String(o.title||'').replace(/ · [\d.,]+ kcal$/,''):o.title,blocks:(o.blocks||[]).map(b=>({...b,lines:(b.lines||[]).map(spG)}))}))})),hasTitle:!!g.title,hasK:!!g.kLine&&!HK&&!HM,kLine:g.kLine||'',isToday:(g.dayIdx||[]).includes(td)&&(P.groups||[]).length>1}));
-      v.shop=P.shop||[];v.shopNote=P.shopNote||'';v.pshopOpts=P.shopO||[];v.pshopHasOpts=v.pshopOpts.length>0;v.pshopAlts=(P.shopA||[]).map(x=>({...x,bg:'var(--cf-plan-bg,var(--veg-bg))',ink:'var(--cf-plan-ink,var(--veg-ink))'}));v.pshopHasAlts=v.pshopAlts.length>0;v.pshopBase=(v.pshopHasOpts||v.pshopHasAlts)&&v.shop.length?'Siempre':'';v.pFruit=P.fruit||[];v.pFruitOn=v.pFruit.length>0;v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
+      v.shop=P.shop||[];v.shopNote=P.shopNote||'';v.pshopOpts=P.shopO||[];v.pshopHasOpts=v.pshopOpts.length>0;v.pshopAlts=(P.shopA||[]).map(x=>({...x,bg:'var(--cf-plan-bg,var(--veg-bg))',ink:'var(--cf-plan-ink,var(--veg-ink))'}));v.pshopHasAlts=v.pshopAlts.length>0;v.pshopRot=P.shopRot||[];v.pshopRotOn=v.pshopRot.length>0;v.pshopBase=(v.pshopHasOpts||v.pshopHasAlts)&&v.shop.length?'Siempre':'';v.pFruit=P.fruit||[];v.pFruitOn=v.pFruit.length>0;v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
       v.printPlan=()=>{if(this._pdfBusy)return;if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>this.makePdf(),200));else this.makePdf();};}
     v.pdfLbl=s.pdfBusy?'Preparando PDF…':'Descargar PDF';v.pdfSheet=!!s.pdfReady;
     if(s.pdfReady){const P=s.pdfReady;v.pdfName=P.name;v.pdfInfo=P.pages+(P.pages===1?' página':' páginas');v.pdfUrl=P.url;v.pdfCanShare=!!P.share;v.pdfClose=()=>this.setState({pdfReady:null});
