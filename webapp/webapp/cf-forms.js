@@ -11,7 +11,7 @@ var INICIAL={id:'f-inicial',kind:'inicial',name:'Cuestionario inicial',
   Q('email','text','Email',{map:'email'}),
   Q('tel','text','Teléfono (WhatsApp)',{map:'phone'}),
   Q('sexo','one','Sexo',{opts:['Mujer','Hombre'],req:true,map:'sexo'}),
-  Q('edad','num','Edad',{unit:'años',req:true,map:'edad'}),
+  Q('nac','text','Fecha de nacimiento',{help:'Día/mes/año. Ejemplo: 14/03/1990',req:true,map:'nac'}),
   Q('altura','num','Altura',{unit:'cm',req:true,map:'altura'}),
   Q('peso','num','Peso actual',{unit:'kg',req:true,map:'peso'}),
   S('s2','Tu objetivo'),
@@ -19,9 +19,9 @@ var INICIAL={id:'f-inicial',kind:'inicial',name:'Cuestionario inicial',
   Q('plazo','text','¿Tienes una fecha o evento en mente?',{help:'Boda, competición, verano… Déjalo en blanco si no.'}),
   Q('meta3','long','¿Qué te gustaría haber conseguido en 3 meses?'),
   S('s3','Salud'),
-  Q('patol','long','Enfermedades o patologías diagnosticadas',{help:'Diabetes, tiroides, hipertensión, digestivas… Escribe «Ninguna» si no tienes.',req:true,alert:true,alertLabel:'Salud'}),
-  Q('lesion','long','Lesiones actuales o pasadas',{req:true,alert:true,alertLabel:'Lesiones'}),
-  Q('medic','long','¿Tomas alguna medicación? ¿Cuál?',{req:true,alert:true,alertLabel:'Medicación'}),
+  Q('patol','long','Enfermedades o patologías diagnosticadas',{help:'Diabetes, tiroides, hipertensión, digestivas… Escribe «Ninguna» si no tienes.',req:true,alert:true,alertLabel:'Salud',map:'cond'}),
+  Q('lesion','long','Lesiones actuales o pasadas',{req:true,alert:true,alertLabel:'Lesiones',map:'inj'}),
+  Q('medic','long','¿Tomas alguna medicación? ¿Cuál?',{req:true,alert:true,alertLabel:'Medicación',map:'meds'}),
   Q('suple','long','Suplementos que tomas ahora'),
   Q('alerg','long','Alergias o intolerancias alimentarias',{req:true,alert:true,alertLabel:'Alergias',map:'allergies'}),
   S('s4','Alimentación'),
@@ -71,7 +71,7 @@ var REVISION={id:'f-revision',kind:'revision',name:'Revisión semanal',
 ]};
 var DEFS=[INICIAL,REVISION];
 var TYPES=[['text','Texto corto'],['long','Texto largo'],['num','Número'],['one','Elegir una'],['multi','Elegir varias'],['scale','Escala 1–10'],['yesno','Sí / No'],['consent','Aceptación'],['sec','Sección']];
-var MAPS=[['','No pasa a la ficha'],['name','Nombre'],['email','Email'],['phone','Teléfono'],['sexo','Sexo'],['edad','Edad'],['altura','Altura (cm)'],['peso','Peso (kg)'],['allergies','Alergias / vetos']];
+var MAPS=[['','No pasa a la ficha'],['name','Nombre'],['email','Email'],['phone','Teléfono'],['sexo','Sexo'],['nac','Fecha de nacimiento'],['edad','Edad'],['altura','Altura (cm)'],['peso','Peso (kg)'],['allergies','Alergias / vetos'],['cond','Enfermedades / patologías'],['meds','Medicación'],['inj','Lesiones']];
 var NONE=/^(no|ningun[oa]?s?|nada|-+|—|n\/?a|no tengo( ninguna?)?|ninguna conocida|sin (alergias|lesiones|medicaci[oó]n))\.?$/i;
 function empty(v){return v==null||v===''||(Array.isArray(v)&&!v.length)||v===false;}
 function numv(v){var n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n;}
@@ -91,13 +91,17 @@ function apply(cl,form,ans,full){ans=ans||{};var done=[];cl.calc=cl.calc||{};
     else if(q.map==='email'&&!cl.email&&/@/.test(s)){cl.email=s.toLowerCase();done.push('email');}
     else if(q.map==='phone'&&!cl.phone){cl.phone=s;done.push('teléfono');}
     else if(q.map==='allergies'){if(NONE.test(s))return;var cur=String(cl.allergies||''),have=cur.toLowerCase();var add=s.split(/[,;\n]+/).map(function(x){return x.trim();}).filter(function(x){return x&&!NONE.test(x)&&have.indexOf(x.toLowerCase())<0;});if(add.length){cl.allergies=(cur?cur.replace(/[,\s]+$/,'')+', ':'')+add.join(', ');done.push('alergias / vetos');}}
+    else if(q.map==='cond'||q.map==='meds'||q.map==='inj'){if(NONE.test(s))return;cl.health=cl.health||{};var hc=String(cl.health[q.map]||''),hh=hc.toLowerCase();var ha=s.split(/[,;\n]+/).map(function(x){return x.trim();}).filter(function(x){return x&&!NONE.test(x)&&hh.indexOf(x.toLowerCase())<0;});if(ha.length){cl.health[q.map]=(hc?hc.replace(/[,\s]+$/,'')+', ':'')+ha.join(', ');done.push({cond:'enfermedades',meds:'medicación',inj:'lesiones'}[q.map]);}}
     else if(full){var n=numv(v);
-      if(q.map==='sexo'){cl.calc.sexo=/mujer/i.test(s)?'mujer':'hombre';done.push('sexo');}
+      if(q.map==='nac'){var dt=pDate(s);if(dt){cl.calc.nac=dt;cl.calc.edad=ageY(dt);done.push('fecha de nacimiento');}}
+      else if(q.map==='sexo'){cl.calc.sexo=/mujer/i.test(s)?'mujer':'hombre';done.push('sexo');}
       else if(q.map==='edad'&&n){cl.calc.edad=Math.round(n);done.push('edad');}
       else if(q.map==='altura'&&n){cl.calc.altura=n<3?Math.round(n*100):Math.round(n);done.push('altura');}
       else if(q.map==='peso'&&n){cl.calc.peso=n;done.push('peso');}}});
   return done;}
-function hasCalc(form,ans){return (form.qs||[]).some(function(q){return ['sexo','edad','altura','peso'].indexOf(q.map)>=0&&!empty((ans||{})[q.id]);});}
+function pDate(s){s=String(s).trim();var m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/),y,mo,d;if(m){y=+m[1];mo=+m[2];d=+m[3];}else{m=s.match(/^(\d{1,2})[\/.\-\s]+(\d{1,2})[\/.\-\s]+(\d{2,4})$/);if(!m)return '';d=+m[1];mo=+m[2];y=+m[3];if(y<100)y+=y>(new Date().getFullYear()%100)?1900:2000;}if(!(mo>=1&&mo<=12&&d>=1&&d<=31&&y>1900&&y<=new Date().getFullYear()))return '';return y+'-'+(mo<10?'0':'')+mo+'-'+(d<10?'0':'')+d;}
+function ageY(b){var t=new Date(),a=t.getFullYear()-(+b.slice(0,4)),mo=+b.slice(5,7),d=+b.slice(8,10);if(t.getMonth()+1<mo||(t.getMonth()+1===mo&&t.getDate()<d))a--;return a;}
+function hasCalc(form,ans){return (form.qs||[]).some(function(q){return ['sexo','nac','edad','altura','peso'].indexOf(q.map)>=0&&!empty((ans||{})[q.id]);});}
 function clone(f){return JSON.parse(JSON.stringify(f));}
 function uid(){return Math.random().toString(36).slice(2,9);}
 window.CFForms={DEFS:DEFS,TYPES:TYPES,MAPS:MAPS,fmt:fmt,alerts:alerts,missing:missing,apply:apply,hasCalc:hasCalc,empty:empty,clone:clone,uid:uid};

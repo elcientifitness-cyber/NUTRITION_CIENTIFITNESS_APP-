@@ -46,6 +46,7 @@ html,body{height:auto!important;overflow:visible!important}
 [data-pdf-main]{display:block!important;padding:0!important;max-width:none!important;overflow:visible!important}
 [data-pdf]{display:block!important;padding:0!important;box-shadow:none!important;border-radius:0!important;width:auto!important;max-width:none!important;overflow:visible!important}
 [data-pdf]>*{margin-bottom:20px}
+#cf-vista-wrap{display:block!important}#cf-vista-pdf{zoom:1!important}
 [data-pdf] .cf-tw{overflow:visible!important;border-radius:0!important}
 [data-pdf] table{min-width:0!important;width:100%!important}
 [data-pdf] thead{display:table-header-group}
@@ -280,6 +281,23 @@ html,body{height:auto!important;overflow:visible!important}
           <input value="{{ alDraft }}" onChange="{{ onAlDraft }}" onKeyDown="{{ onAlKey }}" onBlur="{{ alCommit }}" placeholder="{{ alPh }}" style="flex:1 1 180px;min-width:120px;border:0;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--color-text);padding:7px 4px">
         </div>
       </div>
+      <div style="display:flex;flex-direction:column;gap:8px;grid-column:1 / -1;min-width:0">
+        <button onClick="{{ hlTog }}" style="font:inherit;font-size:12px;color:var(--color-neutral-700);display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;cursor:pointer;text-align:left;min-width:0;min-height:28px"><span style="flex:none">Información de salud</span><span style="font-size:13px;font-weight:700;color:var(--color-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ hlSum }}</span><span style="flex:none;font-weight:700;color:var(--color-accent-700)">{{ hlTogL }}</span></button>
+        <sc-if value="{{ hlOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:var(--color-neutral-100)">
+            <sc-for list="{{ hlFields }}" as="h" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700);min-width:0">{{ h.label }}
+                <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:5px 6px;border:1px solid var(--color-divider);border-radius:10px;background:var(--cf-card);min-height:44px;box-sizing:border-box;min-width:0">
+                  <sc-for list="{{ h.tags }}" as="t" hint-placeholder-count="0"><span style="display:inline-flex;align-items:center;gap:2px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-text);font-size:13px;font-weight:700;max-width:100%;overflow-wrap:anywhere">{{ t.l }}<button onClick="{{ t.rm }}" title="Quitar" aria-label="Quitar" style="font:inherit;width:22px;height:22px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer;padding:0" style-hover="background:var(--color-neutral-300)"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.8;fill:none;stroke-linecap:round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></sc-for>
+                  <input value="{{ h.draft }}" onChange="{{ h.onDraft }}" onKeyDown="{{ h.onKey }}" onBlur="{{ h.commit }}" placeholder="{{ h.ph }}" style="flex:1 1 180px;min-width:120px;border:0;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--color-text);padding:7px 4px">
+                </div>
+              </div>
+            </sc-for>
+            <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Otros datos de salud<textarea class="input" rows="2" value="{{ hlTxt }}" onChange="{{ onHlTxt }}" placeholder="Cirugías, analíticas, embarazo, digestión, sueño…" style="resize:vertical"></textarea></label>
+            <span style="font-size:11px;color:var(--color-neutral-600)">Solo lo ves tú: no se publica en la app del asesorado.</span>
+          </div>
+        </sc-if>
+      </div>
     </div>
     <sc-if value="{{ cHasAlerts }}" hint-placeholder-val="{{ false }}">
       <div data-noprint="1" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center">
@@ -365,7 +383,8 @@ html,body{height:auto!important;overflow:visible!important}
           <sc-for list="{{ sexoSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 16px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px">
-          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Edad (años)<input class="input" type="number" value="{{ edad }}" onChange="{{ onEdad }}"></label>
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Fecha de nacimiento<input class="input" type="date" value="{{ nac }}" max="{{ nacMax }}" onChange="{{ onNac }}"></label>
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Edad (años)<input class="input" type="number" value="{{ edad }}" onChange="{{ onEdad }}" disabled="{{ edadLock }}" title="{{ edadTip }}"></label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Peso (kg)<input class="input" type="number" step="0.1" value="{{ peso }}" onChange="{{ onPeso }}"></label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Altura (cm)<input class="input" type="number" value="{{ altura }}" onChange="{{ onAltura }}"></label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">% grasa (opcional)<input class="input" type="number" step="0.1" value="{{ grasa }}" onChange="{{ onGrasa }}" placeholder="—"></label>
@@ -429,6 +448,20 @@ html,body{height:auto!important;overflow:visible!important}
 
       <section style="background:var(--color-bg);border-radius:14px;box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap"><span style="font-size:13px;color:var(--color-accent-700)">03</span><h3 style="margin:0;font-size:22px;margin-right:auto">NEAT · actividad no-ejercicio</h3><span style="font-size:14px;font-variant-numeric:tabular-nums">{{ neatAdd }}</span></div>
+        <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content;max-width:100%;box-sizing:border-box"><sc-for list="{{ neatModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.label }}</button></sc-for></div>
+        <sc-if value="{{ neatSteps }}" hint-placeholder-val="{{ false }}">
+        <span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Los pasos ya incluyen lo que camina en el trabajo, los desplazamientos y los paseos. Cálculo: (pasos − 3.000 de base) × peso × 0,0004 kcal.</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Pasos al día (media)<input class="input" type="number" step="500" min="0" value="{{ pasos }}" onChange="{{ onPasos }}" placeholder="8000"><sc-if value="{{ hasAppSteps }}" hint-placeholder-val="{{ false }}"><button onClick="{{ useAppSteps }}" style="font:inherit;font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:var(--cf-card);color:var(--color-accent-800);cursor:pointer;width:fit-content;max-width:100%;text-align:left">{{ appStepsTxt }}</button></sc-if></div>
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Horas de pie extra al día<input class="input" type="number" step="0.5" value="{{ pie }}" onChange="{{ onPie }}"></label>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Fidgeting
+            <div class="cf-rail" style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:999px;width:fit-content">
+              <sc-for list="{{ fidgSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;padding:8px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ neatDet }}" hint-placeholder-val="{{ true }}">
         <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700)">Tipo de trabajo</div>
         <div style="display:flex;flex-direction:column;gap:4px">
           <sc-for list="{{ jobOpts }}" as="o" hint-placeholder-count="4">
@@ -454,6 +487,7 @@ html,body{height:auto!important;overflow:visible!important}
             </div>
           </div>
         </div>
+        </sc-if>
         <div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider)">
           <sc-for list="{{ neatRows }}" as="r" hint-placeholder-count="5">
             <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--color-neutral-300);font-size:13px"><span>{{ r.label }}</span><span style="font-variant-numeric:tabular-nums">{{ r.val }}</span></div>
@@ -1053,7 +1087,8 @@ html,body{height:auto!important;overflow:visible!important}
       </div>
     </div>
 
-    <article id="cf-vista-pdf" data-pdf="1" style="flex:3 1 560px;min-width:0;background:var(--cf-card);border-radius:16px;padding:40px;box-sizing:border-box;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:28px">
+    <div id="cf-vista-wrap" style="flex:3 1 560px;min-width:0;display:flex;flex-direction:column;gap:8px"><sc-if value="{{ isTbl }}" hint-placeholder-val="{{ false }}"><span data-noprint="1" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600)">Vista previa a escala · A4 horizontal</span></sc-if>
+    <article id="cf-vista-pdf" data-pdf="1" style="width:{{ pvW }};max-width:none;flex:none;min-width:0;background:var(--cf-card);border-radius:16px;padding:40px;box-sizing:border-box;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:28px">
       <sc-if value="{{ pdfOwn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;border-bottom:1px solid var(--color-divider);padding-bottom:16px">
         <div style="display:flex;gap:16px;align-items:center">
           <sc-if value="{{ pdfLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" src="{{ pdfLogo }}" alt="Logo" style="height:72px;width:auto;max-width:200px;object-fit:contain;display:block"></sc-if>
@@ -1168,6 +1203,7 @@ html,body{height:auto!important;overflow:visible!important}
           </div></sc-if>
       </div>
     </article>
+    </div>
   </main>
   </sc-if>
 
@@ -2335,7 +2371,7 @@ html,body{height:auto!important;overflow:visible!important}
           <thead><tr><th>Alimento</th><th>Categoría</th><th>Macro principal</th><th style="text-align:right">Kcal</th><th style="text-align:right">P</th><th style="text-align:right">C</th><th style="text-align:right">G</th><th style="text-align:right">Fibra</th><th>Medida</th><th>Origen</th></tr></thead>
           <tbody>
             <sc-for list="{{ foodRows }}" as="f" hint-placeholder-count="8">
-              <tr><td style="font-weight:600">{{ f.name }} <span style="font-weight:400;font-size:12px;color:var(--color-accent-700)">{{ f.al }}</span></td><td>{{ f.cat }}</td><td><span style="display:inline-flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ f.mtags }}" as="mt" hint-placeholder-count="1"><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ mt.bg }};color:{{ mt.ink }};white-space:nowrap">{{ mt.l }}</span></sc-for></span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.k }}<sc-if value="{{ f.kBad }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:700;color:var(--warn);white-space:nowrap">ficha: {{ f.kd }}</div></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.p }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.c }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.f }}</td><td style="text-align:right"><div style="display:inline-flex;align-items:center;gap:4px;justify-content:flex-end"><sc-if value="{{ f.fbEst }}" hint-placeholder-val="{{ false }}"><span title="Valor estimado: revísalo" style="font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:var(--warn-bg);color:var(--warn)">est.</span></sc-if><sc-if value="{{ f.fbMan }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.fbReset }}" title="Has cambiado la fibra: pulsa para volver al valor de referencia" style="font:inherit;font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;border:0;background:var(--warn-bg);color:var(--warn);cursor:pointer">✎</button></sc-if><input inputmode="decimal" value="{{ f.fbV }}" onChange="{{ f.onFb }}" onBlur="{{ f.onFbBl }}" onKeyDown="{{ f.onFbKey }}" aria-label="Fibra por 100 g" style="font:inherit;font-size:13px;width:46px;text-align:right;padding:3px 5px;border-radius:8px;border:1.5px solid {{ f.fbBd }};background:var(--cf-card);color:var(--veg-ink);font-weight:700;font-variant-numeric:tabular-nums"></div></td><td><button onClick="{{ f.umEdit }}" title="Medida casera" style="font:inherit;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;border:1px dashed var(--color-neutral-300);background:transparent;color:{{ f.umFg }};cursor:pointer;white-space:nowrap">{{ f.um }}</button></td><td><div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.srcBg }};color:{{ f.srcFg }};white-space:nowrap">{{ f.srcL }}</span><sc-if value="{{ f.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.stBg }};color:{{ f.stFg }};white-space:nowrap">{{ f.stL }}</span></sc-if><sc-if value="{{ f.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:var(--cf-card);color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ f.actL }}</button></sc-if></div></td></tr>
+              <tr><td style="font-weight:600">{{ f.name }} <span style="font-weight:400;font-size:12px;color:var(--color-accent-700)">{{ f.al }}</span></td><td>{{ f.cat }}</td><td><span style="display:inline-flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ f.mtags }}" as="mt" hint-placeholder-count="1"><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ mt.bg }};color:{{ mt.ink }};white-space:nowrap">{{ mt.l }}</span></sc-for></span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.k }}<sc-if value="{{ f.kBad }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:700;color:var(--warn);white-space:nowrap">ficha: {{ f.kd }}</div></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.p }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.c }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ f.f }}</td><td style="text-align:right"><div style="display:inline-flex;align-items:center;gap:4px;justify-content:flex-end"><sc-if value="{{ f.fbEst }}" hint-placeholder-val="{{ false }}"><span title="Valor estimado: revísalo" style="font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:var(--warn-bg);color:var(--warn)">est.</span></sc-if><sc-if value="{{ f.fbMan }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.fbReset }}" title="Has cambiado la fibra: pulsa para volver al valor de referencia" style="font:inherit;font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;border:0;background:var(--warn-bg);color:var(--warn);cursor:pointer">✎</button></sc-if><input inputmode="decimal" value="{{ f.fbV }}" onChange="{{ f.onFb }}" onBlur="{{ f.onFbBl }}" onKeyDown="{{ f.onFbKey }}" aria-label="Fibra por 100 g" style="font:inherit;font-size:13px;width:46px;text-align:right;padding:3px 5px;border-radius:8px;border:1.5px solid {{ f.fbBd }};background:var(--cf-card);color:var(--veg-ink);font-weight:700;font-variant-numeric:tabular-nums"></div></td><td><button onClick="{{ f.umEdit }}" title="Medida casera" style="font:inherit;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;border:1px dashed var(--color-neutral-300);background:transparent;color:{{ f.umFg }};cursor:pointer;white-space:nowrap">{{ f.um }}</button></td><td><div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.srcBg }};color:{{ f.srcFg }};white-space:nowrap">{{ f.srcL }}</span><sc-if value="{{ f.hasSt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ f.stBg }};color:{{ f.stFg }};white-space:nowrap">{{ f.stL }}</span></sc-if><sc-if value="{{ f.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.act }}" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:var(--cf-card);color:var(--color-accent-800);cursor:pointer;white-space:nowrap" style-hover="background:var(--color-accent-100)">{{ f.actL }}</button></sc-if><sc-if value="{{ f.canEd }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.edit }}" title="Editar este alimento" style="font:inherit;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--color-divider);background:var(--cf-card);color:var(--color-text);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--color-accent-300)">Editar</button></sc-if></div></td></tr>
             </sc-for>
           </tbody>
         </table>
@@ -3281,6 +3317,25 @@ html,body{height:auto!important;overflow:visible!important}
   </div>
 </div>
 </sc-if>
+<sc-if value="{{ fdOn }}" hint-placeholder-val="{{ false }}">
+<div data-esc="1" data-noprint="1" onClick="{{ fdClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
+    <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Editar alimento</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ fdName }}</span></div><button class="btn btn-ghost" onClick="{{ fdClose }}">Cerrar</button></div>
+    <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Nombre<input class="input" value="{{ fdName }}" onChange="{{ onFdName }}"></label>
+    <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Categoría<select class="input" value="{{ fdCat }}" onChange="{{ onFdCat }}"><sc-for list="{{ cats }}" as="ct" hint-placeholder-count="6"><option value="{{ ct }}">{{ ct }}</option></sc-for></select></label>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px">
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Prot /100 g<input class="input" inputmode="decimal" value="{{ fdP }}" onChange="{{ onFdP }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Hidr /100 g<input class="input" inputmode="decimal" value="{{ fdC }}" onChange="{{ onFdC }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Grasa /100 g<input class="input" inputmode="decimal" value="{{ fdF }}" onChange="{{ onFdF }}"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--veg-ink)">Fibra /100 g<input class="input" inputmode="decimal" value="{{ fdFb }}" onChange="{{ onFdFb }}"></label>
+    </div>
+    <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Alérgenos<input class="input" value="{{ fdAl }}" onChange="{{ onFdAl }}" placeholder="gluten…"></label>
+    <span style="font-size:13px;padding:8px 12px;border-radius:12px;background:var(--color-accent-100);color:var(--color-accent-800)">{{ fdK }} · P×4 + C×4 + G×9</span>
+    <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Los planes que usan este alimento se recalculan con los valores nuevos.</span>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end"><button class="btn btn-ghost" onClick="{{ fdClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ fdSave }}">Guardar</button></div>
+  </div>
+</div>
+</sc-if>
 <sc-if value="{{ umOn }}" hint-placeholder-val="{{ false }}">
 <div data-esc="1" data-noprint="1" onClick="{{ umClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
@@ -3632,7 +3687,7 @@ function genLogs(n,step,a,b){
   return out;
 }
 function computeComp(l,cl){
-  const m=cl.calc.sexo==='hombre',age=num(cl.calc.edad),h=num(cl.calc.altura),w=num(l.peso),pl=l.pl||{},per=l.per||{};
+  const m=cl.calc.sexo==='hombre',age=ageOf(cl.calc),h=num(cl.calc.altura),w=num(l.peso),pl=l.pl||{},per=l.per||{};
   const has=ks=>ks.every(k=>num(pl[k])>0),sm=ks=>ks.reduce((a,k)=>a+num(pl[k]),0),siri=D=>495/D-450,est={};
   const k3=PROTO.jp3(m);if(has(k3)){const S=sm(k3);est.jp3=siri(m?1.10938-0.0008267*S+0.0000016*S*S-0.0002574*age:1.0994921-0.0009929*S+0.0000023*S*S-0.0001392*age);}
   const k7=PROTO.jp7();if(has(k7)){const S=sm(k7);est.jp7=siri(m?1.112-0.00043499*S+0.00000055*S*S-0.00028826*age:1.097-0.00046971*S+0.00000056*S*S-0.00012828*age);}
@@ -3790,7 +3845,7 @@ const mainMacro=f=>{if(f.cat==='Verduras')return 'veg';if(f.mm)return f.mm;const
 const MLBL={prot:'Proteína',carb:'Hidratos',fat:'Grasa',veg:'Verdura'};
 const macroTags=f=>{if(f.cat==='Verduras')return ['veg'];const g=[['prot',num(f.p)],['carb',num(f.c)],['fat',num(f.f)]].sort((a,b)=>b[1]-a[1]);if(!(g[0][1]>0))return [mainMacro(f)];return g[1][1]>=3&&g[1][1]>=0.8*g[0][1]?[g[0][0],g[1][0]]:[g[0][0]];};
 let UOV={},EQF=[];
-const unitOf=f=>{if(!f)return null;const o=UOV[f.id];if(o)return o.off?null:o;const u=(window.CF_UNITS||{})[f.id];return u?{n:u[0],pl:u[1],g:u[2]}:null;};
+const unitOf=f=>{if(!f)return null;const o=UOV[f.id];if(o)return o.off?null:o;const u=(window.CF_UNITS||{})[f.id];return u?{n:u[0],pl:u[1],g:u[2]}:f.uo?{n:'pieza',pl:'piezas',g:100}:null;};
 const FRQ={0.25:'¼',0.5:'½',0.75:'¾'};
 const hmTxt=(f,g)=>{const u=unitOf(f);if(!u||!(num(g)>0)||!(num(u.g)>0))return '';let q=num(g)/num(u.g);q=q>=4?Math.round(q):Math.round(q*4)/4;if(q<0.25)return '';const w=Math.floor(q),fr=Math.round((q-w)*4)/4;if(!w)return '≈ '+FRQ[fr]+(fr===0.5?' ':' de ')+u.n;return '≈ '+w+(fr?' '+FRQ[fr]:'')+' '+(q>1?u.pl:u.n);};
 const isUO=f=>!!(f&&f.uo);
@@ -3835,8 +3890,9 @@ const guessCat=n=>{n=norm(n);return /desayun/.test(n)?'Desayunos':/pre.?entreno/
 const seedGroups=()=>[{id:'g1',name:'Proteína magra',items:['db54','db51','db229','db201']},{id:'g2',name:'Hidratos de desayuno',items:['db74','db90','db97']}];
 const seedTpls=()=>[{id:'t3',name:'Sándwich de pavo',cat:'Desayunos',opts:[opt([it('db48')],[it('db90')],[it('f36')],[vg('f30',60)])]},{id:'t1',cat:'Desayunos',name:'Desayuno de avena',opts:[opt([it('f10')],[it('f16')],[it('f35')],[vg('f27',80)])]},{id:'t2',name:'Pollo con arroz',opts:[opt([it('f1')],[it('f15')],[it('f36')],[vg('f28',150)])]}];
 
+const ageOf=d=>{const b=d&&/^\d{4}-\d{2}-\d{2}$/.test(d.nac||'')?d.nac:null;if(!b)return num(d&&d.edad);const t=new Date(),mo=+b.slice(5,7),dd=+b.slice(8,10);let a=t.getFullYear()-(+b.slice(0,4));if(t.getMonth()+1<mo||(t.getMonth()+1===mo&&t.getDate()<dd))a--;return Math.max(0,a);};
 function computeCalc(cl){
-  const d=cl.calc,w=num(d.peso),h=num(d.altura),a=num(d.edad),m=d.sexo==='hombre',bf=num(d.grasa);
+  const d=cl.calc,w=num(d.peso),h=num(d.altura),a=ageOf(d),m=d.sexo==='hombre',bf=num(d.grasa);
   const band=a<30?0:a<60?1:2;
   const fao=(m?[[15.3,679],[11.6,879],[13.5,487]]:[[14.7,496],[8.7,829],[10.5,596]])[band];
   const ox=(m?[[16,545],[14.2,593],[13.5,514]]:[[13.1,558],[9.74,694],[10.1,569]])[band];
@@ -3844,13 +3900,13 @@ function computeCalc(cl){
   if(bf>0){const lbm=w*(1-bf/100);rows.push(['Cunningham',500+22*lbm],['Katch-McArdle',370+21.6*lbm]);}
   const tmbAvg=rows.reduce((s,r)=>s+r[1],0)/rows.length,selR=d.tmbF?rows.find(r=>r[0]===d.tmbF):null,tmb=selR?selR[1]:tmbAvg,tmbSel=selR?selR[0]:'';
   const adv=d.faMode==='adv',fa=adv?['adv',1.2,'Por entrenamientos','Base sedentaria']:(FA.find(x=>x[0]===d.fa)||FA[0]);
-  const ses=adv?(d.sess||[]).map(x=>({...x,...sesOf(x,w)})):[],sesDay=ses.reduce((a,x)=>a+x.wk,0)/7,steps=adv?num(d.pasos):0;
+  const ses=adv?(d.sess||[]).map(x=>({...x,...sesOf(x,w)})):[],sesDay=ses.reduce((a,x)=>a+x.wk,0)/7,nm=d.neatMode==='steps',steps=adv||nm?num(d.pasos):0,stK=R(Math.max(0,steps-3000)*(w||70)*0.0004);
   const job=JOB.find(x=>x[0]===d.trabajo)||JOB[0];
-  const neat=[['Trabajo · '+job[2].toLowerCase(),job[1]],['De pie extra · '+num(d.pie)+' h/día',R(num(d.pie)*8)],steps>0?['Pasos · '+R(steps).toLocaleString('es-ES')+' al día',R(Math.max(0,steps-3000)*(w||70)*0.0004)]:['Desplazamientos · '+d.despl,DESPL[d.despl]||0],['Hobbies · '+num(d.hobbies)+' h/semana',R(num(d.hobbies)*180/7)],['Fidgeting · '+d.fidget,FIDG[d.fidget]||0]];
+  const neat=nm?[['Pasos · '+R(steps).toLocaleString('es-ES')+' al día',stK],['De pie extra · '+num(d.pie)+' h/día',R(num(d.pie)*8)],['Fidgeting · '+d.fidget,FIDG[d.fidget]||0]]:[['Trabajo · '+job[2].toLowerCase(),job[1]],['De pie extra · '+num(d.pie)+' h/día',R(num(d.pie)*8)],steps>0?['Pasos · '+R(steps).toLocaleString('es-ES')+' al día',stK]:['Desplazamientos · '+d.despl,DESPL[d.despl]||0],['Hobbies · '+num(d.hobbies)+' h/semana',R(num(d.hobbies)*180/7)],['Fidgeting · '+d.fidget,FIDG[d.fidget]||0]];
   const neatAdd=neat.reduce((s,r)=>s+r[1],0);
   const gastoFA=tmb*fa[1],maint=gastoFA+neatAdd+sesDay;
   const adj=d.adj==='deficit'?-num(d.adjPct):d.adj==='superavit'?num(d.adjPct):0;
-  return {rows,tmb,tmbAvg,tmbSel,adv,ses,sesDay,fa,gastoFA,neat,neatAdd,maint,adj,target:Math.round(maint*(1+adj/100)/10)*10};
+  return {rows,tmb,tmbAvg,tmbSel,adv,nm,ses,sesDay,fa,gastoFA,neat,neatAdd,maint,adj,target:Math.round(maint*(1+adj/100)/10)*10};
 }
 function computeTargets(cl,cc){
   const t=cl.tg,w=num(cl.calc.peso)||70,k=t.kcalMode==='calc'?cc.target:num(t.kcalManual);
@@ -4043,7 +4099,7 @@ class Component extends DCLogic {
     upd(lf=>({busy:false,ph:(lf.ph||[]).concat(urls.map(url=>({url})))}));
   }
   componentDidMount(){
-    setTimeout(()=>this.applyBrand(),0);
+    setTimeout(()=>{this.applyBrand();this.pvFit();},0);
     try{const q=new URLSearchParams(location.search);if(q.get('view')==='comp'){const st={view:'comp',cutTab:'cli'};if(q.get('c'))st.cutSel=q.get('c');this.setState(st);this._urlComp=st;setTimeout(()=>{if(this._urlComp&&this.state.view!=='comp')this.setState(this._urlComp);this.loadCut();this.ccCheck();},2500);history.replaceState(null,'',location.pathname);}}catch(e){}
     try{if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{const d=e.data&&e.data.cfPush;if(d&&d.coach){this.toast(d.title+(d.body?': '+d.body.split('\n')[0]:''));this.loadCut();}});}catch(e){}
     try{if(localStorage.getItem('cf-side-mini')==='1')this.setState({sideMini:true});if(localStorage.getItem('cf-latview')==='1')this.setState({latView:true});}catch(e){}
@@ -4310,8 +4366,11 @@ class Component extends DCLogic {
     const s=this.state;if(!this.sb)return;this.setState({loginErr:null,auth:'loading'});
     this.sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPass}).then(({data,error})=>{if(error){this.setState({auth:'out',loginErr:'Email o contraseña incorrectos.'});return;}this.afterLogin(data.session);});
   }
+  pvFit(){const w=document.getElementById('cf-vista-wrap');if(!w){if(this._pvRO){this._pvRO.disconnect();this._pvRO=null;this._pvW=null;}return;}
+    if(this._pvW!==w&&window.ResizeObserver){if(this._pvRO)this._pvRO.disconnect();this._pvW=w;this._pvRO=new ResizeObserver(()=>this.pvZoom());this._pvRO.observe(w);}this.pvZoom();}
+  pvZoom(){const w=document.getElementById('cf-vista-wrap'),a=document.getElementById('cf-vista-pdf');if(!w||!a)return;const W=a.style.width==='1120px'?1120:0,z=W&&w.clientWidth>0?Math.min(1,w.clientWidth/W):1,zs=z<0.999?String(Math.round(z*1000)/1000):'';if(a.style.zoom!==zs)a.style.zoom=zs;}
   componentDidUpdate(pp,ps){
-    this.applyBrand();
+    this.applyBrand();this.pvFit();
     {const tdI=!!(this.state.td&&this.state.td.mode==='import');if(tdI&&!this._tdF){this._tdF=true;setTimeout(()=>{const el=document.getElementById('cf-td-q');if(el)el.focus();},40);}else if(!tdI)this._tdF=false;}
     if(this.state.qk&&!this._qkF){this._qkF=true;setTimeout(()=>{const el=document.getElementById('cf-qk-in');if(el)el.focus();},40);}else if(!this.state.qk)this._qkF=false;
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
@@ -4658,6 +4717,16 @@ class Component extends DCLogic {
         const commit=()=>{const t=(this.state.alDraft||'').trim();if(t)addAL([t]);if(this.state.alDraft)this.setState({alDraft:''});};
         v.alCommit=commit;v.onAlKey=e=>{if(e.key==='Enter'){e.preventDefault();commit();}else if(e.key==='Backspace'&&!(this.state.alDraft||'')&&AL.length)setAL(AL.slice(0,-1));};
         v.alPh=AL.length?'Añadir otra…':'Escribe y pulsa Intro (gluten, lactosa, cerdo…)';}
+      {const H=cl.health||{},HK=[['cond','Enfermedades / patologías','diabetes tipo 2, hipotiroidismo, SOP…'],['meds','Medicación','metformina, levotiroxina…'],['inj','Lesiones','rodilla, lumbar…']],DR=s.hlDr||{};
+        const tagsOf=k=>String(H[k]||'').split(',').map(x=>x.trim()).filter(Boolean),putH=fn=>this.updC(n=>{const h={...(n.health||{})};fn(h);if(Object.keys(h).length)n.health=h;else delete n.health;}),setH=(k,a)=>putH(h=>{if(a.length)h[k]=a.join(', ');else delete h[k];});
+        v.hlFields=HK.map(([k,label,ph])=>{const A=tagsOf(k),cur=()=>(this.state.hlDr||{})[k]||'',setD=x=>this.setState(st=>({hlDr:{...(st.hlDr||{}),[k]:x}}));
+          const add=list=>{const out=A.slice();list.map(t=>t.trim()).filter(Boolean).forEach(t=>{if(!out.some(a=>a.toLowerCase()===t.toLowerCase()))out.push(t);});if(out.length!==A.length)setH(k,out);};
+          const commit=()=>{const t=cur().trim();if(t)add([t]);if(cur())setD('');};
+          return {label,ph:A.length?'Añadir otra…':'Escribe y pulsa Intro ('+ph+')',tags:A.map((l,i)=>({l,rm:()=>setH(k,A.filter((_,j)=>j!==i))})),draft:DR[k]||'',commit,
+            onDraft:e=>{const x=e.target.value;if(/[,;\n]/.test(x)){const p=x.split(/[,;\n]/),rest=p.pop();add(p);setD(rest);}else setD(x);},
+            onKey:e=>{if(e.key==='Enter'){e.preventDefault();commit();}else if(e.key==='Backspace'&&!cur()&&A.length)setH(k,A.slice(0,-1));}};});
+        const all=[].concat(...HK.map(([k])=>tagsOf(k)));v.hlOpen=!!s.hlOpen;v.hlSum=all.length?all.join(' · '):(H.txt?'Con notas':'');v.hlTogL=s.hlOpen?'Cerrar':(all.length||H.txt?'Editar':'+ Añadir');v.hlTog=()=>this.setState({hlOpen:!this.state.hlOpen});
+        v.hlTxt=H.txt||'';v.onHlTxt=e=>{const x=e.target.value;putH(h=>{if(x)h.txt=x;else delete h.txt;});};}
       v.cEmail=cl.email||'';v.onEmail=e=>{const x=e.target.value;this.updC(n=>{n.email=x;});};
       v.cAlerts=(cl.alerts||[]).map((a,i)=>({label:a.label,txt:a.txt,rm:()=>this.updC(n=>{n.alerts=(n.alerts||[]).filter((_,j)=>j!==i);})}));v.cHasAlerts=v.cAlerts.length>0;
       v.cPhone=cl.phone||'';v.onPhone=e=>{const x=e.target.value;this.updC(n=>{n.phone=x;});};
@@ -4967,7 +5036,11 @@ class Component extends DCLogic {
         v.applyPresetMeals=()=>{if(!PO)return;this.setState({paAsk:{pid:PO.id,cid:cl.id},presetOffer:null});};
         v.dismissPreset=()=>this.setState({presetOffer:null});}
         const d=cl.calc;
-        Object.assign(v,{edad:d.edad,peso:d.peso,altura:d.altura,grasa:d.grasa,onEdad:ev(setCalc('edad')),onPeso:ev(setCalc('peso')),onAltura:ev(setCalc('altura')),onGrasa:ev(setCalc('grasa')),
+        {const DLa=(s.daylAll||{})[cl.id],lk=this._cloud&&(s.links||[]).some(q=>q.client_key===cl.id);
+          if(d.neatMode==='steps'&&lk&&!DLa&&this._nsDL!==cl.id){this._nsDL=cl.id;setTimeout(()=>this.loadDaylogsAll(cl.id),0);}
+          const from=addDays(isoD(new Date()),-14),ST=DLa?Object.keys(DLa).filter(k=>k>=from).map(k=>num((DLa[k].survey||{}).steps)).filter(x=>x>0):[],av=ST.length?Math.round(ST.reduce((a,b)=>a+b,0)/ST.length/100)*100:0;
+          v.hasAppSteps=av>0&&num(d.pasos)!==av;v.appStepsTxt='Usar media de la app: '+av.toLocaleString('es-ES')+' ('+ST.length+(ST.length===1?' día':' días')+')';v.useAppSteps=()=>this.updC(n=>{n.calc.pasos=av;});}
+        Object.assign(v,{edad:d.nac?ageOf(d):d.edad,nac:d.nac||'',nacMax:isoD(new Date()),edadLock:!!d.nac,edadTip:d.nac?'Se calcula con la fecha de nacimiento':'',onNac:e=>{const x=e.target.value;this.updC(n=>{if(x&&/^\d{4}-\d{2}-\d{2}$/.test(x)){n.calc.nac=x;n.calc.edad=ageOf({nac:x});}else delete n.calc.nac;});},peso:d.peso,altura:d.altura,grasa:d.grasa,onEdad:ev(setCalc('edad')),onPeso:ev(setCalc('peso')),onAltura:ev(setCalc('altura')),onGrasa:ev(setCalc('grasa')),
           sexoSeg:this.seg([['hombre','Hombre'],['mujer','Mujer']],d.sexo,setCalc('sexo')),
           tmbRows:cc.rows.map(r=>{const on=cc.tmbSel===r[0];return {name:r[0],val:kc(r[1]),bg:on?'var(--color-accent)':'var(--color-surface)',fg:on?'#fff':'var(--color-text)',bd:on?'var(--color-accent)':'transparent',pick:()=>this.updC(n=>{n.calc.tmbF=r[0];})};}),tmbAvg:kc(cc.tmbAvg),tmbAvgBg:cc.tmbSel?'var(--color-surface)':'var(--color-accent)',tmbAvgFg:cc.tmbSel?'var(--color-text)':'#fff',tmbAvgBd:cc.tmbSel?'var(--color-accent-300)':'var(--color-accent)',tmbAvgPick:()=>this.updC(n=>{delete n.calc.tmbF;}),tmbHint:cc.tmbSel?'Se usa '+cc.tmbSel+'. Toca «Promedio» para volver a la media de todas.':'Se usa la media de todas. Toca una fórmula para usar solo esa.',noBf:!(num(d.grasa)>0),
           faOpts:this.radio(FA,d.fa,setCalc('fa'),x=>'× '+x[1]),gastoFA:cc.adv?'TMB × 1,2 + entrenos = '+kc(cc.gastoFA+cc.sesDay):'TMB × '+cc.fa[1]+' = '+kc(cc.gastoFA),
@@ -4984,7 +5057,7 @@ class Component extends DCLogic {
           pie:d.pie,onPie:ev(setCalc('pie')),hobbies:d.hobbies,onHobbies:ev(setCalc('hobbies')),
           desplSeg:this.seg([['bajo','Coche'],['medio','15–30 min a pie'],['alto','+30 min a pie']],d.despl,setCalc('despl')),
           fidgSeg:this.seg([['bajo','Bajo'],['medio','Medio'],['alto','Alto']],d.fidget,setCalc('fidget')),
-          neatRows:cc.neat.map(r=>({label:r[0],val:'+'+r[1]+' kcal'})),neatAdd:'+'+cc.neatAdd+' kcal',
+          neatRows:cc.neat.map(r=>({label:r[0],val:'+'+r[1]+' kcal'})),neatAdd:'+'+cc.neatAdd+' kcal',neatSteps:d.neatMode==='steps',neatDet:d.neatMode!=='steps',neatModeSeg:this.seg([['det','Detallado'],['steps','Por pasos']],d.neatMode==='steps'?'steps':'det',x=>this.updC(n=>{if(x==='steps')n.calc.neatMode='steps';else delete n.calc.neatMode;})),
           kcalSrcSeg:this.seg([['calc','Calculadas'],['manual','Manual']],cl.tg.kcalMode,setTg('kcalMode')),
           isManual:cl.tg.kcalMode==='manual',isCalcSrc:cl.tg.kcalMode==='calc',kcalManual:cl.tg.kcalManual,onKcalManual:ev(setTg('kcalManual')),
           adjSeg:this.seg([['deficit','Déficit'],['mant','Mantener'],['superavit','Superávit']],d.adj,setCalc('adj')),showAdjPct:d.adj!=='mant',adjPct:d.adjPct,onAdjPct:ev(setCalc('adjPct')),
@@ -5329,7 +5402,7 @@ class Component extends DCLogic {
         v.vGroups=HG?groups.map(g=>({...g,meals:g.meals.map(m=>({...m,gk:'',opts:(m.opts||[]).map(o=>({...o,gk:''}))}))})):groups;
         v.vGroups=HK||HM?v.vGroups.map(g=>({...g,kLine:'',meals:g.meals.map(m=>HK?{...m,kcal:'',opts:m.opts.map(o=>({...o,title:String(o.title||'').replace(/ · [\d.,]+ kcal$/,'')}))}:m)})):v.vGroups;
         {const PF=cl.pdfFmt==='t'?'t':'v',ZB='color-mix(in srgb,var(--color-neutral-100) 70%,transparent)',rng=n=>Array.from({length:n},(_,i)=>i);
-          v.pdfFmtSeg=this.seg([['v','Vertical'],['t','Tabla horizontal']],PF,x=>this.updC(n=>{if(x==='t')n.pdfFmt='t';else delete n.pdfFmt;}));v.isTbl=PF==='t';v.isVert=PF!=='t';
+          v.pdfFmtSeg=this.seg([['v','Vertical'],['t','Tabla horizontal']],PF,x=>this.updC(n=>{if(x==='t')n.pdfFmt='t';else delete n.pdfFmt;}));v.isTbl=PF==='t';v.isVert=PF!=='t';v.pvW=PF==='t'?'1120px':'100%';
           v.pdfFmtNote=PF==='t'?(open?'Una fila por comida y una columna por grupo de alimentos. Se imprime en A4 horizontal.':'Una fila por comida y una columna por opción. Se imprime en A4 horizontal.'):'Comida a comida, de arriba abajo. Se imprime en A4 vertical.';
           const mc=m=>({name:m.name||'Comida',kcal:HK?'':(m.kcal||''),hasK:!HK&&!!m.kcal,gk:m.gk||'',hasGk:!!m.gk,note:m.note||'',hasNote:!!m.note});
           const blank={name:'',kcal:'',hasK:false,gk:'',hasGk:false,note:'',hasNote:false};
@@ -5599,7 +5672,7 @@ class Component extends DCLogic {
       v.foodCat=s.foodCat;v.onFoodCat=e=>this.setState({foodCat:e.target.value});
       v.foodCount=rows.length+' alimentos · valores por 100 g · kcal = P×4 + C×4 + G×9';
       v.showNewFood=s.showNewFood;v.newFoodLabel=s.showNewFood?'Cerrar':'Nuevo alimento';v.toggleNewFood=()=>this.setState({showNewFood:!s.showNewFood});
-      v.foodRows=rows.map(({f,x,L})=>({...meta('foods',x,L),name:f.name,al:f.al,cat:f.cat,mtags:macroTags(f).map(k=>({l:MLBL[k],bg:MBG[k],ink:MINK[k]})),um:(u=>u?u.n+' · '+String(u.g).replace('.',',')+' g':'+ Medida')(unitOf(f)),umFg:unitOf(f)?'var(--color-text)':'var(--color-neutral-500)',umEdit:()=>this.setState({umEd:{fid:f.id,name:f.name,...(unitOf(f)||{n:'',pl:'',g:''})}}),kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f,fbV:(s.fibDr||{})[f.id]!=null?s.fibDr[f.id]:(f.fb==null?'':String(f.fb).replace('.',',')),fbEst:!!f.fe&&!f.fo,fbMan:!!f.fo,fbBd:f.fo?'var(--warn-mid)':(f.fe?'var(--warn-bd)':'var(--color-divider)'),
+      v.foodRows=rows.map(({f,x,L})=>({...meta('foods',x,L),...(()=>{const o=!L&&ownF[f.id],b=o&&bIdx('foods')[f.id],ok=!!o&&(ceo||!(b&&b.byId!==this.uid)),sv=y=>y==null?'':String(y).replace('.',',');return {canEd:ok,edit:()=>{if(ok)this.setState({fdEd:{id:o.id,name:o.name||'',cat:o.cat||CATS[0],p:sv(o.p),c:sv(o.c),f:sv(o.f),fb:sv(f.fb),al:o.al||''}});}};})(),name:f.name,al:f.al,cat:f.cat,mtags:macroTags(f).map(k=>({l:MLBL[k],bg:MBG[k],ink:MINK[k]})),um:(u=>u?u.n+' · '+String(u.g).replace('.',',')+' g':'+ Medida')(unitOf(f)),umFg:unitOf(f)?'var(--color-text)':'var(--color-neutral-500)',umEdit:()=>this.setState({umEd:{fid:f.id,name:f.name,...(unitOf(f)||{n:'',pl:'',g:''})}}),kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f,fbV:(s.fibDr||{})[f.id]!=null?s.fibDr[f.id]:(f.fb==null?'':String(f.fb).replace('.',',')),fbEst:!!f.fe&&!f.fo,fbMan:!!f.fo,fbBd:f.fo?'var(--warn-mid)':(f.fe?'var(--warn-bd)':'var(--color-divider)'),
         onFb:e=>{const y=e.target.value;this.setState(st=>({fibDr:{...(st.fibDr||{}),[f.id]:y}}));},onFbKey:e=>{if(e.key==='Enter')e.target.blur();},
         onFbBl:e=>{const y=String(e.target.value).replace(',','.').trim();this.setState(st=>{const D={...(st.fibDr||{})};delete D[f.id];const O={...(st.fibOv||{})};if(y===''){delete O[f.id];}else if(num(y)!==num(f.fb)||!f.fo)O[f.id]=Math.max(0,Math.round(num(y)*10)/10);return {fibDr:D,fibOv:Object.keys(O).length?O:null};});},
         fbReset:()=>this.setState(st=>{const O={...(st.fibOv||{})};delete O[f.id];return {fibOv:Object.keys(O).length?O:null};})}));
@@ -6293,6 +6366,12 @@ class Component extends DCLogic {
         const go=(arch,md)=>{const kp=(md||A0.mode)==='keep';const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==c0.id)return c;const n=JSON.parse(JSON.stringify(c));if(arch){const T0=computeTargets(c,computeCalc(c));n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'Antes de «'+P.name+'»',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,dayT:cj(n.dayT),T:{k:T0.k,p:T0.p,c:T0.c,f:T0.f}}]);}applyPreset(n,P,true,{keep:kp,list:LL,allow:!!A0.allow});n.updated=Date.now();return n;}),paAsk:null}));this.toast(P.name+' volcado'+(arch?' · plan anterior archivado':'')+' · cantidades ajustadas');};
         if(v.paModeStep){v.paTitle='«'+P.name+'» es un preset de '+XM;v.paTxt='El plan de '+(c0.name||'este cliente')+' está en '+CM+'. Puedes pasarlo a '+XM+' o volcar el preset sin cambiar de modo.';v.paSwLbl='Cambiar a '+XM+' y volcar';const setM=md=>{if(!has&&!LL)go(false,md);else this.setState(st=>({paAsk:{...st.paAsk,mode:md}}));};v.paSw=()=>setM('switch');v.paKeep=()=>setM('keep');}
         v.paArch=()=>go(true);v.paGo=()=>go(false);v.paClose=()=>this.setState({paAsk:null});}}
+    if(s.fdEd){const E=s.fdEd,nn=x=>num(String(x==null?'':x).replace(',','.')),set=k=>e=>{const y=e.target.value;this.setState(st=>({fdEd:{...st.fdEd,[k]:y}}));};
+      v.fdOn=true;v.fdName=E.name;v.fdCat=E.cat;v.fdP=E.p;v.fdC=E.c;v.fdF=E.f;v.fdFb=E.fb;v.fdAl=E.al;
+      v.onFdName=set('name');v.onFdCat=set('cat');v.onFdP=set('p');v.onFdC=set('c');v.onFdF=set('f');v.onFdFb=set('fb');v.onFdAl=set('al');
+      v.fdK=Math.round(nn(E.p)*4+nn(E.c)*4+nn(E.f)*9).toLocaleString('es-ES')+' kcal por 100 g';v.fdClose=()=>this.setState({fdEd:null});
+      v.fdSave=()=>{const nm=String(E.name||'').trim();if(!nm){this.toast('Escribe el nombre del alimento',true);return;}const p=nn(E.p),c=nn(E.c),fa=nn(E.f);
+        this.setState(st=>{const O={...(st.fibOv||{})};delete O[E.id];return {foods:st.foods.map(x=>x.id===E.id?{...x,name:nm,cat:E.cat,p,c,f:fa,k:Math.round(p*4+c*4+fa*9),fb:Math.max(0,Math.round(nn(E.fb)*10)/10),al:String(E.al||'').trim()}:x),fibOv:Object.keys(O).length?O:null,fdEd:null};});this.toast('Alimento guardado');};}
     if(s.umEd){const U=s.umEd,f0=FM[U.fid],set=k=>e=>{const y=e.target.value;this.setState(st=>({umEd:{...st.umEd,[k]:y}}));};v.umOn=true;v.umName=U.name;v.umN=U.n||'';v.umPl=U.pl||'';v.umG=U.g==null?'':String(U.g);v.onUmN=set('n');v.onUmPl=set('pl');v.onUmG=set('g');
       {const g=num(String(U.g).replace(',','.'));if(g>0&&U.n&&f0){const sv=UOV;UOV={...UOV,[U.fid]:{n:U.n,pl:U.pl||U.n,g}};v.umPrev='Así se verá: '+[g,g*2.5,g*0.5].map(x=>R(x)+' g '+hmTxt(f0,x)).join(' · ');UOV=sv;}else v.umPrev='';}
       v.umHasPrev=!!v.umPrev;v.umCanReset=!!(s.unitOv||{})[U.fid];v.umCanOff=!!unitOf(f0);
