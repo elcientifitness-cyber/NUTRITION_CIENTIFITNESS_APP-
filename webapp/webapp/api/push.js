@@ -137,7 +137,7 @@ module.exports = async (req, res) => {
   let body = req.body; if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } } body = body || {};
   try {
     if (body.cron) {
-      const cs = env('CRON_SECRET'); if (cs && req.headers['x-cron'] !== cs) return out(403, { error: 'No autorizado' });
+      const cs = env('CRON_SECRET'); if (!cs || req.headers['x-cron'] !== cs) return out(403, { error: 'No autorizado' });
       const subs = await api('cf_push_subs?select=*').then(r => r.ok ? r.json() : []);
       let links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,cyc:plan->cyc,nw:plan->nightW,sup:plan->supps,comp').then(r => r.ok ? r.json() : null);
       if (!links) links = await api('cf_links?select=coach_id,client_key,name,guide:plan->guide,cyc:plan->cyc,nw:plan->nightW,sup:plan->supps').then(r => r.ok ? r.json() : []);

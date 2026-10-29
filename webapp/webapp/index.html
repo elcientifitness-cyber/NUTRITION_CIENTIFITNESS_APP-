@@ -4498,7 +4498,9 @@ class Component extends DCLogic {
       v.loginMsg=au==='wrong'&&s.wrongOff?'La cuenta '+(s.wrongEmail||'')+' tiene el acceso de nutricionista desactivado. Habla con Cientia Nutrition para reactivarlo.':au==='wrong'?'Ahora mismo tienes la sesión abierta con '+(s.wrongEmail||'otra cuenta')+', que es una cuenta de asesorado. Suele pasar si has probado la app de asesorados en este mismo navegador.':s.loginErr||(au==='out'?'Acceso para nutricionistas de Cientia Nutrition.':au==='loading'?'Cargando tus datos…':'Conectando…');v.loginMsgFg=s.loginErr?'var(--danger)':'var(--color-neutral-700)';
       v.loginEmail=s.loginEmail;v.loginPass=s.loginPass;v.onLoginEmail=e=>this.setState({loginEmail:e.target.value});v.onLoginPass=e=>this.setState({loginPass:e.target.value});
       v.onLoginKey=e=>{if(e.key==='Enter')this.doLogin();};v.doLogin=()=>this.doLogin();
-      v.showLogout=au==='in';v.doLogout=()=>{this._out=true;this._lost=false;if(this.sb)this.sb.auth.signOut({scope:'local'}).then(()=>{this._cloud=false;this.setState({auth:'out',loginPass:''});});};
+      v.showLogout=au==='in';v.doLogout=()=>{const cloud=!!this._cloud,wipe=()=>{if(!cloud)return;try{localStorage.removeItem(LS);localStorage.removeItem('cf-pre-restore');}catch(e){}};
+        const go=()=>{wipe();this._out=true;this._lost=false;if(this.sb)this.sb.auth.signOut({scope:'local'}).then(()=>{this._cloud=false;wipe();if(cloud){location.replace(location.pathname);return;}this.setState({auth:'out',loginPass:''});});};
+        if(cloud&&this.state.dirty){this._afterSave=go;this.toast('Guardando antes de salir…');this.pushCloud(false,true);}else go();};
       v.showSaveBtn=au==='in'||au==='local';v.saveNow=()=>this.pushCloud(false,true);
       v.saveBtnLabel=s.saving?'Guardando…':s.dirty?'Guardar cambios':'Guardado';v.saveBtnBg=s.dirty||s.saving?'var(--color-accent)':'var(--ok-bg)';v.saveBtnFg=s.dirty||s.saving?'#fff':'var(--ok)';
       v.saveDot=s.dirty?'var(--carb)':'var(--ok-mid)';

@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     const me = await fetch(URL_SB + '/auth/v1/user', { headers: { apikey: ANON, Authorization: 'Bearer ' + tok } }).then(r => r.ok ? r.json() : null);
     const myEmail = String((me && me.email) || '').toLowerCase();
-    if (!myEmail) return out(403, { error: 'Sesión no válida. Vuelve a entrar.' });
+    const myId = String((me && me.id) || '');
+    if (!myEmail || !myId) return out(403, { error: 'Sesión no válida. Vuelve a entrar.' });
 
     // Rol de quien llama (tabla cf_coaches; si aún no existe, solo el CEO)
     let role = null;
@@ -38,6 +39,16 @@ module.exports = async (req, res) => {
     const tr = await fetch(URL_SB + '/rest/v1/cf_coaches?select=email&email=eq.' + enc(email), { headers: H });
     const isCoach = OWNERS.includes(email) || (tr.ok && (await tr.json()).length > 0);
     if (!forCoach && isCoach) return out(400, { error: 'Ese email es de un nutricionista.' });
+
+    // Un nutricionista solo puede dar o renovar acceso a SUS asesorados (nunca a los de otro)
+    let lk = [];
+    if (!forCoach) {
+      const lr0 = await fetch(URL_SB + '/rest/v1/cf_links?select=coach_id&email=ilike.' + enc(email), { headers: H });
+      if (!lr0.ok) return out(500, { error: 'No se pudo comprobar el email. Prueba de nuevo.' });
+      lk = await lr0.json();
+      if (role !== 'owner' && lk.some(x => x.coach_id !== myId)) return out(403, { error: 'Ese email ya es de un asesorado de otro nutricionista.' });
+    }
+    const lkMine = lk.some(x => x.coach_id === myId);
 
     if (forCoach) {
       const lr = await fetch(URL_SB + '/rest/v1/cf_links?select=client_key&limit=1&email=ilike.' + enc(email), { headers: H });
@@ -61,22 +72,25 @@ module.exports = async (req, res) => {
       return out(200, { ok: true, mode: 'invite' });
     }
 
-    const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
-    const pass = Array.from({ length: 10 }, () => abc[Math.floor(Math.random() * abc.length)]).join('');
-    let r = await fetch(URL_SB + '/auth/v1/admin/users', { method: 'POST', headers: H, body: JSON.stringify({ email, password: pass, email_confirm: true }) });
+    const abc = 'abcdefghjkmnpqrstuvwxyz23456789', rnd = require('crypto').randomInt;
+    const pass = Array.from({ length: 12 }, () => abc[rnd(abc.length)]).join('');
+    let r = await fetch(URL_SB + '/auth/v1/admin/users', { method: 'POST', headers: H, body: JSON.stringify({ email, password: pass, email_confirm: true, app_metadata: { cf_by: myId } }) });
     if (r.ok) return out(200, { ok: true, mode: 'created', email, password: pass });
     const j = await r.json().catch(() => ({}));
     const m = j.msg || j.message || '';
     if (!/already|registered|exists/i.test(m)) return out(400, { error: m || 'No se pudo crear el acceso.' });
-    let id = null;
+    let id = null, usr = null;
     for (let page = 1; page <= 20 && !id; page++) {
       const l = await fetch(URL_SB + '/auth/v1/admin/users?per_page=200&page=' + page, { headers: H }).then(x => x.json());
       const us = l.users || [];
-      const u = us.find(x => String(x.email || '').toLowerCase() === email); if (u) id = u.id;
+      const u = us.find(x => String(x.email || '').toLowerCase() === email); if (u) { id = u.id; usr = u; }
       if (us.length < 200) break;
     }
     if (!id) return out(400, { error: 'El email ya existe pero no se encontró la cuenta.' });
-    r = await fetch(URL_SB + '/auth/v1/admin/users/' + id, { method: 'PUT', headers: H, body: JSON.stringify({ password: pass, email_confirm: true }) });
+    // Renovar la contraseña de una cuenta que ya existe: solo si es de un asesorado tuyo (o lo hace el CEO)
+    const byMe = !!(usr && usr.app_metadata && usr.app_metadata.cf_by === myId);
+    if (!forCoach && role !== 'owner' && !lkMine && !byMe) return out(403, { error: 'Esa cuenta ya existe y no consta como asesorado tuyo. Publica antes su plan con ese email y vuelve a intentarlo.' });
+    r = await fetch(URL_SB + '/auth/v1/admin/users/' + id, { method: 'PUT', headers: H, body: JSON.stringify(forCoach ? { password: pass, email_confirm: true } : { password: pass, email_confirm: true, app_metadata: { cf_by: (usr && usr.app_metadata && usr.app_metadata.cf_by) || myId } }) });
     if (!r.ok) return out(400, { error: 'No se pudo renovar la contraseña.' });
     return out(200, { ok: true, mode: 'reset', email, password: pass });
   } catch (e) { return out(500, { error: 'Error del servidor. Revisa la clave secreta en Vercel.' }); }
