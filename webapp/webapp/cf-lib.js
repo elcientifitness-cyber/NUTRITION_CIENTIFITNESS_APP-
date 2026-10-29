@@ -49,3 +49,21 @@
     if(m){const kill=ev=>{ev.stopPropagation();ev.preventDefault();};window.addEventListener('click',kill,true);setTimeout(()=>window.removeEventListener('click',kill,true),60);}};
   document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',end,true);
 })();
+
+// Archivos en el chat: el mensaje lleva [[cf:file|ruta|tipo|bytes|nombre]] y el archivo va a cf-fotos/coach/cliente/chat/
+(function(){
+  const MAX=50*1024*1024,RE=/\[\[cf:file\|([^|\]]+)\|([^|\]]*)\|(\d*)\|([^\]]*)\]\]/;
+  const kind=t=>/^image\//.test(t)?'img':/^video\//.test(t)?'vid':'file';
+  const size=n=>{n=+n||0;return n>=1048576?(n/1048576).toFixed(1).replace('.',',')+' MB':Math.max(1,Math.round(n/1024))+' KB';};
+  const parse=b=>{const m=RE.exec(String(b||''));if(!m)return null;let nm='';try{nm=decodeURIComponent(m[4]);}catch(e){nm=m[4];}return {p:m[1],t:m[2],n:+m[3]||0,name:nm||'archivo',kind:kind(m[2]),size:size(m[3])};};
+  const label=(k,nm)=>k==='img'?'Foto':k==='vid'?'Vídeo':'Archivo: '+nm;
+  async function upload(sb,base,file){if(!file)throw new Error('Sin archivo');
+    let b=file,t=file.type||'application/octet-stream',nm=String(file.name||'archivo').slice(-80);
+    if(/^image\/(jpeg|png|webp)$/i.test(t)&&file.size>1.5e6&&window.CFL&&CFL.compress){try{b=await CFL.compress(file,2000,0.85);t='image/jpeg';nm=nm.replace(/\.[^.]+$/,'')+'.jpg';}catch(e){b=file;}}
+    if(b.size>MAX)throw new Error('pesa '+size(b.size)+' y el máximo es 50 MB');
+    const xm=/\.([a-z0-9]{1,6})$/i.exec(nm),ext=t==='image/jpeg'?'jpg':(xm?xm[1].toLowerCase():'bin'),rid=(window.CFL&&CFL.rid?CFL.rid():Math.random().toString(36).slice(2))+Date.now().toString(36);
+    const p=sb?base+'/chat/'+rid+'.'+ext:'demo/'+rid,body=label(kind(t),nm)+'\n[[cf:file|'+p+'|'+t+'|'+b.size+'|'+encodeURIComponent(nm)+']]';
+    if(sb){const {error}=await sb.storage.from('cf-fotos').upload(p,b,{contentType:t,cacheControl:'3600'});if(error)throw error;}
+    return {body,p,url:URL.createObjectURL(b)};}
+  window.CFChat={MAX,parse,upload,size,kind};
+})();

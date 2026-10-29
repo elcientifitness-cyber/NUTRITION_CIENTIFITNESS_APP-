@@ -2,8 +2,8 @@
 -- Ejecutar en Supabase → SQL Editor → New query → pegar todo → Run. Se puede ejecutar más de una vez.
 -- Requiere haber ejecutado antes portal.sql, cuestionarios.sql y equipo.sql.
 
--- 1) Fotos: el bucket es SIEMPRE privado (sin enlace firmado no se ve nada) y máximo 20 MB por archivo
-update storage.buckets set public = false, file_size_limit = 20971520 where id = 'cf-fotos';
+-- 1) Fotos: el bucket es SIEMPRE privado (sin enlace firmado no se ve nada) y máximo 50 MB por archivo
+update storage.buckets set public = false, file_size_limit = 52428800 where id = 'cf-fotos';
 
 -- Comprueba de forma segura que una ruta «coach/cliente/...» es del asesorado que ha entrado
 create or replace function public.cf_path_client(p text) returns boolean
