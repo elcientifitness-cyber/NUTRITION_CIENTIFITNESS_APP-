@@ -977,14 +977,21 @@ class Component extends DCLogic {
   mpSign(rows){if(!this.sb)return;const U=this.state.mpUrl||{},lim=addDays(isoD(new Date()),-21),P=[];(rows||[]).forEach(r=>{if(String(r.day)<lim)return;const m=(r.survey||{}).mph;if(Array.isArray(m))m.forEach(x=>{if(x&&x.p&&!U[x.p])P.push(x.p);});});if(!P.length)return;
     this.sb.storage.from('cf-fotos').createSignedUrls(P,3600).then(({data})=>{const o={};(data||[]).forEach(u=>{if(u&&u.signedUrl)o[u.path]=u.signedUrl;});this.setState(st=>({mpUrl:{...(st.mpUrl||{}),...o}}));}).catch(()=>{});}
   loadJs(src){this._js=this._js||{};if(!this._js[src])this._js[src]=new Promise((ok,ko)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=()=>{delete this._js[src];ko(new Error('load'));};document.head.appendChild(s);});return this._js[src];}
-  async makePdf(){if(this._pdfBusy)return;const src=document.getElementById('cf-plan-pdf');if(!src)return;this._pdfBusy=true;this.setState({pdfBusy:true});
-    const P=(this.state.link&&this.state.link.plan)||{},tb=Array.isArray(P.tbl)&&P.tbl.length?P.tbl:null,nm=(P.name||'').trim();
-    try{if(!window.CFPdf)throw new Error('lib');
-      const res=await CFPdf.make(src,{landscape:!!tb,label:'Preparando tu PDF…',name:'Plan de nutrición'+(nm?' · '+nm:''),prep:tb?(c=>{const m=c.querySelector('[data-pdf-meals]');if(m)m.innerHTML=CFPdf.tableHTML(tb);}):null});
-      const fname=res.name,blob=res.blob,n=res.pages,file=typeof File==='function'?new File([blob],fname,{type:'application/pdf'}):null;
+  async makePdf(){if(this._pdfBusy)return;const src=document.getElementById('cf-plan-pdf'),P=(this.state.link&&this.state.link.plan)||{},PD=P.pdf&&P.pdf.p?P.pdf:null;if(!src&&!PD)return;this._pdfBusy=true;this.setState({pdfBusy:true});
+    const tb=Array.isArray(P.tbl)&&P.tbl.length?P.tbl:null,nm=(P.name||'').trim();
+    const show=(blob,fname,n)=>{const file=typeof File==='function'?new File([blob],fname,{type:'application/pdf'}):null;
       if(this._pdfUrl)URL.revokeObjectURL(this._pdfUrl);this._pdfUrl=URL.createObjectURL(blob);this._pdfFile=file;
       const share=!!(file&&navigator.canShare&&(()=>{try{return navigator.canShare({files:[file]});}catch(e){return false;}})());
-      this.setState({pdfReady:{url:this._pdfUrl,name:fname,pages:n,share}});
+      this.setState({pdfReady:{url:this._pdfUrl,name:fname,pages:n,share}});};
+    try{
+      // 1) El PDF que guardó su nutricionista al publicar (idéntico al de su panel)
+      if(PD&&this.sb&&!String(PD.p).startsWith('demo/')){try{const {data,error}=await this.sb.storage.from('cf-fotos').createSignedUrl(PD.p,600);if(error||!data||!data.signedUrl)throw new Error('url');
+        const rr=await fetch(data.signedUrl);if(!rr.ok)throw new Error('http');let b=await rr.blob();if(b.type!=='application/pdf')b=new Blob([b],{type:'application/pdf'});
+        show(b,String(PD.n||('Plan de nutrición'+(nm?' · '+nm:'')+'.pdf')).replace(/[\\/:*?"<>|]/g,''),num(PD.pg)||1);return;}catch(e){if(!src)throw e;}}
+      // 2) Si no hay (o falla), lo crea aquí
+      if(!window.CFPdf||!src)throw new Error('lib');
+      const res=await CFPdf.make(src,{landscape:!!tb,label:'Preparando tu PDF…',name:'Plan de nutrición'+(nm?' · '+nm:''),prep:tb?(c=>{const m=c.querySelector('[data-pdf-meals]');if(m)m.innerHTML=CFPdf.tableHTML(tb);}):null});
+      show(res.blob,res.name,res.pages);
     }catch(e){this.toastMsg('No se pudo crear el PDF aquí. Se abre la impresión: elige «Guardar como PDF».');setTimeout(()=>window.print(),400);}
     finally{this._pdfBusy=false;this.setState({pdfBusy:false});}}
   pendK(){const l=this.state.link;return l?'cf-as-pend:'+l.coach_id+'|'+l.client_key:'';}
