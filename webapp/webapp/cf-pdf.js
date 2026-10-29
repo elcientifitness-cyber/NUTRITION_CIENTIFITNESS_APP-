@@ -51,16 +51,22 @@ async function make(src,o){o=o||{};var land=!!o.landscape,W=o.width||(land?1040:
     var cw=PW-2*mg,sc=cw/W,PH=(PHm-2*mg-6)/sc;splitTables(cl,PH);
     var top0=cl.getBoundingClientRect().top,left0=cl.getBoundingClientRect().left,B=[],NO={TABLE:1,THEAD:1,TBODY:1,TR:1,UL:1,OL:1};
     (function walk(el,brk){[].slice.call(el.children).forEach(function(c){var r=c.getBoundingClientRect();if(r.height<1)return;var bk=brk||/page/.test((c.style&&c.style.breakBefore)||'');brk=false;if(r.height>PH*0.9&&c.children.length>1&&!NO[c.tagName])walk(c,bk);else B.push({el:c,t:r.top-top0,b:r.bottom-top0,l:r.left-left0,w:r.width,h:r.height,brk:bk});});})(cl,false);
+    B.sort(function(a,b){return a.t-b.t||a.l-b.l;});
+    var RW=[];B.forEach(function(k){var L=RW[RW.length-1];if(L&&k.t<L.b-1&&!k.brk){L.it.push(k);L.b=Math.max(L.b,k.b);}else RW.push({t:k.t,b:k.b,it:[k],brk:k.brk});});
     var fe='';try{fe=await H2I.getFontEmbedCSS(cl);}catch(e){}
-    var opt={pixelRatio:2,backgroundColor:'#ffffff',cacheBust:false};if(fe)opt.fontEmbedCSS=fe;else opt.skipFonts=true;
+    var opt={pixelRatio:2,cacheBust:false},flat=function(cv){var c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(cv,0,0);return c;};if(fe)opt.fontEmbedCSS=fe;else opt.skipFonts=true;
     if(/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)&&B[0]){try{await H2I.toCanvas(B[0].el,opt);}catch(e){}}
-    var pdf=new JP({unit:'mm',format:'a4',orientation:land?'landscape':'portrait',compress:true}),y=0,prevB=null;
-    for(var i=0;i<B.length;i++){var k=B[i],nx=B[i+1],gap=prevB==null||y===0?0:Math.max(0,k.t-prevB);if(k.brk&&y>0){pdf.addPage();y=0;gap=0;}
-      if(y>0&&k.h<70&&nx&&nx.h<=PH&&y+gap+k.h+Math.max(0,nx.t-k.b)+nx.h>PH){pdf.addPage();y=0;gap=0;}
-      var cv=await H2I.toCanvas(k.el,opt);
-      if(k.h<=PH){if(y>0&&y+gap+k.h>PH){pdf.addPage();y=0;}else y+=gap;pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',mg+k.l*sc,mg+y*sc,k.w*sc,k.h*sc,undefined,'FAST');y+=k.h;}
-      else{if(y>0){pdf.addPage();y=0;}var pxr=cv.height/k.h,off=0;while(off<k.h){var hh=Math.min(PH,k.h-off),c2=document.createElement('canvas');c2.width=cv.width;c2.height=Math.ceil(hh*pxr);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(cv,0,Math.floor(off*pxr),cv.width,c2.height,0,0,cv.width,c2.height);pdf.addImage(c2.toDataURL('image/jpeg',0.92),'JPEG',mg+k.l*sc,mg,k.w*sc,hh*sc,undefined,'FAST');off+=hh;if(off<k.h)pdf.addPage();y=hh;}}
-      prevB=k.b;}
+    var pdf=new JP({unit:'mm',format:'a4',orientation:land?'landscape':'portrait',compress:true}),ps=null,used=false;
+    var put=function(cv,k,y){pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',mg+k.l*sc,mg+y*sc,k.w*sc,k.h*sc,undefined,'FAST');};
+    for(var i=0;i<RW.length;i++){var w=RW[i],nx=RW[i+1],rh=w.b-w.t;
+      if(ps==null)ps=w.t;
+      if(used&&(w.brk||(rh<=PH&&w.b-ps>PH)||(rh<70&&nx&&nx.b-nx.t<=PH&&nx.b-ps>PH))){pdf.addPage();ps=w.t;}
+      if(rh<=PH){for(var q=0;q<w.it.length;q++){var k=w.it[q];put(flat(await H2I.toCanvas(k.el,opt)),k,k.t-ps);}used=true;continue;}
+      if(used&&w.t-ps>0){pdf.addPage();ps=w.t;}
+      for(var q2=0;q2<w.it.length;q2++){var k2=w.it[q2],cv=flat(await H2I.toCanvas(k2.el,opt));if(k2.h<=PH){put(cv,k2,k2.t-ps);continue;}
+        var pxr=cv.height/k2.h,off=0,hh=0;while(off<k2.h){hh=Math.min(PH,k2.h-off);var c2=document.createElement('canvas');c2.width=cv.width;c2.height=Math.ceil(hh*pxr);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(cv,0,Math.floor(off*pxr),cv.width,c2.height,0,0,cv.width,c2.height);pdf.addImage(c2.toDataURL('image/jpeg',0.92),'JPEG',mg+k2.l*sc,mg+(off?0:Math.max(0,k2.t-ps))*sc,k2.w*sc,hh*sc,undefined,'FAST');off+=hh;if(off<k2.h)pdf.addPage();}
+        ps=k2.b-hh;}
+      used=true;}
     var n=pdf.getNumberOfPages();if(n>1)for(var p=1;p<=n;p++){pdf.setPage(p);pdf.setFontSize(8);pdf.setTextColor(140);pdf.text(p+' / '+n,PW-mg,PHm-5,{align:'right'});}
     var name=(o.name||'Plan de nutrición').replace(/[\\/:*?"<>|]/g,'')+'.pdf';
     return {blob:pdf.output('blob'),pages:n,name:name};
