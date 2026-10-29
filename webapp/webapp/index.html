@@ -2540,6 +2540,13 @@ html,body{height:auto!important;overflow:visible!important}
     <sc-if value="{{ noPresets }}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:var(--color-neutral-700)">No hay presets en esta vista.</p></sc-if>
   </sc-if>
   <sc-if value="{{ isTpls }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ privBar }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:16px 18px;border-radius:14px;background:var(--color-neutral-100)">
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 320px;min-width:0"><span style="font-weight:800;font-size:16px">{{ privTitle }}</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ privSub }}</span></div>
+        <sc-if value="{{ privHas }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ privOpenFn }}">{{ privBtn }}</button></sc-if>
+        <label class="btn btn-ghost" style="cursor:pointer;display:inline-flex;align-items:center"><input type="file" accept=".json,application/json" onChange="{{ privImport }}" style="display:none">Importar archivo</label>
+      </div>
+    </sc-if>
     <sc-if value="{{ revShow }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:16px 18px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800)">
         <svg width="22" height="22" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -3316,6 +3323,22 @@ html,body{height:auto!important;overflow:visible!important}
       <sc-if value="{{ paHas }}" hint-placeholder-val="{{ true }}"><button class="btn btn-primary" onClick="{{ paArch }}">{{ paArchLbl }}</button></sc-if>
     </div>
     </sc-if>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ privOn }}" hint-placeholder-val="{{ false }}">
+<div data-esc="1" data-noprint="1" onClick="{{ privClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+  <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+    <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Recetas privadas</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px">Quién puede verlas</span></div><button class="btn btn-ghost" onClick="{{ privClose }}">Cerrar</button></div>
+    <sc-for list="{{ privGroups }}" as="g" hint-placeholder-count="1">
+      <div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:14px;background:var(--color-neutral-100)">
+        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:15px;margin-right:auto">{{ g.name }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ g.n }} recetas</span></div>
+        <sc-if value="{{ g.noCo }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Aún no hay nutricionistas en Equipo.</span></sc-if>
+        <sc-for list="{{ g.coaches }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.tog }}" style="font:inherit;display:flex;gap:10px;align-items:center;text-align:left;width:100%;padding:6px 2px;border:0;background:transparent;color:var(--color-text);cursor:pointer;min-height:44px"><span style="width:22px;height:22px;border-radius:6px;border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">{{ c.ck }}</span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;font-weight:700">{{ c.l }}</span><span style="font-size:12px;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis">{{ c.sub }}</span></span></button></sc-for>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;border-top:1px solid var(--color-divider);padding-top:10px"><button class="btn btn-ghost" onClick="{{ g.common }}" style="font-size:13px">Hacerlas comunes</button><button class="btn btn-ghost" onClick="{{ g.del }}" style="font-size:13px">{{ g.delL }}</button></div>
+      </div>
+    </sc-for>
+    <span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Solo los nutricionistas marcados reciben estas recetas, y solo con plan Premium. Los cambios se aplican cuando guardas y ellos recargan la app.</span>
   </div>
 </div>
 </sc-if>
@@ -4272,6 +4295,17 @@ class Component extends DCLogic {
   seedRecipes(n){if(!this.isCEO())return;const L=window.CF_RECIPES;if(!L||!L.list){if((n||0)<20)setTimeout(()=>this.seedRecipes((n||0)+1),500);return;}if(this.state.recSeed===L.v)return;
     const T=this.state.tpls||[],ids=new Set(T.map(t=>t.id)),nm=new Set(T.map(t=>norm(t.name))),add=L.list.filter(r=>!ids.has(r.id)&&!nm.has(norm(r.name))).map(r=>JSON.parse(JSON.stringify(r)));
     this.setState(st=>({tpls:(st.tpls||[]).concat(add),recSeed:L.v}));if(add.length)this.toast(add.length+' recetas de Cientia añadidas a la Biblioteca');}
+  setPrivOnly(g,list){this.setState(st=>({tpls:(st.tpls||[]).map(t=>t.grp===g&&t.only?{...t,only:list}:t)}));}
+  privCommon(g){this.setState(st=>({tpls:(st.tpls||[]).map(t=>{if(t.grp!==g||!t.only)return t;const r={...t};delete r.only;delete r.grp;return r;}),privDel:null}));this.toast('Ahora son recetas comunes: las ven todos los nutricionistas Premium');}
+  privDelete(g){this.setState(st=>({tpls:(st.tpls||[]).filter(t=>!(t.grp===g&&t.only)),privDel:null}));this.toast('Recetas eliminadas');}
+  importPrivRecipes(e){const f=e.target.files&&e.target.files[0];try{e.target.value='';}catch(x){}if(!f)return;const rd=new FileReader();
+    rd.onload=()=>{let J;try{J=JSON.parse(rd.result);if(J.app!=='cientia-recetas'||!Array.isArray(J.recipes))throw 0;}catch(x){this.toast('Ese archivo no es un listado de recetas de Cientia',true);return;}
+      const team=this.state.team||[],only=[];(J.onlyNames||[]).forEach(n=>{const c=team.find(q=>norm(q.name||'').includes(norm(n)));if(c)only.push(String(c.email).toLowerCase());});
+      const ids=new Set((this.state.tpls||[]).map(t=>t.id)),add=J.recipes.filter(r=>r&&r.id&&!ids.has(r.id)).map(r=>({...r,grp:r.grp||J.group||'Privadas',only:only.slice()}));
+      if(!add.length){this.toast('Esas recetas ya estaban importadas');return;}
+      this.setState(st=>({tpls:(st.tpls||[]).concat(add),privOpen:true}));
+      this.toast(add.length+' recetas importadas'+(only.length?' · visibles solo para '+(J.onlyNames||[]).join(', '):' · solo las ves tú: elige quién puede verlas'));};
+    rd.readAsText(f);}
   myName(){const m=this.state.me;return (m&&m.name)||'';}
   openSelf(){if(!this.isPrem()){this.premToast('Mi nutrición');return;}const me=this.state.me||{};let c=this.state.clients.find(x=>x.self);
     if(!c){c={...newClient(),self:true,name:this.myName()||'Yo',email:me.email||''};const c0=c;this.setState(st=>({clients:[c0].concat(st.clients)}));}
@@ -4300,7 +4334,7 @@ class Component extends DCLogic {
   myPlan(){if(this.isCEO())return 'premium';const B=this.state.base;return B?B.plan:null;}
   baseLib(k){if(this.isCEO())return NOL;const B=this.state.base;return (B&&B[k])||NOL;}
   loadBase(){if(!this.sb||this.isCEO())return;this.sb.rpc('cf_library').then(({data:L,error})=>{if(error||!L)return;const std=L.plan==='standard';
-    const b={plan:std?'standard':'premium',foods:L.foods||[],tpls:std?[]:(L.tpls||[]),eqGroups:std?[]:(L.eqGroups||[]),presets:std?[]:(L.presets||defPresets()),forms:L.forms||null,nlist:L.nlist||[]};
+    const b={plan:std?'standard':'premium',foods:L.foods||[],tpls:std?[]:(L.tpls||[]).filter(t=>!t.only||(Array.isArray(t.only)&&t.only.includes(String((this.state.me||{}).email||'').toLowerCase()))),eqGroups:std?[]:(L.eqGroups||[]),presets:std?[]:(L.presets||defPresets()),forms:L.forms||null,nlist:L.nlist||[]};
     if(stab(b)===stab(this.state.base||null))return;this.setState({base:b});try{localStorage.setItem('cf-base',JSON.stringify(b));}catch(e){}});}
   libAll(k){const own=k==='presets'?this.ownPresets():(this.state[k]||NOL),B=this.baseLib(k);if(!B.length)return own;
     const c=this._la||(this._la={}),e=c[k];if(e&&e.o===own&&e.b===B)return e.v;const ids=new Set(own.map(x=>x.id));
@@ -5557,6 +5591,17 @@ class Component extends DCLogic {
       v.libSrcNote=coachV?(s.allLibs?'Lo que han creado tus nutricionistas. «Añadir a la común» lo comparte con su nombre.':'Cargando…'):ceo?'Biblioteca común: la ven tus nutricionistas según su plan.':src==='own'?'Tu biblioteca personal. Puedes proponer cualquier elemento para la común.':src==='base'?'Biblioteca común de Cientia. Se usa tal cual.':'Tu biblioteca personal y la común de Cientia.';
       v.libPlanShow=!ceo&&!!plan;v.libPlanLabel=std?'Plan Estándar':'Plan Premium';v.libPlanBg=std?'var(--color-neutral-200)':'var(--color-accent)';v.libPlanFg=std?'var(--color-text)':'#fff';
       v.libLocked=std&&src!=='own'&&!v.isFoods&&!v.isProps&&!v.isFormsLib&&!v.isListsLib&&!v.isNotesLib&&!v.isNotifLib&&!v.isSuppLib;v.libNoSql=ceo&&cloud&&(!!s.propsErr||(coachV&&!!s.allLibsErr));
+      {const own=!!(v.isTpls&&ceo&&!coachV);v.privBar=own;v.privOn=false;v.privGroups=[];
+        if(own){if(!s.team&&!this._tmL){this._tmL=1;this.loadTeam();}
+          const T=s.tpls||[],G={};T.filter(t=>t.only).forEach(t=>{const g=t.grp||'Privadas';(G[g]=G[g]||[]).push(t);});const gn=Object.keys(G),cs=(s.team||[]).filter(c=>c.role!=='owner'&&c.active!==false);
+          const who=g=>{const o=G[g][0].only||[];return o.length?o.map(em=>{const c=(s.team||[]).find(q=>String(q.email).toLowerCase()===em);return (c&&c.name)||em;}).join(', '):'solo tú';};
+          v.privTitle=gn.length?'Recetas privadas':'Recetas privadas por nutricionista';
+          v.privSub=gn.length?gn.map(g=>g+' · '+G[g].length+' recetas · '+who(g)).join('  |  '):'Importa un archivo de recetas y elige qué nutricionistas pueden verlas. El resto no las recibe.';
+          v.privBtn=gn.length?'Quién las ve':'';v.privHas=gn.length>0;v.privOpenFn=()=>{this.loadTeam();this.setState({privOpen:true});};v.privImport=e=>this.importPrivRecipes(e);
+          v.privOn=!!s.privOpen;v.privClose=()=>this.setState({privOpen:false,privDel:null});
+          v.privGroups=gn.map(g=>{const only=G[g][0].only||[];return {name:g,n:G[g].length,noCo:!cs.length,delL:s.privDel===g?'¿Eliminar? Pulsa otra vez':'Eliminar recetas',
+            coaches:cs.map(c=>{const em=String(c.email).toLowerCase(),on=only.includes(em);return {l:c.name||c.email,sub:c.email,ck:on?'✓':'',bg:on?'var(--color-accent)':'transparent',bd:on?'var(--color-accent)':'var(--color-neutral-400)',tog:()=>this.setPrivOnly(g,on?only.filter(x=>x!==em):only.concat([em]))};}),
+            common:()=>this.privCommon(g),del:()=>{if(s.privDel!==g){this.setState({privDel:g});return;}this.privDelete(g);}};});}}
       if(v.isTpls&&ceo&&!coachV){const RV=window.CF_RECREV;if(!RV)this.loadRev();else{const st=s.recRev||{},ids=new Set((s.tpls||[]).map(t=>t.id)),IT=RV.items.filter(x=>x.v!=='ok'&&(ids.has(x.id)||st[x.id])),P=IT.filter(x=>!st[x.id]),nv=k=>P.filter(x=>x.v===k).length;
         v.revShow=IT.length>0;v.revTitle=P.length?'Revisión del recetario · '+P.length+' propuestas pendientes':'Revisión del recetario completada';
         v.revSub=P.length?nv('fix')+' correcciones, '+nv('review')+' para revisar y '+nv('remove')+' que se recomienda quitar. No cambia nada hasta que lo apruebes.':'Has revisado todas las propuestas. Puedes consultarlas o deshacer cualquier decisión.';
@@ -5653,7 +5698,7 @@ class Component extends DCLogic {
           if(BID[k][x.id])st=pill('En la común','ok');
           else if(p&&p.status==='pending'){st=pill('Propuesta','pend');act=['Aprobar y añadir',()=>this.decide(p,true)];}
           else act=['Añadir a la común',()=>{this.adopt(k,x,k==='foods'?[]:fidsOf(k,x).map(id=>(L.foods||[]).find(f=>f.id===id)).filter(Boolean),L.name||L.email,L.uid);this.toast('Añadido a la biblioteca común');}];}
-        else if(ceo){if(x.by)a=pill('por '+x.by,'by');}
+        else if(ceo){if(x.by)a=pill('por '+x.by,'by');if(k==='tpls'&&x.only)a=pill('Privada','by');}
         else if(x._base||x._s==='base'){if(x.by)a=pill('Cientia · por '+x.by,'cf');}
         else if(x._s!=='db'){const raw=k==='foods'?(ownF[x.id]||x):x,b=bIdx(k)[x.id];
           if((k==='presets'&&x.builtin)||(k==='tpls'&&RC.has(x.id))||(b&&b.byId!==this.uid))a=pill('Copia de Cientia','copy');
