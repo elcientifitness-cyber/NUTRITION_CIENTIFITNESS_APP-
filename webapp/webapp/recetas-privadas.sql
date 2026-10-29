@@ -1,13 +1,15 @@
 -- Cientia · Recetas privadas por nutricionista (oct-2026)
 -- Ejecutar en Supabase → SQL Editor → New query → pegar todo → Run. Se puede ejecutar más de una vez.
--- Las recetas de la biblioteca con el campo «only» (lista de emails) solo se envían a esos nutricionistas.
+-- Las recetas de la biblioteca con el campo «only» (lista de emails) solo se envían a esos nutricionistas (y nunca si el grupo está en pausa, «off»).
 
 create or replace function public.cf_vis_tpls(t jsonb) returns jsonb
 language sql stable security definer set search_path = public, auth as $$
-  select coalesce(jsonb_agg(x), '[]'::jsonb)
+  -- A cada nutricionista le llega la receta marcada como «priv» y sin la lista de emails; los grupos en pausa no se envían
+  select coalesce(jsonb_agg(case when x ? 'only' then (x - 'only' - 'off') || '{"priv":true}'::jsonb else x end), '[]'::jsonb)
   from jsonb_array_elements(case when jsonb_typeof(t) = 'array' then t else '[]'::jsonb end) x
   where not (x ? 'only')
-     or (jsonb_typeof(x->'only') = 'array' and (x->'only') ? lower(coalesce(auth.jwt()->>'email', '')));
+     or (coalesce(x->>'off', '') <> 'true'
+         and jsonb_typeof(x->'only') = 'array' and (x->'only') ? lower(coalesce(auth.jwt()->>'email', '')));
 $$;
 revoke all on function public.cf_vis_tpls(jsonb) from public, anon;
 grant execute on function public.cf_vis_tpls(jsonb) to authenticated;
