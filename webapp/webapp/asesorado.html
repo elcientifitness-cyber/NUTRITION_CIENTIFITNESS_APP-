@@ -464,7 +464,7 @@ button{-webkit-user-select:none;user-select:none}
         <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--color-divider);padding-top:16px;break-before:page">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">Lista de la compra</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ shopNote }}</span></div>
           <sc-if value="{{ pxOn }}" hint-placeholder-val="{{ false }}">
-            <sc-if value="{{ pxDaysOn }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="display:flex;flex-direction:column;gap:10px;padding:12px 14px;border-radius:12px;background:var(--color-neutral-100)">
+            <sc-if value="{{ pxDaysBox }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="display:flex;flex-direction:column;gap:10px;padding:12px 14px;border-radius:12px;background:var(--color-neutral-100)">
               <div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:800;font-size:14px">¿Cuántos días cada opción?</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Ajústalo antes de ir a comprar: la lista se recalcula.</span></div>
               <sc-for list="{{ pxDays }}" as="m" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1px solid var(--color-divider)">
                 <div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><strong>{{ m.name }}</strong><span style="color:var(--color-neutral-700)">{{ m.n }}</span></div>
@@ -1305,7 +1305,7 @@ class Component extends DCLogic {
         {let any=false;const XMs=X.meals||[],find=(g,m)=>{if(m.sk){const a=XMs.find(q=>q.k===m.sk);if(a)return a;}const c=XMs.filter(q=>q.name===m.name||(q.name.endsWith(' · '+m.name)&&String(g.title||'').startsWith(q.name.slice(0,q.name.length-m.name.length-3))));return c.length===1?c[0]:null;};
           v.pGroups=v.pGroups.map(g=>({...g,meals:g.meals.map(m=>{const M=find(g,m);if(!M||!al[M.k])return m;any=true;
             return {...m,opts:m.opts.map((o,i)=>i<M.opts.length?{...o,hasDays:true,hasHead:true,dD:String(al[M.k][i]),dU:al[M.k][i]===1?'día':'días',dDec:()=>sv({...st,d:CFShop.step(X,al,M.k,i,false)}),dInc:()=>sv({...st,d:CFShop.step(X,al,M.k,i,true)})}:o)};})}));
-          v.pxInline=any;}
+          v.pxInline=any;v.pxDaysBox=v.pxDaysOn&&!any;}
         let nT=0,nA=0;v.pxList=CFShop.list(X,al).map(S=>({cat:S.cat,items:S.items.map(it=>{const on=!!T0[it.n];nA++;if(on)nT++;return {...it,on,ck:on?'✓':'',ckBg:on?'var(--color-accent)':'transparent',ckBd:on?'var(--color-accent)':'var(--color-neutral-400)',op:on?'.45':'1',dec:on?'line-through':'none',tog:()=>{const t={...T0};if(t[it.n])delete t[it.n];else t[it.n]=1;sv({...st,t});}};})}));
         v.pxCount=nT?nT+' de '+nA+' comprados':nA+' productos';v.pxAnyT=nT>0;v.pxClear=()=>sv({...st,t:{}});}}v.pshopBase=(v.pshopHasOpts||v.pshopHasAlts)&&v.shop.length?'Siempre':'';v.pFruit=P.fruit||[];v.pFruitOn=v.pFruit.length>0;v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
       v.printPlan=()=>{if(this._pdfBusy)return;if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>this.makePdf(),200));else this.makePdf();};}

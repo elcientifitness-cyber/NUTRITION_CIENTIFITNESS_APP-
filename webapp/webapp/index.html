@@ -658,7 +658,7 @@ html,body{height:auto!important;overflow:visible!important}
       </button>
     </div>
 
-    <sc-if value="{{ isClosedPlan }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ menusSec }}" hint-placeholder-val="{{ true }}">
       <section style="background:var(--color-bg);border-radius:14px;box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:14px">
         <div class="cf-rail" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
           <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-right:6px">Menús de la semana</span>
@@ -3674,8 +3674,17 @@ const daysLabel=d=>{const a=d.slice().sort();return a.length===7?'Todos los día
 const TRAINER_PHONE='+34 627 547 983';
 const initials=n=>{const p=(n||'').trim().split(/\s+/).filter(Boolean);return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:'')).toUpperCase():'?';};
 const h32=s=>{let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;}return h;};
-function ensureMenus(n){if(!n.menus||!n.menus.length){n.menus=[{id:uid(),name:'Menú semanal',days:[0,1,2,3,4,5,6],meals:JSON.parse(JSON.stringify(n.meals))}];}if(!n.menus.find(m=>m.id===n.activeMenu))n.activeMenu=n.menus[0].id;}
-function mealsOf(c){if(c.planMode!=='closed'||!c.menus||!c.menus.length)return c.meals;const m=c.menus.find(x=>x.id===c.activeMenu)||c.menus[0];return m.meals;}
+// Menús de la semana en ambos modos: cada modo guarda los suyos (n.menusMode 'open' = de intercambios; los del otro modo quedan en n.menusX)
+const mMode=c=>c&&c.planMode==='closed'?'closed':'open';
+function menusOn(c){return !!(c&&c.menus&&c.menus.length)&&(c.menusMode||'closed')===mMode(c);}
+function swapMenus(n){const want=mMode(n),has=!!(n.menus&&n.menus.length),cm=n.menusMode||'closed';if(has&&cm===want)return;const X=n.menusX;
+  if(X&&X.mode===want&&X.menus&&X.menus.length){if(has)n.menusX={menus:n.menus,activeMenu:n.activeMenu,mode:cm};else delete n.menusX;n.menus=X.menus;n.activeMenu=X.activeMenu;if(want==='open')n.menusMode='open';else delete n.menusMode;}}
+function ensureMenus(n){swapMenus(n);const want=mMode(n);let src=n.meals;
+  if(n.menus&&n.menus.length&&(n.menusMode||'closed')!==want){if((n.menusMode||'closed')==='open')src=(n.menus.find(m=>m.id===n.activeMenu)||n.menus[0]).meals;n.menusX={menus:n.menus,activeMenu:n.activeMenu,mode:n.menusMode||'closed'};n.menus=[];}
+  if(!n.menus||!n.menus.length)n.menus=[{id:uid(),name:'Menú semanal',days:[0,1,2,3,4,5,6],meals:JSON.parse(JSON.stringify(src||[]))}];
+  if(want==='open')n.menusMode='open';else delete n.menusMode;
+  if(!n.menus.find(m=>m.id===n.activeMenu))n.activeMenu=n.menus[0].id;}
+function mealsOf(c){if(!menusOn(c))return c.meals;const m=c.menus.find(x=>x.id===c.activeMenu)||c.menus[0];return m.meals;}
 const fx=(x,d)=>x==null||isNaN(x)?'—':x.toFixed(d).replace('.',',');
 const fd=s=>new Date(s+'T00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'});
 const iso=t=>new Date(t).toISOString().slice(0,10);
@@ -3740,7 +3749,7 @@ const CFF=()=>window.CFForms||CFF0;
 const DEF_NOTES=['Pesa los alimentos en crudo, antes de cocinarlos.','Cocina a la plancha, al horno, al vapor o en airfryer; evita los fritos.','Puedes cambiar el orden de las comidas si te encaja mejor en tu día.','Bebe uno o dos vasos de agua con esta comida.','Toma el preentreno entre 30 y 45 minutos antes de entrenar.','Si entrenas por la tarde, haz esta comida 1–2 horas antes del entreno.','Las verduras son libres: puedes repetir si te quedas con hambre.','Si comes fuera, elige una proteína a la plancha con guarnición de verdura.'];
 const NDEF={water:true,waterL:2,pre:true,preMin:60,revBefore:true,revDay:true,revHour:'20:00',plan:true,weigh:true,weighDow:0,weighHour:'08:30',steps:true,stepsHour:'21:00',stepsMiss:3,msg:true,cyc:true};
 const NTYPES=[['water','Beber agua','Reparte los avisos entre que se levanta y se acuesta, según los litros de sus pautas del día.'],['pre','Preentreno','Antes de su hora de entreno, solo los días de entreno.'],['revBefore','Víspera de la revisión','El día antes de cada revisión o medición de la agenda.'],['revDay','Día de la revisión','Dos horas antes de la cita.'],['weigh','Pesarse','Una vez por semana.'],['steps','Registrar pasos','Por la noche, solo si sus pautas del día tienen pasos y aún no los ha apuntado. Si no llega a su objetivo varios días seguidos, te avisa en el resumen diario.'],['plan','Plan actualizado','Al publicar cambios en su app.'],['msg','Mensaje nuevo','Cuando le escribes por el chat.']];
-function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(m=>{if(!seen.has(m)){seen.add(m);ms.push(m);}});(n.menus||[]).forEach(x=>push(x.meals));push(mealsOf(n));
+function swapFind(n,from,mn){const ms=[],seen=new Set(),push=a=>(a||[]).forEach(m=>{if(!seen.has(m)){seen.add(m);ms.push(m);}});(menusOn(n)?n.menus:[]).forEach(x=>push(x.meals));push(mealsOf(n));
   const hits=[];ms.forEach(m=>(m.options||[]).forEach(o=>['prot','carb','fat'].forEach(sl=>(o[sl]||[]).forEach(x=>{if(x.fid===from)hits.push({m,o,sl,x});}))));
   const bn=hits.filter(q=>norm(q.m.name||'')===norm(mn||''));return bn.length?bn:hits;}
 const stripMk=b=>String(b||'').replace(/\n?\[\[cf:[^\]]*\]\]/g,'');
@@ -3958,7 +3967,7 @@ const cloneOpts=os=>JSON.parse(JSON.stringify(os||[])).map(o=>{o.id=uid();SLOTS.
 const p1fix=ms=>(ms||[]).map(pm=>{pm=pmN(pm);if(!pm||!pm.opts||!pm.opts.length)return pm;return {...pm,opts:pm.opts.map(o=>{const q={...o};['prot','carb','fat'].forEach(sl=>{q[sl]=(o[sl]||[]).map(x=>num(x.pct)===100?x:{...x,pct:100});});return q;})};});
 const p100=P=>{if(!P||P.planMode!=='open'||!(P.meals||[]).some(pm=>{pm=pmN(pm);return (pm.opts||[]).some(o=>['prot','carb','fat'].some(sl=>(o[sl]||[]).some(x=>num(x.pct)!==100)));}))return P;return {...P,meals:p1fix(P.meals)};};
 function pmToMeal(pm,P,m){m=m||meal(pm.name,pm.pct);m.name=pm.name;m.pct=num(pm.pct);m.split=false;m.cheat=false;if(pm.comp){m.comp='custom';m.cp=pm.comp[0];m.cc=pm.comp[1];m.cf=pm.comp[2];}else m.comp='auto';if(P.scope==='struct')m.options=[opt()];else if(pm.opts&&pm.opts.length)m.options=cloneOpts(pm.opts);else if(!m.options||!m.options.length)m.options=[opt()];if(pm.note)m.note=pm.note;return m;}
-function applyPreset(n,P,withMeals,o){o=o||{};P=p100(P);if(withMeals&&P.meals&&P.meals.length&&(P.planMode==='open'||P.planMode==='closed')&&n.planMode!==P.planMode&&!o.keep){n.planMode=P.planMode;if(P.planMode==='closed')ensureMenus(n);}n.calc.adj=num(P.adj)===0?'mant':num(P.adj)<0?'deficit':'superavit';if(num(P.adj))n.calc.adjPct=Math.abs(num(P.adj));n.tg.kcalMode='calc';n.tg.macroMode=P.mode;
+function applyPreset(n,P,withMeals,o){o=o||{};P=p100(P);if(withMeals&&P.meals&&P.meals.length&&(P.planMode==='open'||P.planMode==='closed')&&n.planMode!==P.planMode&&!o.keep){n.planMode=P.planMode;if(P.planMode==='closed')ensureMenus(n);else swapMenus(n);}n.calc.adj=num(P.adj)===0?'mant':num(P.adj)<0?'deficit':'superavit';if(num(P.adj))n.calc.adjPct=Math.abs(num(P.adj));n.tg.kcalMode='calc';n.tg.macroMode=P.mode;
   if(P.mode==='gkg'){n.tg.pg=num(P.pg);n.tg.fg=num(P.fg);}else{n.tg.pp=num(P.pp);n.tg.pc=num(P.pc);n.tg.pf=num(P.pf);}n.preset=P.id;
   if(withMeals&&P.meals&&P.meals.length){
     if(n.planMode==='closed'&&P.planMode==='closed'&&P.menus&&P.menus.length){n.menus=P.menus.map(mn=>({id:uid(),name:(mn.name||'').trim()||daysLabel(mn.days||[]),days:(mn.days||[]).slice().sort(),meals:(mn.meals||[]).map(pmN).map(pm=>pmToMeal(pm,P))}));n.activeMenu=n.menus[0].id;}
@@ -3997,7 +4006,7 @@ function dayRule(ty,k,T){const p=T.p;if(ty==='refeed'||ty==='descanso'){const f=
 function dayPlan(cl,T){const D=(cl.dayT&&cl.dayT.days)||[],fx=[];let any=false;
   for(let i=0;i<7;i++){const d=D[i];if(!d||!d.type||d.type==='auto'){fx.push(null);continue;}any=true;
     const m=d.manual?{p:num(d.p),c:num(d.c),f:num(d.f)}:dayRule(d.type,T.k*(1+num(d.pct)/100),T);fx.push({p:R(m.p),c:R(m.c),f:R(m.f),type:d.type});}
-  if(!any||cl.planMode!=='closed')return {adj:false,days:[0,1,2,3,4,5,6].map(()=>({k:T.k,p:T.p,c:T.c,f:T.f,type:'auto',w:T.w})),avg:T.k,neg:false,na:7};
+  if(!any)return {adj:false,days:[0,1,2,3,4,5,6].map(()=>({k:T.k,p:T.p,c:T.c,f:T.f,type:'auto',w:T.w})),avg:T.k,neg:false,na:7};
   const na=fx.filter(x=>!x).length,rem={p:T.p*7,c:T.c*7,f:T.f*7};fx.forEach(x=>{if(x){rem.p-=x.p;rem.c-=x.c;rem.f-=x.f;}});
   const neg=na>0&&(rem.p<-1||rem.c<-1||rem.f<-1),au=na?{p:R(Math.max(0,rem.p/na)),c:R(Math.max(0,rem.c/na)),f:R(Math.max(0,rem.f/na)),type:'auto'}:null;
   const days=fx.map(x=>{const y=x||au;return {...y,k:y.p*4+y.c*4+y.f*9,w:T.w};});
@@ -4618,7 +4627,7 @@ class Component extends DCLogic {
         const goal=c.tg.kcalMode==='manual'?'Kcal manual':c.calc.adj==='deficit'?'Déficit −'+num(c.calc.adjPct)+'%':c.calc.adj==='superavit'?'Superávit +'+num(c.calc.adjPct)+'%':'Mantenimiento';
         const AV=[['var(--prot-bg)','var(--prot-ink)'],['var(--carb-bg)','var(--carb-ink)'],['var(--fat-bg)','var(--fat-ink)'],['var(--veg-bg)','var(--veg-ink)'],['var(--color-accent-100)','var(--color-accent-800)']],av=AV[Math.abs(h32(c.id))%AV.length];
         const cs=cStat(c);return {hasSt:cs!=='active',stTag:cs==='pause'?'En pausa':'De baja',stBg:cs==='pause'?'var(--warn-bg)':'var(--color-neutral-200)',stFg:cs==='pause'?'var(--warn)':'var(--color-neutral-700)',ini:initials(c.name),avBg:av[0],avFg:av[1],name:c.name||'Sin nombre',goal,kcal:T.k.toLocaleString('es-ES'),mac:[['prot','P',T.p],['carb','C',T.c],['fat','G',T.f]].map(([k,l,g])=>({l:l+' '+g+' g',bg:MBG[k],fg:MINK[k]})),
-          meta:((q=>q?'Cita '+fmtDayShort(q.e.date)+(q.e.allDay?'':' '+q.e.start)+' · ':'')(this.nextMap()[c.id]))+'Editado '+new Date(c.updated).toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' · '+c.meals.length+' comidas',
+          meta:((q=>q?'Cita '+fmtDayShort(q.e.date)+(q.e.allDay?'':' '+q.e.start)+' · ':'')(this.nextMap()[c.id]))+'Editado '+new Date(c.updated).toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' · '+mealsOf(c).length+' comidas',
           open:()=>this.setState({activeId:c.id,view:'client',tab:'calc',confirmDel:null}),
           dup:()=>{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.name=(c.name||'Cliente')+' (copia)';n.updated=Date.now();this.setState(st=>({clients:[n].concat(st.clients)}));},
           ...delOf(c)};};
@@ -4707,7 +4716,7 @@ class Component extends DCLogic {
     const cl=s.clients.find(c=>c.id===s.activeId);
     if(s.view==='client'&&cl){
       const cc=computeCalc(cl),T=computeTargets(cl,cc),vt=this.vetos(cl),TW=T,DP=dayPlan(cl,T);let TP=T,dvSel=null;
-      if(DP.adj&&cl.menus&&cl.menus.length){const am=cl.menus.find(x=>x.id===cl.activeMenu)||cl.menus[0],ds=am.days.slice().sort();if(ds.length){dvSel=ds.includes(s.dayView)?s.dayView:ds[0];TP=DP.days[dvSel];}}
+      if(DP.adj){const MV0=menusOn(cl)?cl.menus:[{id:'_v',days:[0,1,2,3,4,5,6]}],am=MV0.find(x=>x.id===cl.activeMenu)||MV0[0],ds=am.days.slice().sort();if(ds.length){dvSel=ds.includes(s.dayView)?s.dayView:ds[0];TP=DP.days[dvSel];}}
       [cl.meals].concat((cl.menus||[]).map(q=>q.meals)).forEach(ms=>{if(ms)regMeals(ms,T);});if(TP!==T)regMeals(mealsOf(cl),TP);
       const tot=clientTotals(cl,TP,FM),inPlan=s.tab==='plan';
       v.goClients=()=>this.setState({view:'clients'});
@@ -4755,7 +4764,7 @@ class Component extends DCLogic {
       v.cAlerts=(cl.alerts||[]).map((a,i)=>({label:a.label,txt:a.txt,rm:()=>this.updC(n=>{n.alerts=(n.alerts||[]).filter((_,j)=>j!==i);})}));v.cHasAlerts=v.cAlerts.length>0;
       v.cPhone=cl.phone||'';v.onPhone=e=>{const x=e.target.value;this.updC(n=>{n.phone=x;});};
       {const conf=[],why=f=>vt.find(q=>norm(f.name).includes(q)||(f.al&&(norm(f.al).includes(q)||q.includes(norm(f.al)))))||'';
-        const sets=cl.planMode==='closed'&&cl.menus&&cl.menus.length?cl.menus.map(mn=>({mn,meals:mn.meals})):[{mn:null,meals:cl.meals}];
+        const sets=menusOn(cl)?cl.menus.map(mn=>({mn,meals:mn.meals})):[{mn:null,meals:cl.meals}];
         if(vt.length)sets.forEach(({mn,meals})=>meals.forEach(ml=>{if(ml.cheat)return;ml.options.forEach((o,oi)=>SLOTS.forEach(([sl])=>(o[sl]||[]).forEach(x=>{const f=FM[x.fid];
           if(f&&this.flag(f,vt))conf.push({f,why:why(f),where:(mn?mn.name+' · ':'')+ml.name+(ml.options.length>1?' '+String.fromCharCode(65+oi):''),ids:[mn&&mn.id,ml.id,o.id,sl,x.id]});})));}));
         const rmConf=list=>this.updC(n=>{list.forEach(([mid,mlid,oid,sl,xid])=>{const meals=mid?((n.menus||[]).find(q=>q.id===mid)||{meals:[]}).meals:n.meals;const ml=meals.find(q=>q.id===mlid);const o=ml&&ml.options.find(q=>q.id===oid);if(o)o[sl]=o[sl].filter(q=>q.id!==xid);});});
@@ -4802,14 +4811,14 @@ class Component extends DCLogic {
               this.sb.from('cf_forms').delete().eq('id',r.id).then(({error})=>{if(error){this.toast('No se pudo eliminar: '+error.message,true);return;}this.setState(st=>({formsDb:(st.formsDb||[]).filter(x=>x.id!==r.id),fDel:null}));});}};});}
       if(v.isArch){const AR=(cl.archive||[]).slice().reverse(),dLg=d=>parseD(d).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});v.archEmpty=!AR.length;v.archHas=AR.length>0;
         const updA=(id,fn)=>this.updC(n=>{const a=(n.archive||[]).find(q=>q.id===id);if(a)fn(a,n);});
-        v.archList=AR.map(a=>{const Ta={...(a.T||T),w:(a.T&&a.T.w)||T.w},closed=a.planMode==='closed'&&a.menus&&a.menus.length,ms=closed?a.menus:[{id:'_',name:'',meals:a.meals||[]}],isO=s.archOpen===a.id,nM=ms.reduce((x,mn)=>x+(mn.meals||[]).length,0);
+        v.archList=AR.map(a=>{const Ta={...(a.T||T),w:(a.T&&a.T.w)||T.w},closed=menusOn(a),ms=closed?a.menus:[{id:'_',name:'',meals:a.meals||[]}],isO=s.archOpen===a.id,nM=ms.reduce((x,mn)=>x+(mn.meals||[]).length,0);
           return {id:a.id,name:a.name||'',ph:'Plan del '+dLg(a.date),when:'Archivado el '+dLg(a.date),kline:R(Ta.k).toLocaleString('es-ES')+' kcal · P '+R(Ta.p)+' · C '+R(Ta.c)+' · G '+R(Ta.f)+' g',
             mode:(a.planMode==='closed'?'Menú cerrado'+(ms.length>1?' · '+ms.length+' menús':''):'Intercambios')+' · '+nM+(nM===1?' comida':' comidas'),
             onName:e=>{const x=e.target.value;updA(a.id,q=>{q.name=x;});},
             isOpen:isO,openLabel:isO?'Ocultar':'Ver plan',toggle:()=>this.setState({archOpen:isO?null:a.id}),
             restLabel:s.confirmRest===a.id?'Sustituye el plan actual · pulsa otra vez':'Restaurar',restBg:s.confirmRest===a.id?'var(--color-accent)':'var(--cf-card)',restFg:s.confirmRest===a.id?'#fff':'var(--color-text)',
             restore:()=>{if(s.confirmRest!==a.id){this.setState({confirmRest:a.id});clearTimeout(this._cr);this._cr=setTimeout(()=>this.setState({confirmRest:null}),4000);return;}
-              const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.updC(n=>{n.planMode=a.planMode;n.round=a.round;n.meals=cj(a.meals)||[];n.menus=cj(a.menus)||[];n.activeMenu=a.activeMenu;if(a.dayT)n.dayT=cj(a.dayT);else delete n.dayT;});this.setState({confirmRest:null,tab:'plan',collapsed:{}});this.toast('Plan restaurado');},
+              const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.updC(n=>{n.planMode=a.planMode;n.round=a.round;n.meals=cj(a.meals)||[];n.menus=cj(a.menus)||[];n.activeMenu=a.activeMenu;if(a.menusMode)n.menusMode=a.menusMode;else delete n.menusMode;if(a.menusX)n.menusX=cj(a.menusX);else delete n.menusX;if(a.dayT)n.dayT=cj(a.dayT);else delete n.dayT;});this.setState({confirmRest:null,tab:'plan',collapsed:{}});this.toast('Plan restaurado');},
             delLabel:s.confirmArchDel===a.id?'¿Eliminar? Pulsa otra vez':'Eliminar',delBg:s.confirmArchDel===a.id?'var(--danger)':'transparent',delFg:s.confirmArchDel===a.id?'var(--cf-on-ink)':'var(--danger)',
             del:()=>{if(s.confirmArchDel!==a.id){this.setState({confirmArchDel:a.id});return;}this.updC(n=>{n.archive=(n.archive||[]).filter(q=>q.id!==a.id);});this.setState({confirmArchDel:null});},
             menus:isO?ms.map(mn=>{const MTa=mealTargets(mn.meals||[],Ta);return {name:mn.name||'',hasName:ms.length>1,meals:(mn.meals||[]).map(ml=>{const mt=MTa[ml.id]||mealTarget(ml,Ta);
@@ -5103,12 +5112,12 @@ class Component extends DCLogic {
         {const rd=cl.round||'near';v.roundSeg=this.seg([['exact','Exacto'],['near','Más cercano'],['up','Al alza'],['down','A la baja']],rd,x=>this.updC(n=>{n.round=x;}));
           v.roundNote=(rd==='exact'?'Cantidades al gramo, sin redondear.':(rd==='up'?'Saltos de 5 g hacia arriba':rd==='down'?'Saltos de 5 g hacia abajo':'Saltos de 5 g al valor más cercano')+'. Por debajo de 10 g se quedan al gramo.')+(cl.pz?' Los alimentos con medida casera (huevos, piezas de fruta, yogures…) se redondean a unidades enteras o medias.':'');
           const pz=!!cl.pz;v.pzBg=pz?'var(--color-accent-100)':'var(--cf-card)';v.pzFg=pz?'var(--color-accent-800)':'var(--color-text)';v.pzBd=pz?'var(--color-accent)':'var(--color-divider)';v.pzBox=pz?'var(--color-accent)':'transparent';v.pzMark=pz?'✓':'';v.pzT=()=>this.updC(n=>{if(n.pz)delete n.pz;else n.pz=true;});}
-        v.planModeSeg=this.seg([['open','Intercambios'],['closed','Menú cerrado']],cl.planMode,x=>this.updC(n=>{n.planMode=x;if(x==='closed')ensureMenus(n);}));
+        v.planModeSeg=this.seg([['open','Intercambios'],['closed','Menú cerrado']],cl.planMode,x=>this.updC(n=>{n.planMode=x;if(x==='closed')ensureMenus(n);else swapMenus(n);}));
         v.modeHelp=open?'Cada alimento de una columna es una alternativa: su cantidad cubre sola el macro de la comida.':'Los alimentos se combinan entre sí; el % reparte el macro y los gramos se ajustan teniendo en cuenta los macros cruzados.';
         const psum=mealsOf(cl).reduce((a,m)=>a+num(m.pct),0);
         v.distLabel='Reparto '+R(psum)+'%'+(psum!==100?' · se ajusta a 100':'');
         v.distBg=psum===100?'var(--color-neutral-200)':'var(--warn-bg)';v.distFg=psum===100?'var(--color-text)':'var(--warn)';
-        v.isClosedPlan=!open;
+        v.menusSec=true;
         {const D0=(cl.dayT&&cl.dayT.days)||[],kf=x=>R(x).toLocaleString('es-ES');
           const setDay=(i,fn)=>this.updC(n=>{n.dayT=n.dayT||{};const D=n.dayT.days=n.dayT.days||[];for(let j=0;j<7;j++)D[j]=D[j]||{type:'auto'};fn(D[i]);});
           const nAdj=D0.filter(d=>d&&d.type&&d.type!=='auto').length;
@@ -5122,7 +5131,7 @@ class Component extends DCLogic {
             const mx=Math.max(TW.k,...days.map(d=>d.k))*1.1||1;v.daAvgPct=(TW.k/mx*100)+'%';
             const dirC=k=>k>TW.k+10?'var(--carb)':k<TW.k-10?'var(--color-accent)':'var(--color-neutral-400)';
             v.daBars=days.map((d,i)=>({l:DAYSS[i],k:kf(d.k),h:(d.k/mx*100)+'%',bg:dirC(d.k),op:d.type==='auto'?'.45':'1',ty:d.type==='auto'?'Auto':(DTY.find(q=>q[0]===d.type)||[0,''])[1]}));
-            v.daRows=days.map((d,i)=>{const raw=D0[i]||{type:'auto'},ty=raw.type||'auto',C=DTYC[ty]||DTYC.auto,mn=(cl.menus||[]).find(q=>q.days.includes(i)),isA=ty==='auto',man=!!raw.manual&&!isA,pn=TW.k?R((d.k/TW.k-1)*100):0;
+            v.daRows=days.map((d,i)=>{const raw=D0[i]||{type:'auto'},ty=raw.type||'auto',C=DTYC[ty]||DTYC.auto,mn=(menusOn(cl)?cl.menus:[]).find(q=>q.days.includes(i)),isA=ty==='auto',man=!!raw.manual&&!isA,pn=TW.k?R((d.k/TW.k-1)*100):0;
               const setMac=k=>e=>{const val=e.target.value;setDay(i,x=>{if(!x.manual||!x.type||x.type==='auto'){x.p=String(d.p);x.c=String(d.c);x.f=String(d.f);}if(!x.type||x.type==='auto')x.type='normal';x.manual=true;x[k]=val;});};
               const clr=x=>{x.manual=false;delete x.p;delete x.c;delete x.f;},rv=k=>String(man&&raw[k]!=null?raw[k]:d[k]);
               return {day:DAYSF[i],menu:mn?mn.name:'Sin menú',type:ty,types:DTY.map(t=>({id:t[0],name:t[1]})),bg:isA?'var(--color-neutral-100)':'var(--cf-card)',bd:isA?'transparent':'var(--color-accent-200)',ink:pn>0?'var(--carb-ink)':pn<0?'var(--color-accent-800)':'var(--color-neutral-700)',isAuto:isA,notAuto:!isA,
@@ -5133,17 +5142,17 @@ class Component extends DCLogic {
             const PS=[['Refeed sábado',{5:['refeed',20]}],['Refeed fin de semana',{5:['refeed',20],6:['refeed',20]}],['Ondular ±10 %',{0:['refeed',10],1:['recorte',-10],2:['refeed',10],3:['recorte',-10],4:['refeed',10],5:['recorte',-10]}]];
             v.daPresets=PS.map(([l,m])=>({label:l,pick:()=>this.updC(n=>{n.dayT={days:[0,1,2,3,4,5,6].map(i=>m[i]?{type:m[i][0],pct:m[i][1],manual:false}:{type:'auto'})};})}));
             v.daReset=()=>this.updC(n=>{delete n.dayT;});}}
-        {const um2=fn=>this.updC(n=>{ensureMenus(n);fn(n);});
+        {const um2=fn=>this.updC(n=>{const cr=!(n.menus&&n.menus.length&&menusOn(n));ensureMenus(n);if(cr&&this._vmid&&n.menus.length===1&&!(n.menusX&&n.menusX.menus&&n.menusX.menus.some(q=>q.id===n.menus[0].id))){n.menus[0].id=this._vmid;n.activeMenu=this._vmid;this._vmid=null;}fn(n);});
         v.addMenu=()=>um2(n=>{const mm={id:uid(),name:'Menú '+String.fromCharCode(65+n.menus.length),days:[],meals:JSON.parse(JSON.stringify(mealsOf(n)))};mm.meals.forEach(q=>{q.id=uid();q.cheat=false;});n.menus.push(mm);n.activeMenu=mm.id;});
-        if(!open&&cl.menus&&cl.menus.length){const act=cl.menus.find(x=>x.id===cl.activeMenu)||cl.menus[0];
-          v.menuTabs=cl.menus.map(mn=>({name:mn.name||'Menú',days:daysLabel(mn.days),bg:mn.id===act.id?'var(--color-accent)':'var(--color-surface)',fg:mn.id===act.id?'#fff':'var(--color-text)',pick:()=>this.updC(n=>{n.activeMenu=mn.id;})}));
+        if(cl){const MV=menusOn(cl)?cl.menus:[{id:this._vmid||(this._vmid=uid()),name:'Menú semanal',days:[0,1,2,3,4,5,6],meals:mealsOf(cl)}],act=MV.find(x=>x.id===cl.activeMenu)||MV[0];
+          v.menuTabs=MV.map(mn=>({name:mn.name||'Menú',days:daysLabel(mn.days),bg:mn.id===act.id?'var(--color-accent)':'var(--color-surface)',fg:mn.id===act.id?'#fff':'var(--color-text)',pick:()=>this.updC(n=>{n.activeMenu=mn.id;})}));
           v.menuName=act.name;v.onMenuName=e=>{const x=e.target.value;um2(n=>{n.menus.find(q=>q.id===act.id).name=x;});};
-          v.dayChips=DAYS.map((dl,di)=>{const mine=act.days.includes(di),other=cl.menus.find(q=>q.id!==act.id&&q.days.includes(di));
+          v.dayChips=DAYS.map((dl,di)=>{const mine=act.days.includes(di),other=MV.find(q=>q.id!==act.id&&q.days.includes(di));
             return {l:dl,full:DAYSF[di]+(other?' · ahora en '+other.name:''),bg:mine?'var(--color-accent)':other?'var(--color-neutral-100)':'transparent',fg:mine?'#fff':other?'var(--color-neutral-500)':'var(--color-text)',bd:mine?'var(--color-accent)':'var(--color-neutral-300)',
               toggle:()=>um2(n=>{n.menus.forEach(q=>{if(q.id!==act.id)q.days=q.days.filter(d=>d!==di);});const a=n.menus.find(q=>q.id===act.id);a.days=mine?a.days.filter(d=>d!==di):a.days.concat([di]).sort();})};});
-          const un=[0,1,2,3,4,5,6].filter(d=>!cl.menus.some(q=>q.days.includes(d)));
+          const un=[0,1,2,3,4,5,6].filter(d=>!MV.some(q=>q.days.includes(d)));
           v.unassigned=un.length>0;v.unassignedText='Días sin menú asignado: '+un.map(d=>DAYSF[d]).join(', ')+'.';
-          v.canDelMenu=cl.menus.length>1;
+          v.canDelMenu=MV.length>1;
           v.delMenu=()=>um2(n=>{n.menus=n.menus.filter(q=>q.id!==act.id);n.activeMenu=n.menus[0].id;});
           v.dupMenu=()=>um2(n=>{const a=n.menus.find(q=>q.id===act.id),cp=JSON.parse(JSON.stringify(a));cp.id=uid();cp.name=a.name+' (copia)';cp.days=[];cp.meals.forEach(q=>{q.id=uid();});n.menus.push(cp);n.activeMenu=cp.id;});
         {const DD=(cl.dayT&&cl.dayT.days)||[],tset=[...new Set(act.days.map(d=>(DD[d]&&DD[d].type)||'auto'))];v.hasMenuDays=act.days.length>0;
@@ -5186,7 +5195,7 @@ class Component extends DCLogic {
           if(tab==='pre')items=PR.map(P=>{const MS=(P.meals||[]).map(pmN),op=s.dwOpenId==='p:'+P.id;const pmd=P.planMode||'';return {name:P.name,hasTag:true,tag:pmd==='closed'?'Menú cerrado':pmd==='open'?'Intercambios':'Cualquier modo',tagBg:pmd==='open'?'var(--color-accent-100)':pmd==='closed'?'var(--color-neutral-200)':'transparent',tagFg:pmd==='open'?'var(--color-accent-800)':'var(--color-text)',tagBd:pmd?'transparent':'var(--color-divider)',hasWarn:!!(pmd&&pmd!==cl.planMode&&MS.length),warn:'Tu plan está en '+(cl.planMode==='closed'?'menú cerrado':'intercambios')+': al volcar te preguntará si cambiarlo',sub:(pmd==='closed'&&P.menus&&P.menus.length>1?P.menus.length+' grupos de días · ':'')+(pmd==='open'&&P.listId?'con lista de alimentos · ':'')+MS.length+(MS.length===1?' comida':' comidas')+(P.scope==='struct'?' · solo estructura':''),
               drag:startPlan('pre',P.id,P.name),useLbl:'Volcar',use:()=>this.setState({paAsk:{pid:P.id,cid:cl.id}}),hasMeals:MS.length>0,open:op,openLbl:op?'Ocultar comidas':'Ver comidas',toggle:()=>this.setState({dwOpenId:op?null:'p:'+P.id}),
               meals:MS.map(pm=>{const x={k:'p',pm};return {name:(pm.name||'Comida')+' · '+num(pm.pct)+' %',sub:(pm.opts&&pm.opts.length?fnm(pm.opts[0]):'')||'Sin alimentos',drag:startMeal(x,pm.name||'Comida'),add:()=>addEnd(x)};})};});
-          else items=AR.map(a=>{const closed=a.planMode==='closed'&&a.menus&&a.menus.length,ms=closed?a.menus:[{name:'',meals:a.meals||[]}],nM=ms.reduce((q,mn)=>q+(mn.meals||[]).length,0),op=s.dwOpenId==='a:'+a.id,nm=a.name||'Plan del '+dLg(a.date);
+          else items=AR.map(a=>{const closed=menusOn(a),ms=closed?a.menus:[{name:'',meals:a.meals||[]}],nM=ms.reduce((q,mn)=>q+(mn.meals||[]).length,0),op=s.dwOpenId==='a:'+a.id,nm=a.name||'Plan del '+dLg(a.date);
               return {name:nm,sub:'Archivado el '+dLg(a.date)+' · '+(closed?'Menú cerrado':'Intercambios')+' · '+nM+(nM===1?' comida':' comidas'),
               drag:startPlan('arc',a.id,nm),useLbl:'Restaurar',use:()=>this.setState({paAsk:{aid:a.id,cid:cl.id}}),hasMeals:nM>0,open:op,openLbl:op?'Ocultar comidas':'Ver comidas',toggle:()=>this.setState({dwOpenId:op?null:'a:'+a.id}),
               meals:[].concat(...ms.map(mn=>(mn.meals||[]).map(m=>{const x={k:'a',m};return {name:(ms.length>1&&mn.name?mn.name+' · ':'')+(m.name||'Comida')+' · '+num(m.pct)+' %',sub:m.cheat?'Comida libre':((m.options||[])[0]?fnm(m.options[0]):'')||'Sin alimentos',drag:startMeal(x,m.name||'Comida'),add:()=>addEnd(x)};})))};});
@@ -5212,7 +5221,7 @@ class Component extends DCLogic {
         v.overWarn=!!(MT._over.p||MT._over.c||MT._over.f);
         v.overWarnText='Las comidas con composición personalizada superan el total diario de '+['p','c','f'].filter(q=>MT._over[q]).map(q=>({p:'proteína',c:'hidratos',f:'grasa'})[q]).join(' y ')+'. Las demás comidas se quedan sin ese macro: baja su % del día o su composición.';
         const pm=[];let nAl=0;
-        const CPM=(cl.planMode==='closed'&&cl.menus&&cl.menus.length)?cl.menus:[{id:'_',name:'',meals:cl.meals}],CPL=[];
+        const CPM=menusOn(cl)?cl.menus:[{id:'_',name:'',meals:cl.meals}],CPL=[];
         CPM.forEach(mn=>(mn.meals||[]).forEach(q=>CPL.push({val:mn.id+'|'+q.id,label:(CPM.length>1?mn.name+' · ':'')+(q.name||'Comida'),src:q})));
         v.meals=MLS.map((ml,mi)=>{
           const mt=MT[ml.id]||mealTarget(ml,T),custom=ml.comp==='custom';
@@ -5319,10 +5328,10 @@ class Component extends DCLogic {
             this.updC(n=>{mealsOf(n).forEach(m=>{if(m.comp==='custom'&&m.cmode==='g'){m.pct=num(m.gpct!=null?m.gpct:m.pct);m.comp='auto';delete m.cmode;delete m.gp;delete m.gc;delete m.gf;delete m.cu;delete m.kp;delete m.kc;delete m.kf;delete m.gpct;}
               (m.options||[]).forEach(o=>['prot','carb','fat'].forEach(sl=>(o[sl]||[]).forEach(x=>{delete x.man;delete x.mg;})));});});
             this.setState({confirmReauto:false});this.toast('Plan reajustado: todo vuelve al ajuste automático');};}
-        v.archivePlan=()=>{const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.updC(n=>{n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,dayT:cj(n.dayT),T:{k:TP.k,p:TP.p,c:TP.c,f:TP.f}}]);});this.toast('Plan archivado · lo tienes en la pestaña Archivo');};
+        v.archivePlan=()=>{const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.updC(n=>{n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,menusMode:n.menusMode,menusX:cj(n.menusX),dayT:cj(n.dayT),T:{k:TP.k,p:TP.p,c:TP.c,f:TP.f}}]);});this.toast('Plan archivado · lo tienes en la pestaña Archivo');};
         v.clearLabel=s.confirmClear?'¿Borrar? Pulsa otra vez':'Borrar plan';v.clearBg=s.confirmClear?'var(--danger)':'transparent';v.clearFg=s.confirmClear?'var(--cf-on-ink)':'var(--danger)';
         v.clearPlan=()=>{if(!s.confirmClear){this.setState({confirmClear:true});clearTimeout(this._cc);this._cc=setTimeout(()=>this.setState({confirmClear:false}),4000);return;}
-          this.updC(n=>{n.meals=newClient().meals;n.menus=[];delete n.activeMenu;delete n.dayT;if(n.planMode==='closed')ensureMenus(n);});this.setState({confirmClear:false,collapsed:{}});this.toast('Plan borrado · empiezas de cero');};
+          this.updC(n=>{n.meals=newClient().meals;n.menus=[];delete n.activeMenu;delete n.menusMode;delete n.menusX;delete n.dayT;if(n.planMode==='closed')ensureMenus(n);});this.setState({confirmClear:false,collapsed:{}});this.toast('Plan borrado · empiezas de cero');};
         v.latView=s.latView?'1':'0';v.latLabel=s.latView?'Vista en columnas':'Vista en fila';v.latTitle=s.latView?'Opciones una debajo de otra':'Opciones en fila con desplazamiento lateral';
         v.notePresets=this.notesAll().map(t=>({val:t,label:t.length>64?t.slice(0,62)+'…':t}));
         {const E=s.eqItem;v.eqiOn=false;if(E){const m0=mealsOf(cl).find(q=>q.id===E.mealId),o0=m0&&m0.options.find(q=>q.id===E.optId),x0=o0&&(o0[E.sl]||[]).find(q=>q.id===E.itemId),ref=x0&&FM[x0.fid];
@@ -5388,12 +5397,12 @@ class Component extends DCLogic {
         const printOld=()=>{const o0=document.getElementById('cf-page-fmt');if(o0)o0.remove();const st=document.createElement('style');st.id='cf-page-fmt';st.textContent=cl.pdfFmt==='t'?'@page{size:A4 landscape;margin:10mm}':'@page{size:A4 portrait;margin:12mm}';document.head.appendChild(st);const done=()=>{if(st&&st.parentNode)st.parentNode.removeChild(st);window.removeEventListener('afterprint',done);};window.addEventListener('afterprint',done);window.print();setTimeout(done,1500);};
         v.print=()=>{if(s.pdfBusy)return;const el=document.getElementById('cf-vista-pdf');if(!el||!window.CFPdf){printOld();return;}this.setState({pdfBusy:true});
           CFPdf.make(el,{landscape:cl.pdfFmt==='t',name:'Plan de nutrición'+((cl.name||'').trim()?' · '+cl.name.trim():''),label:'Preparando el PDF…'}).then(r=>{CFPdf.download(r);this.toast('PDF descargado · '+r.pages+(r.pages===1?' página':' páginas')+(cl.pdfFmt==='t'?' en horizontal':''));}).catch(()=>{this.toast('No se pudo crear el PDF: se abre la impresión',true);printOld();}).finally(()=>this.setState({pdfBusy:false}));};
-        const shop={},shopO={},shopA={},SF={};let callN=0;const XI={},XM={},XD0=(!open&&cl.menus&&cl.menus.length)?1:s.shopDays;
+        const shop={},shopO={},shopA={},SF={};let callN=0;const XI={},XM={},MNS=menusOn(cl)?cl.menus:[{id:'_v',name:'Menú semanal',days:[0,1,2,3,4,5,6],meals:mealsOf(cl)}],byMenu=menusOn(cl)||DP.adj,XD0=byMenu?1:s.shopDays;
         const xPart=(F,p)=>{const it=XI[F.name]=XI[F.name]||{n:F.name,cat:({Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'})[F.cat]||'Otros',u:isUO(F)?(unitOf(F)||{n:'pieza',pl:'piezas',g:100}):null,hu:isUO(F)?null:unitOf(F),parts:[]};
           const q=p.m!=null?it.parts.find(z=>z.m===p.m&&z.o===p.o):it.parts.find(z=>z.m==null&&z.w===p.w&&z.g===p.g);if(q){if(p.m!=null)q.g+=p.g;else q.d+=p.d;}else it.parts.push(p);};
         const GRP={Carnes:'Carnes','Pescados y mariscos':'Pescados',Mermeladas:'Otros','Cremas de frutos secos':'Grasas y frutos secos',Huevos:'Lácteos y huevos','Lácteos':'Lácteos y huevos',Cereales:'Cereales, legumbres y tubérculos','Tubérculos':'Cereales, legumbres y tubérculos',Legumbres:'Cereales, legumbres y tubérculos',Verduras:'Verduras y frutas',Frutas:'Verduras y frutas','Frutos secos':'Grasas y frutos secos',Aceites:'Grasas y frutos secos',Suplementos:'Otros'};
         const addShop=(x,mu)=>{const g=GRP[x.food.cat]||'Otros';SF[x.food.name]=x.food;shop[g]=shop[g]||{};shop[g][x.food.name]=(shop[g][x.food.name]||0)+x.g*(mu==null?1:mu);};
-        const dayMul=open?s.shopDays:1,Lt=i=>String.fromCharCode(65+i);
+        const dayMul=byMenu?1:s.shopDays,Lt=i=>String.fromCharCode(65+i);
         const LN=(x,sl)=>{const q=x.g/100,F=x.food,o={sl:sl||'',cat:F.cat||'',name:F.name,gq:qTxt(F,x.g),hm:isUO(F)?'':hmTxt(F,x.g),hasHm:!isUO(F)&&!!hmTxt(F,x.g),g:isUO(F)?uoTxt(F,x.g):x.g+' g'+(hmTxt(F,x.g)?' ('+hmTxt(F,x.g)+')':''),id:F.id,gr:x.g,...(isUO(F)?{u:{n:(unitOf(F)||{}).n||'pieza',pl:(unitOf(F)||{}).pl||'piezas',g:num((unitOf(F)||{}).g)||100}}:{}),k:Math.round(num(F.k)*q),p:Math.round(num(F.p)*q*10)/10,c:Math.round(num(F.c)*q*10)/10,f:Math.round(num(F.f)*q*10)/10};
           if(!open&&sl&&sl!=='veg'&&x.eqs&&x.eqs.length&&x.g>0){const mc=sl==='prot'?'p':sl==='fat'?'f':'c';const FE0=freeEqs(F,x.g,FM);o.alts=x.eqs.map(fid=>FM[fid]).filter(Boolean).map(f=>{const fe=FE0.find(q=>q.f.id===f.id),gg=rg(fe?fe.g:x.g*F[mc]/Math.max(0.1,f[mc]),f,rdOf(cl)),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10};});}
           if(x.g>0){const FE=freeEqs(F,x.g,FM).filter(q=>!(o.alts||[]).some(z=>z.id===q.f.id));if(FE.length)o.alts=(o.alts||[]).concat(FE.map(({f,g:g0})=>{const gg=rg(g0,f,rdOf(cl)),qq=gg/100;return {name:f.name,g:gg+' g'+(hmTxt(f,gg)?' ('+hmTxt(f,gg)+')':''),id:f.id,gr:gg,k:Math.round(num(f.k)*qq),p:Math.round(num(f.p)*qq*10)/10,c:Math.round(num(f.c)*qq*10)/10,f:Math.round(num(f.f)*qq*10)/10,free:true};}));}return o;};
@@ -5413,14 +5422,13 @@ class Component extends DCLogic {
           return {name:ml.name,sk:((cx&&cx.k)||'')+'|'+ml.id,kcal:R(mt.k)+' kcal',gk:gkLine(mt,VW),note:ml.note||'',hasNote:!!ml.note,txt,opts:rs.map((r,i)=>({gk:multi?gkLine(r.tot,VW):'',kc:R(r.tot.k)+' kcal',note:(ml.options[i]||{}).note||'',hasNote:!!(ml.options[i]||{}).note,name:((ml.options[i]||{}).title||'').trim(),title:(()=>{const tt=((ml.options[i]||{}).title||'').trim();return multi?'Opción '+Lt(i)+(tt?' · '+tt:'')+' · '+R(r.tot.k)+' kcal':tt;})(),
             blocks:open?SLOTS.filter(([sl])=>r.S[sl].length).map(([sl,l])=>({sw:SW[sl],ink:MINK[sl],label:sl==='veg'||r.S[sl].length<2?l:l+' · elige 1',lines:r.S[sl].map(x=>LN(x,sl))}))
               :[{sw:'var(--color-accent)',ink:'var(--color-accent-700)',label:'Menú',lines:[].concat(...SLOTS.map(([sl])=>r.S[sl].map(x=>LN(x,sl))))}]}))};};
-        const byMenu=!open&&cl.menus&&cl.menus.length;
         const kLineOf=t=>t.k.toLocaleString('es-ES')+' kcal · P '+t.p+' · C '+t.c+' · G '+t.f+' g';
-        const groups=byMenu?[].concat(...cl.menus.map(mn=>{const ds=mn.days.slice().sort(),parts=[];
+        const groups=byMenu?[].concat(...MNS.map(mn=>{const ds=mn.days.slice().sort(),parts=[];
             if(DP.adj)ds.forEach(d=>{const t=DP.days[d],sg=tsig(t);let p=parts.find(q=>q.sg===sg);if(!p){p={sg,t,days:[]};parts.push(p);}p.days.push(d);});
             if(!parts.length)parts.push({t:T,days:ds});
-            return parts.map((p,pi)=>{const mul=s.shopDays===7?p.days.length:(mn.id===cl.activeMenu&&pi===0?1:0);regMeals(mn.meals,p.t);
+            return parts.map((p,pi)=>{const mul=s.shopDays===7?p.days.length:((mn.id===cl.activeMenu||mn.id==='_v')&&pi===0?1:0);regMeals(mn.meals,p.t);
               const tys=DP.adj?[...new Set(p.days.map(d=>DP.days[d].type))].filter(x=>x!=='auto').map(x=>(DTY.find(q=>q[0]===x)||[0,''])[1]):[];
-              return {hasTitle:true,title:mn.name+(tys.length?' · '+tys.join(' / '):''),days:daysLabel(p.days),dayIdx:p.days,T:DP.adj?{k:p.t.k,p:p.t.p,c:p.t.c,f:p.t.f}:undefined,kLine:DP.adj?kLineOf(p.t):'',meals:mn.meals.map(ml=>buildMeal(ml,mul,p.t,{k:mn.id,pre:cl.menus.length>1?mn.name:''}))};});}))
+              return {hasTitle:true,title:mn.name+(tys.length?' · '+tys.join(' / '):''),days:daysLabel(p.days),dayIdx:p.days,T:DP.adj?{k:p.t.k,p:p.t.p,c:p.t.c,f:p.t.f}:undefined,kLine:DP.adj?kLineOf(p.t):'',meals:mn.meals.map(ml=>buildMeal(ml,mul,p.t,{k:mn.id,pre:MNS.length>1?mn.name:''}))};});}))
           :[{hasTitle:false,title:'',days:'',kLine:'',dayIdx:[0,1,2,3,4,5,6],meals:mealsOf(cl).map(ml=>buildMeal(ml,1))}];
         const usesF=JSON.stringify(groups).indexOf('"id":"gfruta"')>=0;v.fruitOn=usesF;v.fruitRows=usesF?(window.CF_FRUTA||[]):[];
         v.vGroups=HG?groups.map(g=>({...g,meals:g.meals.map(m=>({...m,gk:'',opts:(m.opts||[]).map(o=>({...o,gk:''}))}))})):groups;
@@ -6378,8 +6386,8 @@ class Component extends DCLogic {
       if(A){const MS=mealsOf(c0),has=MS.some(m=>(m.options||[]).some(o=>['prot','carb','fat','veg'].some(sl=>(o[sl]||[]).length))),nm=A.name||'Plan del '+parseD(A.date).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
         v.paStep2=true;v.paModeStep=false;v.paOn=true;v.paTitle='Restaurar «'+nm+'» en '+(c0.name||'el cliente');v.paHas=has;v.paGoLbl='Restaurar sin archivar';v.paArchLbl='Archivar y restaurar';
         v.paTxt=(has?'Sustituye su plan actual por el archivado':'Recupera el plan archivado')+(A.planMode!==c0.planMode?' y lo pasa a '+(A.planMode==='closed'?'menú cerrado':'intercambios'):'')+'.';
-        const go=arch=>{const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==c0.id)return c;const n=JSON.parse(JSON.stringify(c));if(arch){const T0=computeTargets(c,computeCalc(c));n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'Antes de restaurar «'+nm+'»',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,dayT:cj(n.dayT),T:{k:T0.k,p:T0.p,c:T0.c,f:T0.f}}]);}
-          n.planMode=A.planMode;n.round=A.round;n.meals=cj(A.meals)||[];n.menus=cj(A.menus)||[];n.activeMenu=A.activeMenu;if(A.dayT)n.dayT=cj(A.dayT);else delete n.dayT;n.updated=Date.now();return n;}),paAsk:null,collapsed:{}}));this.toast('Plan restaurado'+(arch?' · el anterior queda archivado':''));};
+        const go=arch=>{const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==c0.id)return c;const n=JSON.parse(JSON.stringify(c));if(arch){const T0=computeTargets(c,computeCalc(c));n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'Antes de restaurar «'+nm+'»',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,menusMode:n.menusMode,menusX:cj(n.menusX),dayT:cj(n.dayT),T:{k:T0.k,p:T0.p,c:T0.c,f:T0.f}}]);}
+          n.planMode=A.planMode;n.round=A.round;n.meals=cj(A.meals)||[];n.menus=cj(A.menus)||[];n.activeMenu=A.activeMenu;if(A.menusMode)n.menusMode=A.menusMode;else delete n.menusMode;if(A.menusX)n.menusX=cj(A.menusX);else delete n.menusX;if(A.dayT)n.dayT=cj(A.dayT);else delete n.dayT;n.updated=Date.now();return n;}),paAsk:null,collapsed:{}}));this.toast('Plan restaurado'+(arch?' · el anterior queda archivado':''));};
         v.paArch=()=>go(true);v.paGo=()=>go(false);v.paClose=()=>this.setState({paAsk:null});}}
     if(s.paAsk&&!s.paAsk.aid){const P=this.presetsList().find(x=>x.id===s.paAsk.pid),c0=s.clients.find(c=>c.id===s.paAsk.cid);
       if(P&&c0){const MS=mealsOf(c0),has=MS.some(m=>(m.options||[]).some(o=>['prot','carb','fat','veg'].some(sl=>(o[sl]||[]).length)));v.paOn=true;v.paTitle='Volcar «'+P.name+'» en '+(c0.name||'el cliente');
@@ -6388,7 +6396,7 @@ class Component extends DCLogic {
         v.paModeStep=mis&&!A0.mode;v.paStep2=!v.paModeStep;
         if(mis&&keep)v.paTxt=(has?'Sustituye las comidas y alimentos de su plan actual':'Rellena su plan')+' y mantiene '+CM+(P.planMode==='closed'&&P.menus&&P.menus.length>1?' (se usan las comidas del primer grupo de días)':'')+'. Los gramos se ajustan a sus kcal y macros.';
         v.paHasList=!!LL;v.paListTxt=LL?'Usar «'+LL.name+'» como lista permitida':'';v.paListTrack=A0.allow?'var(--color-accent)':'var(--color-neutral-300)';v.paListKnob=A0.allow?'21px':'3px';v.paListTog=()=>this.setState(st=>({paAsk:{...st.paAsk,allow:!st.paAsk.allow}}));
-        const go=(arch,md)=>{const kp=(md||A0.mode)==='keep';const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==c0.id)return c;const n=JSON.parse(JSON.stringify(c));if(arch){const T0=computeTargets(c,computeCalc(c));n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'Antes de «'+P.name+'»',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,dayT:cj(n.dayT),T:{k:T0.k,p:T0.p,c:T0.c,f:T0.f}}]);}applyPreset(n,P,true,{keep:kp,list:LL,allow:!!A0.allow});n.updated=Date.now();return n;}),paAsk:null}));this.toast(P.name+' volcado'+(arch?' · plan anterior archivado':'')+' · cantidades ajustadas');};
+        const go=(arch,md)=>{const kp=(md||A0.mode)==='keep';const cj=x=>x==null?null:JSON.parse(JSON.stringify(x));this.setState(st=>({clients:st.clients.map(c=>{if(c.id!==c0.id)return c;const n=JSON.parse(JSON.stringify(c));if(arch){const T0=computeTargets(c,computeCalc(c));n.archive=(n.archive||[]).concat([{id:uid(),date:todayISO(),ts:Date.now(),name:'Antes de «'+P.name+'»',planMode:n.planMode,round:n.round,meals:cj(n.meals),menus:cj(n.menus),activeMenu:n.activeMenu,menusMode:n.menusMode,menusX:cj(n.menusX),dayT:cj(n.dayT),T:{k:T0.k,p:T0.p,c:T0.c,f:T0.f}}]);}applyPreset(n,P,true,{keep:kp,list:LL,allow:!!A0.allow});n.updated=Date.now();return n;}),paAsk:null}));this.toast(P.name+' volcado'+(arch?' · plan anterior archivado':'')+' · cantidades ajustadas');};
         if(v.paModeStep){v.paTitle='«'+P.name+'» es un preset de '+XM;v.paTxt='El plan de '+(c0.name||'este cliente')+' está en '+CM+'. Puedes pasarlo a '+XM+' o volcar el preset sin cambiar de modo.';v.paSwLbl='Cambiar a '+XM+' y volcar';const setM=md=>{if(!has&&!LL)go(false,md);else this.setState(st=>({paAsk:{...st.paAsk,mode:md}}));};v.paSw=()=>setM('switch');v.paKeep=()=>setM('keep');}
         v.paArch=()=>go(true);v.paGo=()=>go(false);v.paClose=()=>this.setState({paAsk:null});}}
     if(s.fdEd){const E=s.fdEd,nn=x=>num(String(x==null?'':x).replace(',','.')),set=k=>e=>{const y=e.target.value;this.setState(st=>({fdEd:{...st.fdEd,[k]:y}}));};
