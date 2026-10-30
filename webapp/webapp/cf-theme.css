@@ -145,15 +145,19 @@ textarea.input{line-height:1.55;padding:11px 13px;resize:vertical}
 button{-webkit-tap-highlight-color:transparent}
 button:focus-visible,.cf-nav-btn:focus-visible{outline:2px solid var(--color-accent-300);outline-offset:2px}
 /* ---------- Motion ---------- */
-.cf-fade{animation:cfIn .32s cubic-bezier(.2,.7,.2,1) backwards}
+.cf-fade{animation:cfIn .22s cubic-bezier(.2,.8,.2,1) backwards}
+[data-cf-in]{animation:cfIn .2s cubic-bezier(.2,.8,.2,1) backwards}
+[data-cf-modal]{animation:cfFade .16s ease-out backwards}
+[data-cf-modal]>:first-child{animation:cfPop .22s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes cfFade{from{opacity:0}to{opacity:1}}
 .cf-pop{animation:cfPop .24s cubic-bezier(.2,.7,.2,1) backwards}
 .cf-toast{animation:cfToast .3s cubic-bezier(.2,.7,.2,1) both}
 .cf-lift{transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s}
 .cf-lift:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
-@keyframes cfIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes cfPop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes cfIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes cfPop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes cfToast{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-@media (prefers-reduced-motion:reduce){.cf-fade,.cf-pop,.cf-toast{animation:none}.cf-lift:hover{transform:none}}
+@media (prefers-reduced-motion:reduce){.cf-fade,.cf-pop,.cf-toast,[data-cf-in],[data-cf-modal],[data-cf-modal]>:first-child{animation:none}.cf-lift:hover{transform:none}}
 
 /* Sticky side panels only when there is room side by side */
 .cf-stick{position:relative}
