@@ -249,7 +249,30 @@ module.exports = async (req, res) => {
         }
         await api('cf_coach_subs?endpoint=eq.' + encodeURIComponent(s.endpoint), { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ sent: st }) });
       }
-      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made, fees });
+      // Mensajes programados por el nutricionista (tabla cf_sched)
+      let sch = 0;
+      const due = await api('cf_sched?select=*&status=eq.pending&at=lte.' + encodeURIComponent(new Date().toISOString()) + '&order=at.asc&limit=40').then(r => r.ok ? r.json() : []).catch(() => []);
+      for (const m of due) {
+        const claim = await api('cf_sched?id=eq.' + m.id + '&status=eq.pending', { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ status: 'sending' }) }).then(r => r.ok ? r.json() : []).catch(() => []);
+        if (!claim.length) continue;
+        const TRM = String(m.term || 'nutricionista').replace(/[<>]/g, '').slice(0, 30); let n = 0;
+        for (const k of (Array.isArray(m.keys) ? m.keys : [])) {
+          if (!links.some(l => l.coach_id === m.coach_id && l.client_key === k)) continue;
+          const nm = (m.names && m.names[k]) || [];
+          const txt = String(m.body || '').replace(/\{nombre\}/gi, nm[0] || '').replace(/\{nombre_completo\}/gi, nm[1] || nm[0] || '').replace(/\s+([,.!?])/g, '$1').replace(/[ \t]+/g, ' ').trim();
+          if (!txt) continue;
+          const ins = await api('cf_messages', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ coach_id: m.coach_id, client_key: k, sender: 'coach', body: txt }) }).catch(() => null);
+          if (!ins || !ins.ok) continue; n++;
+          for (const s of subs.filter(x => x.coach_id === m.coach_id && x.client_key === k && !((x.prefs && x.prefs.off) || {}).msg)) {
+            const code = await push(s, { title: 'Mensaje de tu ' + TRM, body: txt.length > 140 ? txt.slice(0, 137) + '…' : txt, tag: 'msg', url: 'asesorado.html?tab=chat' }, PUB, PRIV).catch(() => 0);
+            if (code === 404 || code === 410) await drop(s.endpoint); else if (code >= 200 && code < 300) sent++;
+          }
+        }
+        let nx = null; if (m.repeat === 'week') { nx = Date.parse(m.at) + 7 * 864e5; while (nx <= Date.now()) nx += 7 * 864e5; }
+        await api('cf_sched?id=eq.' + m.id, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(nx ? { status: 'pending', at: new Date(nx).toISOString(), sent: (Number(m.sent) || 0) + n, sent_at: new Date().toISOString() } : { status: 'sent', sent: n, sent_at: new Date().toISOString() }) }).catch(() => null);
+        sch += n;
+      }
+      return out(200, { subs: subs.length, coach: csubs.length, sent, forms: made, fees, sched: sch });
     }
     const tok = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     const me = await fetch(URL_SB + '/auth/v1/user', { headers: { apikey: ANON, Authorization: 'Bearer ' + tok } }).then(r => r.ok ? r.json() : null);
