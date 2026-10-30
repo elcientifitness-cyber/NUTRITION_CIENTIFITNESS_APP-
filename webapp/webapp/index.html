@@ -33,6 +33,7 @@
 <script src="cf-pdf.js"></script>
 <script src="cf-shop.js"></script>
 <script src="cf-forms.js"></script>
+<script src="cf-bug.js"></script>
 <script src="cf-brand.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3"></script>
 <style>
@@ -103,6 +104,7 @@ html,body{height:auto!important;overflow:visible!important}
     <button class="cf-nav-btn" data-on="{{ navB.on }}" onClick="{{ navB.go }}" title="Negocio · G N"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M3 3v18h18"></path><path d="M7 15v2"></path><path d="M11 11v6"></path><path d="M15 13v4"></path><path d="M19 7v10"></path></svg><span>Negocio</span></button>
     <button class="cf-nav-btn" data-on="{{ nav2.on }}" onClick="{{ nav2.go }}" title="Biblioteca · G B"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h8"></path><path d="M8 11h6"></path></svg><span>Biblioteca</span></button>
     <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ nav5.on }}" onClick="{{ nav5.go }}" title="Equipo"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Equipo</span></button></sc-if>
+    <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}"><button class="cf-nav-btn" data-on="{{ navBug.on }}" onClick="{{ navBug.go }}" title="Fallos"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M12 7v4"></path><path d="M12 14h.01"></path></svg><span>Fallos</span><sc-if value="{{ navBug.showCount }}" hint-placeholder-val="{{ false }}"><span class="cf-nav-count" title="Abiertos">{{ navBug.count }}</span></sc-if></button></sc-if>
   </nav>
   <div class="cf-side-foot">
     <sc-if value="{{ sbCoach }}" hint-placeholder-val="{{ false }}"><span style="width:100%;box-sizing:border-box;font-size:11px;color:var(--color-neutral-600);padding:0 4px">con <span style="font-weight:600;color:var(--color-text)">Cientia Nutrition</span></span></sc-if>
@@ -2157,6 +2159,35 @@ html,body{height:auto!important;overflow:visible!important}
 </main>
 </sc-if>
 
+<sc-if value="{{ isBugs }}" hint-placeholder-val="{{ false }}">
+<main class="cf-fade" style="padding:36px 28px 60px;max-width:1100px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px"><div style="display:flex;flex-direction:column;gap:4px;flex:1 1 320px;min-width:0"><h1 style="margin:0">Fallos</h1><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Errores que la app detecta sola y reportes enviados con el botón de la esquina, de tu equipo y de los asesorados. Pulsa «Copiar para Claude» y pégalo en el chat.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost" onClick="{{ bgReload }}">Actualizar</button><button class="btn btn-primary" onClick="{{ bgCopyAll }}">{{ bgCopyAllL }}</button></div></div>
+  <sc-if value="{{ bgSql }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:14px;background:var(--warn-bg);color:var(--warn);font-size:13px;text-wrap:pretty">Falta ejecutar <b>fallos.sql</b> en Supabase (SQL Editor → pegar → Run). Mientras tanto, cada dispositivo guarda sus fallos y los envía cuando esté listo.</div></sc-if>
+  <sc-if value="{{ bgErr }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:14px;background:var(--danger-bg);color:var(--danger);font-size:13px">{{ bgErr }}</div></sc-if>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px"><div class="cf-rail" style="display:flex;gap:2px;padding:3px;background:var(--color-neutral-100);border-radius:999px;width:fit-content;max-width:100%"><sc-for list="{{ bgSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="font:inherit;font-size:12px;font-weight:600;padding:8px 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.label }}</button></sc-for></div><input class="input cf-search" value="{{ bgQ }}" onChange="{{ onBgQ }}" placeholder="Buscar código, email, pantalla…" style="flex:1 1 240px;min-width:0;max-width:420px"></div>
+  <sc-if value="{{ bgLoad }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-700)">Cargando…</span></sc-if>
+  <sc-if value="{{ bgEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;border-radius:16px;border:1.5px dashed var(--color-neutral-300);font-size:14px;color:var(--color-neutral-700);text-align:center">{{ bgEmptyTxt }}</div></sc-if>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ bgRows }}" as="b" hint-placeholder-count="3">
+      <div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+        <button onClick="{{ b.tog }}" style="font:inherit;width:100%;display:flex;flex-direction:column;gap:6px;padding:14px 18px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left" style-hover="background:var(--color-neutral-100)">
+          <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%"><span style="display:flex;transform:{{ b.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:15px;letter-spacing:.04em">{{ b.code }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ b.kBg }};color:{{ b.kFg }}">{{ b.kL }}</span><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700)">{{ b.appL }}</span><sc-if value="{{ b.fixed }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--ok-bg);color:var(--ok)">Resuelto</span></sc-if><span style="margin-left:auto;font-size:12px;color:var(--color-neutral-700)">{{ b.when }}</span></span>
+          <span style="font-size:13px;color:var(--color-neutral-700);overflow-wrap:anywhere">{{ b.who }}</span>
+          <span style="font-size:14px;font-weight:600;overflow-wrap:anywhere;text-wrap:pretty">{{ b.msg }}</span>
+        </button>
+        <sc-if value="{{ b.open }}" hint-placeholder-val="{{ false }}"><div style="border-top:1px solid var(--color-divider);padding:14px 18px;display:flex;flex-direction:column;gap:12px">
+          <sc-if value="{{ b.note }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Lo que cuenta</span><span style="font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere">{{ b.note }}</span></div></sc-if>
+          <sc-if value="{{ b.ov }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Ventanas abiertas</span><span style="font-size:13px;overflow-wrap:anywhere">{{ b.ov }}</span></div></sc-if>
+          <sc-if value="{{ b.hasSteps }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Últimos pasos</span><div style="display:flex;flex-direction:column"><sc-for list="{{ b.steps }}" as="st" hint-placeholder-count="3"><div style="display:flex;gap:10px;font-size:13px;padding:4px 0;border-bottom:1px solid var(--color-neutral-200)"><span style="flex:none;width:56px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ st.t }}</span><span style="flex:none;min-width:90px;color:var(--color-neutral-700)">{{ st.s }}</span><span style="min-width:0;overflow-wrap:anywhere">{{ st.x }}</span></div></sc-for></div></div></sc-if>
+          <sc-if value="{{ b.stack }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Error</span><pre style="margin:0;font-size:12px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--color-neutral-100);border-radius:10px;padding:10px 12px;max-height:220px;overflow:auto">{{ b.stack }}</pre></div></sc-if>
+          <span style="font-size:12px;color:var(--color-neutral-700);overflow-wrap:anywhere">{{ b.dev }}</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-ghost" onClick="{{ b.del }}" style="font-size:13px;color:var(--danger)">{{ b.delL }}</button><button class="btn btn-ghost" onClick="{{ b.st }}" style="font-size:13px">{{ b.stL }}</button><button class="btn btn-primary" onClick="{{ b.copy }}" style="font-size:13px">Copiar para Claude</button></div>
+        </div></sc-if>
+      </div>
+    </sc-for>
+  </div>
+</main>
+</sc-if>
 <sc-if value="{{ isBiz }}" hint-placeholder-val="{{ false }}">
 <main class="cf-fade" style="padding:36px 28px 60px;max-width:1100px;width:100%;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
   <div><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ bzMonth }}</div><h1 style="margin:4px 0 0">Negocio</h1></div>
@@ -2191,8 +2222,8 @@ html,body{height:auto!important;overflow:visible!important}
     <button class="btn btn-secondary" onClick="{{ tdRefresh }}" style="min-height:38px">Actualizar</button>
   </div>
   <sc-if value="{{ tdNoCloud }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px;color:var(--color-neutral-700)">Mensajes, registros y cuestionarios necesitan la sesión iniciada en la nube.</p></sc-if>
-  <sc-if value="{{ tdEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:36px 24px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center"><span style="font-family:var(--font-heading);font-weight:600;font-size:19px">Todo al día</span><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">No hay mensajes, cuestionarios ni seguimientos pendientes.</span></div></sc-if>
-  <sc-for list="{{ tdGroups }}" as="g" hint-placeholder-count="3">
+  <sc-if value="{{ pdEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:36px 24px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center"><span style="font-family:var(--font-heading);font-weight:600;font-size:19px">Todo al día</span><span style="font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">No hay mensajes, cuestionarios ni seguimientos pendientes.</span></div></sc-if>
+  <sc-for list="{{ pdGroups }}" as="g" hint-placeholder-count="3">
     <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:18px 20px 8px;display:flex;flex-direction:column">
       <div style="display:flex;align-items:baseline;gap:6px 10px;flex-wrap:wrap;padding-bottom:10px">
         <span style="font-family:var(--font-heading);font-weight:600;font-size:17px">{{ g.title }}</span>
@@ -4181,13 +4212,14 @@ class Component extends DCLogic {
   }
   componentDidMount(){
     if(CF_DEMO)window.__cf=this;
+    if(window.CFBug)CFBug.init({app:'panel',demo:CF_DEMO,sb:()=>this._cloud?this.sb:null,screen:()=>{const s=this.state;return s.auth!=='in'&&s.auth!=='local'?'acceso · '+s.auth:[s.view,s.view==='client'?s.tab:'',s.view==='library'?s.libTab:''].filter(Boolean).join(' · ');},hint:()=>this.state.me&&this.state.me.role!=='owner'?'Si te lo piden, pasa este código a Cientia.':'Lo tienes en Fallos.'});
     setTimeout(()=>{this.applyBrand();this.pvFit();},0);
     try{const q=new URLSearchParams(location.search);if(q.get('view')==='comp'){const st={view:'comp',cutTab:'cli'};if(q.get('c'))st.cutSel=q.get('c');this.setState(st);this._urlComp=st;setTimeout(()=>{if(this._urlComp&&this.state.view!=='comp')this.setState(this._urlComp);this.loadCut();this.ccCheck();},2500);history.replaceState(null,'',location.pathname);}}catch(e){}
     try{if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{const d=e.data&&e.data.cfPush;if(d&&d.coach){this.toast(d.title+(d.body?': '+d.body.split('\n')[0]:''));this.loadCut();}});}catch(e){}
     try{if(localStorage.getItem('cf-side-mini')==='1')this.setState({sideMini:true});if(localStorage.getItem('cf-latview')==='1')this.setState({latView:true});}catch(e){}
     setTimeout(()=>this.initCloud(0),0);
-    this._poll=setInterval(()=>{if(this.state.saving&&Date.now()-(this._svAt||0)>45000){this.setState({saving:false,syncErr:true});this.schedule();}this.pullCloud(false);},20000);
-    this._bootT=setInterval(()=>{const a=this.state.auth;if(a==='checking'||a==='loading'){this._bootN=(this._bootN||0)+1;if(this._bootN>=4&&!this.state.bootSlow)this.setState({bootSlow:true});}else{this._bootN=0;if(this.state.bootSlow)this.setState({bootSlow:false});}},5000);
+    this._poll=setInterval(()=>{if(this.state.saving&&Date.now()-(this._svAt||0)>45000){this.setState({saving:false,syncErr:true});this.schedule();window.CFBug&&CFBug.watch('Guardado atascado más de 45 s','save');}this.pullCloud(false);},20000);
+    this._bootT=setInterval(()=>{const a=this.state.auth;if(a==='checking'||a==='loading'){this._bootN=(this._bootN||0)+1;if(this._bootN>=4&&!this.state.bootSlow){this.setState({bootSlow:true});window.CFBug&&CFBug.watch('Carga lenta: más de 20 s en '+a,'boot');}}else{this._bootN=0;if(this.state.bootSlow)this.setState({bootSlow:false});}},5000);
     addEventListener('pagehide',()=>this.flushLocal());
     const onVis=()=>{if(document.visibilityState==='visible')this.pullCloud(false);else{this.flushLocal();if(this.state.dirty)this.pushCloud(false,false);}};
     document.addEventListener('visibilitychange',onVis);window.addEventListener('focus',()=>this.pullCloud(false));
@@ -4220,6 +4252,16 @@ class Component extends DCLogic {
   }
   undo(){const U=this._undo||[];if(!U.length){this.toast('No hay nada que deshacer');return;}const prev=U.pop();this._redo=(this._redo||[]).concat([this.state.clients]).slice(-60);this._uSkip=true;this._uT=0;const st={clients:prev,uN:U.length,rN:this._redo.length};if(this.state.view==='client'&&!prev.some(c=>c.id===this.state.activeId))st.view='clients';this.setState(st);this.toast('Cambio deshecho · Ctrl/Cmd + Shift + Z para rehacer');}
   redo(){const R=this._redo||[];if(!R.length){this.toast('No hay nada que rehacer');return;}const nx=R.pop();this._undo=(this._undo||[]).concat([this.state.clients]).slice(-60);this._uSkip=true;this._uT=0;const st={clients:nx,uN:this._undo.length,rN:R.length};if(this.state.view==='client'&&!nx.some(c=>c.id===this.state.activeId))st.view='clients';this.setState(st);this.toast('Cambio rehecho');}
+  loadBugs(){if(CF_DEMO||!this._cloud||!this.sb){this.setState({bugs:window.CFBug?CFBug.local():[],bugsErr:null});return;}this.setState({bugsLoad:true});
+    this.sb.rpc('cf_bugs_list').then(({data,error})=>{if(error){this.setState({bugsLoad:false,bugsErr:/function|does not exist|schema cache|404/i.test(error.message||'')?'sql':(error.message||'Error')});return;}this.setState({bugs:data||[],bugsLoad:false,bugsErr:null});},e=>this.setState({bugsLoad:false,bugsErr:String(e&&e.message||e)}));}
+  bugSet(c,st){this.setState(s=>({bugs:st==='del'?(s.bugs||[]).filter(b=>b.code!==c):(s.bugs||[]).map(b=>b.code===c?{...b,status:st}:b),bugDel:null}));if(!CF_DEMO&&this._cloud&&this.sb)this.sb.rpc('cf_bug_set',{c,st}).then(({error})=>{if(error)this.toast('No se pudo guardar: '+error.message,true);});}
+  bugText(b){const d=b.data||{},K={auto:'Automático',manual:'Reportado por el usuario',watch:'Bloqueo o lentitud',rescue:'Ventana que no se cerraba'},A={panel:'Panel',app:'App del asesorado',form:'Cuestionario'},R={ceo:'CEO',coach:'Nutricionista',client:'Asesorado',anon:'Sin sesión'};
+    const L=['Fallo '+b.code+' · '+new Date(b.created_at).toLocaleString('es-ES')+' · '+(A[b.app]||b.app||'')+' · '+([R[b.role]||b.role,b.name,b.email].filter(Boolean).join(' · ')),'Tipo: '+(K[b.kind]||b.kind),'Pantalla: '+(b.screen||'—'),'Mensaje: '+(b.msg||'—')];
+    if(d.note)L.push('Lo que cuenta: '+d.note);if(d.ov&&d.ov.length)L.push('Ventanas abiertas: '+d.ov.join(' | '));
+    if(d.clicks&&d.clicks.length)L.push('Últimos pasos:\n'+d.clicks.map(c=>'  '+c.t+' s · '+(c.s||'')+' · '+c.x).join('\n'));
+    if(d.stack)L.push('Error:\n'+String(d.stack).split('\n').slice(0,14).join('\n'));
+    L.push('Versión '+(d.ver||'?')+' · '+(d.url||'')+' · '+d.w+'×'+d.h+' · '+(d.on===false?'sin conexión':'con conexión')+' · app abierta hace '+d.age+' s');L.push('Navegador: '+(d.ua||''));return L.join('\n');}
+  bugCopy(t){const ok=()=>this.toast('Copiado: pégalo en el chat con Claude');try{if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>this.toast('No se pudo copiar',true));}catch(e){this.toast('No se pudo copiar',true);}}
   loadPendLogs(){if(!this._cloud||!this.sb)return;const set=m=>this.setState({pendLast:m});
     const fb=()=>this.sb.from('cf_daylogs').select('client_key,day').eq('coach_id',this.uid).gte('day',addDays(isoD(new Date()),-30)).order('day',{ascending:false}).limit(1000).then(({data,error})=>{if(error)return;const m={};(data||[]).forEach(r=>{const d=String(r.day).slice(0,10);if(!m[r.client_key]||d>m[r.client_key])m[r.client_key]=d;});set(m);});
     if(this._noLL){fb();return;}
@@ -4508,6 +4550,7 @@ class Component extends DCLogic {
   pvZoom(){const w=document.getElementById('cf-vista-wrap'),a=document.getElementById('cf-vista-pdf');if(!w||!a)return;const W=a.style.width==='1120px'?1120:0,z=W&&w.clientWidth>0?Math.min(1,w.clientWidth/W):1,zs=z<0.999?String(Math.round(z*1000)/1000):'';if(a.style.zoom!==zs)a.style.zoom=zs;}
   componentDidUpdate(pp,ps){
     this.applyBrand();this.pvFit();
+    if(!this._bugL&&this.state.me&&this.state.me.role==='owner'&&(this._cloud||CF_DEMO)){this._bugL=1;setTimeout(()=>this.loadBugs(),5000);}
     {const tdI=!!(this.state.td&&this.state.td.mode==='import');if(tdI&&!this._tdF){this._tdF=true;setTimeout(()=>{const el=document.getElementById('cf-td-q');if(el)el.focus();},40);}else if(!tdI)this._tdF=false;}
     if(this.state.qk&&!this._qkF){this._qkF=true;setTimeout(()=>{const el=document.getElementById('cf-qk-in');if(el)el.focus();},40);}else if(!this.state.qk)this._qkF=false;
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
@@ -6087,11 +6130,25 @@ class Component extends DCLogic {
         const GS=G.filter(g=>g.items.length),tot=GS.reduce((a,g)=>a+g.items.length,0);
         v.navT={on:s.view==='todo'?'1':'0',count:String(tot),showCount:tot>0,go:()=>{this.setState({view:'todo',confirmDel:null});this.loadChats();this.loadForms();this.loadPendLogs();}};
         v.isTodo=s.view==='todo';
-        if(v.isTodo){v.tdGroups=GS.map(g=>({title:g.title,sub:g.sub,count:String(g.items.length),items:g.items.slice(0,30).map(it=>({...it,hasWhen:!!it.when})),more:g.items.length>30,moreTxt:'Y '+(g.items.length-30)+' más'}));v.tdEmpty=tot===0;v.tdSummary=tot?tot+(tot===1?' pendiente':' pendientes'):'Todo al día';v.tdNoCloud=!this._cloud;v.tdRefresh=()=>{this.loadChats();this.loadForms();this.loadPendLogs();this.toast('Actualizado');};}}
+        if(v.isTodo){v.pdGroups=GS.map(g=>({title:g.title,sub:g.sub,count:String(g.items.length),items:g.items.slice(0,30).map(it=>({...it,hasWhen:!!it.when})),more:g.items.length>30,moreTxt:'Y '+(g.items.length-30)+' más'}));v.pdEmpty=tot===0;v.tdSummary=tot?tot+(tot===1?' pendiente':' pendientes'):'Todo al día';v.tdNoCloud=!this._cloud;v.tdRefresh=()=>{this.loadChats();this.loadForms();this.loadPendLogs();this.toast('Actualizado');};}}
       {v.qkHint=/Mac|iPhone|iPad/.test(navigator.platform||'')?'⌘K':'Ctrl K';v.qkOpen=()=>this.setState({qk:true,qkQ:'',qkSel:0});v.qkOn=!!s.qk;
         if(s.qk){const L=this.qkItems(s.qkQ),sel=Math.min(s.qkSel||0,Math.max(0,L.length-1));this._qkL=L;v.qkQ=s.qkQ||'';v.qkOnQ=e=>this.setState({qkQ:e.target.value,qkSel:0});v.qkClose=()=>this.setState({qk:false});v.qkEmpty=!L.length;
           v.qkList=L.map((r,i)=>({k:r.k,l:r.l,sub:r.sub,hasSub:!!r.sub,go:r.run,hover:()=>{if((this.state.qkSel||0)!==i)this.setState({qkSel:i});},bg:i===sel?'var(--color-accent-100)':'transparent'}));
           v.qkKey=e=>{const LL=this._qkL||[];if(e.key==='ArrowDown'){e.preventDefault();this.setState(st=>({qkSel:Math.min(LL.length-1,(st.qkSel||0)+1)}));}else if(e.key==='ArrowUp'){e.preventDefault();this.setState(st=>({qkSel:Math.max(0,(st.qkSel||0)-1)}));}else if(e.key==='Enter'){e.preventDefault();const r=LL[Math.min(this.state.qkSel||0,LL.length-1)];if(r)r.run();}else if(e.key==='Escape'){e.preventDefault();this.setState({qk:false});}};}}
+      {const own=!!s.me&&s.me.role==='owner',BG=s.bugs||[],nOpen=BG.filter(b=>b.status!=='fixed').length;
+        v.navBug={on:s.view==='bugs'?'1':'0',go:()=>{this.setState({view:'bugs',confirmDel:null});this.loadBugs();},showCount:nOpen>0,count:String(nOpen)};v.isBugs=own&&s.view==='bugs';
+        if(v.isBugs){const f=s.bugF||'open',q=norm(s.bugQ||''),K={auto:['Automático','var(--danger-bg)','var(--danger)'],manual:['Reportado','var(--color-accent-100)','var(--color-accent-800)'],watch:['Bloqueo','var(--warn-bg)','var(--warn)'],rescue:['Ventana atascada','var(--warn-bg)','var(--warn)']},A={panel:'Panel',app:'App asesorado',form:'Cuestionario'},R={ceo:'CEO',coach:'Nutricionista',client:'Asesorado',anon:'Sin sesión'};
+          const nFix=BG.length-nOpen,FL=BG.filter(b=>(f==='all'||(f==='fixed')===(b.status==='fixed'))&&(!q||norm([b.code,b.email,b.name,b.screen,b.msg,(b.data||{}).note].join(' ')).includes(q)));
+          v.bgSeg=[['open','Abiertos · '+nOpen],['fixed','Resueltos · '+nFix],['all','Todos · '+BG.length]].map(([k,l])=>({label:l,bg:f===k?'var(--cf-card)':'transparent',fg:f===k?'var(--color-text)':'var(--color-neutral-700)',pick:()=>this.setState({bugF:k})}));
+          v.bgQ=s.bugQ||'';v.onBgQ=e=>this.setState({bugQ:e.target.value});v.bgReload=()=>this.loadBugs();v.bgLoad=!!s.bugsLoad&&!s.bugs;v.bgSql=s.bugsErr==='sql';v.bgErr=s.bugsErr&&s.bugsErr!=='sql'?'No se pudieron cargar: '+s.bugsErr:'';
+          v.bgEmpty=!!s.bugs&&!FL.length;v.bgEmptyTxt=q?'Nada coincide con la búsqueda.':f==='open'?'No hay fallos abiertos.':'No hay fallos.';
+          const OP=BG.filter(b=>b.status!=='fixed').slice(0,15);v.bgCopyAllL=OP.length?'Copiar abiertos ('+OP.length+')':'Copiar abiertos';v.bgCopyAll=()=>{if(!OP.length){this.toast('No hay fallos abiertos');return;}this.bugCopy(OP.map(b=>this.bugText(b)).join('\n\n---\n\n'));};
+          v.bgRows=FL.slice(0,120).map(b=>{const d=b.data||{},k=K[b.kind]||[b.kind||'—','var(--color-neutral-200)','var(--color-neutral-700)'],op=s.bugOpen===b.code,ua=String(d.ua||''),br=/Edg\//.test(ua)?'Edge':/OPR\//.test(ua)?'Opera':/Firefox\//.test(ua)?'Firefox':/Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':'Navegador',os=/iPhone|iPad/.test(ua)?'iPhone/iPad':/Android/.test(ua)?'Android':/Mac OS X/.test(ua)?'Mac':/Windows/.test(ua)?'Windows':'';
+            return {code:b.code,kL:k[0],kBg:k[1],kFg:k[2],appL:A[b.app]||b.app||'',fixed:b.status==='fixed',when:new Date(b.created_at).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+              who:[R[b.role]||b.role,b.name,b.email].filter(Boolean).join(' · ')+(b.screen?' · '+b.screen:''),msg:b.msg||'—',open:op,chev:op?'rotate(90deg)':'rotate(0deg)',tog:()=>this.setState({bugOpen:op?null:b.code,bugDel:null}),
+              note:d.note&&String(d.note).trim()!==String(b.msg||'').trim()?d.note:'',ov:(d.ov||[]).join(' | '),hasSteps:!!(d.clicks&&d.clicks.length),steps:(d.clicks||[]).map(c=>({t:c.t+' s',s:c.s||'',x:c.x||''})),stack:d.stack||'',
+              dev:[br+(os?' · '+os:''),d.w&&d.h?d.w+'×'+d.h:'',d.ver,d.url,d.on===false?'sin conexión':'',d.age!=null?'app abierta hace '+d.age+' s':''].filter(Boolean).join(' · '),
+              copy:()=>this.bugCopy(this.bugText(b)),stL:b.status==='fixed'?'Reabrir':'Marcar resuelto',st:()=>this.bugSet(b.code,b.status==='fixed'?'open':'fixed'),delL:s.bugDel===b.code?'¿Eliminar? Pulsa otra vez':'Eliminar',del:()=>{if(s.bugDel!==b.code){this.setState({bugDel:b.code});return;}this.bugSet(b.code,'del');}};});}}
       {v.navB={on:s.view==='biz'?'1':'0',go:()=>{this.setState({view:'biz',confirmDel:null});this.loadPendLogs();}};v.isBiz=s.view==='biz';
         if(v.isBiz){const today=todayISO(),ym=today.slice(0,7),NS=s.clients.filter(c=>!c.self),cn=k=>NS.filter(c=>cStat(c)===k).length,fa=c=>num(String((c.fee||{}).amt==null?'':c.fee.amt).replace(',','.')),PMn={month:1,quarter:3,year:12},MESC=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
           const H=[];NS.forEach(c=>((c.fee||{}).hist||[]).forEach(h=>H.push(h)));const mon=k=>H.filter(h=>String(h.d).slice(0,7)===k).reduce((a,h)=>a+num(h.amt),0),paidN=H.filter(h=>String(h.d).slice(0,7)===ym).length;

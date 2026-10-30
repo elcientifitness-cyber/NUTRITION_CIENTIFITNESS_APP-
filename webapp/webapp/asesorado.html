@@ -23,6 +23,7 @@
 <script src="data/alimentos.js"></script>
 <script src="config.js"></script>
 <script src="cf-select.js"></script>
+<script src="cf-bug.js"></script>
 <script src="cf-lib.js"></script>
 <script src="cf-cycle.js"></script>
 <script src="cf-pdf.js"></script>
@@ -873,7 +874,7 @@ class Component extends DCLogic {
     day:isoD(new Date()),logs:{},saving:false,msgs:[],draft:'',add:null,shopOpen:false,toast:null,toastBad:false,survOpen:false,hoyHid:(()=>{try{return localStorage.getItem('cf-as-nohoy')==='1';}catch(e){return false;}})(),
     metric:(()=>{try{return localStorage.getItem('cf-as-metric')||'cump';}catch(e){return 'cump';}})(),range:'3m'};
   thrRef=React.createRef();
-  componentDidMount(){this.init(0);
+  componentDidMount(){if(window.CFBug)CFBug.init({app:'app',pos:'edge',demo:/[?&]demo/.test(location.search),sb:()=>this.sb||null,screen:()=>{const s=this.state;return s.auth!=='in'?'acceso · '+s.auth:[s.tab,s.formOn?'cuestionario':''].filter(Boolean).join(' · ');},hint:()=>'Si se repite, pasa este código a tu '+(typeof CF_TERM!=='undefined'&&CF_TERM?CF_TERM:'nutricionista')+'.'});this.init(0);
     window.addEventListener('online',()=>{if(this._noSess){location.reload();return;}if(this.state.link){this.setState({offline:false});this.flushPend();this.loadLink(false);this.loadLogs();this.loadMsgs();}});
     window.addEventListener('offline',()=>{if(this.state.link&&!this.state.offline)this.setState({offline:true});});try{this.setState({cpDone:JSON.parse(localStorage.getItem('cf-cut-done')||'{}')||{}});}catch(e){}this._cpTick=setInterval(()=>{if(this.state.link&&this.state.link.comp&&document.visibilityState==='visible')this.forceUpdate();},30000);this.loadInbox();document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))this.fixVV();});if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>this.fixVV());
     if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update();}catch(x){}}).catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.cfPush)this.onPush(e.data.cfPush);});}

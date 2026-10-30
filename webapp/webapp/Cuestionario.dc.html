@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="cf-theme.css">
 <script src="config.js"></script>
 <script src="cf-forms.js"></script>
+<script src="cf-bug.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3"></script>
 </helmet>
 <div id="cf-form-top" style="max-width:600px;margin:0 auto;padding:18px 16px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font-family:var(--font-body);color:var(--color-text)">
@@ -82,7 +83,7 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;420px&quot;,&quot;height&quot;:&quot;760px&quot;},&quot;token&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sb&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;},&quot;onClose&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;}}">
 class Component extends DCLogic {
   state={st:'loading',ans:{},step:0,tried:false,busy:false};
-  componentDidMount(){this.tk=this.props.token||new URLSearchParams(location.search).get('t')||'';this.boot(0);}
+  componentDidMount(){this.tk=this.props.token||new URLSearchParams(location.search).get('t')||'';if(window.CFBug&&!this.props.sb&&!this.props.token)CFBug.init({app:'form',pos:'edge',sb:()=>this.client(),screen:()=>'paso '+((this.state.step||0)+1),ctx:()=>({t:String(this.tk||'').slice(0,6)}),hint:'Si se repite, pasa este código a tu nutricionista.'});this.boot(0);}
   componentDidUpdate(pp){if(this.props.token&&pp.token!==this.props.token){this.tk=this.props.token;this.setState({st:'loading',step:0,tried:false,sendErr:''});this.boot(0);}}
   client(){if(this.props.sb)return this.props.sb;if(this._sb)return this._sb;const c=window.CF_CONFIG;if(!c||!c.url||!window.supabase)return null;this._sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,storageKey:'cf-form-anon'}});return this._sb;}
   boot(n){if(!this.tk){this.setState({st:'bad'});return;}
