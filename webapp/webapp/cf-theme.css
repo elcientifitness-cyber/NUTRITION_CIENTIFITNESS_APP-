@@ -236,3 +236,8 @@ body{background:var(--color-neutral-100);line-height:1.6}
 @keyframes cfSpin{to{transform:rotate(360deg)}}
 .cf-spin{transform-box:view-box;transform-origin:50px 50px;animation:cfSpin 2.4s linear infinite}
 @media (prefers-reduced-motion:reduce){.cf-spin{animation-duration:8s}}
+
+html[data-cf-fs="lg"] [data-cf-stage]{zoom:1.15}
+.cf-skel{background:linear-gradient(90deg,var(--color-neutral-200) 25%,var(--color-neutral-100) 50%,var(--color-neutral-200) 75%);background-size:200% 100%;animation:cfSk 1.3s ease-in-out infinite}
+@keyframes cfSk{from{background-position:100% 0}to{background-position:-100% 0}}
+@media (prefers-reduced-motion:reduce){.cf-skel{animation:none}}
