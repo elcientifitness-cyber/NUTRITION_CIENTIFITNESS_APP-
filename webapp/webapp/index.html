@@ -34,7 +34,6 @@
 <script src="cf-shop.js"></script>
 <script src="cf-forms.js"></script>
 <script src="cf-brand.js"></script>
-<script src="cf-motion.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3"></script>
 <style>
 body{margin:0}
@@ -60,7 +59,7 @@ html,body{height:auto!important;overflow:visible!important}
 </style>
 </helmet>
 <div class="cf-shell">
-<sc-if value="{{ isBoot }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;inset:0;z-index:400;background:#1D3A4C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center"><svg width="88" height="88" viewBox="0 0 100 100" aria-hidden="true" style="display:block;flex:none"><path d="M75.39 32.22A31 31 0 1 0 75.39 67.78" style="fill:none;stroke:#F3F2EF;stroke-width:9"></path><g class="cf-spin"><path d="M75.07 20.12L77.96 16.68M69.5 16.23L71.75 12.33M63.34 13.35L64.88 9.12M50 11L50 6.5M43.23 11.59L42.45 7.16M36.66 13.35L35.12 9.12M24.93 20.12L22.04 16.68M20.12 24.93L16.68 22.04M16.23 30.5L12.33 28.25M11.59 43.23L7.16 42.45M11 50L6.5 50M11.59 56.77L7.16 57.55M16.23 69.5L12.33 71.75M20.12 75.07L16.68 77.96M24.93 79.88L22.04 83.32M36.66 86.65L35.12 90.88M43.23 88.41L42.45 92.84M50 89L50 93.5M63.34 86.65L64.88 90.88M69.5 83.77L71.75 87.67M75.07 79.88L77.96 83.32" style="fill:none;stroke:#F3F2EF;stroke-width:1.1"></path><path d="M79.88 24.93L86 19.79M56.77 11.59L58.16 3.71M30.5 16.23L26.5 9.3M13.35 36.66L5.83 33.93M13.35 63.34L5.83 66.07M30.5 83.77L26.5 90.7M56.77 88.41L58.16 96.29M79.88 75.07L86 80.21" style="fill:none;stroke:#F3F2EF;stroke-width:1.8"></path></g><circle cx="50" cy="50" r="7.5" style="fill:#A8865A"></circle></svg><span style="display:inline-flex;flex-direction:column;align-items:center;gap:.2em;line-height:1;font-size:38px"><span style="font-family:'Inter Tight',system-ui,sans-serif;font-weight:480;letter-spacing:-.012em;color:#F3F2EF;line-height:1;white-space:nowrap">C<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:#A8865A"></span></span>ent<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:#A8865A"></span></span>a</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:.3em;letter-spacing:.3em;line-height:1;color:#8A9BA6;white-space:nowrap;padding-left:.3em">NUTRITION</span></span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;color:#8A9BA6;margin-top:6px">MANAGER</span><sc-if value="{{ bootSlow }}" hint-placeholder-val="{{ false }}"><div data-cf-in="1" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px;color:#F3F2EF"><span style="font-size:14px">Está tardando más de lo normal.</span><button onClick="{{ bootRetry }}" style="font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:0 20px;border-radius:999px;border:1.5px solid #F3F2EF;background:transparent;color:#F3F2EF;cursor:pointer">Volver a cargar</button></div></sc-if></div></sc-if>
+<sc-if value="{{ isBoot }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;inset:0;z-index:400;background:#1D3A4C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center"><svg width="88" height="88" viewBox="0 0 100 100" aria-hidden="true" style="display:block;flex:none"><path d="M75.39 32.22A31 31 0 1 0 75.39 67.78" style="fill:none;stroke:#F3F2EF;stroke-width:9"></path><g class="cf-spin"><path d="M75.07 20.12L77.96 16.68M69.5 16.23L71.75 12.33M63.34 13.35L64.88 9.12M50 11L50 6.5M43.23 11.59L42.45 7.16M36.66 13.35L35.12 9.12M24.93 20.12L22.04 16.68M20.12 24.93L16.68 22.04M16.23 30.5L12.33 28.25M11.59 43.23L7.16 42.45M11 50L6.5 50M11.59 56.77L7.16 57.55M16.23 69.5L12.33 71.75M20.12 75.07L16.68 77.96M24.93 79.88L22.04 83.32M36.66 86.65L35.12 90.88M43.23 88.41L42.45 92.84M50 89L50 93.5M63.34 86.65L64.88 90.88M69.5 83.77L71.75 87.67M75.07 79.88L77.96 83.32" style="fill:none;stroke:#F3F2EF;stroke-width:1.1"></path><path d="M79.88 24.93L86 19.79M56.77 11.59L58.16 3.71M30.5 16.23L26.5 9.3M13.35 36.66L5.83 33.93M13.35 63.34L5.83 66.07M30.5 83.77L26.5 90.7M56.77 88.41L58.16 96.29M79.88 75.07L86 80.21" style="fill:none;stroke:#F3F2EF;stroke-width:1.8"></path></g><circle cx="50" cy="50" r="7.5" style="fill:#A8865A"></circle></svg><span style="display:inline-flex;flex-direction:column;align-items:center;gap:.2em;line-height:1;font-size:38px"><span style="font-family:'Inter Tight',system-ui,sans-serif;font-weight:480;letter-spacing:-.012em;color:#F3F2EF;line-height:1;white-space:nowrap">C<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:#A8865A"></span></span>ent<span style="position:relative;display:inline-block">ı<span style="position:absolute;left:50%;top:.07em;width:.17em;height:.17em;margin-left:-.085em;border-radius:50%;background:#A8865A"></span></span>a</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:.3em;letter-spacing:.3em;line-height:1;color:#8A9BA6;white-space:nowrap;padding-left:.3em">NUTRITION</span></span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;color:#8A9BA6;margin-top:6px">MANAGER</span><sc-if value="{{ bootSlow }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px;color:#F3F2EF"><span style="font-size:14px">Está tardando más de lo normal.</span><button onClick="{{ bootRetry }}" style="font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:0 20px;border-radius:999px;border:1.5px solid #F3F2EF;background:transparent;color:#F3F2EF;cursor:pointer">Volver a cargar</button></div></sc-if></div></sc-if>
   <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
 <div style="position:fixed;inset:0;z-index:200;background:var(--cf-page);display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="width:min(400px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-md);padding:32px 28px;display:flex;flex-direction:column;gap:16px;align-items:stretch">
@@ -288,7 +287,7 @@ html,body{height:auto!important;overflow:visible!important}
       <div style="display:flex;flex-direction:column;gap:8px;grid-column:1 / -1;min-width:0">
         <button onClick="{{ hlTog }}" style="font:inherit;font-size:12px;color:var(--color-neutral-700);display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;cursor:pointer;text-align:left;min-width:0;min-height:28px"><span style="flex:none">Información de salud</span><span style="font-size:13px;font-weight:700;color:var(--color-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ hlSum }}</span><span style="flex:none;font-weight:700;color:var(--color-accent-700)">{{ hlTogL }}</span></button>
         <sc-if value="{{ hlOpen }}" hint-placeholder-val="{{ false }}">
-          <div data-cf-in="1" style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:var(--color-neutral-100)">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:var(--color-neutral-100)">
             <sc-for list="{{ hlFields }}" as="h" hint-placeholder-count="3">
               <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700);min-width:0">{{ h.label }}
                 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:5px 6px;border:1px solid var(--color-divider);border-radius:10px;background:var(--cf-card);min-height:44px;box-sizing:border-box;min-width:0">
@@ -688,7 +687,7 @@ html,body{height:auto!important;overflow:visible!important}
             <svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;transition:transform .2s;transform:{{ dayAdjChev }}"><path d="m9 18 6-6-6-6"></path></svg>
           </button>
           <sc-if value="{{ dayAdjOpen }}" hint-placeholder-val="{{ false }}">
-            <div data-cf-in="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px">
               <div style="padding:12px 14px;border-radius:14px;background:var(--color-accent-100);color:var(--color-accent-800);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Promedio diario · Necesidades</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daWeekK }} kcal</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ daWeekMac }}</span></div>
               <div style="padding:12px 14px;border-radius:14px;background:var(--color-neutral-100);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700)">Total de la semana</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daWeekTot }}</span><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ daWeekTotMac }}</span></div>
               <div style="padding:12px 14px;border-radius:14px;background:{{ daAvgBg }};color:{{ daAvgFg }};display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Media con los ajustes</span><span style="font-weight:800;font-size:22px;font-variant-numeric:tabular-nums">{{ daAvgK }} kcal</span><span style="font-size:12px;font-variant-numeric:tabular-nums">{{ daAvgMac }} · {{ daAvgTag }}</span></div>
@@ -726,7 +725,7 @@ html,body{height:auto!important;overflow:visible!important}
     <section data-noprint="1" style="background:var(--color-bg);border-radius:14px;box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:12px">
       <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center"><div style="display:flex;flex-direction:column;gap:2px;flex:1 1 300px;min-width:0"><span style="font-weight:800;font-size:16px">Pautas del día</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ gdSum }}</span></div><button class="btn btn-secondary" onClick="{{ gdToggle }}" style="font-size:13px">{{ gdBtn }}</button></div>
       <sc-if value="{{ gdOpen }}" hint-placeholder-val="{{ false }}">
-        <div data-cf-in="1" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700);margin-right:4px">Días de entreno</span><sc-for list="{{ gdDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="font:inherit;font-size:13px;font-weight:800;width:36px;height:36px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer">{{ d.l }}</button></sc-for></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;font-weight:700;color:var(--color-neutral-700);margin-right:4px">Días de entreno</span><sc-for list="{{ gdDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="font:inherit;font-size:13px;font-weight:800;width:36px;height:36px;border-radius:50%;border:1.5px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }};cursor:pointer">{{ d.l }}</button></sc-for></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:10px">
           <sc-for list="{{ gdCols }}" as="c" hint-placeholder-count="2">
             <div style="background:{{ c.bg }};border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px">
@@ -769,7 +768,7 @@ html,body{height:auto!important;overflow:visible!important}
                   <sc-if value="{{ d.hasMeals }}" hint-placeholder-val="{{ true }}"><button onClick="{{ d.toggle }}" style="font:inherit;font-size:12px;font-weight:700;padding:5px 11px;min-height:30px;border-radius:999px;border:0;background:var(--color-neutral-100);color:var(--color-text);cursor:pointer">{{ d.openLbl }}</button></sc-if>
                 </div>
                 <sc-if value="{{ d.open }}" hint-placeholder-val="{{ false }}">
-                  <div data-cf-in="1" style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
+                  <div style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
                     <sc-for list="{{ d.meals }}" as="mm" hint-placeholder-count="3">
                       <div draggable="true" onDragStart="{{ mm.drag }}" onDragEnd="{{ dwEnd }}" title="Arrastra sobre una comida o entre dos" style="display:flex;align-items:center;gap:8px;padding:7px 6px 7px 8px;border-radius:10px;background:var(--color-neutral-100);cursor:grab;color:var(--color-neutral-500)">
                         <svg width="12" height="16" viewBox="0 0 14 18" style="fill:currentColor;flex:none"><circle cx="4" cy="3" r="1.6"></circle><circle cx="10" cy="3" r="1.6"></circle><circle cx="4" cy="9" r="1.6"></circle><circle cx="10" cy="9" r="1.6"></circle><circle cx="4" cy="15" r="1.6"></circle><circle cx="10" cy="15" r="1.6"></circle></svg>
@@ -852,7 +851,7 @@ html,body{height:auto!important;overflow:visible!important}
           <div style="background:var(--color-accent-100);border-radius:12px;padding:18px 20px;display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap;color:var(--color-accent-800)"><span style="font-weight:800;font-size:17px">Comida libre</span><span style="font-size:13px">{{ m.cheatText }}</span></div>
         </sc-if>
         <sc-if value="{{ m.isOpen }}" hint-placeholder-val="{{ true }}">
-          <div data-cf-in="1" class="cf-opts" data-lat="{{ latView }}" style="display:flex;flex-direction:column;gap:14px">
+          <div class="cf-opts" data-lat="{{ latView }}" style="display:flex;flex-direction:column;gap:14px">
           <sc-for list="{{ m.options }}" as="op" hint-placeholder-count="1">
           <div class="cf-opt" style="display:flex;flex-direction:column;gap:6px">
           <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
@@ -1269,7 +1268,7 @@ html,body{height:auto!important;overflow:visible!important}
     </sc-if>
     <sc-if value="{{ lfOpen }}" hint-placeholder-val="{{ false }}">
     <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
-    <div data-noprint="1" onKeyDown="{{ lfKey }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:1200;background:rgba(18,32,46,.62);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
+    <div data-noprint="1" onKeyDown="{{ lfKey }}" style="position:fixed;inset:0;z-index:1200;background:rgba(18,32,46,.62);display:flex;align-items:stretch;justify-content:center;padding:clamp(0px,2.5vw,28px);font-family:var(--font-body);color:var(--color-text)">
       <div class="cf-pop" style="width:min(1280px,100%);background:var(--color-neutral-100);border-radius:clamp(0px,2vw,26px);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden">
         <div style="background:var(--cf-card);border-bottom:1px solid var(--color-divider);padding:calc(14px + env(safe-area-inset-top)) 20px 14px;display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:center;gap:14px;min-width:0">
@@ -1413,7 +1412,7 @@ html,body{height:auto!important;overflow:visible!important}
 
     <sc-if value="{{ repOpen }}" hint-placeholder-val="{{ false }}">
     <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
-    <div class="cf-rep" data-cf-modal="1" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
+    <div class="cf-rep" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
       <div class="cf-rep-bar" style="background:var(--cf-card);border-bottom:1px solid var(--color-divider);padding:calc(12px + env(safe-area-inset-top)) 20px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
         <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">Informe de progreso</span><span style="font-size:12px;color:var(--color-neutral-700)">Elige el periodo y qué incluir. Al imprimir, elige «Guardar como PDF».</span></div>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0;max-width:100%"><select class="input" value="{{ cmpAVal }}" onChange="{{ onCmpA }}" style="min-height:40px;font-size:13px;width:auto;max-width:min(200px,40vw);min-width:0"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select><span style="font-weight:800;color:var(--color-neutral-500)">→</span><select class="input" value="{{ cmpBVal }}" onChange="{{ onCmpB }}" style="min-height:40px;font-size:13px;width:auto;max-width:min(200px,40vw);min-width:0"><sc-for list="{{ cmpOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select></div>
@@ -1532,7 +1531,7 @@ html,body{height:auto!important;overflow:visible!important}
           </sc-for>
         </div>
         <sc-if value="{{ goalOpen }}" hint-placeholder-val="{{ false }}">
-          <div data-cf-in="1" style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:12px;border:1.5px dashed var(--color-neutral-300)">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:12px;border:1.5px dashed var(--color-neutral-300)">
             <span style="font-size:13px;font-weight:700">Objetivo de cada métrica seleccionada · se marca con una línea discontinua</span>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px">
               <sc-for list="{{ goalRows }}" as="gr" hint-placeholder-count="3"><label style="display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:{{ gr.c }}"></span>{{ gr.label }}</span><span style="position:relative;display:block"><input class="input" type="number" inputmode="decimal" step="0.1" value="{{ gr.val }}" placeholder="Sin objetivo" onChange="{{ gr.on }}" style="padding-right:42px"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--color-neutral-600);pointer-events:none">{{ gr.unit }}</span></span></label></sc-for>
@@ -1642,7 +1641,7 @@ html,body{height:auto!important;overflow:visible!important}
           </div>
         </div>
         <sc-if value="{{ a.isOpen }}" hint-placeholder-val="{{ false }}">
-          <div data-cf-in="1" style="display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--color-divider);padding-top:14px">
+          <div style="display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--color-divider);padding-top:14px">
             <sc-for list="{{ a.menus }}" as="mn" hint-placeholder-count="1">
               <div style="display:flex;flex-direction:column;gap:10px">
                 <sc-if value="{{ mn.hasName }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-accent-700)">{{ mn.name }}</span></sc-if>
@@ -1745,7 +1744,7 @@ html,body{height:auto!important;overflow:visible!important}
           </div>
         </div>
         <sc-if value="{{ r.isOpen }}" hint-placeholder-val="{{ false }}">
-          <div data-cf-in="1" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;border-top:1px solid var(--color-divider);padding-top:14px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;border-top:1px solid var(--color-divider);padding-top:14px">
             <sc-for list="{{ r.secs }}" as="sec" hint-placeholder-count="2">
               <div style="background:var(--color-neutral-100);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0">
                 <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--color-accent-700)">{{ sec.label }}</span>
@@ -1766,12 +1765,12 @@ html,body{height:auto!important;overflow:visible!important}
   <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px">
     <div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Pérdida rápida de peso y reposición</span><h2 style="margin:0;font-size:30px">Competición</h2></div>
     <sc-if value="{{ cOpen }}" hint-placeholder-val="{{ true }}">
-      <div data-cf-in="1" class="cf-rail" style="display:flex;gap:4px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ cTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};cursor:pointer;white-space:nowrap">{{ t.l }}</button></sc-for></div>
+      <div class="cf-rail" style="display:flex;gap:4px;padding:3px;background:var(--color-neutral-200);border-radius:999px"><sc-for list="{{ cTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};cursor:pointer;white-space:nowrap">{{ t.l }}</button></sc-for></div>
       <button class="btn btn-primary" onClick="{{ cAssign }}" style="min-height:40px">+ Asignar protocolo</button>
     </sc-if>
   </div>
   <sc-if value="{{ cOpen }}" hint-placeholder-val="{{ true }}">
-    <div data-cf-in="1" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 16px;border-radius:12px;background:var(--color-neutral-200)">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 16px;border-radius:12px;background:var(--color-neutral-200)">
       <span style="width:34px;height:34px;border-radius:50%;background:var(--color-neutral-800);color:var(--cf-on-ink);display:flex;align-items:center;justify-content:center;flex:none"><svg width="17" height="17" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
       <sc-if value="{{ ccSupNo }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-text);flex:1 1 260px;text-wrap:pretty">Este navegador no admite avisos. Abre el panel en Chrome, Edge o Safari para recibir los pesajes y síntomas de tus asesorados.</span></sc-if>
       <sc-if value="{{ ccIsOff }}" hint-placeholder-val="{{ true }}">
@@ -2381,6 +2380,7 @@ html,body{height:auto!important;overflow:visible!important}
           </tbody>
         </table>
       </div>
+<sc-if value="{{ foodMore }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:center"><button class="btn btn-ghost" onClick="{{ foodMoreFn }}" style="font-size:13px">{{ foodMoreL }}</button></div></sc-if>
     </div>
   </sc-if>
   <sc-if value="{{ isEq }}" hint-placeholder-val="{{ false }}">
@@ -2551,11 +2551,12 @@ html,body{height:auto!important;overflow:visible!important}
           <label class="btn btn-ghost" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px"><input type="file" accept=".json,application/json" onChange="{{ pgImport }}" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>Importar archivo</label>
         </div>
         <sc-if value="{{ pgNone }}" hint-placeholder-val="{{ false }}"><div style="padding:18px;border-radius:14px;border:1.5px dashed var(--color-neutral-300);font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Aún no hay grupos privados. Importa un archivo de recetas (.json) y elige quién lo ve antes de importarlo.</div></sc-if>
-        <sc-if value="{{ pgHas }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><label style="display:flex;align-items:center;gap:10px;flex:1 1 320px;min-width:0"><span style="font-size:13px;font-weight:700;flex:none">Grupo</span><select class="input" value="{{ pgSel }}" onChange="{{ pgPick }}" style="flex:1;min-width:0;max-width:480px"><sc-for list="{{ pgOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label><span style="font-size:12px;color:var(--color-neutral-700)">{{ pgCount }}</span></div></sc-if>
         <sc-for list="{{ pgCards }}" as="g" hint-placeholder-count="1">
-          <div data-cf-in="1" style="background:var(--cf-card);border:1px solid var(--color-divider);border-radius:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column">
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:16px 18px 10px">
-              <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 240px;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:800;font-size:17px">{{ g.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ g.stBg }};color:{{ g.stFg }}">{{ g.stL }}</span></div><span style="font-size:12px;color:var(--color-neutral-700)">{{ g.meta }}</span></div>
+          <div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+            <button onClick="{{ g.tog }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:14px 18px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left" style-hover="background:var(--color-neutral-100)"><span style="display:flex;transform:{{ g.gChev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-family:var(--font-heading);font-weight:600;font-size:17px;min-width:0">{{ g.name }}</span><span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:{{ g.stBg }};color:{{ g.stFg }};flex:none">{{ g.stL }}</span><span style="margin-left:auto;font-size:12px;color:var(--color-neutral-700);flex:none">{{ g.sum }}</span></button>
+            <sc-if value="{{ g.open }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider)">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px 10px">
+              <span style="font-size:12px;color:var(--color-neutral-700);flex:1 1 240px;min-width:0">{{ g.meta }}</span>
               <div style="display:flex;align-items:center;gap:10px;flex:none"><span style="font-size:13px;font-weight:700">{{ g.onL }}</span><button onClick="{{ g.togAll }}" aria-label="{{ g.onL }}" style="width:46px;height:28px;border-radius:999px;border:0;padding:3px;background:{{ g.trk }};cursor:pointer;display:flex;align-items:center;justify-content:{{ g.jc }};flex:none;box-sizing:border-box;transition:background .18s"><span style="width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);flex:none"></span></button></div>
             </div>
             <span style="padding:0 18px 14px;font-size:13px;text-wrap:pretty">{{ g.who }}</span>
@@ -2570,7 +2571,7 @@ html,body{height:auto!important;overflow:visible!important}
             <div style="border-top:1px solid var(--color-divider);padding:12px 18px;display:flex;flex-direction:column;gap:10px">
               <button onClick="{{ g.pvTog }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;cursor:pointer;padding:4px 0;color:var(--color-text);text-align:left"><span style="display:flex;transform:{{ g.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--color-neutral-700);margin-right:auto">Recetas del grupo</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ g.nR }}</span></button>
               <sc-if value="{{ g.pvOn }}" hint-placeholder-val="{{ false }}">
-                <div data-cf-in="1" style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;flex-direction:column;gap:8px">
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><input class="input" value="{{ g.pq }}" onChange="{{ g.onPq }}" placeholder="Buscar receta…" style="flex:1 1 220px;min-width:0"><span style="font-size:12px;color:var(--color-neutral-700)">{{ g.pvCount }}</span></div>
                   <div style="max-height:320px;overflow:auto;border:1px solid var(--color-divider);border-radius:12px;padding:0 12px">
                     <sc-for list="{{ g.list }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:1px;padding:8px 0;border-bottom:1px solid var(--color-neutral-200)"><div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><span style="font-weight:600;min-width:0">{{ r.n }}</span><span style="font-size:12px;color:var(--color-neutral-700);flex:none">{{ r.c }}</span></div><sc-if value="{{ r.no }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700)">{{ r.no }}</span></sc-if></div></sc-for>
@@ -2584,6 +2585,7 @@ html,body{height:auto!important;overflow:visible!important}
               <button class="btn btn-ghost" onClick="{{ g.common }}" style="font-size:13px">Hacerlas comunes</button>
               <button class="btn btn-ghost" onClick="{{ g.del }}" style="font-size:13px;color:var(--danger)">{{ g.delL }}</button>
             </div>
+            </div></sc-if>
           </div>
         </sc-for>
       </section>
@@ -2605,7 +2607,7 @@ html,body{height:auto!important;overflow:visible!important}
         <div style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden">
           <button onClick="{{ rg2.toggle }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:14px 18px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left" style-hover="background:var(--color-neutral-100)"><span style="display:flex;transform:{{ rg2.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-family:var(--font-heading);font-weight:600;font-size:17px;margin-right:auto">{{ rg2.name }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rg2.count }}</span></button>
           <sc-if value="{{ rg2.open }}" hint-placeholder-val="{{ true }}">
-            <div data-cf-in="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;padding:0 16px 16px">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;padding:0 16px 16px">
               <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2">
                 <div style="background:var(--color-neutral-100);padding:14px;display:flex;flex-direction:column;gap:8px;border-radius:12px">
                   <sc-if value="{{ t.ed }}" hint-placeholder-val="{{ true }}"><textarea value="{{ t.name }}" onChange="{{ t.onName }}" title="{{ t.name }}" rows="{{ t.nameRows }}" style="font:inherit;font-family:var(--font-heading);font-weight:600;font-size:15px;line-height:1.3;background:transparent;border:0;border-bottom:2px solid transparent;padding:0;color:var(--color-text);min-width:0;width:100%;resize:none;field-sizing:content;min-height:1.3em;overflow:hidden;text-wrap:pretty" style-focus="border-bottom-color:var(--color-accent);outline:none"></textarea></sc-if><sc-if value="{{ t.ro }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-heading);font-weight:600;font-size:15px;line-height:1.3;text-wrap:pretty">{{ t.name }}</span></sc-if>
@@ -2786,7 +2788,7 @@ html,body{height:auto!important;overflow:visible!important}
               <div style="display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--color-neutral-700)"><span>{{ t.sch.nCli }}</span><span style="font-weight:700;color:var(--color-accent-700)">{{ t.sch.next }}</span><span>{{ t.sch.last }}</span></div>
               <button class="btn btn-secondary" onClick="{{ t.sch.toggleOpen }}" style="font-size:13px;align-self:flex-start">{{ t.sch.openLbl }}</button>
               <sc-if value="{{ t.sch.open }}" hint-placeholder-val="{{ false }}">
-                <div data-cf-in="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;background:var(--color-neutral-100);border-radius:12px;padding:14px">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;background:var(--color-neutral-100);border-radius:12px;padding:14px">
                   <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
                     <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--color-neutral-600)">Cuándo</span>
                     <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ t.sch.freqs }}" as="o" hint-placeholder-count="0"><button onClick="{{ o.pick }}" style="font:inherit;font-size:13px;font-weight:700;min-height:34px;padding:5px 12px;border-radius:999px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;white-space:nowrap">{{ o.l }}</button></sc-for></div>
@@ -2836,7 +2838,7 @@ html,body{height:auto!important;overflow:visible!important}
 </sc-if>
 
 <sc-if value="{{ srOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ srClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ srClose }}" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(720px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--color-bg);box-shadow:var(--shadow-lg);border-radius:16px;overflow:hidden">
     <div style="padding:18px 20px 12px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:baseline;gap:12px">
@@ -2886,7 +2888,7 @@ html,body{height:auto!important;overflow:visible!important}
 </sc-if>
 
 <sc-if value="{{ tdOpen }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;gap:14px;padding:24px;background:var(--color-bg);box-shadow:var(--shadow-lg);box-sizing:border-box;border-radius:16px">
     <div style="display:flex;align-items:center;gap:10px"><span style="font-weight:800;font-size:20px;margin-right:auto">{{ tdTitle }}</span><button data-esc="1" onClick="{{ tdClose }}" aria-label="Cerrar" style="font:inherit;width:36px;height:36px;border:0;border-radius:50%;background:var(--color-neutral-100);color:var(--color-text);font-size:19px;line-height:1;cursor:pointer;flex:none">×</button></div>
     <sc-if value="{{ tdIsSave }}" hint-placeholder-val="{{ false }}">
@@ -2904,7 +2906,7 @@ html,body{height:auto!important;overflow:visible!important}
           <div style="border-radius:12px;background:var(--color-neutral-100);overflow:hidden;flex:none">
             <button onClick="{{ rg2.toggle }}" style="font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;border:0;background:transparent;cursor:pointer;color:var(--color-text);text-align:left"><span style="display:flex;transform:{{ rg2.chev }};transition:transform .2s;color:var(--color-neutral-600)"><svg width="14" height="14" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="m9 18 6-6-6-6"></path></svg></span><span style="font-weight:700;margin-right:auto">{{ rg2.name }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rg2.count }}</span></button>
             <sc-if value="{{ rg2.open }}" hint-placeholder-val="{{ true }}">
-              <div data-cf-in="1" style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
+              <div style="display:flex;flex-direction:column;gap:4px;padding:0 8px 8px">
                 <sc-for list="{{ rg2.items }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" data-tdi="{{ t.tdi }}" style="width:100%;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;box-shadow:{{ t.hiSh }};border:1.5px solid {{ t.bd }};border-radius:12px;background:{{ t.bg }};font:inherit;color:inherit;text-align:left;cursor:pointer" style-hover="box-shadow:0 0 0 2px var(--color-accent-300)"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.ckBd }};background:{{ t.ck }};display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;box-sizing:border-box"><sc-if value="{{ t.ckOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:700">{{ t.name }}<sc-if value="{{ t.isB }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;color:var(--color-accent-700);margin-left:8px">Cientia</span></sc-if></span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.foods }}</span></span></button></sc-for>
               <sc-if value="{{ rg2.more }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ rg2.showMore }}" style="font-size:13px;align-self:center;margin:0 auto">{{ rg2.moreL }}</button></sc-if>
               </div>
@@ -2925,7 +2927,7 @@ html,body{height:auto!important;overflow:visible!important}
 </sc-if>
 
 <sc-if value="{{ kbOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ kbClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:175;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ kbClose }}" style="position:fixed;inset:0;z-index:175;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(760px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:3px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">Atajos de teclado</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Las teclas sueltas no hacen nada mientras escribes en un campo ni con una ventana abierta. En Mac, Ctrl es ⌘.</span></div><button class="btn btn-ghost" onClick="{{ kbClose }}" style="font-size:13px">Cerrar</button></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px 28px">
@@ -2939,7 +2941,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ qkOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ qkClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:170;background:rgba(20,40,60,.38);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px">
+<div data-esc="1" data-noprint="1" onClick="{{ qkClose }}" style="position:fixed;inset:0;z-index:170;background:rgba(20,40,60,.38);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(600px,100%);max-height:72vh;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
     <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--color-divider)"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:var(--color-neutral-600);stroke-width:2;fill:none;stroke-linecap:round;flex:none"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="cf-qk-in" value="{{ qkQ }}" onChange="{{ qkOnQ }}" onKeyDown="{{ qkKey }}" placeholder="Busca un cliente, alimento, receta o pantalla…" autocomplete="off" style="flex:1;min-width:0;border:0;outline:none;background:transparent;font:inherit;font-size:16px;color:var(--color-text)"><span style="font-size:11px;color:var(--color-neutral-600);border:1px solid var(--color-divider);border-radius:6px;padding:2px 6px;flex:none">Esc</span></div>
     <div style="overflow-y:auto;padding:6px;display:flex;flex-direction:column">
@@ -2951,7 +2953,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ avEdOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ avClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:130;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ avClose }}" style="position:fixed;inset:0;z-index:130;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:3px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">Reservas desde la app</span><span style="font-size:13px;line-height:1.45;color:var(--color-neutral-700);text-wrap:pretty">Tus asesorados activos ven tus huecos libres y piden cita. La solicitud te llega a Pendientes y al chat para confirmarla.</span></div><button onClick="{{ avToggle }}" role="switch" aria-label="Reservas desde la app" style="position:relative;width:44px;height:26px;border-radius:999px;border:0;background:{{ avTrack }};cursor:pointer;flex:none;padding:0"><span style="position:absolute;top:3px;left:{{ avKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s"></span></button></div>
     <sc-if value="{{ avIsOn }}" hint-placeholder-val="{{ true }}">
@@ -2973,7 +2975,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ rsOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ rsClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:120;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ rsClose }}" style="position:fixed;inset:0;z-index:120;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(620px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;text-wrap:pretty">{{ rsTitle }}</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ rsSub }}</span></div><button class="btn btn-ghost" onClick="{{ rsClose }}" style="font-size:13px">Cerrar</button></div>
     <sc-if value="{{ rsLoading }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--color-neutral-600)">Cargando sus registros de la app…</span></sc-if>
@@ -2994,7 +2996,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ trOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ trClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ trClose }}" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Papelera</span><button class="btn btn-ghost" onClick="{{ trClose }}" style="font-size:13px">Cerrar</button></div>
     <span style="font-size:13px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Los clientes eliminados se guardan aquí 30 días. Después se borran del todo: ficha, plan, mensajes, registros, fotos, cuestionarios y su acceso a la app.</span>
@@ -3007,7 +3009,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ bkOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ bkClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ bkClose }}" style="position:fixed;inset:0;z-index:140;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Copias de seguridad</span><button class="btn btn-ghost" onClick="{{ bkClose }}" style="font-size:13px">Cerrar</button></div>
     <div style="display:flex;flex-direction:column;gap:8px">
@@ -3029,7 +3031,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ bkAskOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:145;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:145;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ bkAskTitle }}</span>
     <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ bkAskTxt }}</span>
@@ -3039,7 +3041,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ showSessLost }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:160;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:160;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
   <div style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:14px">
     <div style="font-family:var(--font-heading);font-weight:600;font-size:20px">Se ha cambiado la sesión de este navegador</div>
     <p style="margin:0;font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Se ha entrado con otra cuenta o se ha cerrado la sesión en otra pestaña (por ejemplo, en la app de un asesorado). El panel ha dejado de guardar en la nube para no mezclar datos. Tus cambios siguen guardados en este navegador.</p>
@@ -3049,7 +3051,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ showConflict }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:150;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:150;background:rgba(20,40,60,.35);display:flex;align-items:center;justify-content:center;padding:16px">
   <div style="width:min(440px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:14px">
     <div style="font-family:var(--font-heading);font-weight:600;font-size:20px">Hay cambios desde otro dispositivo</div>
     <p style="margin:0;font-size:14px;color:var(--color-neutral-700)">Se guardó una versión más reciente desde el móvil u otro ordenador después de abrir esta pantalla. Elige cuál conservar.</p>
@@ -3059,7 +3061,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ fShareOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ fsClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ fsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:12px"><div style="margin-right:auto;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ fsWho }}</span><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;text-wrap:pretty">{{ fsTitle }}</span></div><button class="btn btn-ghost" onClick="{{ fsClose }}">Cerrar</button></div>
     <sc-if value="{{ fsDone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;padding:8px 12px;border-radius:12px;background:var(--veg-bg);color:var(--veg-ink)">Ya está respondido.</span></sc-if>
@@ -3074,7 +3076,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ feOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(900px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar cuestionario</span><button class="btn btn-ghost" data-esc="1" onClick="{{ feClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ feSave }}">Guardar</button></div>
@@ -3109,7 +3111,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ revOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(1040px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:flex-start;gap:12px"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Biblioteca · Recetas</span><span style="font-family:var(--font-heading);font-weight:600;font-size:22px">Revisión del recetario</span><span style="font-size:13px;color:var(--color-neutral-700);max-width:760px;text-wrap:pretty">{{ revIntro }}</span></div><button class="btn btn-ghost" data-esc="1" onClick="{{ revClose }}">Cerrar</button></div>
@@ -3147,7 +3149,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ lsOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ lsClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ lsClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(900px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:4px;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:21px">Lista de alimentos</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ lsMode }} Los gramos los calcula la app como siempre. Las listas se editan en Biblioteca → Listas de alimentos.</span></div><button class="btn btn-ghost" onClick="{{ lsClose }}">Cerrar</button></div>
     <div style="overflow:auto;padding:16px 22px 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px;background:var(--color-neutral-100)">
@@ -3166,7 +3168,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ leOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(980px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin-right:auto">Editar lista de alimentos</span><button class="btn btn-ghost" data-esc="1" onClick="{{ leClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ leSave }}">Guardar</button></div>
@@ -3195,7 +3197,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ eqiOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ eqiClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ eqiClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 20px 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Equivalencias · {{ eqiCount }}</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ eqiTitle }}</span><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">{{ eqiSub }}</span></div><button class="btn btn-ghost" onClick="{{ eqiClose }}">Cerrar</button></div>
     <div style="overflow:auto;padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px">
@@ -3212,7 +3214,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ nxeOn }}" hint-placeholder-val="{{ false }}">
-<div data-noprint="1" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" style="width:min(580px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:18px 22px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--color-divider)"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px;margin-right:auto">Aviso personalizado</span><button class="btn btn-ghost" data-esc="1" onClick="{{ nxeClose }}">Cancelar</button><button class="btn btn-primary" onClick="{{ nxeSave }}">Guardar</button></div>
     <div style="overflow:auto;padding:16px 22px 22px;display:flex;flex-direction:column;gap:14px">
@@ -3235,7 +3237,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ plansOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ plansClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:80;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ plansClose }}" style="position:fixed;inset:0;z-index:80;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(860px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
     <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:600;font-size:22px;margin-right:auto">Planes Cientia Nutrition</span><button class="btn btn-ghost" onClick="{{ plansClose }}">Cerrar</button></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
@@ -3255,7 +3257,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ caOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ caClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ caClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
     <div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-heading);font-weight:600;font-size:21px;margin-right:auto">Asignar protocolo</span><button class="btn btn-ghost" onClick="{{ caClose }}">Cancelar</button></div>
     <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--color-neutral-700)">Cliente<select class="input" value="{{ caCli }}" onChange="{{ onCaCli }}"><sc-for list="{{ caCliOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.val }}">{{ o.label }}</option></sc-for></select></label>
@@ -3275,7 +3277,7 @@ html,body{height:auto!important;overflow:visible!important}
 </sc-if>
 <sc-if value="{{ cpOn }}" hint-placeholder-val="{{ false }}">
 <x-import component-from-global-scope="CFPortal" hint-size="0px,0px">
-<div class="cf-rep" data-cf-modal="1" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
+<div class="cf-rep" style="position:fixed;inset:0;z-index:1250;background:rgba(18,32,46,.62);display:flex;flex-direction:column;font-family:var(--font-body);color:var(--color-text)">
   <div class="cf-rep-bar" style="background:var(--cf-card);border-bottom:1px solid var(--color-divider);padding:calc(12px + env(safe-area-inset-top)) 20px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px">
     <div style="display:flex;flex-direction:column;margin-right:auto;min-width:0"><span style="font-family:var(--font-heading);font-weight:600;font-size:20px">{{ cpBarT }}</span><span style="font-size:12px;color:var(--color-neutral-700)">Al imprimir, elige «Guardar como PDF».</span></div>
     <button onClick="{{ cpPrintFn }}" style="font:inherit;font-size:14px;font-weight:800;border:0;background:var(--color-accent);color:#fff;border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer">Imprimir / PDF</button>
@@ -3330,7 +3332,7 @@ html,body{height:auto!important;overflow:visible!important}
 </x-import>
 </sc-if>
 <sc-if value="{{ psOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ psClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ psClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(500px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Guardar como preset</span><span style="font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">{{ psInfo }}</span></div><button class="btn btn-ghost" onClick="{{ psClose }}">Cerrar</button></div>
     <input class="input" value="{{ psName }}" onChange="{{ onPsName }}" placeholder="Nombre del preset (p. ej. Definición 4 comidas)" style="font-weight:700">
@@ -3341,7 +3343,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ pnOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ pnClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:76;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ pnClose }}" style="position:fixed;inset:0;z-index:76;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:10px;box-sizing:border-box">
     <span style="font-family:var(--font-heading);font-weight:600;font-size:19px">Nuevo preset · ¿para qué tipo de plan?</span>
     <button onClick="{{ pnOpen }}" style="font:inherit;color:inherit;text-align:left;display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--color-divider);background:var(--cf-card);cursor:pointer" style-hover="border-color:var(--color-accent)"><span style="font-weight:700;font-size:15px">Intercambios</span><span style="font-size:13px;line-height:1.45;color:var(--color-neutral-700);text-wrap:pretty">Cada comida con alternativas al 100 % de su macro. Puedes rellenarlo con una lista de alimentos.</span></button>
@@ -3352,7 +3354,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ paOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ paClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ paClose }}" style="position:fixed;inset:0;z-index:75;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(480px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ paTitle }}</span>
     <span style="font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">{{ paTxt }}</span>
@@ -3370,7 +3372,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ pimOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ pimClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ pimClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Importar recetas privadas</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px">¿Quién puede verlas?</span></div><button class="btn btn-ghost" onClick="{{ pimClose }}">Cancelar</button></div>
     <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Nombre del grupo<input class="input" value="{{ pimGroup }}" onChange="{{ onPimGroup }}"></label>
@@ -3387,7 +3389,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ fdOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ fdClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ fdClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Editar alimento</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ fdName }}</span></div><button class="btn btn-ghost" onClick="{{ fdClose }}">Cerrar</button></div>
     <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700">Nombre<input class="input" value="{{ fdName }}" onChange="{{ onFdName }}"></label>
@@ -3406,7 +3408,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ umOn }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ umClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ umClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box">
     <div style="display:flex;align-items:flex-start;gap:10px"><div style="display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Medida casera</span><span style="font-family:var(--font-heading);font-weight:600;font-size:19px;text-wrap:pretty">{{ umName }}</span></div><button class="btn btn-ghost" onClick="{{ umClose }}">Cerrar</button></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px">
@@ -3428,7 +3430,7 @@ html,body{height:auto!important;overflow:visible!important}
 <div data-noprint="1" class="cf-toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:160;background:{{ toastBg }};color:var(--cf-on-ink);padding:12px 20px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px)"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastMsg }}</div>
 </sc-if>
 <sc-if value="{{ peOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ peClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ peClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(820px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--color-divider)">
       <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ peCtx }}</span>
@@ -3455,7 +3457,7 @@ html,body{height:auto!important;overflow:visible!important}
       </div></sc-if>
       <div style="display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-family:var(--font-heading);font-weight:600;font-size:17px;margin-right:auto">Dieta de ejemplo</span><span style="font-size:12px;color:var(--color-neutral-600)">{{ peMealSum }}</span></div>
-        <sc-if value="{{ peIsOpen }}" hint-placeholder-val="{{ false }}"><div data-cf-in="1" style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:12px;background:var(--color-accent-100)">
+        <sc-if value="{{ peIsOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:12px;background:var(--color-accent-100)">
           <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--color-neutral-700)">Lista de alimentos<select class="input" value="{{ peListVal }}" onChange="{{ onPeList }}" style="background:var(--cf-card)"><sc-for list="{{ peLists }}" as="l" hint-placeholder-count="3"><option value="{{ l.id }}">{{ l.name }}</option></sc-for></select></label>
           <sc-if value="{{ peHasList }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.45;color:var(--color-accent-800);text-wrap:pretty">{{ peListTxt }}</span></sc-if>
           <sc-if value="{{ peNoList }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.45;color:var(--color-accent-800);text-wrap:pretty">Sin lista: cada alimento que añadas en «Editar alimentos» va al 100 % de su macro, como alternativa.</span></sc-if>
@@ -3503,7 +3505,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ reOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ reClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ reClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(780px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:4px">
@@ -3545,7 +3547,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ pkOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ pkClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:65;background:rgba(20,40,60,.22);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ pkClose }}" style="position:fixed;inset:0;z-index:65;background:rgba(20,40,60,.22);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(460px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <sc-if value="{{ pkIsEv }}" hint-placeholder-val="{{ false }}">
       <div style="height:8px;background:{{ pk.dot }}"></div>
@@ -3593,7 +3595,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ evOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ evClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ evClose }}" style="position:fixed;inset:0;z-index:70;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(660px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 12px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
@@ -3656,7 +3658,7 @@ html,body{height:auto!important;overflow:visible!important}
 </div>
 </sc-if>
 <sc-if value="{{ eqOpen }}" hint-placeholder-val="{{ false }}">
-<div data-esc="1" data-noprint="1" onClick="{{ eqClose }}" data-cf-modal="1" style="position:fixed;inset:0;z-index:60;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
+<div data-esc="1" data-noprint="1" onClick="{{ eqClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,40,60,.38);display:flex;align-items:center;justify-content:center;padding:16px">
   <div class="cf-pop" onClick="{{ stop }}" style="width:min(820px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden">
     <div style="padding:20px 22px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--color-divider)">
       <div style="display:flex;align-items:baseline;gap:12px"><div style="margin-right:auto"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">{{ eqCtx }}</div><div style="font-family:var(--font-heading);font-weight:600;font-size:20px">Menú de equivalencias</div></div><button class="btn btn-ghost" onClick="{{ eqClose }}">Cerrar</button></div>
@@ -4360,7 +4362,7 @@ class Component extends DCLogic {
   privImpDo(){const P=this.state.privImp;if(!P)return;const g=String(P.group||'').trim()||'Recetas privadas',cs=new Set((this.state.team||[]).filter(c=>c.role!=='owner').map(c=>String(c.email).toLowerCase())),only=Object.keys(P.sel).filter(k=>P.sel[k]&&cs.has(k)),now=Date.now();let nAdd=0;
     this.setState(st=>{const T=st.tpls||[],byId={};T.forEach(t=>{byId[t.id]=t;});const add=[];
       P.recipes.forEach(r=>{const o=byId[r.id];if(o&&o.only&&(o.grp||'Privadas')===g)return;add.push({...JSON.parse(JSON.stringify(r)),id:o?'p'+uid():r.id,grp:g,only:only.slice(),pat:now});});nAdd=add.length;
-      return {tpls:T.map(t=>t.only&&(t.grp||'Privadas')===g?{...t,only:only.slice()}:t).concat(add),privImp:null,privPv:null,privG:g};},
+      return {tpls:T.map(t=>t.only&&(t.grp||'Privadas')===g?{...t,only:only.slice()}:t).concat(add),privImp:null,privPv:null,privG:g,privOpen:{...(st.privOpen||{}),[g]:true}};},
       ()=>this.toast(nAdd+' recetas importadas en «'+g+'»'+(only.length?' · activas para '+only.length+(only.length===1?' nutricionista':' nutricionistas'):' · sin activar todavía')));}
   privCheck(pv){if(!pv.length){if(this.state.privNew)this.setState({privNew:null});return;}const SK='cf-priv-seen:'+String((this.state.me||{}).email||'').toLowerCase();let seen=[];try{seen=JSON.parse(localStorage.getItem(SK)||'[]')||[];}catch(e){}
     const S=new Set(seen),nw=pv.filter(t=>!S.has(t.id));if(!nw.length){if(this.state.privNew)this.setState({privNew:null});return;}
@@ -4506,7 +4508,6 @@ class Component extends DCLogic {
   pvZoom(){const w=document.getElementById('cf-vista-wrap'),a=document.getElementById('cf-vista-pdf');if(!w||!a)return;const W=a.style.width==='1120px'?1120:0,z=W&&w.clientWidth>0?Math.min(1,w.clientWidth/W):1,zs=z<0.999?String(Math.round(z*1000)/1000):'';if(a.style.zoom!==zs)a.style.zoom=zs;}
   componentDidUpdate(pp,ps){
     this.applyBrand();this.pvFit();
-    {const S=this.state,k=S.view+'|'+(S.view==='client'?S.activeId:''),k2=k+'|'+(S.tab||'')+'|'+(S.libTab||'')+'|'+(S.cutTab||'');if(this._mvK!==undefined&&this._mvK!==k2&&window.CFMotion){const same=this._mvK.split('|').slice(0,2).join('|')===k;CFMotion.enter(document.querySelector('main.cf-fade'),same?{y:4,o:.35,d:180}:{y:6});}this._mvK=k2;}
     {const tdI=!!(this.state.td&&this.state.td.mode==='import');if(tdI&&!this._tdF){this._tdF=true;setTimeout(()=>{const el=document.getElementById('cf-td-q');if(el)el.focus();},40);}else if(!tdI)this._tdF=false;}
     if(this.state.qk&&!this._qkF){this._qkF=true;setTimeout(()=>{const el=document.getElementById('cf-qk-in');if(el)el.focus();},40);}else if(!this.state.qk)this._qkF=false;
     {const st=this.state;if(this._cloud&&st.view==='client'&&st.tab==='prog'&&st.activeId){const k=st.activeId;if(this._dlaK!==k||Date.now()-(this._dlaT||0)>120000){this._dlaK=k;this._dlaT=Date.now();this.loadDaylogsAll(k);}}}
@@ -5667,7 +5668,7 @@ class Component extends DCLogic {
           v.pgNone=!Object.keys(G).length;v.pgImport=e=>this.importPrivRecipes(e);
           const GK=Object.keys(G).sort((x,y)=>x.localeCompare(y,'es')),gSel=GK.includes(s.privG)?s.privG:GK[0],stOf=R=>{const only=R[0].only||[];return R.every(t=>t.off)?'en pausa':only.some(em=>COs.some(c=>String(c.email).toLowerCase()===em))?'activo':'sin activar';};
           v.pgHas=GK.length>0;v.pgSel=gSel||'';v.pgOpts=GK.map(g=>({v:g,l:g+' · '+G[g].length+' recetas · '+stOf(G[g])}));v.pgCount=GK.length===1?'1 grupo':GK.length+' grupos';v.pgPick=e=>this.setState({privG:e.target.value,privPv:null,privPq:'',privDel:null});
-          v.pgCards=GK.filter(g=>g===gSel).map(g=>{const R=G[g],only=R[0].only||[],off=R.every(t=>t.off),nD=R.filter(t=>t.cat==='Desayunos').length,nC=R.length-nD,at=Math.max(0,...R.map(t=>t.pat||0)),pv=s.privPv===g,q=norm(s.privPq||''),act=only.filter(em=>COs.some(c=>String(c.email).toLowerCase()===em));
+          v.pgCards=GK.map(g=>{const R=G[g],only=R[0].only||[],off=R.every(t=>t.off),nD=R.filter(t=>t.cat==='Desayunos').length,nC=R.length-nD,at=Math.max(0,...R.map(t=>t.pat||0)),pv=s.privPv===g,q=norm(s.privPq||''),act=only.filter(em=>COs.some(c=>String(c.email).toLowerCase()===em));
             const st=off?['En pausa','var(--warn-bg)','var(--warn)']:act.length?['Activo','var(--ok-bg)','var(--ok)']:['Sin activar','var(--color-neutral-200)','var(--color-neutral-700)'];
             const L=pv?R.filter(t=>!q||norm(t.name).includes(q)):[];
             return {name:g,meta:R.length+' recetas'+(nD?' · '+nD+' desayunos':'')+(nC?' · '+nC+' comidas':'')+(at?' · importado el '+fD(at):''),stL:st[0],stBg:st[1],stFg:st[2],
@@ -5675,7 +5676,7 @@ class Component extends DCLogic {
               who:off?'En pausa: ahora no lo recibe nadie.'+(act.length?' Al reactivarlo vuelven a verlo: '+act.map(nmOf).join(', ')+'.':''):act.length?'Lo ven: '+act.map(nmOf).join(', '):'Nadie lo recibe todavía. Actívalo abajo para cada nutricionista.',
               noCo:!COs.length&&!!s.team,coLoad:!s.team,rowsOp:off?'.5':'1',
               coaches:COs.map(c=>{const em=String(c.email).toLowerCase(),on=only.includes(em),sd=c.plan==='standard';return {l:c.name||c.email,sub:c.email+(sd?' · Estándar: no lo recibe hasta pasar a Premium':''),...SWp(on),aria:(on?'Desactivar para ':'Activar para ')+(c.name||c.email),tog:()=>this.setPrivOnly(g,on?only.filter(x=>x!==em):only.concat([em]))};}),
-              actN:act.length+' de '+COs.length+' activados',allOn:()=>this.setPrivOnly(g,COs.map(c=>String(c.email).toLowerCase())),allOff:()=>this.setPrivOnly(g,[]),nR:R.length+' recetas',chev:pv?'rotate(90deg)':'rotate(0deg)',pvTog:()=>this.setState({privPv:pv?null:g,privPq:''}),pvOn:pv,pq:s.privPq||'',onPq:e=>this.setState({privPq:e.target.value}),
+              actN:act.length+' de '+COs.length+' activados',open:!!(s.privOpen||{})[g],gChev:(s.privOpen||{})[g]?'rotate(90deg)':'rotate(0deg)',sum:R.length+' recetas · '+(off?'en pausa':act.length===1?'1 nutricionista':act.length+' nutricionistas'),tog:()=>this.setState(st=>({privOpen:{...(st.privOpen||{}),[g]:!(st.privOpen||{})[g]}})),allOn:()=>this.setPrivOnly(g,COs.map(c=>String(c.email).toLowerCase())),allOff:()=>this.setPrivOnly(g,[]),nR:R.length+' recetas',chev:pv?'rotate(90deg)':'rotate(0deg)',pvTog:()=>this.setState({privPv:pv?null:g,privPq:''}),pvOn:pv,pq:s.privPq||'',onPq:e=>this.setState({privPq:e.target.value}),
               list:L.map(t=>({n:t.name,c:t.cat||'',no:(t.opts&&t.opts[0]&&t.opts[0].note)||''})),pvCount:pv?(q?L.length+' de '+R.length:R.length+' recetas'):'',
               dl:()=>this.privExport(g),common:()=>this.privCommon(g),delL:s.privDel===g?'¿Eliminar? Pulsa otra vez':'Eliminar grupo',del:()=>{if(s.privDel!==g){this.setState({privDel:g});return;}this.privDelete(g);}};});}
         if(s.privImp&&ceo){const P=s.privImp,T=s.tpls||[],g=String(P.group||'').trim(),ex=T.filter(t=>t.only&&(t.grp||'Privadas')===g),exIds=new Set(ex.map(t=>t.id)),nNew=P.recipes.filter(r=>!exIds.has(r.id)).length,n=COs.filter(c=>P.sel[String(c.email).toLowerCase()]).length;
@@ -5827,11 +5828,12 @@ class Component extends DCLogic {
       const FR=coachV?coachItems('foods').map(({x,L})=>({f:nFood(x),x,L})):allFoods.filter(f=>ceo||src==='all'||(src==='own')===(f._s==='own')).map(f=>({f,x:f}));
       const rows=FR.filter(({f})=>(!q||norm(f.name).includes(q))&&(!s.foodCat||f.cat===s.foodCat)&&(!s.onlyBadK||f.kBad)&&(!s.onlyFibE||(f.fe&&!f.fo)));
       {const nE=allFoods.filter(f=>f.fe&&!f.fo).length;v.fibRevOn=nE>0||!!s.onlyFibE;v.fibRevTxt=s.onlyFibE?'Mostrando '+rows.length+' alimentos con fibra estimada':nE+' alimentos tienen la fibra estimada: revísala cuando puedas';v.fibRevBtn=s.onlyFibE?'Ver todos':'Revisar fibra';v.fibRevFn=()=>this.setState({onlyFibE:!s.onlyFibE});}
-      v.foodQuery=s.foodQuery;v.onFoodQuery=e=>this.setState({foodQuery:e.target.value});
-      v.foodCat=s.foodCat;v.onFoodCat=e=>this.setState({foodCat:e.target.value});
+      v.foodQuery=s.foodQuery;v.onFoodQuery=e=>this.setState({foodQuery:e.target.value,foodLim:80});
+      v.foodCat=s.foodCat;v.onFoodCat=e=>this.setState({foodCat:e.target.value,foodLim:80});
       v.foodCount=rows.length+' alimentos · valores por 100 g · kcal = P×4 + C×4 + G×9';
       v.showNewFood=s.showNewFood;v.newFoodLabel=s.showNewFood?'Cerrar':'Nuevo alimento';v.toggleNewFood=()=>this.setState({showNewFood:!s.showNewFood});
-      v.foodRows=rows.map(({f,x,L})=>({...meta('foods',x,L),...(()=>{const o=!L&&ownF[f.id],b=o&&bIdx('foods')[f.id],ok=!!o&&(ceo||!(b&&b.byId!==this.uid)),sv=y=>y==null?'':String(y).replace('.',',');return {canEd:ok,edit:()=>{if(ok)this.setState({fdEd:{id:o.id,name:o.name||'',cat:o.cat||CATS[0],p:sv(o.p),c:sv(o.c),f:sv(o.f),fb:sv(f.fb),al:o.al||''}});}};})(),name:f.name,al:f.al,cat:f.cat,mtags:macroTags(f).map(k=>({l:MLBL[k],bg:MBG[k],ink:MINK[k]})),um:(u=>u?u.n+' · '+String(u.g).replace('.',',')+' g':'+ Medida')(unitOf(f)),umFg:unitOf(f)?'var(--color-text)':'var(--color-neutral-500)',umEdit:()=>this.setState({umEd:{fid:f.id,name:f.name,...(unitOf(f)||{n:'',pl:'',g:''})}}),kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f,fbV:(s.fibDr||{})[f.id]!=null?s.fibDr[f.id]:(f.fb==null?'':String(f.fb).replace('.',',')),fbEst:!!f.fe&&!f.fo,fbMan:!!f.fo,fbBd:f.fo?'var(--warn-mid)':(f.fe?'var(--warn-bd)':'var(--color-divider)'),
+      const fLim=s.foodLim||80,fSh=v.isFoods?rows.slice(0,fLim):[];v.foodMore=rows.length>fLim;v.foodMoreL='Ver '+Math.min(200,rows.length-fLim)+' más · quedan '+(rows.length-fLim);v.foodMoreFn=()=>this.setState({foodLim:fLim+200});
+      v.foodRows=fSh.map(({f,x,L})=>({...meta('foods',x,L),...(()=>{const o=!L&&ownF[f.id],b=o&&bIdx('foods')[f.id],ok=!!o&&(ceo||!(b&&b.byId!==this.uid)),sv=y=>y==null?'':String(y).replace('.',',');return {canEd:ok,edit:()=>{if(ok)this.setState({fdEd:{id:o.id,name:o.name||'',cat:o.cat||CATS[0],p:sv(o.p),c:sv(o.c),f:sv(o.f),fb:sv(f.fb),al:o.al||''}});}};})(),name:f.name,al:f.al,cat:f.cat,mtags:macroTags(f).map(k=>({l:MLBL[k],bg:MBG[k],ink:MINK[k]})),um:(u=>u?u.n+' · '+String(u.g).replace('.',',')+' g':'+ Medida')(unitOf(f)),umFg:unitOf(f)?'var(--color-text)':'var(--color-neutral-500)',umEdit:()=>this.setState({umEd:{fid:f.id,name:f.name,...(unitOf(f)||{n:'',pl:'',g:''})}}),kBad:!!f.kBad,kd:f.kd,k:f.k,p:f.p,c:f.c,f:f.f,fbV:(s.fibDr||{})[f.id]!=null?s.fibDr[f.id]:(f.fb==null?'':String(f.fb).replace('.',',')),fbEst:!!f.fe&&!f.fo,fbMan:!!f.fo,fbBd:f.fo?'var(--warn-mid)':(f.fe?'var(--warn-bd)':'var(--color-divider)'),
         onFb:e=>{const y=e.target.value;this.setState(st=>({fibDr:{...(st.fibDr||{}),[f.id]:y}}));},onFbKey:e=>{if(e.key==='Enter')e.target.blur();},
         onFbBl:e=>{const y=String(e.target.value).replace(',','.').trim();this.setState(st=>{const D={...(st.fibDr||{})};delete D[f.id];const O={...(st.fibOv||{})};if(y===''){delete O[f.id];}else if(num(y)!==num(f.fb)||!f.fo)O[f.id]=Math.max(0,Math.round(num(y)*10)/10);return {fibDr:D,fibOv:Object.keys(O).length?O:null};});},
         fbReset:()=>this.setState(st=>{const O={...(st.fibOv||{})};delete O[f.id];return {fibOv:Object.keys(O).length?O:null};})}));

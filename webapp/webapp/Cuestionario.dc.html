@@ -40,7 +40,7 @@
       <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--color-neutral-700)"><span>{{ secLabel }}</span><span style="font-variant-numeric:tabular-nums">Paso {{ stepN }} de {{ stepT }}</span></div>
       <div style="height:6px;border-radius:999px;background:var(--color-accent-100);overflow:hidden"><div style="height:100%;width:{{ progW }};background:var(--color-accent);border-radius:999px;transition:width .3s ease"></div></div>
     </div>
-    <section data-cf-step="1" style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:22px">
+    <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:20px 18px;display:flex;flex-direction:column;gap:22px">
       <sc-for list="{{ qs }}" as="q" hint-placeholder-count="4">
         <div id="{{ q.id }}" style="display:flex;flex-direction:column;gap:8px">
           <sc-if value="{{ q.showLabel }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:15px;line-height:1.35;text-wrap:pretty">{{ q.label }}<sc-if value="{{ q.req }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent)"> *</span></sc-if></span></sc-if>
@@ -83,7 +83,7 @@
 class Component extends DCLogic {
   state={st:'loading',ans:{},step:0,tried:false,busy:false};
   componentDidMount(){this.tk=this.props.token||new URLSearchParams(location.search).get('t')||'';this.boot(0);}
-  componentDidUpdate(pp,ps){if(ps&&ps.step!==this.state.step){const el=document.querySelector('[data-cf-step]');let rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}if(el&&el.animate&&!rm)el.animate([{opacity:0,transform:'translateX('+(this.state.step>ps.step?14:-14)+'px)'},{opacity:1,transform:'none'}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'});}if(this.props.token&&pp.token!==this.props.token){this.tk=this.props.token;this.setState({st:'loading',step:0,tried:false,sendErr:''});this.boot(0);}}
+  componentDidUpdate(pp){if(this.props.token&&pp.token!==this.props.token){this.tk=this.props.token;this.setState({st:'loading',step:0,tried:false,sendErr:''});this.boot(0);}}
   client(){if(this.props.sb)return this.props.sb;if(this._sb)return this._sb;const c=window.CF_CONFIG;if(!c||!c.url||!window.supabase)return null;this._sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,storageKey:'cf-form-anon'}});return this._sb;}
   boot(n){if(!this.tk){this.setState({st:'bad'});return;}
     if(!window.CFForms||!(this.props.sb||(window.supabase&&window.CF_CONFIG))){if(n>100){this.setState({st:'err'});return;}setTimeout(()=>this.boot(n+1),100);return;}
