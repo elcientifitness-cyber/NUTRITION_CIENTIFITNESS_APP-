@@ -1,7 +1,7 @@
 /* Cientia · detector de fallos. CFBug.init({app,sb,screen,ctx,hint,pos,demo}); CFBug.watch(msg); CFBug.local() */
 (function(){
 if(window.CFBug)return;
-var V='cf-v48',ABC='23456789ABCDEFGHJKMNPQRSTUVWXYZ',cfg=null,pre=[],seen={},nAuto=0,nToast=0,clicks=[],mem=[],t0=Date.now(),root=null,sheet=null,toastEl=null,toastT=0;
+var V='cf-v49',ABC='23456789ABCDEFGHJKMNPQRSTUVWXYZ',cfg=null,pre=[],seen={},nAuto=0,nToast=0,clicks=[],mem=[],t0=Date.now(),root=null,sheet=null,toastEl=null,toastT=0;
 var NOISE=/ResizeObserver|^Script error\.?$|Non-Error promise rejection|AbortError|aborted|Failed to fetch|Load failed|NetworkError|network error|cancell?ed|extension:\/\/|Importing a module script failed|play\(\) request|NotAllowedError|QuotaExceeded|The operation is insecure|ServiceWorker/i;
 function code(){var s='CF-';for(var i=0;i<5;i++)s+=ABC[Math.floor(Math.random()*ABC.length)];return s;}
 function scr(){try{return cfg&&cfg.screen?String(cfg.screen()||''):'';}catch(e){return '';}}
