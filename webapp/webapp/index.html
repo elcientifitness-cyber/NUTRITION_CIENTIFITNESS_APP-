@@ -1239,7 +1239,8 @@ html,body{height:auto!important;overflow:visible!important}
       </div>
       <button class="btn btn-secondary" onClick="{{ rsOpen }}" style="min-height:52px;padding:0 18px;border-radius:12px;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path></svg>Resumen de revisión</button>
       <sc-if value="{{ hasLogs }}" hint-placeholder-val="{{ true }}"><button class="btn btn-secondary" onClick="{{ openRep }}" style="min-height:52px;padding:0 18px;border-radius:12px;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h4"></path></svg>Informe PDF</button></sc-if>
-      <button onClick="{{ openLogForm }}" class="cf-lift" style="font:inherit;display:flex;align-items:center;gap:14px;padding:12px 26px 12px 12px;min-height:68px;border:0;border-radius:14px;background:linear-gradient(180deg,var(--color-accent-500),var(--color-accent));color:#fff;cursor:pointer;text-align:left;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 26px color-mix(in srgb,var(--color-accent) 30%,transparent)">
+      <button ref="{{ pastRef }}" class="btn btn-secondary" onClick="{{ openPastLog }}" title="Para registrar mediciones anteriores a empezar con Cientia" style="min-height:52px;padding:0 18px;border-radius:12px;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 7v5l3 2"></path></svg>Medición pasada</button>
+<button onClick="{{ openLogForm }}" class="cf-lift" style="font:inherit;display:flex;align-items:center;gap:14px;padding:12px 26px 12px 12px;min-height:68px;border:0;border-radius:14px;background:linear-gradient(180deg,var(--color-accent-500),var(--color-accent));color:#fff;cursor:pointer;text-align:left;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 26px color-mix(in srgb,var(--color-accent) 30%,transparent)">
         <span style="width:44px;height:44px;border-radius:14px;background:color-mix(in srgb,var(--cf-card) 20%,transparent);display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" style="display:block;stroke:currentColor;stroke-width:2.5;fill:none;stroke-linecap:round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span>
         <span style="display:flex;flex-direction:column;gap:5px">
           <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1.15">Nueva medición</span>
@@ -1617,7 +1618,7 @@ html,body{height:auto!important;overflow:visible!important}
           <thead><tr><th>Fecha</th><th style="text-align:right">Peso</th><th style="text-align:right">% grasa</th><th style="text-align:right">Masa magra</th><th style="text-align:right">Σ6</th><th style="text-align:right">Σ8</th><th style="text-align:right">Cintura</th><th style="text-align:right">Cadera</th><th></th></tr></thead>
           <tbody>
             <sc-for list="{{ logRows }}" as="r" hint-placeholder-count="5">
-              <tr><td style="font-weight:600">{{ r.date }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.peso }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.bf }}<div style="font-size:11px;color:var(--color-neutral-600)">{{ r.meth }}</div></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.lbm }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s6 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s8 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cin }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cad }}</td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost" onClick="{{ r.edit }}" style="font-size:12px">Editar</button><button class="btn btn-ghost" onClick="{{ r.del }}" style="font-size:12px">{{ r.delLabel }}</button></td></tr>
+              <tr><td style="font-weight:600">{{ r.date }}<sc-if value="{{ r.hist }}" hint-placeholder-val="{{ false }}"><div><span style="display:inline-block;margin-top:3px;font-size:10px;font-weight:800;letter-spacing:.04em;padding:1px 7px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700)">Histórica</span></div></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.peso }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.bf }}<div style="font-size:11px;color:var(--color-neutral-600)">{{ r.meth }}</div></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.lbm }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s6 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.s8 }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cin }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.cad }}</td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost" onClick="{{ r.edit }}" style="font-size:12px">Editar</button><button class="btn btn-ghost" onClick="{{ r.del }}" style="font-size:12px">{{ r.delLabel }}</button></td></tr>
             </sc-for>
           </tbody>
         </table>
@@ -4200,7 +4201,7 @@ class Component extends DCLogic {
     sr:null,srQuery:'',srFilter:'all',srSel:[],srCreate:false,
     nf:{name:'',cat:'Carnes',k:'',p:'',c:'',f:'',al:''},showNewFood:false,foodQuery:'',foodCat:'',
     td:null,tdName:'',shopDays:7,logForm:null,confirmLog:null,auth:'checking',dirty:false,saving:false,conflict:false,toast:null,toastBad:false,loginEmail:(()=>{try{return localStorage.getItem('cf-last-email')||'elcientifitness@gmail.com';}catch(e){return 'elcientifitness@gmail.com';}})(),loginPass:'',loginErr:null,syncErr:false};
-  lfBodyRef=React.createRef();lfDateRef=React.createRef();lfFileRef=React.createRef();
+  lfBodyRef=React.createRef();lfDateRef=React.createRef();pastRef=React.createRef();lfFileRef=React.createRef();
   async uploadLogPhotos(files,day,key,cloud){
     const upd=fn=>this.setState(st=>st.logForm&&st.logForm.step==='photos'?{logForm:{...st.logForm,...fn(st.logForm)}}:null);
     upd(()=>({busy:true,err:null}));const urls=[];
@@ -5089,9 +5090,9 @@ class Component extends DCLogic {
             v.tipRows=g.ser.map(se=>{const q=se.meta,val=rc[hov].c[se.k],df=val!=null&&se.v0!=null&&se.pts.length&&se.pts[0].j!==hov?val-se.v0:null;
               return {c:se.color,label:q[1],val:val!=null?fx(val,q[3])+(q[2]?' '+q[2]:''):'—',delta:df==null?'':sgn(df,q[3])};});}
         }
-        v.logRows=comps.slice().reverse().map(x=>({date:fd(x.l.date)+' '+x.l.date.slice(0,4),peso:fx(x.c.w,1)+' kg',bf:x.c.bf!=null?fx(x.c.bf,1)+' %':'—',meth:x.c.method?PNAME[x.c.method]:'',lbm:x.c.lbm!=null?fx(x.c.lbm,1)+' kg':'—',s6:x.c.s6!=null?fx(x.c.s6,0)+' mm':'—',s8:x.c.s8!=null?fx(x.c.s8,0)+' mm':'—',cin:x.c.cintura?fx(x.c.cintura,1)+' cm':'—',cad:x.c.cadera?fx(x.c.cadera,1)+' cm':'—',
+        v.logRows=comps.slice().reverse().map(x=>({hist:!!x.l.hist,date:fd(x.l.date)+' '+x.l.date.slice(0,4),peso:fx(x.c.w,1)+' kg',bf:x.c.bf!=null?fx(x.c.bf,1)+' %':'—',meth:x.c.method?PNAME[x.c.method]:'',lbm:x.c.lbm!=null?fx(x.c.lbm,1)+' kg':'—',s6:x.c.s6!=null?fx(x.c.s6,0)+' mm':'—',s8:x.c.s8!=null?fx(x.c.s8,0)+' mm':'—',cin:x.c.cintura?fx(x.c.cintura,1)+' cm':'—',cad:x.c.cadera?fx(x.c.cadera,1)+' cm':'—',
           edit:()=>{const l=x.l,st=o=>{const r={};Object.keys(o||{}).forEach(k=>{r[k]=String(o[k]);});return r;},plT={};PL.forEach(([k])=>{const T=l.plT&&l.plT[k];if(T&&T.some(q=>q>0))plT[k]=T.map(q=>q>0?String(q):'').concat(['','','']).slice(0,3);else if(num((l.pl||{})[k])>0)plT[k]=[String(l.pl[k]),'',''];});
-            const nf={step:'form',editId:l.id,date:l.date,peso:String(l.peso||''),pl:st(l.pl),plT,per:st(l.per),dia:st(l.dia)};nf.orig=sigLF(nf);document.body.style.overflow='hidden';this.setState({lfAsk:false,logForm:nf,confirmLog:null});},
+            const nf={step:'form',editId:l.id,hist:!!l.hist,date:l.date,peso:String(l.peso||''),pl:st(l.pl),plT,per:st(l.per),dia:st(l.dia)};nf.orig=sigLF(nf);document.body.style.overflow='hidden';this.setState({lfAsk:false,logForm:nf,confirmLog:null});},
           delLabel:s.confirmLog===x.l.id?'¿Eliminar?':'Eliminar',del:()=>{if(s.confirmLog===x.l.id){this.updC(n=>{n.logs=(n.logs||[]).filter(q=>q.id!==x.l.id);});this.setState({confirmLog:null});}else this.setState({confirmLog:x.l.id});}}));
         const lf=s.logForm,dL=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
         const byId=id=>comps.find(x=>x.l.id===id);let cA=byId(s.cmpA)||first,cB=byId(s.cmpB)||last;if(cA&&cB&&cA.t>cB.t){const t0=cA;cA=cB;cB=t0;}
@@ -5125,7 +5126,8 @@ class Component extends DCLogic {
           v.repNote=RP.note;v.onRepNote=e=>{const t=e.target.value;this.setState(st=>({rep:{...st.rep,note:t}}));};v.repNoteCls=RP.note.trim()?'cf-rep-avoid':'cf-rep-avoid cf-rep-np';
           {const ph=this.myPhone?this.myPhone():'';v.repFoot=ph?'Dudas por WhatsApp: '+ph:'';}
         }
-        v.openLogForm=()=>{document.body.style.overflow='hidden';const nf={step:'form',date:iso(Date.now()),peso:last&&last.c.w?String(last.c.w):String(cl.calc.peso||''),pl:{},plT:{},per:{},dia:{}};nf.orig=sigLF(nf);this.setState({lfAsk:false,logForm:nf});setTimeout(()=>{const b=this.lfBodyRef.current;if(b)try{b.focus({preventScroll:true});}catch(x){}},80);};
+        const openLF=o=>{o=o||{};document.body.style.overflow='hidden';const nf={step:'form',date:o.date||iso(Date.now()),hist:!!o.hist,peso:o.hist?'':(last&&last.c.w?String(last.c.w):String(cl.calc.peso||'')),pl:{},plT:{},per:{},dia:{}};nf.orig=sigLF(nf);this.setState({lfAsk:false,logForm:nf});setTimeout(()=>{const b=this.lfBodyRef.current;if(b)try{b.focus({preventScroll:true});}catch(x){}},80);};
+        v.openLogForm=()=>openLF();v.pastRef=this.pastRef;v.openPastLog=()=>{const y=iso(Date.now()-864e5),el=this.pastRef.current;if(el&&window.CFDate)window.CFDate.open(el,y,val=>{if(val)openLF({date:val,hist:true});},{max:y});else openLF({date:y,hist:true});};
         v.lfOpen=!!lf;
         if(lf){
           const closeLF=()=>{document.body.style.overflow='';this.setState({logForm:null,lfAsk:false});};
@@ -5133,7 +5135,7 @@ class Component extends DCLogic {
           v.lfClose=()=>{if(dirty&&!s.lfAsk){this.setState({lfAsk:true});return;}closeLF();};
           v.lfCloseLabel=ask?'¿Descartar lo anotado?':'Cerrar';v.lfCloseBg=ask?'var(--danger)':'var(--color-neutral-100)';v.lfCloseFg=ask?'var(--cf-on-ink)':'var(--color-text)';
           v.lfIsForm=isForm;v.lfIsPh=!isForm;v.lfBodyRef=this.lfBodyRef;v.lfDateRef=this.lfDateRef;v.lfFileRef=this.lfFileRef;
-          v.lfTitle=isForm?(lf.editId?'Editar medición':'Nueva medición'):'Fotos de la medición';v.lfSub=(cl.name||'Cliente')+' · '+dL(lf.date);
+          v.lfTitle=isForm?(lf.editId?'Editar medición':lf.hist?'Medición pasada':'Nueva medición'):'Fotos de la medición';v.lfSub=(cl.name||'Cliente')+' · '+dL(lf.date)+(lf.hist?' · histórica':'');
           v.lfKey=e=>{if(e.key==='Escape'){e.preventDefault();v.lfClose();return;}
             const t=e.target;if(e.key==='Enter'&&t&&t.classList&&t.classList.contains('cf-mf')){e.preventDefault();const all=[...e.currentTarget.querySelectorAll('input.cf-mf')].filter(x=>x===t||x.getAttribute('data-skip')!=='1'),nx=all[all.indexOf(t)+(e.shiftKey?-1:1)];if(nx){nx.focus();try{nx.select();}catch(x){}}else t.blur();}};
           if(isForm){
@@ -5183,7 +5185,7 @@ class Component extends DCLogic {
             v.lfFoot=!canSave?'Indica el peso para poder guardar.':pc.bf!=null?'Estimación: '+fx(pc.bf,1)+' % de grasa ('+PNAME[pc.method]+')'+(pc.lbm!=null?' · masa magra '+fx(pc.lbm,1)+' kg':''):'Enter pasa al siguiente campo · Mayús + Enter vuelve al anterior';
             v.lfWarn=nWarn>0;v.lfWarnText=nWarn===1?'1 valor muy distinto del anterior: revísalo antes de guardar':nWarn+' valores muy distintos del anterior: revísalos antes de guardar';
             v.saveLog=()=>{if(!canSave)return;const clean=o=>{const r={};Object.keys(o||{}).forEach(k=>{if(num(o[k])>0)r[k]=num(o[k]);});return r;};
-              const e={id:lf.editId||uid(),date:lf.date,peso:pw,pl:clean(lf.pl),per:clean(lf.per),dia:clean(lf.dia),plT:{}};
+              const e={id:lf.editId||uid(),date:lf.date,peso:pw,pl:clean(lf.pl),per:clean(lf.per),dia:clean(lf.dia),plT:{}};if(lf.hist)e.hist=true;
               Object.keys(lf.plT||{}).forEach(k=>{const T=(lf.plT[k]||[]).map(num);if(T.filter(x=>x>0).length>1)e.plT[k]=T.map(x=>x>0?x:0);});
               if(lf.editId){this.updC(n=>{n.logs=(n.logs||[]).map(q=>q.id===lf.editId?{...q,...e}:q);});closeLF();this.toast('Medición actualizada');return;}
               this.updC(n=>{n.logs=(n.logs||[]).concat([e]);});
@@ -5272,7 +5274,7 @@ class Component extends DCLogic {
         {const D0=(cl.dayT&&cl.dayT.days)||[],kf=x=>R(x).toLocaleString('es-ES');
           const setDay=(i,fn)=>this.updC(n=>{n.dayT=n.dayT||{};const D=n.dayT.days=n.dayT.days||[];for(let j=0;j<7;j++)D[j]=D[j]||{type:'auto'};fn(D[i]);});
           const nAdj=D0.filter(d=>d&&d.type&&d.type!=='auto').length;
-          v.dayAdjOpen=!!s.dayAdjOpen&&!open;v.dayAdjChev=v.dayAdjOpen?'rotate(90deg)':'rotate(0deg)';v.dayAdjToggle=()=>this.setState({dayAdjOpen:!s.dayAdjOpen});v.dayAdjOn=DP.adj;
+          v.dayAdjOpen=!!s.dayAdjOpen;v.dayAdjChev=v.dayAdjOpen?'rotate(90deg)':'rotate(0deg)';v.dayAdjToggle=()=>this.setState({dayAdjOpen:!s.dayAdjOpen});v.dayAdjOn=DP.adj;
           v.dayAdjSub=DP.adj?nAdj+(nAdj===1?' día ajustado':' días ajustados')+' · media '+kf(DP.avg)+' kcal/día':'Refeeds, recortes u ondulación de kcal manteniendo el promedio semanal de Necesidades';
           if(v.dayAdjOpen){const days=DP.days,sm=k=>days.reduce((a,d)=>a+d[k],0),avg=sm('k')/7,diff=avg-TW.k,ok=Math.abs(diff)<15&&!DP.neg;
             v.daWeekK=kf(TW.k);v.daWeekMac='P '+TW.p+' · C '+TW.c+' · G '+TW.f+' g';v.daWeekTot=kf(TW.k*7)+' kcal';v.daWeekTotMac='P '+kf(TW.p*7)+' · C '+kf(TW.c*7)+' · G '+kf(TW.f*7)+' g';
