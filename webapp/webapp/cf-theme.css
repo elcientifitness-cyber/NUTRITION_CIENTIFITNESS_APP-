@@ -195,7 +195,7 @@ select.input[data-open="1"]{border-color:var(--color-accent-300);box-shadow:0 0 
 .cf-mf[data-g="per"]:focus{border-color:var(--ok-mid)!important;box-shadow:0 0 0 4px var(--veg-bg)}
 .cf-mf[data-g="dia"]:focus{border-color:var(--warn-mid)!important;box-shadow:0 0 0 4px var(--carb-bg)}
 /* Informe de progreso: al imprimir solo sale la hoja */
-@media print{
+@media print{[data-fold-body]{display:flex!important}
   body.cf-rep-on{background:var(--cf-card)!important}
   body.cf-rep-on>*:not(.cf-rep){display:none!important}
   body.cf-rep-on .cf-rep{position:static!important;display:block!important;background:var(--cf-card)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}

@@ -279,10 +279,11 @@ button{-webkit-user-select:none;user-select:none}
 
     <sc-for list="{{ meals }}" as="m" hint-placeholder-count="3">
       <section style="background:var(--cf-card);border-radius:16px;box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:18px;margin-right:auto">{{ m.name }}</span><span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;background:{{ m.stBg }};color:{{ m.stFg }}">{{ m.stLabel }}</span></div>
+<button onClick="{{ m.tog }}" aria-expanded="{{ m.openS }}" style="font:inherit;color:inherit;text-align:left;display:flex;flex-direction:column;gap:8px;border:0;background:transparent;padding:0;margin:0;cursor:pointer;width:100%">
+          <div style="display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;color:var(--color-neutral-600);transition:transform .2s;transform:{{ m.chev }}"><path d="m9 18 6-6-6-6"></path></svg><span style="display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0"><span style="font-weight:800;font-size:18px">{{ m.name }}</span><sc-if value="{{ m.sumOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:600;color:var(--color-neutral-700)">{{ m.sum }}</span></sc-if></span><span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;background:{{ m.stBg }};color:{{ m.stFg }}">{{ m.stLabel }}</span></div>
           <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:6px;border-radius:999px;background:var(--color-neutral-200);overflow:hidden"><div data-cf-bar="x" style="height:100%;width:{{ m.pct }};background:{{ m.bar }};border-radius:999px;transition:width .3s"></div></div><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;flex:none">{{ m.kLabel }}</span></div>
-        </div>
+</button>
+<sc-if value="{{ m.open }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:12px">
         <sc-if value="{{ m.hasOpts }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--color-neutral-200);border-radius:20px;align-self:flex-start;max-width:100%;box-sizing:border-box"><sc-for list="{{ m.optSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" aria-label="{{ o.aria }}" style="font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};cursor:pointer;min-height:36px;min-width:40px">{{ o.label }}</button></sc-for></div>
           <sc-if value="{{ m.hasOptCur }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;color:var(--color-neutral-700);text-wrap:pretty">{{ m.optCur }}</span></sc-if>
@@ -347,6 +348,7 @@ button{-webkit-user-select:none;user-select:none}
           <button onClick="{{ m.all }}" style="font:inherit;font-size:13px;font-weight:800;min-height:44px;border-radius:14px;border:0;background:{{ m.allBg }};color:{{ m.allFg }};cursor:pointer">{{ m.allLabel }}</button>
           <button onClick="{{ m.add }}" style="font:inherit;font-size:13px;font-weight:800;min-height:44px;border-radius:14px;border:1.5px dashed var(--warn-mid);background:var(--cf-card);color:var(--carb-ink);cursor:pointer">+ Otro alimento</button>
         </div>
+</div></sc-if>
       </section>
     </sc-for>
     <sc-if value="{{ noMeals }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:16px;border-radius:12px;background:var(--cf-card);color:var(--color-neutral-700);font-size:14px">Tu plan aún no tiene comidas para este día.</p></sc-if>
@@ -435,13 +437,15 @@ button{-webkit-user-select:none;user-select:none}
       <sc-if value="{{ pFruitOn }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 18px;border-radius:14px;background:var(--carb-bg);color:var(--color-text);display:flex;flex-direction:column;gap:8px;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--carb-ink);font-weight:800">1 pieza de fruta equivale a</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 18px"><sc-for list="{{ pFruit }}" as="fr" hint-placeholder-count="6"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;border-bottom:1px dotted var(--color-neutral-400);padding:4px 0"><span>{{ fr.n }}</span><span style="font-variant-numeric:tabular-nums;color:var(--color-neutral-700);white-space:nowrap">{{ fr.q }}</span></div></sc-for></div><span style="font-size:12px;color:var(--color-neutral-700);text-wrap:pretty">Cada pieza aporta unos 14 g de hidratos (≈ 60 kcal). Puedes combinar media de una y media de otra.</span></div></sc-if>
       <sc-if value="{{ pxInline }}" hint-placeholder-val="{{ false }}"><p data-noprint="1" style="margin:0;font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">Junto a cada opción puedes elegir cuántos días a la semana la tomarás. La lista de la compra se ajusta sola.</p></sc-if>
       <sc-if value="{{ pOpen }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:var(--color-neutral-700);text-wrap:pretty">En cada comida elige una opción y, dentro de ella, un alimento de cada grupo: las cantidades ya están ajustadas para que cualquiera cuadre.</p></sc-if>
+<sc-if value="{{ pFoldOn }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="display:flex;justify-content:flex-end;margin:-6px 0 -10px"><button onClick="{{ pFoldAll }}" style="font:inherit;font-size:13px;font-weight:700;min-height:40px;padding:0 6px;border:0;background:transparent;color:var(--color-accent-700);cursor:pointer">{{ pFoldL }}</button></div></sc-if>
       <div data-pdf-meals="1" style="display:flex;flex-direction:column;gap:18px">
       <sc-for list="{{ pGroups }}" as="g" hint-placeholder-count="1">
         <div style="display:flex;flex-direction:column;gap:18px">
           <sc-if value="{{ g.hasTitle }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:var(--cf-plan-bg,var(--veg-bg));color:var(--cf-plan-ink,var(--veg-ink))"><span style="font-weight:800;font-size:16px">{{ g.title }}</span><span style="font-size:12px">{{ g.days }}</span><sc-if value="{{ g.isToday }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--cf-plan-ink,var(--veg-ink));color:var(--cf-on-ink)">Hoy</span></sc-if><sc-if value="{{ g.hasK }}" hint-placeholder-val="{{ false }}"><span style="flex-basis:100%;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums">{{ g.kLine }}</span></sc-if></div></sc-if>
           <sc-for list="{{ g.meals }}" as="vm" hint-placeholder-count="3">
             <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:4px"><span style="font-weight:800;font-size:17px">{{ vm.name }}</span><span style="display:flex;gap:10px;align-items:baseline;font-size:13px;font-variant-numeric:tabular-nums"><sc-if value="{{ vm.gk }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700)">{{ vm.gk }}</span></sc-if><span>{{ vm.kcal }}</span></span></div>
+              <div onClick="{{ vm.tog }}" role="button" aria-expanded="{{ vm.openS }}" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px solid var(--color-text);padding-bottom:4px;cursor:pointer"><span style="display:flex;align-items:baseline;gap:8px;min-width:0"><svg data-noprint="1" width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;color:var(--color-neutral-600);transition:transform .2s;transform:{{ vm.chev }};align-self:center"><path d="m9 18 6-6-6-6"></path></svg><span style="font-weight:800;font-size:17px">{{ vm.name }}</span></span><span style="display:flex;gap:10px;align-items:baseline;font-size:13px;font-variant-numeric:tabular-nums"><sc-if value="{{ vm.gk }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--color-neutral-700)">{{ vm.gk }}</span></sc-if><span>{{ vm.kcal }}</span></span></div>
+<div data-fold-body="1" style="display:{{ vm.disp }};flex-direction:column;gap:8px">
               <sc-if value="{{ vm.note }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;padding:8px 12px;border-radius:12px;background:var(--cf-plan-bg,var(--veg-bg));color:var(--cf-plan-ink,var(--veg-ink));white-space:pre-wrap">{{ vm.note }}</div></sc-if>
               <sc-for list="{{ vm.opts }}" as="vo" hint-placeholder-count="1">
                 <div style="display:flex;flex-direction:column;gap:8px;break-inside:avoid">
@@ -455,6 +459,7 @@ button{-webkit-user-select:none;user-select:none}
                   </sc-for>
                 </div>
               </sc-for>
+</div>
             </div>
           </sc-for>
         </div>
@@ -1007,7 +1012,7 @@ class Component extends DCLogic {
         show(b,String(PD.n||('Plan de nutrición'+(nm?' · '+nm:'')+'.pdf')).replace(/[\\/:*?"<>|]/g,''),num(PD.pg)||1);return;}catch(e){if(!src)throw e;}}
       // 2) Si no hay (o falla), lo crea aquí
       if(!window.CFPdf||!src)throw new Error('lib');
-      const res=await CFPdf.make(src,{landscape:!!tb,label:'Preparando tu PDF…',name:'Plan de nutrición'+(nm?' · '+nm:''),prep:tb?(c=>{const m=c.querySelector('[data-pdf-meals]');if(m)m.innerHTML=CFPdf.tableHTML(tb);}):null});
+      const res=await CFPdf.make(src,{landscape:!!tb,label:'Preparando tu PDF…',name:'Plan de nutrición'+(nm?' · '+nm:''),prep:c=>{c.querySelectorAll('[data-fold-body]').forEach(e=>{e.style.display='flex';});if(tb){const m=c.querySelector('[data-pdf-meals]');if(m)m.innerHTML=CFPdf.tableHTML(tb);}}});
       show(res.blob,res.name,res.pages);
     }catch(e){this.toastMsg('No se pudo crear el PDF aquí. Se abre la impresión: elige «Guardar como PDF».');setTimeout(()=>window.print(),400);}
     finally{this._pdfBusy=false;this.setState({pdfBusy:false});}}
@@ -1261,13 +1266,15 @@ class Component extends DCLogic {
         const extras=mF.filter(x=>x.src==='extra').map(x=>({name:x.name,sub:[HK?'':x.k+' kcal',HM?'':'P '+x.p+' · H '+x.c+' · G '+x.f].filter(Boolean).join(' · '),gr:String(x.gr),
           onGr:e=>this.setGr(x.key,num(e.target.value)),minus:()=>this.setGr(x.key,num(x.gr)-10),plus:()=>this.setGr(x.key,num(x.gr)+10),del:()=>this.patchLog(n=>{n.foods=n.foods.filter(y=>y.key!==x.key);})}));
         const anyPlan=mF.some(x=>x.src==='plan'),full=need>0&&done>=need,st=full?['Hecha','var(--ok-bg)','var(--ok)','var(--ok-mid)']:mF.length?['En curso','var(--carb-bg)','var(--carb-ink)','var(--carb)']:['Pendiente','var(--color-neutral-100)','var(--color-neutral-700)','var(--color-neutral-400)'];
-        return {note:m.note||'',hasNote:!!m.note,onote:o.note||'',hasOnote:!!o.note,name:m.name,kLabel:HK?(mT?R(mk/mT*100)+' %':''):R(mk)+' / '+m.kcal+(String(m.kcal).includes('kcal')?'':' kcal'),stLabel:st[0],stBg:st[1],stFg:st[2],bar:st[3],pct:Math.min(100,mT?mk/mT*100:(need?done/need*100:0))+'%',hasOpts:m.opts.length>1,
+        return {_full:full,_need:need,_done:done,note:m.note||'',hasNote:!!m.note,onote:o.note||'',hasOnote:!!o.note,name:m.name,kLabel:HK?(mT?R(mk/mT*100)+' %':''):R(mk)+' / '+m.kcal+(String(m.kcal).includes('kcal')?'':' kcal'),stLabel:st[0],stBg:st[1],stFg:st[2],bar:st[3],pct:Math.min(100,mT?mk/mT*100:(need?done/need*100:0))+'%',hasOpts:m.opts.length>1,
           ...(()=>{const many=m.opts.length>3,cn=onm(m.opts[oi]),Lt=String.fromCharCode(65+oi);return {hasOptCur:many||cn.length>22,optCur:'Opción '+Lt+(cn?' · '+cn:'')};})(),
           optSeg:m.opts.map((x,i)=>{const xn=onm(x);return {aria:'Opción '+String.fromCharCode(65+i)+(xn?' · '+xn:''),label:m.opts.length>3?String.fromCharCode(65+i):xn?String.fromCharCode(65+i)+' · '+(xn.length>22?xn.slice(0,21)+'…':xn):'Opción '+String.fromCharCode(65+i),bg:i===oi?'var(--cf-card)':'transparent',fg:i===oi?'var(--color-text)':'var(--color-neutral-700)',pick:()=>this.patchLog(n=>{n.opts=n.opts||{};n.opts[mi]=i;n.foods=n.foods.filter(y=>!(y.mi===mi&&y.src==='plan'&&!(y.key||'').startsWith(mi+'-'+i+'-')));})};}),
           blocks,extras,hasExtras:extras.length>0,allLabel:anyPlan?'Desmarcar todo':'✓ Comí lo pautado',allBg:anyPlan?'var(--color-neutral-100)':'var(--color-accent)',allFg:anyPlan?'var(--color-neutral-700)':'#fff',
           all:()=>this.patchLog(n=>{if(anyPlan){n.foods=n.foods.filter(y=>!(y.mi===mi&&y.src==='plan'));return;}
             o.blocks.forEach((b,bi)=>{const pick1=b.lines.length>1&&/elige 1/i.test(b.label);(pick1?b.lines.slice(0,1):b.lines).forEach((ln,li)=>{n.foods.push(this.planFood(mi+'-'+oi+'-'+bi+'-'+li,mi,m,ln));});});}),
           add:()=>this.setState({add:{mi,meal:m.name,q:'',f:null,g:'100'}}),...this.mealPh(mi,m.name,L)};});
+      {const MO=s.mOpen||{},fi=day===today?v.meals.findIndex(m=>!m._full):-1;v.meals=v.meals.map((m,mi)=>{const k=day+'|'+mi,op=MO[k]!=null?!!MO[k]:mi===fi;
+        return {...m,open:op,openS:op?'true':'false',chev:op?'rotate(90deg)':'rotate(0deg)',sumOn:!op,sum:[m.hasOpts&&m.optCur?m.optCur:'',m._full?'Completa':m._need?m._done+' de '+m._need+' alimentos':''].filter(Boolean).join(' · '),tog:()=>this.setState(st=>({mOpen:{...(st.mOpen||{}),[k]:!op}}))};});}
       const SV=L.survey||{},answered=QS.filter(([k])=>SV[k]).length;
       v.survey=QS.map(([k,l,lo,hi,words,inv])=>{const cur=SV[k];return {label:l,lo,hi,sel:cur?words[cur-1]:'',selFg:cur?SCALE[inv?5-cur:cur-1][0]==='#efc95e'?'var(--carb-ink)':SCALE[inv?5-cur:cur-1][0]:'transparent',
         btns:[1,2,3,4,5].map(n=>{const ci=inv?5-n:n-1,on=cur===n;return {n:String(n),aria:words[n-1],bg:on?SCALE[ci][0]:SCALE_T[ci],fg:on?SCALE[ci][1]:'var(--color-neutral-800)',sh:on?'0 4px 12px rgba(20,50,80,.18)':'none',tf:on?'scale(1.06)':'none',
@@ -1311,6 +1318,9 @@ class Component extends DCLogic {
           v.pxInline=any;v.pxDaysBox=v.pxDaysOn&&!any;}
         let nT=0,nA=0;v.pxList=CFShop.list(X,al).map(S=>({cat:S.cat,items:S.items.map(it=>{const on=!!T0[it.n];nA++;if(on)nT++;return {...it,on,ck:on?'✓':'',ckBg:on?'var(--color-accent)':'transparent',ckBd:on?'var(--color-accent)':'var(--color-neutral-400)',op:on?'.45':'1',dec:on?'line-through':'none',tog:()=>{const t={...T0};if(t[it.n])delete t[it.n];else t[it.n]=1;sv({...st,t});}};})}));
         v.pxCount=nT?nT+' de '+nA+' comprados':nA+' productos';v.pxAnyT=nT>0;v.pxClear=()=>sv({...st,t:{}});}}v.pshopBase=(v.pshopHasOpts||v.pshopHasAlts)&&v.shop.length?'Siempre':'';v.pFruit=P.fruit||[];v.pFruitOn=v.pFruit.length>0;v.showShop=s.shopOpen;v.shopLabel=s.shopOpen?'Ocultar compra':'Lista de la compra';v.toggleShop=()=>this.setState({shopOpen:!s.shopOpen});
+      {const PO=s.pOpen||{},nM=(v.pGroups||[]).reduce((x,g)=>x+g.meals.length,0),one=nM<=1;let nOp=0;
+        v.pGroups=(v.pGroups||[]).map((g,gi)=>({...g,meals:g.meals.map((m,mi)=>{const k=gi+'|'+mi,op=one||(PO.all!=null&&PO[k]==null?!!PO.all:!!PO[k]);if(op)nOp++;return {...m,disp:op?'flex':'none',openS:op?'true':'false',chev:op?'rotate(90deg)':'rotate(0deg)',tog:()=>this.setState(st=>({pOpen:{...(st.pOpen||{}),[k]:!op}}))};})}));
+        v.pFoldOn=nM>1;v.pFoldL=nOp===nM?'Cerrar todas':'Abrir todas';v.pFoldAll=()=>this.setState({pOpen:{all:nOp!==nM}});}
       v.printPlan=()=>{if(this._pdfBusy)return;if(!s.shopOpen)this.setState({shopOpen:true},()=>setTimeout(()=>this.makePdf(),200));else this.makePdf();};}
     v.pdfLbl=s.pdfBusy?'Preparando PDF…':'Descargar PDF';v.pdfSheet=!!s.pdfReady;
     if(s.pdfReady){const P=s.pdfReady;v.pdfName=P.name;v.pdfInfo=P.pages+(P.pages===1?' página':' páginas');v.pdfUrl=P.url;v.pdfCanShare=!!P.share;v.pdfClose=()=>this.setState({pdfReady:null});
