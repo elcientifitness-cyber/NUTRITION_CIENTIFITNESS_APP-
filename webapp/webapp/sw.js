@@ -1,5 +1,5 @@
 // Siempre intenta la red primero (datos al día); si no hay conexión, usa la última copia.
-const C='cf-v54',EXT=/^(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)$/;
+const C='cf-v56',EXT=/^(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)$/;
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>/^cf-v\d+$/.test(k)&&k!==C).map(k=>caches.delete(k)))).catch(()=>{}).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
