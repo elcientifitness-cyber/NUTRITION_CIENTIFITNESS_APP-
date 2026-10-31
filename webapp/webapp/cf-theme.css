@@ -249,3 +249,4 @@ html[data-cf-fs="lg"] [data-cf-stage]{zoom:1.15}
 [data-fold-h]:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px;border-radius:6px}
 @media screen{[data-fold][data-folded="1"]>:not([data-fold-h]){display:none!important}}
 @media (max-width:1279.98px){main{padding-left:max(16px,min(28px,2.2vw))!important;padding-right:max(16px,min(28px,2.2vw))!important}}
+.cf-stick>*{flex-shrink:0}
